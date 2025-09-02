@@ -35,7 +35,6 @@ nav {
     width: 100%;
 }
 
-/* If you keep <main>, these rules apply; otherwise harmless */
 main {
     flex-grow: 1;
     display: grid;
@@ -43,11 +42,10 @@ main {
     margin-left: 3rem;
 }
 
-/* Page-specific centering wrapper used in login/register */
 .center-page {
     width: 100%;
-    display: grid;            /* was missing; enables place-items */
-    place-items: center;      /* centers children horizontally and vertically if room */
+    display: grid;
+    place-items: center;
     padding: 2rem 1rem;
 }
 
@@ -82,6 +80,54 @@ nav a:hover {
     opacity: .70;
 }
 
+/* CSS */
+.button-68 {
+	appearance: none;
+	backface-visibility: hidden;
+	background-color: rgb(21, 163, 80);
+	border-radius: 8px;
+	border-style: none;
+	box-shadow: rgb(10, 77, 38);
+	box-sizing: border-box;
+	color: #fff;
+	cursor: pointer;
+	display: inline-block;
+	font-family: Inter,-apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif;
+	font-size: 16px;
+	font-weight: 600;
+	letter-spacing: normal;
+	line-height: 1.5;
+	outline: none;
+	overflow: hidden;
+	padding: 13px 20px;
+	position: relative;
+	text-align: center;
+	text-decoration: none;
+	transform: translate3d(0, 0, 0);
+	transition: all .3s;
+	user-select: none;
+	-webkit-user-select: none;
+	touch-action: manipulation;
+	vertical-align: top;
+	white-space: nowrap;
+}
+
+.button-68:hover {
+	background-color: #1e8449;
+	opacity: 1;
+	transform: translateY(0);
+	transition-duration: .35s;
+}
+
+.button-68:active {
+	transform: translateY(2px);
+	transition-duration: .35s;
+}
+
+.button-68:hover {
+	box-shadow: rgba(39, 174, 96, .2) 0 6px 12px;
+}
+
 .post {
     margin-bottom: 2rem;
     padding: 1rem;
@@ -98,55 +144,42 @@ nav a:hover {
     max-width: 800px;
 }
 
-
 .form-with-validation {
     font-size: 1rem;
     display: flex;
     flex-flow: column;
     gap: 1rem;
 
-    width: clamp(300px, 90vw, 400px); /* narrower max width */
-    margin: 4.5rem auto 3rem; /* center horizontally, add top/bottom spacing */
+    width: clamp(300px, 90vw, 400px);
+    margin: 4.5rem auto 3rem;
     padding: 2rem;
 
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid rgb(31, 73, 68);
+    background: rgba(255, 255, 255, 0.50);
+    border: 1px solid rgb(255, 255, 255);
     border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+	backdrop-filter: blur(6.8px);
+    -webkit-backdrop-filter: blur(6.8px);
 }
 
-.form-with-validation div {
-    display: flex;
-    flex-flow: column;
-    gap: 0.5rem;
-}
-
-/* Make inner form controls narrower than the card and centered */
-.form-with-validation label,
-.form-with-validation input,
-.form-with-validation select,
-.form-with-validation textarea,
-.form-with-validation .helptext,
-.form-with-validation .errorlist {
-    width: min(100%, 350px);
-    align-self: center;
-}
-
-.form-with-validation button {
-    width: min(100%, 220px);
-    align-self: center;
+/* Keep inputs a bit narrower inside auth forms */
+.form-with-validation input[type="text"],
+.form-with-validation input[type="password"],
+.form-with-validation input[type="email"] {
+	width: 15rem; /* adjust as needed */
+	max-width: 100%;
 }
 
 .nav-left {
-  float: left;
-  gap: 2rem;
-  margin-left: 3rem;
+	float: left;
+	gap: 2rem;
+	margin-left: 3rem;
 }
 
 .nav-right {
-  float: right;
-  gap: 2rem;
-  margin-right: 3rem;
+	float: right;
+	gap: 2rem;
+	margin-right: 3rem;
 }
 
 .nav-left, .nav-right {
@@ -163,12 +196,12 @@ nav a:hover {
     display: inline-block;
 }
 
-.logout-button {
-    font-size: 2.5rem;
-    background-color: rgb(0, 0, 0, 0);
-    border: none;
-}
-
 .logout-button:hover {
     opacity: .85;
 }
+
+.narrow-input {
+    width: 10rem ;
+}
+
+.field-row { display: grid; gap: 0.35rem; }

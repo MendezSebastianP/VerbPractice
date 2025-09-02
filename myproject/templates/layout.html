@@ -18,7 +18,7 @@
             <a href="/">Home</a>
             <a href="{% url 'posts:list' %}">Posts</a>
             {% if user.is_authenticated %}
-            <a href="{% url 'posts:new-post' %}">New  Post</a>
+            <a href="{% url 'posts:new-post' %}">New Post</a>
             {% endif %}
         </div>
         <div class="nav-right">
@@ -28,8 +28,8 @@
                 <a href="{% url 'users:register' %}">Get Started</a>
             {% else %}
                 <form class="logout" action="{% url 'users:logout' %}" method="post">
-                    {% csrf_token %}
-                    <button class="logout-button">Logout</button>
+					{% csrf_token %}
+					<a href="#" onclick="this.closest('form').submit(); return false;">Logout</a>
                 </form>
             {% endif %}
         </div>

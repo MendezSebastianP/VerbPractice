@@ -6,13 +6,25 @@
 {% endblock %}
 
 {% block content %}
-    <h1>User Login</h1>
     <form class="form-with-validation" action="/users/login/" method="post">
         {% csrf_token %}
-        {{ form }}
+		<h1>Login</h1>
+        <div class="field-row">
+            {{ form.username }}
+            {{ form.username.errors }}
+        </div>
+
+        <div class="field-row">
+            {{ form.password }}
+            {{ form.password.errors }}
+        </div>
+
         {% if request.GET.next %}
             <input type="hidden" name="next" value="{{ request.GET.next }}" />
         {% endif %}
-        <button>Submit</button>
+        <button class="button-68" role="button">Login</button>
+
+		<hr class="solid">
+		<p>New user? to create an account <a href="/users/register">click here</a></p>
     </form>
 {% endblock %}

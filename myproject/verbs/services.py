@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.db.models import F, Value
 from .models import Verb, UserVerb
 import random
 import math
@@ -14,9 +15,10 @@ def init_user_verbs(user, n=10):
 		)
 
 class verb_session():
-	def __init__(self, nverbs):
-		self.nverbs = nverbs
+	def __init__(self, nverbs, user):
 		N_VERBS = 1000
+		self.nverbs = nverbs
+		self.user = user
 
 	def score_to_prob(self, scores):
 		"""
@@ -72,19 +74,20 @@ class verb_session():
 		scores[index]['score'] *= mult
 		if (scores[index]['score'] > 10**5):
 			scores[index]['score'] = 10**5
+		UserVerb.objects.filter(user=self.user, verb_id=index).update(
+			probability=scores[index]['score'],
+			times_correct= F('times_correct') + 1,
+		)
 
 	def right_answer(self, scores, index):
 		scores[index]['score'] = scores[index]['score'] * (0.7)
 		if (scores[index]['score'] < 1):
 			scores[index]['score'] = 1
+		UserVerb.objects.filter(user=self.user, verb_id=index).update(
+			probability=scores[index]['score'],
+			times_correct= F('times_correct') + 1,
+		)
 
-	def hint(verb, times):
-		if (times <= len(verb)):
-				hinted = verb[0:times]
-				return (hinted)
-		else:
-				return -1
-	
 	def hint_answer(self, scores, index, n_hint, len_verb):
 		base_right_answer = (0.7)
 		base_right_answer = 1 - base_right_answer
@@ -99,6 +102,18 @@ class verb_session():
 		scores[index]['score'] = scores[index]['score'] * base_right_answer
 		if (scores[index]['score'] < 1):
 			scores[index]['score'] = 1
+		UserVerb.objects.filter(user=self.user, verb_id=index).update(
+			probability=scores[index]['score'],
+			times_correct= F('times_correct') + 1,
+		)
+
+	def hint(verb, times):
+		if (times <= len(verb)):
+				hinted = verb[0:times]
+				return (hinted)
+		else:
+				return -1
+	
 
 	def next_scores(self, scores, index, response, verb = None, n_hint = None):
 		if (response == 1):
@@ -112,3 +127,11 @@ class verb_session():
 			self.wr_answer(scores, index)
 		else:
 			print("Error (next_scores): not valid input")
+
+	def test_verb(self, scores, index, verb, response, n_hint = 0): # toleramos una letra o acento? minusculas mayusculas?
+		response = (verb == response)
+		if (n_hint > 0):
+				response += 1
+				self.next_scores(scores, index, response, verb, n_hint)
+		else:
+				self.next_scores(scores, index, response)

@@ -1,0 +1,24 @@
+
+{% extends 'layout.html' %}
+
+{% block title %}
+    Verbs
+{% endblock %}
+
+{% block content %}
+    <section>
+    <h1>Verbs</h1>
+
+    {% for user_verb in verbs %}
+    <article class="verbs">
+        <h2>{{ user_verb.verb.infinitive }}</h2>
+        <p><strong>Translation:</strong> {{ user_verb.verb.translation }}</p>
+        <p><strong>Unlocked:</strong> {% if user_verb.unlocked %}✅ Yes{% else %}🔒 No{% endif %}</p>
+        <p><strong>Times Correct:</strong> {{ user_verb.times_correct }}</p>
+        <p><strong>Probability:</strong> {{ user_verb.probability }}</p>
+    </article>
+    {% empty %}
+    <p>No verbs found for your account. You may need to initialize your verb collection.</p>
+    {% endfor %}
+    </section>
+{% endblock %}

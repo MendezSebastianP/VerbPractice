@@ -26,6 +26,7 @@ urlpatterns = [
     path('about/', views.about),
     path('posts/', include('posts.urls')),
     path('users/', include('users.urls')),
+    path('verbs/', include('verbs.urls')),
 
 ]
 

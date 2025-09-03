@@ -19,6 +19,7 @@
             <a href="{% url 'posts:list' %}">Posts</a>
             {% if user.is_authenticated %}
             <a href="{% url 'posts:new-post' %}">New Post</a>
+            <a href="{% url 'verbs:verbhome' %}">Verbs</a>
             {% endif %}
         </div>
         <div class="nav-right">

@@ -151,7 +151,7 @@ nav a:hover {
     gap: 1rem;
 
     width: clamp(300px, 90vw, 400px);
-    margin: 4.5rem auto 3rem;
+    margin: 6.5rem auto 3rem;
     padding: 2rem;
 
     background: rgba(255, 255, 255, 0.50);
@@ -205,3 +205,49 @@ nav a:hover {
 }
 
 .field-row { display: grid; gap: 0.35rem; }
+
+.scroll-container {
+    height: 200px;
+    width: 400px;
+    overflow-y: auto; /* makes the box scrollable */
+    border: 1px solid #ccc;
+    padding: 0; /* Remove padding to allow header to stick to edges */
+    background-color: rgba(255, 255, 255, 0.651);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(6.8px);
+    -webkit-backdrop-filter: blur(6.8px);
+    border: 1px solid rgb(31, 73, 68);
+    border-radius: 8px;
+}
+
+.verb-header-inside {
+    background-color: rgb(140, 196, 157);
+    color: white;
+    padding: 1rem;
+    margin: 0;
+    font-weight: bold;
+    text-align: left;
+    position: sticky;
+    top: 0;
+    backdrop-filter: blur(6.8px);
+    -webkit-backdrop-filter: blur(6.8px);
+    column-count: 2;
+}
+
+.content {
+    /* Remove fixed height so content can expand and trigger scrolling */
+    padding: 20px;
+    table-layout: auto;
+    width: 400px;
+    font-size: small;
+    border-spacing: 0px;
+}
+
+tbody tr:nth-child(odd) {
+  background-color: #fff;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #c7e7d6;
+}
+

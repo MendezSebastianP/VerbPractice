@@ -1,3 +1,4 @@
+{% load django_htmx %}
 <!DOCTYPE html>
 {% load static %}
 <html lang="en">
@@ -10,9 +11,11 @@
         {% endblock %}
     </title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="https://unpkg.com/htmx.org@1.9.12" defer></script>
     <script src="{% static 'js/main.js' %}" defer></script>
+    {% django_htmx_script %}
 </head>
-<body>
+<body hx-boost="true" hx-push-url="true">
     <nav>
         <div class="nav-left">
             <a href="/">Home</a>
@@ -35,7 +38,10 @@
             {% endif %}
         </div>
     </nav>
+    <div id="app">
         {% block content %}
         {% endblock %}
+    </div>
+    {% htmx_script %}
 </body>
 </html>

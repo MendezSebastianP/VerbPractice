@@ -4,6 +4,7 @@ from .models import Verb, UserVerb
 import random
 import math
 import numpy as np
+from unidecode import unidecode
 
 
 def init_user_verbs(user, n=10):
@@ -19,6 +20,7 @@ class verb_session():
 		N_VERBS = 1000
 		self.nverbs = nverbs
 		self.user = user
+		self.first_answer = True
 
 	def score_to_prob(self, scores):
 		"""
@@ -72,12 +74,15 @@ class verb_session():
 	def wr_answer(self, scores, index):
 		mult = 1.2 + ((self.N_VERBS - index + 1) / (self.N_VERBS - 1))
 		scores[index]['score'] *= mult
+		if not self.first_answer:
+			return
 		if (scores[index]['score'] > 10**5):
 			scores[index]['score'] = 10**5
 		UserVerb.objects.filter(user=self.user, verb_id=index).update(
 			probability=scores[index]['score'],
 			times_correct= F('times_correct') + 1,
 		)
+		self.first_answer = False
 
 	def right_answer(self, scores, index):
 		scores[index]['score'] = scores[index]['score'] * (0.7)
@@ -91,6 +96,8 @@ class verb_session():
 	def hint_answer(self, scores, index, n_hint, len_verb):
 		base_right_answer = (0.7)
 		base_right_answer = 1 - base_right_answer
+		if not self.first_answer:
+			return
 		if (n_hint >= len_verb/2):
 			self.wr_answer(scores, index)
 			return
@@ -128,8 +135,8 @@ class verb_session():
 		else:
 			print("Error (next_scores): not valid input")
 
-	def test_verb(self, scores, index, verb, response, n_hint = 0): # toleramos una letra o acento? minusculas mayusculas?
-		response = (verb == response)
+	def test_verb(self, scores, index, verb: str, response: str, n_hint = 0): # toleramos una letra o acento? minusculas mayusculas?
+		response = (unidecode(verb.lower()) == unidecode(response.lower())) #toleramos acentos y mayusculas
 		if (n_hint > 0):
 				response += 1
 				self.next_scores(scores, index, response, verb, n_hint)

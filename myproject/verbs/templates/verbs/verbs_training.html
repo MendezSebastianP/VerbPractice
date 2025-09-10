@@ -1,0 +1,67 @@
+{% extends 'layout.html' %}
+
+{% block title %}Training Session{% endblock %}
+
+{% block content %}
+  <h1>Verb Training</h1>
+
+  {% if question %}
+    {% include 'verbs/_question.html' %}
+  {% else %}
+    {% if finished %}
+      <div class="session-finished">
+        {% if previous_feedback %}<p>{{ previous_feedback }}</p>{% endif %}
+        <p>Session over. Great job!</p>
+        <form class="form-with-validation" action="{% url 'verbs:verbstraining' %}" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="start">
+          <button type="submit">Start again</button>
+        </form>
+      </div>
+    {% else %}
+      <form class="form-with-validation" action="{% url 'verbs:verbstraining' %}" method="post">
+		<div class="options-buttom-container">
+			<div class="options-buttom-heading">Session length</div>
+			<div class="options-buttom-wrapper">
+				<div class="options-buttom-wrapper">
+					<input class="input" id="opt-5"  name="v_length" type="radio" value="5" {% if last_length == 5 %}checked{% endif %}>
+					<label class="options-buttom" for="opt-5">
+						<span class="off">Small</span>
+						<span class="on">5 verbs</span>
+					</label>
+
+					<input class="input" id="opt-10" name="v_length" type="radio" value="10" {% if last_length == 10 %}checked{% endif %}>
+					<label class="options-buttom" for="opt-10">
+						<span class="off">Medium</span>
+						<span class="on">10 verbs</span>
+					</label>
+
+					<input class="input" id="opt-20" name="v_length" type="radio" value="20" {% if last_length == 20 %}checked{% endif %}>
+					<label class="options-buttom" for="opt-20">
+						<span class="off">Large</span>
+						<span class="on">20 verbs</span>
+					</label>
+				</div>
+			</div>
+		</div>
+		<div class="options-buttom-container">
+			<div class="options-buttom-heading">Lenguage to fill</div>
+			<div class="options-buttom-wrapper">
+				<div class="options-buttom-wrapper">
+					<input class="input" id="opt-French" value="French" name="lenguage_fill" type="radio" {% if last_fill == 'French' %}checked{% endif %} />
+					<label class="options-buttom" for="opt-French">French</label>
+
+					<input class="input" id="opt-Spanish" value="Spanish" name="lenguage_fill" type="radio" {% if last_fill == 'Spanish' %}checked{% endif %} />
+					<label class="options-buttom" for="opt-Spanish">Spanish</label>
+					</label>
+				</div>
+			</div>
+		</div>
+      {% csrf_token %}
+	  <hr class="solid"> 
+      <input type="hidden" name="action" value="start">
+      <button type="submit">Start session</button>
+    </form>
+    {% endif %}
+  {% endif %}
+{% endblock %}

@@ -1,144 +1,108 @@
+from typing import Dict, List, Literal, Tuple
 from django.db import transaction
-from django.db.models import F, Value
+from django.db.models import F, Max, Avg
+from django.contrib.auth.models import AbstractBaseUser
 from .models import Verb, UserVerb
 import random
-import math
-import numpy as np
 from unidecode import unidecode
+
+Direction = Literal['fr_es', 'es_fr']
 
 
 def init_user_verbs(user, n=10):
-	with transaction.atomic():
-		base = list(Verb.objects.order_by('id')[:n])
-		UserVerb.objects.bulk_create(
-			[UserVerb(user=user, verb=v, unlocked=True) for v in base],
-			ignore_conflicts=True,
-		)
+    with transaction.atomic():
+        base = list(Verb.objects.order_by('id')[:n])
+        UserVerb.objects.bulk_create(
+            [UserVerb(user=user, verb=v, unlocked=True) for v in base],
+            ignore_conflicts=True,
+        )
 
-class verb_session():
-	def __init__(self, nverbs, user):
-		N_VERBS = 1000
-		self.nverbs = nverbs
-		self.user = user
-		self.first_answer = True
 
-	def score_to_prob(self, scores):
-		"""
-		Converts a dictionary of scores into probabilities by normalizing the values.
+def preselect_verbs(user, length: int) -> List[int]:
+    qs = UserVerb.objects.filter(user=user, unlocked=True).select_related('verb').values_list('verb_id', 'probability')
+    rows = list(qs)
+    if not rows:
+        return []
+    # weighted sample without replacement (simple proportional removal)
+    pool = [(vid, float(p)) for vid, p in rows]
+    total = sum(p for _, p in pool) or 1.0
+    pool = [(vid, p / total) for vid, p in pool]
+    chosen: List[int] = []
+    length = min(length, len(pool))
+    for _ in range(length):
+        r = random.random()
+        acc = 0.0
+        for i, (vid, w) in enumerate(pool):
+            acc += w
+            if r <= acc:
+                chosen.append(vid)
+                del pool[i]
+                s = sum(w2 for _, w2 in pool) or 1.0
+                pool = [(v2, w2 / s) for v2, w2 in pool]
+                break
+    return chosen
 
-		Args:
-			scores (dict): Dictionary with keys as IDs and values as scores.
 
-		Returns:
-			dict: Dictionary with keys as IDs and values as probabilities.
-		"""
-		prob = {}
-		sum_scores = sum(scores.values())
-		for key, value in scores.items():
-			prob[key] = value / sum_scores
-		return (prob)
-	
-	def next_verb(self, scores):
-		"""
-		Chooses the next verb based on probability derived from scores.
+def add_new_verbs(user, n=3):
+    with transaction.atomic():
+        max_id = UserVerb.objects.filter(user=user).aggregate(max_id=Max('verb_id'))['max_id'] or 0
+        new_verbs = list(Verb.objects.filter(id__gt=max_id).order_by('id')[:n])
+        if not new_verbs:
+            return 0
+        UserVerb.objects.bulk_create(
+            [UserVerb(user=user, verb=v, unlocked=True) for v in new_verbs],
+            ignore_conflicts=True,
+        )
+        return len(new_verbs)
 
-		Args:
-			scores (Dict): A dictionary of scores.
 
-		Returns:
-			int: The selected verb key.
-		"""
-		prob = self.score_to_prob(scores)
-		verb_choose = np.random.choice(list(prob.keys()), p=list(prob.values()))
-		return (verb_choose)
-	
-	def verbs_session(self, scores, n):
-		"""
-		Selects a set number of verbs for a training session.
+class TrainingEngine:
+    def __init__(self, user: AbstractBaseUser, direction: Direction):
+        self.user = user
+        self.direction = direction  # 'fr_es' or 'es_fr'
 
-		Args:
-			scores (Dict): A dictionary of scores.
-			n (int): Number of verbs to select.
+    def format_prompt_answer(self, verb: Verb) -> Tuple[str, str]:
+        if self.direction == 'fr_es':
+            return verb.infinitive, verb.translation or ''
+        else:
+            return verb.translation or '', verb.infinitive
 
-		Returns:
-			list: A list of selected verb keys.
-		"""
-		temp_scores = scores.copy()
-		selected_verbs = []
-		for i in range(n):
-			verb_choose = self.next_verb(temp_scores)
-			selected_verbs.append(verb_choose)
-			del temp_scores[verb_choose]
-		return (selected_verbs)
-	
-	def wr_answer(self, scores, index):
-		mult = 1.2 + ((self.N_VERBS - index + 1) / (self.N_VERBS - 1))
-		scores[index]['score'] *= mult
-		if not self.first_answer:
-			return
-		if (scores[index]['score'] > 10**5):
-			scores[index]['score'] = 10**5
-		UserVerb.objects.filter(user=self.user, verb_id=index).update(
-			probability=scores[index]['score'],
-			times_correct= F('times_correct') + 1,
-		)
-		self.first_answer = False
+    def normalize(self, text: str) -> str:
+        return unidecode((text or '').strip().lower())
 
-	def right_answer(self, scores, index):
-		scores[index]['score'] = scores[index]['score'] * (0.7)
-		if (scores[index]['score'] < 1):
-			scores[index]['score'] = 1
-		UserVerb.objects.filter(user=self.user, verb_id=index).update(
-			probability=scores[index]['score'],
-			times_correct= F('times_correct') + 1,
-		)
+    def is_correct(self, correct_field: str, answer: str) -> bool:
+        options = [self.normalize(p) for p in (correct_field or '').split(',') if p.strip()]
+        return self.normalize(answer) in options
 
-	def hint_answer(self, scores, index, n_hint, len_verb):
-		base_right_answer = (0.7)
-		base_right_answer = 1 - base_right_answer
-		if not self.first_answer:
-			return
-		if (n_hint >= len_verb/2):
-			self.wr_answer(scores, index)
-			return
-		elif (n_hint > 3 & n_hint < len_verb/2):
-			base_right_answer = 1
-		else:
-			base_right_answer = base_right_answer * (1 - (n_hint * (1/4)))
-			base_right_answer = 1 - base_right_answer
-		scores[index]['score'] = scores[index]['score'] * base_right_answer
-		if (scores[index]['score'] < 1):
-			scores[index]['score'] = 1
-		UserVerb.objects.filter(user=self.user, verb_id=index).update(
-			probability=scores[index]['score'],
-			times_correct= F('times_correct') + 1,
-		)
+    def hint(self, target: str, level: int) -> str:
+        target = target or ''
+        level = max(0, min(level, len(target)))
+        target = target.strip().split(',')[0]
+        return target[:level]
 
-	def hint(verb, times):
-		if (times <= len(verb)):
-				hinted = verb[0:times]
-				return (hinted)
-		else:
-				return -1
-	
+    def update_on_result(self, verb_id: int, correct: bool):
+        # Simple probability adjustment
+        if correct:
+            UserVerb.objects.filter(user=self.user, verb_id=verb_id).update(
+                probability=F('probability') * 0.7,
+                times_correct=F('times_correct') + 1,
+            )
+            # floor
+            uv = UserVerb.objects.get(user=self.user, verb_id=verb_id)
+            if uv.probability < 1:
+                uv.probability = 1
+                uv.save(update_fields=['probability'])
+        else:
+            UserVerb.objects.filter(user=self.user, verb_id=verb_id).update(
+                probability=F('probability') * 1.3,
+                times_correct=F('times_correct') + 1,
+            )
 
-	def next_scores(self, scores, index, response, verb = None, n_hint = None):
-		if (response == 1):
-			self.right_answer(scores, index)
-		elif (response == 2):
-			if (verb is None or n_hint is None):
-				print("Error (next_scores): response with hint need the verb and the number of hints")
-				return
-			self.hint_answer(scores, index, n_hint, len(verb))
-		elif (response == 0):
-			self.wr_answer(scores, index)
-		else:
-			print("Error (next_scores): not valid input")
-
-	def test_verb(self, scores, index, verb: str, response: str, n_hint = 0): # toleramos una letra o acento? minusculas mayusculas?
-		response = (unidecode(verb.lower()) == unidecode(response.lower())) #toleramos acentos y mayusculas
-		if (n_hint > 0):
-				response += 1
-				self.next_scores(scores, index, response, verb, n_hint)
-		else:
-				self.next_scores(scores, index, response)
+    def test_if_new_verbs(self, points_next_level: float, new_verbs_next_level: int):
+        data = UserVerb.objects.filter(user=self.user).aggregate(avg_prob=Avg('probability'))
+        avg_prob = data['avg_prob']
+        if avg_prob is None:
+            return
+        if avg_prob > points_next_level:
+            return
+        add_new_verbs(self.user, new_verbs_next_level)

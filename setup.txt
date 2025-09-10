@@ -14,3 +14,6 @@ python manage.py migrate
 
 # admin
 python manage.py createsuperuser # set an admin account
+
+admin1
+Passw1234

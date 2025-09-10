@@ -110,6 +110,7 @@ nav a:hover {
 	touch-action: manipulation;
 	vertical-align: top;
 	white-space: nowrap;
+	margin-top: 2rem;
 }
 
 .button-68:hover {
@@ -218,6 +219,7 @@ nav a:hover {
     -webkit-backdrop-filter: blur(6.8px);
     border: 1px solid rgb(31, 73, 68);
     border-radius: 8px;
+	resize: vertical;
 }
 
 .verb-header-inside {
@@ -243,6 +245,26 @@ nav a:hover {
     border-spacing: 0px;
 }
 
+/* --- Training templates styles --- */
+.form-with-validation button {
+  appearance: none;
+  border: 0;
+  border-radius: 8px;
+  background: #1ea05a;
+  color: #fff;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,.12);
+}
+.form-with-validation button:hover { background: #1e8449; }
+.form-with-validation button + button { margin-left: .5rem; }
+
+/* Make the prompt (French verb) stand out a bit */
+.form-with-validation .field-row:first-of-type p { font-size: 1.15rem; margin: 0; }
+.form-with-validation .field-row:first-of-type p strong { font-size: 1.3rem; }
+
 tbody tr:nth-child(odd) {
   background-color: #fff;
 }
@@ -251,3 +273,86 @@ tbody tr:nth-child(even) {
   background-color: #c7e7d6;
 }
 
+/* ## options-buttom ## */
+
+.options-buttom-container {
+  --primary-color: #000000;
+  --secondary-color: #000000;
+  --tab-text-color: #ffffff;
+  --heading-color: #000000;
+  --hover: rgb(132, 204, 162);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 16px;
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  margin-bottom: 1rem;
+}
+.options-buttom-heading {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--heading-color);
+}
+.options-buttom-wrapper {
+  display: flex;
+  align-items: center;
+}
+.options-buttom-wrapper .input {
+  display: none;
+}
+/* rgb(21, 163, 80) */
+.options-buttom {
+  flex-grow: 1;
+  text-align: center;
+  padding: 8px 30px;
+  font-size: 14px;
+  background: var(--tab-text-color);
+  border: 1px solid var(--primary-color);
+  color: var(--secondary-color);
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+  
+
+}
+.options-buttom-wrapper > label.options-buttom { border-radius: 0; }
+
+.options-buttom-wrapper > label.options-buttom:first-of-type {
+  border-radius: 4px 0 0 4px;
+}
+
+.options-buttom-wrapper > label.options-buttom:nth-of-type(n+2):nth-last-of-type(n+2) {
+  border-radius: 0;
+}
+
+.options-buttom-wrapper > label.options-buttom:last-of-type {
+  border-radius: 0 4px 4px 0;
+}
+
+.options-buttom-wrapper > label.options-buttom:only-of-type {
+  border-radius: 4px;
+}
+
+.options-buttom-wrapper > label.options-buttom:not(:first-of-type) {
+  border-left-width: 0;
+}
+
+.options-buttom:hover {
+  background: var(--hover);
+  color: var(--tab-text-color);
+  border-color: var(--hover);
+}
+.options-buttom:active {
+  transform: scale(0.9);
+}
+.input:checked + label.options-buttom {
+  background: rgb(80, 161, 114);
+  color: var(--tab-text-color);
+  content: unset;
+}
+
+.options-buttom .on { display: none; }
+.options-buttom .off { display: inline; }
+.input:checked + label.options-buttom .on { display: inline; }
+.input:checked + label.options-buttom .off { display: none; }

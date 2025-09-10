@@ -1,4 +1,3 @@
-
 {% extends 'layout.html' %}
 
 {% block title %}
@@ -6,9 +5,9 @@
 {% endblock %}
 
 {% block content %}
-    <form class="form-with-validation" action="/users/login/" method="post">
+    <form class="form-with-validation form-centered" action="/users/login/" method="post">
         {% csrf_token %}
-		<h1>Login</h1>
+		<h1 class="page-title--elevated">Login</h1>
         <div class="field-row">
             {{ form.username }}
             {{ form.username.errors }}

@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'posts',
     'users',
 	'verbs',
+	'auto_training',
 ]
 
 MIDDLEWARE = [

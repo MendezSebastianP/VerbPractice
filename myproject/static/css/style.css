@@ -113,6 +113,10 @@ nav a:hover {
 	margin-top: 2rem;
 }
 
+.button-68 a, .button-68:visited {
+	color: #fff;
+}
+
 .button-68:hover {
 	background-color: #1e8449;
 	opacity: 1;
@@ -152,7 +156,7 @@ nav a:hover {
     gap: 1rem;
 
     width: clamp(300px, 90vw, 400px);
-    margin: 6.5rem auto 3rem;
+    margin: 4rem auto 3rem;
     padding: 2rem;
 
     background: rgba(255, 255, 255, 0.50);
@@ -161,6 +165,20 @@ nav a:hover {
     box-shadow: 0 10px 30px rgba(0,0,0,0.15);
 	backdrop-filter: blur(6.8px);
     -webkit-backdrop-filter: blur(6.8px);
+}
+
+/* Centered form modifier (use with .form-with-validation) */
+.form-centered {
+  align-items: center;          /* center children horizontally in the card */
+  text-align: center;           /* center headings and helper text */
+}
+.form-centered .field-row {
+  justify-items: center;        /* center inputs inside grid row */
+}
+.form-centered input[type="text"],
+.form-centered input[type="password"],
+.form-centered input[type="email"] {
+  margin: 0 auto;               /* ensure inputs center within row */
 }
 
 /* Keep inputs a bit narrower inside auth forms */
@@ -220,6 +238,8 @@ nav a:hover {
     border: 1px solid rgb(31, 73, 68);
     border-radius: 8px;
 	resize: vertical;
+	overflow-x: hidden;
+    overscroll-behavior-x: contain;
 }
 
 .verb-header-inside {
@@ -264,6 +284,8 @@ nav a:hover {
 /* Make the prompt (French verb) stand out a bit */
 .form-with-validation .field-row:first-of-type p { font-size: 1.15rem; margin: 0; }
 .form-with-validation .field-row:first-of-type p strong { font-size: 1.3rem; }
+
+.lang-toggle .field-row{--src: "ES"; --dst: "FR";}
 
 tbody tr:nth-child(odd) {
   background-color: #fff;
@@ -356,3 +378,163 @@ tbody tr:nth-child(even) {
 .options-buttom .off { display: inline; }
 .input:checked + label.options-buttom .on { display: inline; }
 .input:checked + label.options-buttom .off { display: none; }
+
+/* Reusable page header */
+.page-title {
+  font-family: Inter, -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-weight: 800;
+  text-align: center;
+  color: #1e8449; /* matches buttons/palette */
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+  margin: 0 0 1rem 0;
+  /* responsive size within cards */
+  font-size: clamp(1.6rem, 1.5rem + 1.5vw, 2.4rem);
+}
+
+/* Elegant page header alternative */
+.page-title--elevated {
+  font-family: Inter, -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-weight: 800;
+  text-align: center;
+  letter-spacing: 0.3px;
+  line-height: 1.15;
+  margin: 0 0 1rem;
+  color: #153629; /* site body text color for cohesion */
+  font-size: clamp(1.8rem, 1.2rem + 2vw, 2.4rem);
+  position: relative;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.6), 0 2px 6px rgba(0, 0, 0, 0.171);
+}
+.page-title--elevated::after {
+  content: '';
+  display: block;
+  height: 8px;
+  width: 120px;
+  margin: .45rem auto 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #56c596 0%, #2a939b 100%);
+  box-shadow: 0 6px 18px rgba(46, 204, 113, .28);
+}
+
+/* Prevent mobile (iOS Safari) zoom on input focus */
+html { -webkit-text-size-adjust: 100%; }
+.form-with-validation input,
+.form-with-validation select,
+.form-with-validation textarea {
+  font-size: 16px; /* iOS zooms if < 16px */
+}
+
+/* Responsive: tighten nav spacing on small screens */
+@media (max-width: 768px) {
+  nav {
+    padding: 1rem 1rem;
+    font-size: 1.2rem;
+    flex-wrap: wrap;
+    row-gap: 0.9rem;
+  }
+  .nav-left, .nav-right {
+    gap: 1rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }
+}
+@media (max-width: 480px) {
+  .nav-left, .nav-right { gap: 0.9rem; }
+  /* Fallback for older iOS Safari without flex gap support */
+  @supports not (gap: 1rem) {
+    .nav-left > * + *, .nav-right > * + * { margin-left: 0.9rem; }
+  }
+}
+
+/* Nav dropdown (Train) */
+.dropdown { position: relative; }
+.dropdown-toggle {
+  background: transparent;
+  border: 0;
+  color: #e9fff7; /* match nav link color */
+  font: inherit;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  border-radius: 8px;
+}
+/* Match nav hover style */
+.dropdown-toggle:hover { opacity: .70; background: transparent; }
+.dropdown-toggle:focus-visible {
+  outline: 2px solid rgba(255,255,255,0.55);
+  outline-offset: 2px;
+}
+.dropdown-toggle::after {
+  content: '▾';
+  display: inline-block;
+  margin-left: .35rem;
+  font-size: .85em;
+  transition: transform .2s ease;
+}
+.dropdown.open .dropdown-toggle::after { transform: rotate(180deg); }
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 160px;
+  padding: .4rem;
+  background: rgba(76, 160, 111, 0.92);
+  border: 1px solid rgb(31, 73, 68);
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  backdrop-filter: blur(6.8px);
+  -webkit-backdrop-filter: blur(6.8px);
+  opacity: 0;
+  transform: translateY(6px) scale(.98);
+  transition: opacity .18s ease, transform .2s ease;
+  pointer-events: none; /* keep clicks off while hidden */
+  z-index: 1001;
+  will-change: opacity, transform;
+}
+.dropdown.open .dropdown-menu {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+.dropdown-menu a {
+  display: block;
+  padding: .5rem .75rem;
+  color: #e9fff7;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.dropdown-menu a:hover { background: rgba(255,255,255,0.12); }
+
+/* Language badges — robust, outside the inputs */
+.fields .input-with-badge { position: relative; margin-left: 2.4rem; }
+.fields .input-with-badge input { padding-left: 0; }
+.fields .input-with-badge::before {
+  content: '';
+  position: absolute;
+  left: -2.4rem; /* place outside to the left */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #153629;
+  background: #e9fff7;
+  border: 1px solid rgb(31,73,68);
+  border-radius: 4px; /* square */
+  padding: 0; /* override older rule */
+  line-height: 1;
+  pointer-events: none;
+}
+/* Defaults (French first) */
+.fields .input-with-badge:nth-child(1)::before { content: 'FR'; }
+.fields .input-with-badge:nth-child(2)::before { content: 'ES'; }
+/* Swap when Spanish selected (uses :has — supported on iOS 15.4+) */
+.form-with-validation:has(#opt-Spanish:checked) .fields .input-with-badge:nth-child(1)::before { content: 'ES'; }
+.form-with-validation:has(#opt-Spanish:checked) .fields .input-with-badge:nth-child(2)::before { content: 'FR'; }
+
+
+

@@ -27,6 +27,7 @@ urlpatterns = [
     path('posts/', include('posts.urls')),
     path('users/', include('users.urls')),
     path('verbs/', include('verbs.urls')),
+	path('auto_training/', include('auto_training.urls')),
 
 ]
 

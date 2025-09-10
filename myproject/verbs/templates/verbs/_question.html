@@ -1,59 +1,59 @@
 {% if question %}
 <form class="form-with-validation" action="{% url 'verbs:verbstraining' %}" method="post">
-  {% csrf_token %}
-  <input type="hidden" name="verb_id" value="{{ question.verb_id }}">
+    {% csrf_token %}
+    <input type="hidden" name="verb_id" value="{{ question.verb_id }}">
 
-  {% if direction == 'fr_es' %}
-    <div class="field-row">
-      <label>French</label>
-      <p><strong>{{ question.prompt }}</strong></p>
-    </div>
-    <div class="field-row">
-      <label for="answer">Spanish</label>
-      {% if not finished %}
-        <input id="answer" name="answer" type="text" autocomplete="off" placeholder="Type Spanish" required>
-      {% endif %}
-    </div>
-  {% else %}
-    <div class="field-row">
-      <label>Spanish</label>
-      <p><strong>{{ question.prompt }}</strong></p>
-    </div>
-    <div class="field-row">
-      <label for="answer">French</label>
-      {% if not finished %}
-        <input id="answer" name="answer" type="text" autocomplete="off" placeholder="Type French" required>
-      {% endif %}
-    </div>
-  {% endif %}
-
-  <div class="field-row" style="display:flex; gap:.5rem;">
-    {% if not finished %}
-      <button type="submit" name="action" value="answer">Send answer</button>
-      <button type="submit" name="action" value="hint" formnovalidate>Hint</button>
-      <button type="submit" name="action" value="giveup" formnovalidate>Give up</button>
+    {% if direction == 'fr_es' %}
+        <div class="field-row">
+            <label>French</label>
+            <p><strong>{{ question.prompt }}</strong></p>
+        </div>
+        <div class="field-row">
+            <label for="answer">Spanish</label>
+            {% if not finished %}
+                <input id="answer" name="answer" type="text" autocomplete="off" placeholder="Type Spanish" required>
+            {% endif %}
+        </div>
     {% else %}
-      <input type="hidden" name="action" value="start">
-      <button type="submit">Start again</button>
+        <div class="field-row">
+            <label>Spanish</label>
+            <p><strong>{{ question.prompt }}</strong></p>
+        </div>
+        <div class="field-row">
+            <label for="answer">French</label>
+            {% if not finished %}
+                <input id="answer" name="answer" type="text" autocomplete="off" placeholder="Type French" required>
+            {% endif %}
+        </div>
     {% endif %}
-  </div>
 
-  {# Bottom messages #}
-  {% if question.hint %}
-    <p>Hint: {{ question.hint }}</p>
-  {% endif %}
-  {% if question.feedback %}
-    <p>{{ question.feedback }}</p>
-  {% endif %}
-  {% if previous_feedback %}
-    <p>{{ previous_feedback }}</p>
-  {% endif %}
-  {% if finished %}
-    <p>Session over. Great job!</p>
-  {% endif %}
+    <div class="field-row" style="display:flex; gap:.5rem;">
+        {% if not finished %}
+            <button type="submit" name="action" value="answer">Send answer</button>
+            <button type="submit" name="action" value="hint" formnovalidate>Hint</button>
+            <button type="submit" name="action" value="giveup" formnovalidate>Give up</button>
+        {% else %}
+            <input type="hidden" name="action" value="start">
+            <button type="submit">Start again</button>
+        {% endif %}
+    </div>
+
+    {# Bottom messages #}
+    {% if question.hint %}
+        <p>Hint: {{ question.hint }}</p>
+    {% endif %}
+    {% if question.feedback %}
+        <p>{{ question.feedback }}</p>
+    {% endif %}
+    {% if previous_feedback %}
+        <p>{{ previous_feedback }}</p>
+    {% endif %}
+    {% if finished %}
+        <p>Session over. Great job!</p>
+    {% endif %}
 </form>
 {% else %}
-  {% if previous_feedback %}
-    <p>{{ previous_feedback }}</p>
-  {% endif %}
+    {% if previous_feedback %}
+        <p>{{ previous_feedback }}</p>
+    {% endif %}
 {% endif %}

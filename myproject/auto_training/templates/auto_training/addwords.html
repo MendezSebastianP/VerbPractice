@@ -1,0 +1,40 @@
+{% extends 'layout.html' %}
+
+{% block title %}Autonomous Training{% endblock %}
+
+{% block content %}
+	<div class="form-with-validation">
+		<div class="lang-toggle">
+			<h1 class="page-title--elevated">Add New Words</h1>
+			<div class="options-buttom-container">
+				<div class="options-buttom-heading">Lenguage</div>
+				<div class="options-buttom-wrapper">
+					<div class="options-buttom-wrapper">
+						<input class="input" id="opt-French" value="French" name="lenguage_fill" type="radio" checked/>
+						<label class="options-buttom" for="opt-French">French</label>
+
+						<input class="input" id="opt-Spanish" value="Spanish" name="lenguage_fill" type="radio"/>
+						<label class="options-buttom" for="opt-Spanish">Spanish</label>
+						</label>
+					</div>
+				</div>
+			</div>
+
+			<!-- Inputs with CSS badges that react to radio selection -->
+			<div class="field-row fields" style="gap: 1.5rem;">
+				<div class="input-with-badge">
+					<input id="answer" name="answer" type="text" autocomplete="off" placeholder="Type new word" required>
+				</div>
+				<div class="input-with-badge">
+					<input id="answer" name="answer" type="text" autocomplete="off" placeholder="Type its translation" required>
+				</div>
+				
+				<button type="submit" name="action" value="add_custom_word">Save Word</button>
+				<hr class="solid">
+			</div>
+		</div>
+	</div>
+
+	
+
+{% endblock %}

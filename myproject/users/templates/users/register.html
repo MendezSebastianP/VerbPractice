@@ -5,9 +5,9 @@
 {% endblock %}
 
 {% block content %}
-    <form class="form-with-validation" action="/users/register/" method="post">
+    <form class="form-with-validation form-centered" action="/users/register/" method="post">
         {% csrf_token %}
-		<h1>Registration</h1>
+		<h1 class="page-title--elevated">Registration</h1>
         <div class="field-row">
             {{ form.username }}
             {{ form.username.errors }}

@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+
+{% block title %}Autonomous Training{% endblock %}
+
+{% block content %}
+  <div class="form-with-validation">
+    <h1 class="page-title--elevated">Autonomous Training</h1>
+    <div style="display:flex; gap:1rem; flex-wrap:wrap; justify-content:center;">
+		<p> The Autonomous training consist in adding the words that you want to practice, you can give your
+			own translation and options. You can let the application fill the translation if you prefer, or
+			even add new words for you. The words will be added to the queue and will be unclocked when you
+			will have enought right answers.
+		</p>
+		<a class="button-68" href="{% url 'auto_training:autotraining' %}">Start Training</a>
+		<a class="button-68" href="{% url 'auto_training:addwords' %}">Add Words</a>
+    </div>
+  </div>
+{% endblock %}

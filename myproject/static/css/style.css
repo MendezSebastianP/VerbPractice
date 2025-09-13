@@ -285,7 +285,7 @@ nav a:hover {
 .form-with-validation .field-row:first-of-type p { font-size: 1.15rem; margin: 0; }
 .form-with-validation .field-row:first-of-type p strong { font-size: 1.3rem; }
 
-.lang-toggle .field-row{--src: "ES"; --dst: "FR";}
+
 
 tbody tr:nth-child(odd) {
   background-color: #fff;
@@ -327,7 +327,7 @@ tbody tr:nth-child(even) {
 .options-buttom {
   flex-grow: 1;
   text-align: center;
-  padding: 8px 30px;
+  padding: 8px 28px;
   font-size: 14px;
   background: var(--tab-text-color);
   border: 1px solid var(--primary-color);
@@ -335,8 +335,6 @@ tbody tr:nth-child(even) {
   font-weight: 500;
   cursor: pointer;
   transition: 0.2s ease-in-out;
-  
-
 }
 .options-buttom-wrapper > label.options-buttom { border-radius: 0; }
 
@@ -505,36 +503,6 @@ html { -webkit-text-size-adjust: 100%; }
 }
 .dropdown-menu a:hover { background: rgba(255,255,255,0.12); }
 
-/* Language badges — robust, outside the inputs */
-.fields .input-with-badge { position: relative; margin-left: 2.4rem; }
-.fields .input-with-badge input { padding-left: 0; }
-.fields .input-with-badge::before {
-  content: '';
-  position: absolute;
-  left: -2.4rem; /* place outside to the left */
-  top: 50%;
-  transform: translateY(-50%);
-  width: 2rem;
-  height: 2rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #153629;
-  background: #e9fff7;
-  border: 1px solid rgb(31,73,68);
-  border-radius: 4px; /* square */
-  padding: 0; /* override older rule */
-  line-height: 1;
-  pointer-events: none;
-}
-/* Defaults (French first) */
-.fields .input-with-badge:nth-child(1)::before { content: 'FR'; }
-.fields .input-with-badge:nth-child(2)::before { content: 'ES'; }
-/* Swap when Spanish selected (uses :has — supported on iOS 15.4+) */
-.form-with-validation:has(#opt-Spanish:checked) .fields .input-with-badge:nth-child(1)::before { content: 'ES'; }
-.form-with-validation:has(#opt-Spanish:checked) .fields .input-with-badge:nth-child(2)::before { content: 'FR'; }
 
 
 

@@ -5,6 +5,8 @@ from django.db import models
 class Word(models.Model):
     word = models.CharField(max_length=128, unique=True)
     translation = models.CharField(max_length=128)
+    word_sy = models.CharField(max_length=128)
+    translation_sy = models.CharField(max_length=128)
 
     def __str__(self):
         return self.word
@@ -23,4 +25,3 @@ class UserWord(models.Model):
             models.Index(fields=['user', 'unlocked']),
             models.Index(fields=['user', 'word']),
         ]
-

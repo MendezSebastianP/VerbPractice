@@ -24,7 +24,7 @@
                 <button class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">Train</button>
                 <div class="dropdown-menu" role="menu">
                     <a role="menuitem" href="{% url 'verbs:verbstraining' %}">Verbs</a>
-                    <a role="menuitem" href="{% url 'auto_training:home' %}">Words</a>
+                    <a role="menuitem" href="{% url 'auto_training:autotraining' %}">Words</a>
                 </div>
             </div>
             {% endif %}
@@ -46,6 +46,5 @@
         {% block content %}
         {% endblock %}
     </div>
-    {% htmx_script %}
 </body>
 </html>

@@ -15,38 +15,45 @@ function applyAuthPlaceholders(root) {
 
 function initDropdowns(root){
   const scope = root || document;
-  const dropdown = scope.querySelector('.dropdown');
-  if(!dropdown) return;
-  const toggle = dropdown.querySelector('.dropdown-toggle');
-  const menu = dropdown.querySelector('.dropdown-menu');
-  if(!toggle || !menu) return;
+  const dropdowns = scope.querySelectorAll('.dropdown');
+  
+  dropdowns.forEach(dropdown => {
+    const toggle = dropdown.querySelector('.dropdown-toggle');
+    const menu = dropdown.querySelector('.dropdown-menu');
+    if(!toggle || !menu) return;
 
-  // Ensure closed initially
-  dropdown.classList.remove('open');
-  toggle.setAttribute('aria-expanded','false');
+    // Remove any existing event listeners
+    const newToggle = toggle.cloneNode(true);
+    toggle.parentNode.replaceChild(newToggle, toggle);
 
-  function close(){
+    // Ensure closed initially
     dropdown.classList.remove('open');
-    toggle.setAttribute('aria-expanded','false');
-  }
-  function open(){
-    dropdown.classList.add('open');
-    toggle.setAttribute('aria-expanded','true');
-  }
-  function toggleMenu(e){
-    e.preventDefault();
-    dropdown.classList.contains('open') ? close() : open();
-  }
+    newToggle.setAttribute('aria-expanded','false');
 
-  toggle.addEventListener('click', toggleMenu);
+    function close(){
+      dropdown.classList.remove('open');
+      newToggle.setAttribute('aria-expanded','false');
+    }
+    function open(){
+      dropdown.classList.add('open');
+      newToggle.setAttribute('aria-expanded','true');
+    }
+    function toggleMenu(e){
+      e.preventDefault();
+      e.stopPropagation();
+      dropdown.classList.contains('open') ? close() : open();
+    }
 
-  // Close on outside click
-  document.addEventListener('click', (e)=>{
-    if(!dropdown.contains(e.target)) close();
-  });
-  // Close on Escape
-  document.addEventListener('keydown', (e)=>{
-    if(e.key === 'Escape') close();
+    newToggle.addEventListener('click', toggleMenu);
+
+    // Close on outside click
+    document.addEventListener('click', (e)=>{
+      if(!dropdown.contains(e.target)) close();
+    });
+    // Close on Escape
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape') close();
+    });
   });
 }
 

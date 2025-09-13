@@ -3,23 +3,23 @@
 {% block title %}Auto Training{% endblock %}
 
 {% block content %}
-  <h1>Auto Training</h1>
+	<h1>Auto Training</h1>
 
-  {% if question %}
-    {% include 'auto_training/_question.html' %}
-  {% else %}
-    {% if finished %}
-      <div class="session-finished">
-        {% if previous_feedback %}<p>{{ previous_feedback }}</p>{% endif %}
-        <p>Session over. Great job!</p>
-        <form class="form-with-validation" action="{% url 'auto_training:autotraining' %}" method="post">
-          {% csrf_token %}
-          <input type="hidden" name="action" value="start">
-          <button type="submit">Start again</button>
-        </form>
-      </div>
+	{% if question %}
+	{% include 'auto_training/_question.html' %}
+	{% else %}
+	{% if finished %}
+		<div class="session-finished">
+		{% if previous_feedback %}<p>{{ previous_feedback }}</p>{% endif %}
+		<p>Session over. Great job!</p>
+		<form class="form-with-validation" action="{% url 'auto_training:autotraining' %}" method="post">
+			{% csrf_token %}
+			<input type="hidden" name="action" value="start">
+			<button type="submit">Start again</button>
+		</form>
+		</div>
     {% else %}
-      <form class="form-with-validation" action="{% url 'auto_training:autotraining' %}" method="post">
+	<form class="form-with-validation" action="{% url 'auto_training:autotraining' %}" method="post">
 		<div class="options-buttom-container">
 			<div class="options-buttom-heading">Session length</div>
 			<div class="options-buttom-wrapper">
@@ -57,11 +57,11 @@
 				</div>
 			</div>
 		</div>
-      {% csrf_token %}
-	  <hr class="solid"> 
-      <input type="hidden" name="action" value="start">
-      <button type="submit">Start session</button>
-    </form>
+	{% csrf_token %}
+		<hr class="solid"> 
+		<input type="hidden" name="action" value="start">
+		<button type="submit">Start session</button>
+		</form>
     {% endif %}
-  {% endif %}
+	{% endif %}
 {% endblock %}

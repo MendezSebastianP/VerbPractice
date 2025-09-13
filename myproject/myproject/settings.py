@@ -38,11 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "django_htmx",
     'posts',
     'users',
-	'verbs',
-	'auto_training',
+    'verbs',
+    'auto_training',
+    'django_htmx',
 ]
 
 MIDDLEWARE = [

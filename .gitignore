@@ -1,1 +1,25 @@
+# Virtual Environment
 .venv/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django
+*.log
+# db.sqlite3
+# db.sqlite3-journal
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment variables
+.env
+.env.local
+
+# Media files (if you don't want to track uploaded files)
+# media/

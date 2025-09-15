@@ -200,7 +200,3 @@ def verbs_training(request):
             'previous_feedback': None,
         }
     return render(request, 'verbs/verbs_training.html', context)
-
-# @login_required(login_url="/users/login/")
-# def post_new(request):
-#     return render(request, 'posts/post_new.html')

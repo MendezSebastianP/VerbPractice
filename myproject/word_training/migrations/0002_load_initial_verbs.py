@@ -4,16 +4,16 @@ import os
 
 
 def load_words(apps, schema_editor):
-    Word = apps.get_model('auto_training', 'Word')
+    Word = apps.get_model('word_training', 'Word')
     if Word.objects.exists():
         return
 
     # Compute path to the CSV: <repo_root>/verbs/data/es_fr_top1000.csv
-    migrations_dir = os.path.dirname(__file__)              # .../myproject/auto_training/migrations
-    auto_training_dir = os.path.dirname(migrations_dir)     # .../myproject/auto_training
-    myproject_dir = os.path.dirname(auto_training_dir)      # .../myproject
+    migrations_dir = os.path.dirname(__file__)              # .../myproject/word_training/migrations
+    word_training_dir = os.path.dirname(migrations_dir)     # .../myproject/word_training
+    myproject_dir = os.path.dirname(word_training_dir)      # .../myproject
     repo_root = os.path.dirname(myproject_dir)              # .../<repo_root>
-    csv_path = os.path.join(repo_root, 'verbs', 'data', 'es_fr_top1000.csv')
+    csv_path = os.path.join(repo_root, 'word_training', 'data', 'es_fr_top1000.csv')
 
     if not os.path.exists(csv_path):
         print(f"CSV file not found at: {csv_path}")
@@ -48,7 +48,7 @@ def load_words(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('auto_training', '0001_initial'),
+        ('word_training', '0001_initial'),
     ]
 
     operations = [

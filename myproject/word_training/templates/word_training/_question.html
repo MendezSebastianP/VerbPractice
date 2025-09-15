@@ -1,5 +1,5 @@
 {% if question %}
-<form class="form-with-validation" action="{% url 'auto_training:autotraining' %}" method="post">
+<form class="form-with-validation" action="{% url 'word_training:word_training' %}" method="post">
   {% csrf_token %}
   <input type="hidden" name="term_id" value="{{ question.term_id }}">
 

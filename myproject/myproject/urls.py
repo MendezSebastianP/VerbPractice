@@ -24,10 +24,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.homepage),
     path('about/', views.about),
-    path('posts/', include('posts.urls')),
     path('users/', include('users.urls')),
     path('verbs/', include('verbs.urls')),
-	path('auto_training/', include('auto_training.urls')),
+	path('word_training/', include('word_training.urls')),
 
 ]
 

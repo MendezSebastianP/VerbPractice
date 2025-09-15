@@ -1,25 +1,24 @@
 {% extends 'layout.html' %}
 
-{% block title %}Auto Training{% endblock %}
+{% block title %}Word Training{% endblock %}
 
 {% block content %}
-	<h1>Auto Training</h1>
-
 	{% if question %}
-	{% include 'auto_training/_question.html' %}
+	{% include 'word_training/_question.html' %}
 	{% else %}
 	{% if finished %}
 		<div class="session-finished">
 		{% if previous_feedback %}<p>{{ previous_feedback }}</p>{% endif %}
 		<p>Session over. Great job!</p>
-		<form class="form-with-validation" action="{% url 'auto_training:autotraining' %}" method="post">
+		<form class="form-with-validation" action="{% url 'word_training:word_training' %}" method="post">
 			{% csrf_token %}
 			<input type="hidden" name="action" value="start">
 			<button type="submit">Start again</button>
 		</form>
 		</div>
     {% else %}
-	<form class="form-with-validation" action="{% url 'auto_training:autotraining' %}" method="post">
+	<form class="form-with-validation" action="{% url 'word_training:word_training' %}" method="post">
+		<h1 class="page-title--elevated">Word Training</h1>
 		<div class="options-buttom-container">
 			<div class="options-buttom-heading">Session length</div>
 			<div class="options-buttom-wrapper">

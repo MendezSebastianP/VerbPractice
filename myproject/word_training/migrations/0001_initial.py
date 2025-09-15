@@ -32,10 +32,10 @@ class Migration(migrations.Migration):
                 ('probability', models.FloatField(default=1000)),
                 ('times_correct', models.PositiveIntegerField(default=0)),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('word', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='auto_training.word')),
+                ('word', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='word_training.word')),
             ],
             options={
-                'indexes': [models.Index(fields=['user', 'unlocked'], name='auto_traini_user_id_0f90ed_idx'), models.Index(fields=['user', 'word'], name='auto_traini_user_id_f2933c_idx')],
+                'indexes': [models.Index(fields=['user', 'unlocked'], name='word_traini_user_id_0f90ed_idx'), models.Index(fields=['user', 'word'], name='word_traini_user_id_f2933c_idx')],
                 'unique_together': {('user', 'word')},
             },
         ),

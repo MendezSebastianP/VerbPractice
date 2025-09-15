@@ -8,6 +8,13 @@ from unidecode import unidecode
 
 Direction = Literal['fr_es', 'es_fr']
 
+def init_user_words(user, n=10):
+    with transaction.atomic():
+        base = list(Word.objects.order_by('id')[:n])
+        UserWord.objects.bulk_create(
+            [UserWord(user=user, word=v, unlocked=True) for v in base],
+            ignore_conflicts=True,
+        )
 
 def preselect_words(user, length: int) -> List[int]:
     qs = (

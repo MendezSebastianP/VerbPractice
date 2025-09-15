@@ -4,19 +4,19 @@ from django.contrib.auth.decorators import login_required
 from .services import preselect_words, TrainingEngine
 import uuid
 
-SESSION_KEY = 'auto_training_session'
-LAST_PREF_LENGTH = 'auto_training_last_length'
-LAST_PREF_DIRECTION = 'auto_training_last_direction'
+SESSION_KEY = 'word_training_session'
+LAST_PREF_LENGTH = 'word_training_last_length'
+LAST_PREF_DIRECTION = 'word_training_last_direction'
 
 @login_required(login_url="/users/login/")
-def auto_home(request):
-    return render(request, 'auto_training/home.html')
+def word_home(request):
+    return render(request, 'word_training/home.html')
 
 def addwords(request):
-    return render(request, 'auto_training/addwords.html')
+    return render(request, 'word_training/addwords.html')
 
 @login_required(login_url="/users/login/")
-def auto_training(request):
+def word_training(request):
     state = request.session.get(SESSION_KEY, {
         'id': None,
         'remaining': [],
@@ -62,7 +62,7 @@ def auto_training(request):
         request.session[LAST_PREF_DIRECTION] = direction
         if not remaining:
             fill_choice = 'French' if direction == 'es_fr' else 'Spanish'
-            return render(request, 'auto_training/auto_training.html', {
+            return render(request, 'word_training/word_training.html', {
                 'question': None,
                 'finished': True,
                 'session_length': length,
@@ -103,7 +103,7 @@ def auto_training(request):
                     request.session[LAST_PREF_DIRECTION] = direction
                     request.session.pop(SESSION_KEY, None)
                     fill_choice = 'French' if direction == 'es_fr' else 'Spanish'
-                    return render(request, 'auto_training/auto_training.html', {
+                    return render(request, 'word_training/word_training.html', {
                         'question': {'word_id': word_id, 'prompt': prompt},
                         'session_length': length,
                         'finished': True,
@@ -130,7 +130,7 @@ def auto_training(request):
                         request.session[LAST_PREF_DIRECTION] = direction
                         request.session.pop(SESSION_KEY, None)
                         fill_choice = 'French' if direction == 'es_fr' else 'Spanish'
-                        return render(request, 'auto_training/auto_training.html', {
+                        return render(request, 'word_training/word_training.html', {
                             'question': {'word_id': word_id, 'prompt': prompt},
                             'session_length': length,
                             'finished': True,
@@ -145,7 +145,7 @@ def auto_training(request):
                     if state['hint']:
                         q['hint'] = engine.hint(correct_field, state['hint'])
                     request.session[SESSION_KEY] = state
-                    return render(request, 'auto_training/auto_training.html', {
+                    return render(request, 'word_training/word_training.html', {
                         'question': q,
                         'session_length': state.get('length', 10),
                         'finished': False,
@@ -161,7 +161,7 @@ def auto_training(request):
                 question['hint'] = engine.hint(correct_field, state['hint'])
         else:
             question = None
-        return render(request, 'auto_training/auto_training.html', {
+        return render(request, 'word_training/word_training.html', {
             'question': question,
             'session_length': state.get('length', 10),
             'finished': False,
@@ -198,8 +198,5 @@ def auto_training(request):
             'last_fill': last_fill,
             'previous_feedback': None,
         }
-    return render(request, 'auto_training/auto_training.html', context)
+    return render(request, 'word_training/word_training.html', context)
 
-# @login_required(login_url="/users/login/")
-# def post_new(request):
-#     return render(request, 'posts/post_new.html')

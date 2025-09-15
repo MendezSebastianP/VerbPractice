@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class AutoTrainingConfig(AppConfig):
+class WordTrainingConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'auto_training'
+    name = 'word_training'

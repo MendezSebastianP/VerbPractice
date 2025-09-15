@@ -18,5 +18,8 @@ python manage.py createsuperuser # set an admin account
 admin1
 Passw1234
 
+# migrate (fill database)
+python manage.py migrate 
+
 # create users
 python manage.py setup_test_users

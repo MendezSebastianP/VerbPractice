@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from verbs.services import init_user_verbs
+from word_training.services import init_user_words
 
 
 class Command(BaseCommand):
@@ -50,6 +51,7 @@ class Command(BaseCommand):
             
             # Initialize verbs for this user
             init_user_verbs(user, 10)
+            init_user_words(user, 10)
             
             created_count += 1
             user_type = 'superuser' if user_data['is_superuser'] else 'user'

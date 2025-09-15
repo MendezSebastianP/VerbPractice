@@ -13,7 +13,7 @@ def load_words(apps, schema_editor):
     word_training_dir = os.path.dirname(migrations_dir)     # .../myproject/word_training
     myproject_dir = os.path.dirname(word_training_dir)      # .../myproject
     repo_root = os.path.dirname(myproject_dir)              # .../<repo_root>
-    csv_path = os.path.join(repo_root, 'word_training', 'data', 'es_fr_top1000.csv')
+    csv_path = os.path.join(repo_root,'myproject', 'word_training', 'data', 'es_fr_top1000.csv')
 
     if not os.path.exists(csv_path):
         print(f"CSV file not found at: {csv_path}")

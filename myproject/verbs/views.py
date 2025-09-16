@@ -104,6 +104,7 @@ def verbs_training(request):
                     request.session.pop(SESSION_KEY, None)
                     fill_choice = 'French' if direction == 'es_fr' else 'Spanish'
                     # show last question container (prompt) with finished flag
+                    engine.test_if_new_verbs(750, 3)
                     return render(request, 'verbs/verbs_training.html', {
                         'question': {'verb_id': verb_id, 'prompt': prompt},
                         'session_length': length,
@@ -131,6 +132,7 @@ def verbs_training(request):
                         request.session[LAST_PREF_DIRECTION] = direction
                         request.session.pop(SESSION_KEY, None)
                         fill_choice = 'French' if direction == 'es_fr' else 'Spanish'
+                        engine.test_if_new_verbs(750, 3)
                         return render(request, 'verbs/verbs_training.html', {
                             'question': {'verb_id': verb_id, 'prompt': prompt},
                             'session_length': length,
@@ -146,6 +148,7 @@ def verbs_training(request):
                     if state['hint']:
                         q['hint'] = engine.hint(correct_field, state['hint'])
                     request.session[SESSION_KEY] = state
+                    engine.test_if_new_verbs(750, 3)
                     return render(request, 'verbs/verbs_training.html', {
                         'question': q,
                         'session_length': state.get('length', 10),
@@ -174,6 +177,7 @@ def verbs_training(request):
     if state.get('current'):
         direction = state.get('direction', 'fr_es')
         engine = TrainingEngine(request.user, direction)
+        engine.test_if_new_verbs(750, 3)
         verb = Verb.objects.get(pk=state['current'])
         prompt, correct_field = engine.format_prompt_answer(verb)
         question = {'verb_id': state['current'], 'prompt': prompt}

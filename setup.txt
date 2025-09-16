@@ -5,17 +5,8 @@ source .venv/bin/activate
 # requeriments
 pip install -r requirements.txt
 
-# new app / migration
-python manage.py makemigrations [appname]
 
-python manage.py sqlmigrate [appname] [migration_number] # just to check the changes
-    to know the exact number, do "python manage.py showmigrations polls" or check in the migration folder
-python manage.py migrate
-
-# admin
-python manage.py createsuperuser # set an admin account
-
-admin1
+# password
 Passw1234
 
 # migrate (fill database)

@@ -87,9 +87,9 @@ def word_training(request):
         elif action in ('answer', 'giveup') and state.get('current'):
             word_id = state['current']
             word = Word.objects.get(pk=word_id)
-            prompt, correct_field = engine.format_prompt_answer(word)
+            prompt, correct_field, correct_synonyms_field = engine.format_prompt_answer(word)
             if action == 'giveup':
-                engine.update_on_result(word_id, False)
+                engine.update_on_result(word_id, 1.3)
                 previous_feedback = f"The answer is {prompt} : {correct_field.split(',')[0].strip()}"
                 state['asked'] += 1
                 state['hint'] = 0
@@ -112,11 +112,12 @@ def word_training(request):
                         'last_length': length,
                         'last_fill': fill_choice,
                     })
+                engine.test_if_new_words(200, 3)
             elif action == 'answer':
                 answer = (request.POST.get('answer') or '').strip()
-                is_ok = engine.is_correct(correct_field, answer)
-                if is_ok:
-                    engine.update_on_result(word_id, True)
+                multiplier = engine.is_correct(correct_field, correct_synonyms_field, answer)
+                engine.update_on_result(word_id, multiplier)
+                if multiplier < 1:
                     previous_feedback = 'Correct!'
                     state['asked'] += 1
                     state['hint'] = 0
@@ -130,6 +131,7 @@ def word_training(request):
                         request.session[LAST_PREF_DIRECTION] = direction
                         request.session.pop(SESSION_KEY, None)
                         fill_choice = 'French' if direction == 'es_fr' else 'Spanish'
+                        engine.test_if_new_words(200, 3)
                         return render(request, 'word_training/word_training.html', {
                             'question': {'word_id': word_id, 'prompt': prompt},
                             'session_length': length,
@@ -140,7 +142,6 @@ def word_training(request):
                             'last_fill': fill_choice,
                         })
                 else:
-                    engine.update_on_result(word_id, False)
                     q = {'word_id': word_id, 'prompt': prompt, 'feedback': f"Wrong. The answer is {correct_field.split(',')[0].strip()}"}
                     if state['hint']:
                         q['hint'] = engine.hint(correct_field, state['hint'])
@@ -155,7 +156,7 @@ def word_training(request):
         # fall-through render after hint / advance
         if state.get('current'):
             word = Word.objects.get(pk=state['current'])
-            prompt, correct_field = engine.format_prompt_answer(word)
+            prompt, correct_field, _ = engine.format_prompt_answer(word)
             question = {'word_id': state['current'], 'prompt': prompt}
             if state['hint']:
                 question['hint'] = engine.hint(correct_field, state['hint'])
@@ -174,7 +175,7 @@ def word_training(request):
         direction = state.get('direction', 'fr_es')
         engine = TrainingEngine(request.user, direction)
         word = Word.objects.get(pk=state['current'])
-        prompt, correct_field = engine.format_prompt_answer(word)
+        prompt, correct_field, _ = engine.format_prompt_answer(word)
         question = {'word_id': state['current'], 'prompt': prompt}
         if state['hint']:
             question['hint'] = engine.hint(correct_field, state['hint'])

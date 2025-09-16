@@ -89,8 +89,8 @@ class TrainingEngine:
             )
             # floor
             uv = UserVerb.objects.get(user=self.user, verb_id=verb_id)
-            if uv.probability < 1:
-                uv.probability = 1
+            if uv.probability < 20:
+                uv.probability = 20
                 uv.save(update_fields=['probability'])
         else:
             UserVerb.objects.filter(user=self.user, verb_id=verb_id).update(
@@ -99,8 +99,12 @@ class TrainingEngine:
             )
 
     def test_if_new_verbs(self, points_next_level: float, new_verbs_next_level: int):
-        data = UserVerb.objects.filter(user=self.user).aggregate(avg_prob=Avg('probability'))
-        avg_prob = data['avg_prob']
+        top_verbs = UserVerb.objects.filter(user=self.user).order_by('-probability')[:5]
+        if not top_verbs:
+            avg_prob = None
+        else:
+            avg_prob = sum(v.probability for v in top_verbs) / len(top_verbs)
+        print(avg_prob)
         if avg_prob is None:
             return
         if avg_prob > points_next_level:

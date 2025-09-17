@@ -14,3 +14,9 @@ python manage.py migrate
 
 # create users
 python manage.py setup_test_users
+
+#(testing) add your radis server port. Already setup in 42, probably we need to type this:
+docker run --rm -p 6379:6379 redis:7
+
+# add your environement keys
+echo "OPENAI_API_KEY='sk-...'" > myproject/.env

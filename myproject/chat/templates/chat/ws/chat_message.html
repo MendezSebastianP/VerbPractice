@@ -1,0 +1,8 @@
+<div id="message-list" hx-swap-oob="beforeend">
+    <div 
+        class="chat-message{% if is_user %} is-user{% elif is_bot %} is-bot{% elif is_system %} is-system{% endif %}"
+        {% if message_id %}id="{{ message_id }}"{% endif %}
+    >
+        {{ message_text|safe }}
+    </div>
+</div>

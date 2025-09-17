@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Chat
+{% endblock %}
+
+{% block content %}
+<div class="center-page">
+    <div id="chat-wrapper" hx-ext="ws" ws-connect="/ws/chatgpt-demo/">
+        <div id="message-list" class="chat-pane">
+            <div class="chat-message is-system">
+                Hello, what can I help you with today?
+            </div>
+        </div>
+        <form id="chat-input-bar" ws-send>
+            <input name="message" type="text" placeholder="Type your message...">
+            <button type="submit" class="button-68">Send</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

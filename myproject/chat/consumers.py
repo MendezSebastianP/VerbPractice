@@ -62,18 +62,27 @@ class ChatConsumer(AsyncWebsocketConsumer):
         # stream response from openai
         client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
         openai_response = await client.chat.completions.create(
-            model="gpt-5-nano",
+            model="gpt-3.5-turbo",
             messages=self.messages,
             stream=True,
+            stream_options={"include_usage": True},
         )
 
         chunks = []
+        usage = None
         async for chunk in openai_response:
-            message_chunk = (chunk.choices[0].delta.content or "")
-            formatted_chunk = message_chunk.replace("\n", "<br>")
-            # stream the chunk to the placeholder
-            await self.send(text_data=f'<div id="{message_id}" hx-swap-oob="beforeend">{formatted_chunk}</div>')
-            chunks.append(message_chunk)
+            if chunk.usage:
+                usage = chunk.usage
+            
+            if chunk.choices and chunk.choices[0].delta.content:
+                message_chunk = (chunk.choices[0].delta.content or "")
+                formatted_chunk = message_chunk.replace("\n", "<br>")
+                # stream the chunk to the placeholder
+                await self.send(text_data=f'<div id="{message_id}" hx-swap-oob="beforeend">{formatted_chunk}</div>')
+                chunks.append(message_chunk)
+
+        if usage:
+            print(f"Total tokens used: {usage.total_tokens}")
 
         # add the full bot response to the chat history
         self.messages.append({"role": "assistant", "content": "".join(chunks)})

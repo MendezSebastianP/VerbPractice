@@ -12,8 +12,8 @@
                 Hello, what can I help you with today?
             </div>
         </div>
-        <form id="chat-input-bar" ws-send>
-            <input name="message" type="text" placeholder="Type your message...">
+        <form id="chat-input-bar" ws-send hx-on::ws-after-send="this.reset()">
+            <textarea name="message" rows="1" placeholder="Type your message..." autocomplete="off" autofocus></textarea>
             <button type="submit" class="button-68">Send</button>
         </form>
     </div>

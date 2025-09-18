@@ -1,5 +1,92 @@
 console.log('This is the  console')
 
+// Chat helpers (single_chat): Shift+Enter inserts newline and auto-scroll message list
+function pasteIntoInput(el, text) {
+  if (!el) return;
+  const start = el.selectionStart ?? el.value.length;
+  const end = el.selectionEnd ?? el.value.length;
+  const before = el.value.slice(0, start);
+  const after = el.value.slice(end);
+  el.value = before + text + after;
+  const pos = start + text.length;
+  if (typeof el.setSelectionRange === 'function') {
+    el.setSelectionRange(pos, pos);
+  }
+  el.dispatchEvent(new Event('input', { bubbles: true }));
+}
+
+function handleEnter(evt) {
+  if (evt.key === 'Enter' || evt.keyCode === 13) {
+    const field = evt.target;
+    const form = field.closest('form');
+    if (evt.shiftKey) {
+      // Shift+Enter -> newline, do not submit
+      evt.preventDefault();
+      pasteIntoInput(field, '\n');
+    } else {
+      // Enter -> submit form (htmx will send over WS)
+      evt.preventDefault();
+      if (form && typeof form.requestSubmit === 'function') {
+        form.requestSubmit();
+      } else if (form) {
+        form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      }
+    }
+  }
+}
+
+function autoSizeTextarea(el){
+  if (!el || el.tagName !== 'TEXTAREA') return;
+  const styles = window.getComputedStyle(el);
+  const lineHeight = parseFloat(styles.lineHeight) || 20; // px
+  const paddingTop = parseFloat(styles.paddingTop) || 0;
+  const paddingBottom = parseFloat(styles.paddingBottom) || 0;
+  const minLines = 1;
+  const maxLines = 3;
+  const minHeight = Math.round(lineHeight * minLines + paddingTop + paddingBottom);
+  const maxHeight = Math.round(lineHeight * maxLines + paddingTop + paddingBottom);
+
+  // Measure target height using auto to get true content height
+  const prevHeight = el.offsetHeight;              // current rendered px height
+  const prevStyleHeight = el.style.height;         // remember inline value
+  el.style.height = 'auto';                        // let it expand to measure
+  const contentHeight = el.scrollHeight;           // includes padding
+  const targetHeight = Math.max(minHeight, Math.min(contentHeight, maxHeight));
+
+  // Revert to previous height to create a pixel -> pixel transition
+  el.style.height = prevHeight + 'px';
+  // Force reflow so the browser acknowledges the starting height
+  void el.offsetHeight;
+  // Now set to the target height -> triggers transition
+  el.style.height = targetHeight + 'px';
+
+  // Toggle overflow only when exceeding max
+  el.style.overflowY = contentHeight > maxHeight ? 'auto' : 'hidden';
+}
+
+function initChatInput(root) {
+  const scope = root || document;
+  const form = scope.querySelector('#chat-input-bar');
+  if (!form) return;
+  const field = form.querySelector('textarea[name="message"], input[name="message"]');
+  if (!field) return;
+  if (field.dataset.enterHandlerAttached === 'true') return;
+  field.addEventListener('keydown', handleEnter);
+  // Auto-size textarea to content (1..3 lines with animation)
+  if (field.tagName === 'TEXTAREA') {
+    field.addEventListener('input', () => autoSizeTextarea(field));
+    // initialize size once after render
+    setTimeout(() => autoSizeTextarea(field), 0);
+  }
+  field.dataset.enterHandlerAttached = 'true';
+}
+
+function scrollMessagesToBottom() {
+  const messageList = document.getElementById('message-list');
+  if (!messageList) return;
+  messageList.scrollTop = messageList.scrollHeight;
+}
+
 // Helper: set placeholders on auth forms (register/login)
 function applyAuthPlaceholders(root) {
 	const scope = root || document;
@@ -61,6 +148,8 @@ function initDropdowns(root){
 window.addEventListener('DOMContentLoaded', () => {
 	applyAuthPlaceholders(document);
   initDropdowns(document);
+  initChatInput(document);
+  scrollMessagesToBottom();
 });
 
 // Handle HTMX navigations (hx-boost) where content is swapped dynamically
@@ -68,9 +157,16 @@ window.addEventListener('DOMContentLoaded', () => {
 document.body.addEventListener('htmx:load', (evt) => {
 	applyAuthPlaceholders(evt.target);
   initDropdowns(evt.target);
+  initChatInput(evt.target);
 });
 // Fallback: after any swap completes
 document.body.addEventListener('htmx:afterSwap', (evt) => {
 	applyAuthPlaceholders(evt.target);
   initDropdowns(evt.target);
+  initChatInput(evt.target);
+});
+
+// Scroll to bottom after each WebSocket message (from htmx ws extension)
+document.body.addEventListener('htmx:wsAfterMessage', () => {
+  scrollMessagesToBottom();
 });

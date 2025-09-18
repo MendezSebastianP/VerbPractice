@@ -510,7 +510,6 @@ html { -webkit-text-size-adjust: 100%; }
   width: clamp(400px, 90vw, 800px);
   height: 70vh;
   max-height: 800px;
-  background: rgba(255, 255, 255, 0.50);
   border: 1px solid rgb(255, 255, 255);
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.15);
@@ -539,17 +538,16 @@ html { -webkit-text-size-adjust: 100%; }
 .chat-message.is-system,
 .chat-message.is-bot {
   align-self: center;
-  background: #e0f2f1;
+  background: #edfcfb;
   color: #004d40;
   text-align: left;
-  font-style: italic;
   font-size: 0.9rem;
   align-self: flex-start;
 }
 
 .chat-message.is-user {
   align-self: flex-end;
-  background-color: #c8e6c9; /* A neutral grey */
+  background-color: #daecda; /* A neutral grey */
   color: #1f2937;
 }
 
@@ -568,6 +566,23 @@ html { -webkit-text-size-adjust: 100%; }
   font-size: 1rem;
   margin-right: 1rem;
 }
+
+#chat-input-bar textarea {
+  flex-grow: 1;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  margin-right: 1rem;
+  resize: none;              /* prevent manual resize */
+  overflow: hidden;          /* hidden until it exceeds 3 lines (JS toggles) */
+  min-height: 2.5rem;        /* approx one line */
+  line-height: 1.25rem;      /* used by JS to compute row heights */
+  transition: height 220ms ease-in-out; /* smooth grow/shrink */
+}
+
+/* Ensure the send button aligns nicely next to growing textarea */
+#chat-input-bar { align-items: flex-end; }
 
 #chat-input-bar button {
   margin-top: 0; /* Override default margin for .button-68 */

@@ -143,6 +143,13 @@ nav a:hover {
     border-bottom: none;
 }
 
+hr.solid {
+  border-top: 3px solid #5db685;
+  border-radius: 2px;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
 .banner {
     display: block;
     width: 100%;

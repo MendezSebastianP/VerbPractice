@@ -12,13 +12,23 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.messages = [
             {"role": "system", "content": "You are a helpful assistant."}
         ]
+        
         await self.accept()
 
     async def disconnect(self, close_code):
         pass
 
+    async def _set_mode(self, mode: str):
+        mode = (mode or "chat").lower()
+        if mode not in {"chat", "verb", "word"}:
+            await self._send_system(f"Unknown mode: {mode}")
+            return
+        self.mode = mode
+        await self._send_system(f"Mode set to: {mode}")
+
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
+        mode = text_data_json.get("mode")
         message_text = text_data_json["message"]
 
         # immediately display user's message
@@ -31,7 +41,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         )
         await self.send(text_data=user_message_html)
 
-        # Handle server-side commands
+        ###################### Commands handler ######################
+
         if message_text.lower().strip() == "ping":
             pong_message_html = render_to_string(
                 "chat/ws/chat_message.html",
@@ -41,8 +52,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 },
             )
             await self.send(text_data=pong_message_html)
-            return  # Stop processing, don't call OpenAI
+            return 
 
+        # if message_text.lower().strip().split(' ')[0] == "/mode" & len(message_text.lower().strip().split(' ')) == 2:
+        #     print(f"changing mode to {message_text.lower().strip().split(' ')[1] or "verb"}") # debug
+        #     await self._set_mode(message_text.lower().strip().split(' ')[1] or "verb")
+        #     return 
+        
+
+        ##############################################################
         # add user message to chat history
         self.messages.append(
             {

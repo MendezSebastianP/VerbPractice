@@ -1,0 +1,90 @@
+<div class="verb-practice" style="display:flex; flex-direction:column; gap:1rem; position:relative;">
+
+	<!-- Main content with form styling like original verbs app -->
+	<div class="form-with-validation">
+
+	<!-- Question prompt in original style -->
+	<div class="field-row">
+		<label style="font-weight:bold;">{{ label }}</label>
+		<p><strong>{{ prompt }}</strong></p>
+	</div>
+
+	{% comment %} <!-- Answer input field in original style -->
+	<div class="field-row">
+		<label for="verb-answer" style="font-weight:bold;">
+		{% if label == "Translate to French" %}French{% else %}Spanish{% endif %}
+		</label>
+		<input id="verb-answer" name="answer" type="text" autocomplete="off" 
+				placeholder="{% if label == 'Translate to French' %}Type French{% else %}Type Spanish{% endif %}" 
+				autofocus>
+	</div> {% endcomment %}
+
+	<!-- Action buttons above text field in original style -->
+	<div class="field-row" style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+		<button onclick="submitVerbAnswer()" type="button">
+		Send answer
+		</button>
+		<button type="button" onclick="sendVerbCommand('verb_hint')">Hint</button>
+		<button type="button" onclick="sendVerbCommand('verb_give_up')">Give up</button>
+	</div>
+
+	<!-- Progress indicator -->
+	<div style="text-align:center; opacity:0.7; font-size:0.9rem;">
+		{{ progress }}
+	</div>
+
+	<!-- Feedback messages in original style -->
+	{% if feedback %}
+		<p style="color:#1ea05a; font-weight:600; margin:0.5rem 0;">{{ feedback }}</p>
+	{% endif %}
+
+	{% if hint %}
+		<p style="color:#856404; font-weight:600; margin:0.5rem 0;">Hint: {{ hint }}</p>
+	{% endif %}
+
+	{% if reveal %}
+		<p style="color:#0c5460; font-weight:600; margin:0.5rem 0;">Answer: {{ reveal }}</p>
+	{% endif %}
+
+	</div>
+</div>
+
+<script>
+function sendVerbCommand(command, data = {}) {
+	if (window.chatSocket && window.chatSocket.readyState === WebSocket.OPEN) {
+	const message = {
+		command: command,
+		...data
+	};
+	window.chatSocket.send(JSON.stringify(message));
+	}
+}
+
+function submitVerbAnswer() {
+	const input = document.getElementById('verb-answer');
+	const answer = input.value.trim();
+	if (answer) {
+	// Send the answer through WebSocket
+	window.chatSocket.send(JSON.stringify({
+		message: answer
+	}));
+	input.value = '';
+	}
+}
+
+// Handle Enter key press in the input field
+document.getElementById('verb-answer').addEventListener('keypress', function(e) {
+	if (e.key === 'Enter') {
+	e.preventDefault();
+	submitVerbAnswer();
+	}
+});
+
+// Auto-focus the input field when the template loads
+setTimeout(() => {
+	const input = document.getElementById('verb-answer');
+	if (input) {
+	input.focus();
+	}
+}, 100);
+</script>

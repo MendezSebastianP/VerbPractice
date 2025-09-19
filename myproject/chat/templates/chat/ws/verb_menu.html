@@ -1,0 +1,107 @@
+<div class="verb-menu form-with-validation" style="margin: 0rem auto 0rem">
+  <h1 class="page-title--elevated" style="margin:0; font-size:1.5rem;">Verb Training</h1>
+
+  {% if complete %}
+    <div style="text-align:center; color:#1ea05a; font-weight:600; margin:1rem 0;">
+      Session complete: ✅ {{ correct }}/{{ total }}
+    </div>
+    <div style="text-align:center; margin:1rem 0;">
+      <p>Great job!</p>
+    </div>
+  {% endif %}
+
+  <!-- Direction selection using original options-button styling -->
+  <div class="options-buttom-container">
+    <div class="options-buttom-heading">Language to fill</div>
+    <div class="options-buttom-wrapper">
+      <input class="input" id="opt-French" name="direction" type="radio" value="es_fr" {% if direction == 'es_fr' %}checked{% endif %}>
+      <label class="options-buttom" for="opt-French" onclick="selectDirection('es_fr')">French</label>
+      
+      <input class="input" id="opt-Spanish" name="direction" type="radio" value="fr_es" {% if direction == 'fr_es' %}checked{% endif %}>
+      <label class="options-buttom" for="opt-Spanish" onclick="selectDirection('fr_es')">Spanish</label>
+    </div>
+  </div>
+
+  <!-- Session size selection using original options-button styling -->
+  <div class="options-buttom-container">
+    <div class="options-buttom-heading">Session length</div>
+    <div class="options-buttom-wrapper">
+      <input class="input" id="opt-5" name="size" type="radio" value="5" {% if selected_size == 5 %}checked{% endif %}>
+      <label class="options-buttom" for="opt-5" onclick="selectSize(5)">
+        <span class="off">Small</span>
+        <span class="on">5 verbs</span>
+      </label>
+      
+      <input class="input" id="opt-10" name="size" type="radio" value="10" {% if selected_size == 10 %}checked{% endif %}>
+      <label class="options-buttom" for="opt-10" onclick="selectSize(10)">
+        <span class="off">Medium</span>
+        <span class="on">10 verbs</span>
+      </label>
+      
+      <input class="input" id="opt-20" name="size" type="radio" value="20" {% if selected_size == 20 %}checked{% endif %}>
+      <label class="options-buttom" for="opt-20" onclick="selectSize(20)">
+        <span class="off">Large</span>
+        <span class="on">20 verbs</span>
+      </label>
+    </div>
+  </div>
+
+  <hr class="solid">
+
+  <!-- Start session button -->
+  <div style="text-align:center;">
+    <form ws-send style="display:inline;">
+      <input type="hidden" name="command" value="verb_start">
+      <input type="hidden" name="size" id="session-size" value="{{ selected_size|default:10 }}">
+      <button type="submit">Start session</button>
+    </form>
+  </div>
+
+  {% if complete %}
+    <div style="text-align:center; margin-top:1rem;">
+      <form ws-send style="display:inline;">
+        <input type="hidden" name="command" value="verb_start">
+        <input type="hidden" name="size" value="10">
+        <button type="submit">Start again</button>
+      </form>
+    </div>
+  {% endif %}
+
+  <!-- Hidden forms for direction selection -->
+  <form id="direction-form" ws-send style="display:none;">
+    <input type="hidden" name="command" value="verb_set_direction">
+    <input type="hidden" name="direction" id="selected-direction" value="{{ direction }}">
+  </form>
+</div>
+
+<script>
+// Avoid redeclaration errors by checking if variables already exist
+if (typeof selectedDirection === 'undefined') {
+  var selectedDirection = '{{ direction }}';
+}
+if (typeof selectedSize === 'undefined') {
+  var selectedSize = {{ selected_size|default:10 }};
+}
+
+function selectDirection(direction) {
+  console.log('Selecting direction:', direction);
+  selectedDirection = direction;
+  // Update radio buttons
+  document.getElementById('opt-French').checked = (direction === 'es_fr');
+  document.getElementById('opt-Spanish').checked = (direction === 'fr_es');
+  // Update hidden form and submit
+  document.getElementById('selected-direction').value = direction;
+  document.getElementById('direction-form').requestSubmit();
+}
+
+function selectSize(size) {
+  console.log('Selecting size:', size);
+  selectedSize = size;
+  // Update radio buttons
+  document.getElementById('opt-5').checked = (size === 5);
+  document.getElementById('opt-10').checked = (size === 10);
+  document.getElementById('opt-20').checked = (size === 20);
+  // Update the session size in the start form
+  document.getElementById('session-size').value = size;
+}
+</script>

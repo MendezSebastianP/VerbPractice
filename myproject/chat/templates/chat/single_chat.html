@@ -7,12 +7,31 @@
 {% block content %}
 <div class="center-page">
     <div id="chat-wrapper" hx-ext="ws" ws-connect="/ws/chatgpt-demo/">
+        <!-- Mode toolbar -->
+        <div class="chat-toolbar" style="display:flex; gap:.5rem; padding:.5rem 1rem; border-bottom:1px solid rgba(31,73,68,0.2); background: rgba(255,255,255,0.25);">
+            <form ws-send>
+                <input type="hidden" name="command" value="set_mode">
+                <input type="hidden" name="mode" value="chat">
+                <button type="submit" class="button-68" style="margin-top:0; padding:.4rem .8rem;">Chat</button>
+            </form>
+            <form ws-send>
+                <input type="hidden" name="command" value="set_mode">
+                <input type="hidden" name="mode" value="verb">
+                <button type="submit" class="button-68" style="margin-top:0; padding:.4rem .8rem;">Verb</button>
+            </form>
+            <form ws-send>
+                <input type="hidden" name="command" value="set_mode">
+                <input type="hidden" name="mode" value="word">
+                <button type="submit" class="button-68" style="margin-top:0; padding:.4rem .8rem;" disabled>Word</button>
+            </form>
+        </div>
         <div id="message-list" class="chat-pane">
             <div class="chat-message is-system">
                 Hello, what can I help you with today?
             </div>
         </div>
         <form id="chat-input-bar" ws-send hx-on::ws-after-send="this.reset()">
+            <!-- Use textarea to support multi-line input with Shift+Enter -->
             <textarea name="message" rows="1" placeholder="Type your message..." autocomplete="off" autofocus></textarea>
             <button type="submit" class="button-68">Send</button>
         </form>

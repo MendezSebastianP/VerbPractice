@@ -12,7 +12,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.messages = [
             {"role": "system", "content": "You are a helpful assistant."}
         ]
-        
         await self.accept()
 
     async def disconnect(self, close_code):
@@ -40,6 +39,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
             },
         )
         await self.send(text_data=user_message_html)
+
+    
 
         ###################### Commands handler ######################
 

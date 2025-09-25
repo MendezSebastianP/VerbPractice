@@ -26,7 +26,7 @@ idna==3.10
 incremental==24.7.2
 jiter==0.11.0
 msgpack==1.1.1
-numpy==2.2.6
+numpy==1.26.4
 openai==1.107.3
 pillow==11.3.0
 pyasn1==0.6.1
@@ -52,3 +52,4 @@ unicode==2.9
 Unidecode==1.4.0
 urllib3==2.5.0
 zope.interface==8.0
+mlconjug3

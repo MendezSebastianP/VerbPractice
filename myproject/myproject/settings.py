@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'verbs',
     'word_training',
     'chat',
+    'verbs_conjugation',
     'django_htmx',
 ]
 

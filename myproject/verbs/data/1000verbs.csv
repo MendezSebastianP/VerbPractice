@@ -12,975 +12,1120 @@
 11,donner ,1, dar
 12,passer ,1, pasar
 13,mettre ,3," poner, meter"
-14,partir ,3," partir, irse"
+14,partir ,3,partir
 15,trouver ,1, encontrar
-16,rire ,3, reír
-17,vivre ,3, vivir
-18,laisser ,1, dejar
-19,rendre ,3," devolver, rendir"
-20,sourire ,3, sonreír
-21,venir ,3, venir
-22,comprendre ,3," comprender, entender"
-23,penser ,1, pensar
-24,chercher ,1, buscar
-25,croire ,3, creer
-26,entendre ,3, oír
-27,tenir ,3," sostener, tener"
-28,demander ,1," pedir, preguntar"
-29,souvenir ,3," recordar, acordarse"
-30,attendre ,3, esperar
-31,sortir ,2, salir
-32,regarder ,1, mirar
-33,jouer ,1, jugar
-34,écrire ,3, escribir
-35,connaître ,3," conocer, saber"
-36,devenir ,3," convertirse, llegar a ser"
-37,mourir ,3," morir, fallecer"
-38,rester ,1," quedarse, permanecer"
-39,retrouver ,1," reencontrar, encontrar"
-40,entrer ,1, entrar
-41,manger ,1, comer
-42,tomber ,1, caer
-43,tirer ,1," tirar, disparar"
-44,lire ,3, leer
-45,suivre ,3, seguir
-46,répondre ,3," responder, contestar"
-47,obtenir ,3," obtener, conseguir"
-48,perdre ,3, perder
-49,expliquer ,1, explicar
-50,assurer ,1, asegurar
-51,servir ,3, servir
-52,porter ,1, llevar
-53,montrer ,1," mostrar, enseñar"
-54,éviter ,1, evitar
-55,arriver ,1," llegar, ocurrir"
-56,vouloir ,3, querer
-57,reconnaître ,3, reconocer
-58,monter ,1," subir, montar"
-59,boire ,3," beber, tomar"
-60,oublier ,1, olvidar
-61,poser ,1," poner, colocar"
-62,aimer ,1," amar, gustar"
-63,arrêter ,1," detener, parar"
-64,sentir ,3," sentir, oler"
-65,atteindre ,3," alcanzar, lograr"
-66,revenir ,3," volver, regresar"
-67,devoir ,3," deber, tener que"
-68,changer ,1, cambiar
-69,dormir ,3, dormir
-70,permettre ,3, permitir
-71,quitter ,1," dejar, abandonar"
-72,reprendre ,3," retomar, reanudar"
-73,appeler ,1, llamar
-74,dîner,1, cenar
-75,apprendre ,3," aprender, enseñar"
-76,empêcher ,1, impedir
-77,établir ,2, establecer
-78,travailler ,1, trabajar
-79,garder ,1," guardar, mantener"
-80,marcher ,1," caminar, andar"
-81,imaginer ,1, imaginar
-82,considérer ,1, considerar
-83,tendre ,3," tender, estirar"
-84,lever ,1," levantar, alzar"
-85,tourner ,1, girar
-86,gagner ,1, ganar
-87,recevoir ,3, recibir
-88,revoir ,3," revisar, volver a ver"
-89,aider ,1, ayudar
-90,créer ,1, crear
-91,découvrir ,3, descubrir
-92,compter ,1, contar
-93,tuer ,1, matar
-94,courir ,3, correr
-95,rentrer ,1," regresar, volver"
-96,réaliser ,1," realizar, darse cuenta"
-97,toucher ,1, tocar
-98,finir ,2," terminar, acabar"
-99,descendre ,3," bajar, descender"
-100,ajouter ,1, añadir
-101,présenter ,1, presentar
-102,essayer ,1," intentar, probar"
-103,coucher ,1," acostar, acostarse"
-104,occuper ,1, ocupar
-105,asseoir ,3," sentar, sentarse"
-106,jeter ,1," lanzar, tirar"
-107,payer ,1, pagar
-108,définir ,2, definir
-109,déjeûner ,1," almorzar, desayunar"
-110,agir ,2, actuar
-111,choisir ,2," elegir, escoger"
-112,distinguer ,1, distinguir
-113,préparer ,1, preparar
-114,apparaître ,3, aparecer
-115,remettre ,3," entregar, devolver"
-116,raconter ,1, contar
-117,échapper ,1, escapar
-118,acheter ,1, comprar
-119,rejoindre ,3," reunirse, unirse"
-120,battre ,3," batir, golpear"
-121,écouter ,1, escuchar
-122,offrir ,3," ofrecer, regalar"
-123,glisser ,1," deslizar, resbalar"
-124,conduire ,3," conducir, manejar"
-125,paraître ,3," parecer, aparecer"
-126,exprimer ,1, expresar
-127,pleurer ,1, llorar
-128,étudier ,1, estudiar
-129,retourner ,1," volver, regresar"
-130,accepter ,1, aceptar
-131,défendre ,3, defender
-132,maintenir ,3, mantener
-133,rappeler ,1, recordar
-134,continuer ,1, continuar
-135,disparaître ,3, desaparecer
-136,commencer ,1," comenzar, empezar"
-137,produire ,3, producir
-138,officier ,1, oficiar
-139,observer ,1, observar
-140,apporter ,1," aportar, traer"
-141,former ,1, formar
-142,admettre ,3, admitir
-143,retenir ,3, retener
-144,fournir ,2," proporcionar, suministrar"
-145,déterminer ,1, determinar
-146,pousser ,1, empujar
-147,rencontrer ,1," encontrar, conocer"
-148,fixer ,1, fijar
-149,construire ,3, construir
-150,constater ,1," constatar, notar"
-151,remarquer ,1," notar, darse cuenta"
-152,cacher ,1," esconder, ocultar"
-153,développer ,1, desarrollar
-154,prévoir ,3," prever, planear"
-155,préciser ,1, precisar
-156,réduire ,3, reducir
-157,constituer ,1, constituir
-158,résoudre ,3," resolver, solucionar"
-159,crier ,1, gritar
-160,sauver ,1," salvar, rescatar"
-161,remonter ,1," subir de nuevo, remontar"
-162,imposer ,1, imponer
-163,naître ,3, nacer
-164,envoyer ,1," enviar, mandar"
-165,souffrir ,3," sufrir, padecer"
-166,tenter ,1," intentar, tentar"
-167,juger ,1, juzgar
-168,bouger ,1," mover, moverse"
-169,exercer ,1, ejercer
-170,intervenir ,3, intervenir
-171,supporter ,1," soportar, apoyar"
-172,mesurer ,1, medir
-173,sauter ,1, saltar
-174,apercevoir ,3," percibir, notar"
-175,conserver ,1, conservar
-176,représenter ,1, representar
-177,placer ,1, colocar
-178,traiter ,1, tratar
-179,appliquer ,1, aplicar
-180,remplacer ,1," reemplazar, sustituir"
-181,baiser ,1, besar
-182,étendre ,3, extender
-183,mener ,1," llevar, dirigir"
-184,affirmer ,1, afirmar
-185,satisfaire ,3, satisfacer
-186,réfléchir ,3," reflexionar, pensar"
-187,chanter ,1, cantar
-188,vendre ,3, vender
-189,traverser ,1," cruzar, atravesar"
-190,fier ,1, confiar
-191,décider ,1, decidir
-192,entraîner / entrainer ,1," entrenar, acarrear"
-193,avancer ,1, avanzar
-194,refuser ,1," rechazar, rehusar"
-195,abandonner ,1, abandonar
-196,protéger ,1, proteger
-197,noter ,1," anotar, notar"
-198,remplir ,2," llenar, cumplir"
-199,fermer ,1, cerrar
-200,dégager ,1," liberar, despejar"
-201,ramener ,1," traer de vuelta, devolver"
-202,poursuivre ,3," perseguir, continuar"
-203,couper ,1, cortar
-204,embrasser ,1," abrazar, besar"
-205,décrire ,3, describir
-206,répéter ,1, repetir
-207,organiser ,1, organizar
-208,vérifier ,1," verificar, comprobar"
-209,danser ,1, bailar
-210,espérer ,1, esperar
-211,frapper ,1," golpear, pegar"
-212,accomplir ,2," cumplir, realizar"
-213,exister ,1, existir
-214,avouer ,1," confesar, admitir"
-215,couler ,1," fluir, hundirse"
-216,élever ,1," elevar, criar"
-217,parvenir ,3," lograr, alcanzar"
-218,arracher ,1, arrancar
-219,citer ,1, citar
-220,provoquer ,1, provocar
-221,renoncer ,1, renunciar
-222,approcher ,1," acercar, aproximar"
-223,lancer ,1, lanzar
-224,séparer ,1, separar
-225,transformer ,1, transformar
-226,examiner ,1, examinar
-227,justifier ,1, justificar
-228,installer ,1, instalar
-229,respirer ,1, respirar
-230,rêver ,1, soñar
-231,prévenir ,3," prevenir, avisar"
-232,taire ,3, callar
-233,relever ,1," levantar, relevar"
-234,plancher ,1, trabajar duro
-235,livrer ,1, entregar
-236,pénétrer ,1, penetrar
-237,détruire ,3, destruir
-238,rouler ,1," rodar, conducir"
-239,discuter ,1, discutir
-240,modifier ,1, modificar
-241,participer ,1, participar
-242,régler ,1," resolver, ajustar"
-243,engager ,1," comprometer, contratar"
-244,employer ,1, emplear
-245,profiter ,1," aprovechar, disfrutar"
-246,concevoir ,3, concebir
-247,envisager ,1," contemplar, considerar"
-248,soutenir ,3," apoyar, sostener"
-249,promener ,1, pasear
-250,conclure ,3, concluir
-251,nourrir ,2, alimentar
-252,prouver ,1," probar, demostrar"
-253,douter ,1, dudar
-254,laver ,1, lavar
-255,disposer ,1, disponer
-256,aboutir ,3," culminar, llevar a cabo"
-257,dépasser ,1, superar
-258,intéresser ,1, interesar
-259,prononcer ,1, pronunciar
-260,apprécier ,1, apreciar
-261,rechercher ,1, buscar
-262,assister ,1, asistir
-263,marquer ,1, marcar
-264,lutter ,1, luchar
-265,effectuer ,1," efectuar, realizar"
-266,rompre ,3, romper
-267,partager ,1, compartir
-268,supposer ,1, suponer
-269,accorder ,1," conceder, otorgar"
-270,procéder ,1, proceder
-271,casser ,1, romper
-272,convaincre ,3, convencer
-273,éloigner ,1," alejar, apartar"
-274,emporter ,1, llevar
-275,introduire ,3, introducir
-276,augmenter ,1, aumentar
-277,évoquer ,1," evocar, mencionar"
-278,amener ,1," llevar, traer"
-279,enlever ,1," quitar, eliminar"
-280,désigner ,1, designar
-281,franchir ,3," cruzar, atravesar"
-282,réveiller ,1, despertar
-283,écarter ,1," apartar, alejar"
-284,proposer ,1, proponer
-285,calculer ,1, calcular
-286,diriger ,1, dirigir
-287,posséder ,1, poseer
-288,retirer ,1," retirar, quitar"
-289,durer ,1, durar
-290,voler ,1," volar, robar"
-291,crever ,1," reventar, morir"
-292,résister ,1, resistir
-293,deviner ,1, adivinar
-294,tromper ,1, engañar
-295,dresser ,1," erigir, levantar"
-296,céder ,1, ceder
-297,craindre ,3, temer
-298,prêter ,1, prestar
-299,couvrir ,3, cubrir
-300,ménager ,1," manejar, tratar con cuidado"
-301,traîner ,1," arrastrar, deambular"
-302,cesser ,1," cesar, parar"
-303,traduire ,3, traducir
-304,aborder ,1," abordar, acercarse à"
-305,confondre ,3, confundir
-306,peindre ,3, pintar
-307,entreprendre ,3, emprender
-308,débarrasser ,1," deshacerse de, quitar"
-309,comparer ,1, comparar
-310,entretenir ,3, mantener
-311,amuser ,1, divertir
-312,plaindre ,3," compadecer, lamentar"
-313,fabriquer ,1, fabricar
-314,attaquer ,1, atacar
-315,combattre ,3," combatir, luchar"
-316,accroître ,3," incrementar, aumentar"
-317,ignorer ,1," ignorar, desconocer"
-318,reposer ,1, descansar
-319,attirer ,1, atraer
-320,songer ,1," pensar, soñar"
-321,emmener ,1, llevar
-322,opposer ,1, oponer
-323,visiter ,1, visitar
-324,améliorer ,1, mejorar
-325,annoncer ,1, anunciar
-326,éprouver ,1," experimentar, sentir"
-327,accompagner ,1, acompañar
-328,recommencer ,1," recomenzar, empezar de nuevo"
-329,conseiller ,1, aconsejar
-330,brûler,1, quemar
-331,adresser ,1," dirigir, enviar"
-332,adapter ,1, adaptar
-333,prétendre ,3," pretender, afirmar"
-334,rapprocher ,1, acercar
-335,confier ,1," confiar, encomendar"
-336,indiquer ,1, indicar
-337,nier ,1, negar
-338,signaler ,1, señalar
-339,serrer ,1," apretar, estrechar"
-340,démontrer ,1, demostrar
-341,réussir ,3," lograr, tener éxito"
-342,soumettre ,3, someter
-343,appuyer ,1, apoyar
-344,surveiller ,1, vigilar
-345,prier ,1," rezar, rogar"
-346,éclater ,1, estallar
-347,acquérir ,3, adquirir
-348,chasser ,1," cazar, ahuyentar"
-349,endormir ,3," adormecer, dormirse"
-350,attribuer ,1, atribuir
-351,souligner ,1, subrayar
-352,épouser ,1, casarse con
-353,adopter ,1, adoptar
-354,interroger ,1," interrogar, preguntar"
-355,révéler ,1, revelar
-356,éclairer ,1," iluminar, aclarar"
-357,limiter ,1, limitar
-358,demeurer ,1," permanecer, quedarse"
-359,libérer ,1, liberar
-360,inventer ,1, inventar
-361,consacrer ,1," consagrar, dedicar"
-362,faciliter ,1, facilitar
-363,ranger ,1," ordenar, arreglar"
-364,plaire ,3," gustar, agradar"
-365,goûter,1, probar
-366,effacer ,1, borrar
-367,communiquer ,1, comunicar
-368,exécuter ,1, ejecutar
-369,boucher ,1," tapar, obstruir"
-370,répartir ,2," repartir, distribuir"
-371,repartir ,3," volver a partir, repartir"
-372,réunir ,2," reunir, juntar"
-373,respecter ,1, respetar
-374,interpréter ,1, interpretar
-375,forcer ,1, forzar
-376,contrôler ,1, controlar
-377,vaincre ,3, vencer
-378,ficher ,1," archivar, fastidiar"
-379,lâcher ,1, soltar
-380,trembler ,1, temblar
-381,supprimer ,1," suprimir, eliminar"
-382,identifier ,1, identificar
-383,opérer ,1, operar
-384,diminuer ,1, disminuir
-385,imiter ,1, imitar
-386,manifester ,1, manifestar
-387,insister ,1, insistir
-388,admirer ,1, admirar
-389,rétablir ,2, restablecer
-390,filer ,1," hilar, irse"
-391,contenter ,1," contentar, satisfacer"
-392,mêler ,1, mezclar
-393,nommer ,1, nombrar
-394,exposer ,1, exponer
-395,écraser ,1, aplastar
-396,marier ,1, casar
-397,achever ,1," completar, terminar"
-398,jouir ,2," disfrutar, gozar"
-399,surprendre ,3, sorprender
-400,soulever ,1, levantar
-401,fondre ,3," fundir, derretirse"
-402,dissimuler ,1, disimular
-403,allumer ,1," encender, prender"
-404,consulter ,1, consultar
-405,briser ,1," romper, quebrar"
-406,obéir ,2, obedecer
-407,reconstituer ,1, reconstituir
-408,enfoncer ,1," hundir, clavar"
-409,analyser ,1, analizar
-410,éliminer ,1, eliminar
-411,étonner ,1," asombrar, sorprender"
-412,terminer ,1, terminar
-413,procurer ,1, procurar
-414,contempler ,1, contemplar
-415,peser ,1, pesar
-416,transporter ,1, transportar
-417,ressembler ,1, parecerse
-418,classer ,1, clasificar
-419,éteindre ,3, apagar
-420,inscrire ,3, inscribir
-421,déplacer ,1," desplazar, mover"
-422,habiter ,1," habitar, vivir"
-423,ramasser ,1, recoger
-424,attacher ,1, atar
-425,accueillir ,3," acoger, recibir"
-426,sonner ,1," sonar, tocar"
-427,substituer ,1, sustituir
-428,déceler ,1, detectar
-429,soigner ,1, cuidar
-430,fumer ,1, fumar
-431,arranger ,1," arreglar, ordenar"
-432,parcourir ,3, recorrer
-433,reculer ,1, retroceder
-434,claquer ,1, chasquear
-435,veiller ,1," velar, vigilar"
-436,compléter ,1, completar
-437,publier ,1, publicar
-438,hésiter ,1," dudar, vacilar"
-439,téléphoner ,1," telefonear, llamar"
-440,contenir ,3, contener
-441,dominer ,1, dominar
-442,transmettre ,3, transmitir
-443,causer ,1, causar
-444,situer ,1," situar, ubicar"
-445,détacher ,1," desprender, separar"
-446,fonctionner ,1, funcionar
-447,rassurer ,1, tranquilizar
-448,avaler ,1, tragar
-449,associer ,1, asociar
-450,rassembler ,1," reunir, juntar"
-451,saluer ,1, saludar
-452,briller ,1, brillar
-453,commander ,1," comandar, ordenar"
-454,valoir ,3, valer
-455,reproduire ,3, reproducir
-456,recueillir ,3, recoger
-457,taper ,1," teclear, golpear"
-458,isoler ,1, aislar
-459,mentir ,3, mentir
-460,rattraper ,1," alcanzar, atrapar"
-461,multiplier ,1, multiplicar
-462,orienter ,1, orientar
-463,user ,1," usar, desgastar"
-464,affronter ,1," afrontar, enfrentar"
-465,enseigner ,1, enseñar
-466,falloir ,3," hacer falta, necesitar"
-467,enfermer ,1, encerrar
-468,dessiner ,1, dibujar
-469,favoriser ,1, favorecer
-470,retomber ,1, recaer
-471,recourir ,3, recurrir
-472,pratiquer ,1, practicar
-473,abattre ,3," abatir, derribar"
-474,baisser ,1, bajar
-475,bénéficier ,1, beneficiar
-476,fonder ,1, fundar
-477,exiger ,1, exigir
-478,réparer ,1, reparar
-479,risquer ,1, arriesgar
-480,percevoir ,3, percibir
-481,comporter ,1, comportar
-482,vider ,1, vaciar
-483,accéder ,1, acceder
-484,composer ,1, componer
-485,formuler ,1, formular
-486,caresser ,1, acariciar
-487,signer ,1, firmar
-488,prolonger ,1, prolongar
-489,varier ,1, variar
-490,détourner ,1, desviar
-491,rapporter ,1," reportar, devolver"
-492,consoler ,1, consolar
-493,éveiller ,1, despertar
-494,regagner ,1," recuperar, volver a ganar"
-495,calmer ,1, calmar
-496,survivre ,3, sobrevivir
-497,renforcer ,1," reforzar, fortalecer"
-498,réclamer ,1, reclamar
-499,plonger ,1," sumergir, bucear"
-500,ressortir ,3," salir de nuevo, destacar"
-501,attraper ,1," atrapar, coger"
-502,négliger ,1," descuidar, negligir"
-503,figurer ,1," figurar, aparecer"
-504,corriger ,1, corregir
-505,chier ,1, cagar
-506,hurler ,1," gritar, aullar"
-507,craquer ,1," romperse, crujir"
-508,préserver ,1, preservar
-509,récupérer ,1, recuperar
-510,accrocher ,1," colgar, enganchar"
-511,grandir ,3, crecer
-512,reprocher ,1, reprochar
-513,habiller ,1," vestir, vestirse"
-514,tarder ,1, tardar
-515,déposer ,1," depositar, dejar"
-516,assumer ,1, asumir
-517,évaluer ,1, evaluar
-518,susciter ,1, suscitar
-519,noyer ,1, ahogar
-520,regretter ,1," lamentar, arrepentirse"
-521,exploiter ,1, explotar
-522,remuer ,1," mover, revolver"
-523,remercier ,1, agradecer
-524,inviter ,1, invitar
-525,rejeter ,1, rechazar
-526,déduire ,3, deducir
-527,charger ,1, cargar
-528,échanger ,1, intercambiar
-529,appartenir ,3, pertenecer
-530,persuader ,1, persuadir
-531,planter ,1, plantar
-532,distraire ,3, distraer
-533,percer ,1, perforar
-534,tracer ,1, trazar
-535,guider ,1, guiar
-536,bâtir ,2," construir, edificar"
-537,combler ,1," colmar, llenar"
-538,déranger ,1," molestar, perturbar"
-539,déclarer ,1, declarar
-540,interrompre ,3, interrumpir
-541,plier ,1, doblar
-542,inquiéter ,1," inquietar, preocupar"
-543,secouer ,1, sacudir
-544,bouffer ,1," comer (coloquial), zampar"
-545,entrevoir ,3," entrever, vislumbrar"
-546,souffler ,1, soplar
-547,souhaiter ,1, desear
-548,discerner ,1, discernir
-549,confirmer ,1, confirmar
-550,allonger ,1," alargar, tumbarse"
-551,grimper ,1," trepar, escalar"
-552,pardonner ,1, perdonar
-553,repérer ,1," localizar, detectar"
-554,estimer ,1," estimar, valorar"
-555,presser ,1," presionar, apretar"
-556,creuser ,1," cavar, excavar"
-557,lier ,1," ligar, unir"
-558,clocher ,1," estar mal, no funcionar bien (coloquial)"
-559,boulanger ,1," hacer pan, panificar"
-560,verser ,1," verter, derramar"
-561,refermer ,1," volver a cerrar, cerrar de nuevo"
-562,repousser ,1," rechazar, posponer"
-563,piquer ,1," picar, pinchar, robar (coloquial)"
-564,obliger ,1, obligar
-565,pencher ,1," inclinar, inclinarse"
-566,informer ,1, informar
-567,correspondre ,3, corresponder
-568,conquérir ,3, conquistar
-569,étouffer ,1," asfixiar, sofocar"
-570,déchiffrer ,1, descifrar
-571,ressentir ,3, sentir
-572,sacrifier ,1, sacrificar
-573,mordre ,3, morder
-574,désirer ,1, desear
-575,excuser ,1," excusar, disculpar"
-576,encourager ,1," animar, alentar"
-577,subsister ,1, subsistir
-578,explorer ,1, explorar
-579,nettoyer ,1, limpiar
-580,délivrer ,1," liberar, entregar"
-581,gêner ,1," molestar, incomodar"
-582,coller ,1," pegar, adherir"
-583,avertir ,2," advertir, avisar"
-584,ôter ,1," quitar, remover"
-585,élargir ,2," ampliar, ensanchar"
-586,intégrer ,1, integrar
-587,garantir ,2, garantizar
-588,renouveler ,1, renovar
-589,oser ,1, atreverse
-590,fouiller ,1," registrar, hurgar"
-591,répandre ,3," difundir, esparcir"
-592,résumer ,1, resumir
-593,interdire ,3, prohibir
-594,pisser ,1, orinar
-595,convenir ,3," convenir, acordar"
-596,venger ,1, vengar
-597,surmonter ,1, superar
-598,rédiger ,1, redactar
-599,contribuer ,1, contribuir
-600,jaillir ,2," brotar, surgir"
-601,emprunter ,1, pedir prestado
-602,défiler ,1, desfilar
-603,agiter ,1, agitar
-604,séduire ,3, seducir
-605,revivre ,3, revivir
-606,signifier ,1, significar
-607,flotter ,1, flotar
-608,défaire ,3, deshacer
-609,croître ,3, crecer
-610,concilier ,1, conciliar
-611,émettre ,3, emitir
-612,concentrer ,1, concentrar
-613,suffire ,3," bastar, ser suficiente"
-614,renvoyer ,1," despedir, enviar de nuevo"
-615,renverser ,1," derribar, volcar"
-616,commettre ,3, cometer
-617,inspirer ,1, inspirar
-618,troubler ,1," turbar, perturbar"
-619,chauffer ,1, calentar
-620,balancer ,1," balancear, lanzar (coloquial)"
-621,réserver ,1, reservar
-622,soucier ,1, preocupar(se)
-623,mentionner ,1, mencionar
-624,enregistrer ,1," grabar, registrar"
-625,réchauffer ,1, recalentar
-626,élaborer ,1, elaborar
-627,assimiler ,1, asimilar
-628,dénoncer ,1, denunciar
-629,voyager ,1, viajar
-630,témoigner ,1," testificar, atestiguar"
-631,précipiter ,1, precipitar
-632,suggérer ,1, sugerir
-633,embarquer ,1, embarcar
-634,loger ,1," alojar, hospedarse"
-635,régner ,1, reinar
-636,distribuer ,1, distribuir
-637,sécher ,1, secar
-638,enrichir ,3, enriquecer
-639,soupçonner ,1, sospechar
-640,essuyer ,1," secar, limpiar"
-641,dissoudre ,3, disolver
-642,compenser ,1, compensar
-643,grouper ,1, agrupar
-644,cueillir ,3," recoger, cosechar"
-645,manier ,1, manejar
-646,caractériser ,1, caracterizar
-647,progresser ,1, progresar
-648,répartir / repartir ,2," repartir, distribuir"
-649,absorber ,1, absorber
-650,maîtriser / maitriser ,1," dominar, controlar"
-651,basculer ,1," volcar, bascular"
-652,compromettre ,3, comprometer
-653,circuler ,1, circular
-654,pécher ,1, pecar
-655,pêcher ,1, pescar
-656,déclencher ,1, desencadenar
-657,alimenter ,1, alimentar
-658,épargner ,1," ahorrar, perdonar"
-659,instruire ,3, instruir
-660,apaiser ,1," apaciguar, calmar"
-661,remédier ,1, remediar
-662,accuser ,1, acusar
-663,cracher ,1, escupir
-664,heurter ,1," chocar, golpear"
-665,enfiler ,1," ponerse (ropa), ensartar"
-666,souper ,1, cenar
-667,redresser ,1, enderezar
-668,nager ,1, nadar
-669,coudre ,3, coser
-670,envahir ,2, invadir
-671,ennuyer ,1," aburrir, molestar"
-672,louer ,1," alquilar, elogiar"
-673,évoluer ,1, evolucionar
-674,préférer ,1, preferir
-675,habituer ,1," habituar, acostumbrar"
-676,repasser ,1," planchar, volver a pasar"
-677,soustraire ,3, sustraer
-678,baigner ,1, bañar
-679,consentir ,3, consentir
-680,condamner ,1, condenar
-681,négocier ,1, negociar
-682,guetter ,1," acechar, vigilar"
-683,protester ,1, protestar
-684,reporter ,1," aplazar, posponer"
-685,sembler ,1, parecer
-686,bondir ,2," saltar, brincar"
-687,vibrer ,1, vibrar
-688,dissiper ,1, disipar
-689,pendre ,3, colgar
-690,rattacher ,1," volver a atar, vincular"
-691,moquer ,1, burlarse
-692,trancher ,1," cortar, decidir"
-693,atténuer ,1, atenuar
-694,déchirer ,1," romper, desgarrar"
-695,priver ,1, privar
-696,voter ,1, votar
-697,triompher ,1, triunfar
-698,murmurer ,1, murmurar
-699,repentir ,3, arrepentirse
-700,pourvoir ,3, proveer
-701,édifier ,1, edificar
-702,exclure ,3, excluir
-703,renseigner ,1, informar
-704,enterrer ,1, enterrar
-705,parer ,1," adornar, proteger"
-706,ordonner ,1, ordenar
-707,gratter ,1, rascar
-708,diviser ,1, dividir
-709,frotter ,1, frotar
-710,déployer ,1, desplegar
-711,rigoler ,1, reírse (coloquial)
-712,raisonner ,1, razonar
-713,tailler ,1," tallar, recortar"
-714,bavarder ,1," charlar, chatear"
-715,illustrer ,1, ilustrar
-716,capter ,1, captar
-717,relire ,3, releer
-718,mériter ,1, merecer
-719,émouvoir ,3, emocionar
-720,revêtir ,3," revestir, vestir"
-721,dérouler ,1," desenrollar, desarrollarse"
-722,étaler ,1, extender
-723,dérober ,1, robar
-724,fréquenter ,1, frecuentar
-725,abriter ,1," albergar, refugiar"
-726,promettre ,3, prometer
-727,blesser ,1," herir, lastimar"
-728,approuver ,1, aprobar
-729,animer ,1, animar
-730,cultiver ,1, cultivar
-731,relier ,1," enlazar, conectar"
-732,célébrer ,1, celebrar
-733,dévorer ,1, devorar
-734,résigner ,1, resignar(se)
-735,hâter ,1," apresurar, acelerar"
-736,contester ,1," impugnar, cuestionar"
-737,vanter ,1," alabar, presumir"
-738,recouvrir ,3," recubrir, cubrir"
-739,critiquer ,1, criticar
-740,croiser ,1, cruzar
-741,doubler ,1," doblar, adelantar"
-742,conférer ,1, conferir
-743,réciter ,1, recitar
-744,restaurer ,1, restaurar
-745,résulter ,1, resultar
-746,qualifier ,1, calificar
-747,promouvoir ,3, promover
-748,attarder ,1," retrasar(se), demorarse"
-749,gémir ,3, gemir
-750,bûcher ,1," estudiar mucho, empollar"
-751,combiner ,1, combinar
-752,approfondir ,3, profundizar
-753,succéder ,1," suceder, seguir"
-754,coordonner ,1, coordinar
-755,abaisser ,1," bajar, disminuir"
-756,cogner ,1, golpear
-757,imprimer ,1, imprimir
-758,accélérer ,1, acelerar
-759,jurer ,1," jurar, maldecir"
-760,contraindre ,3," obligar, coaccionar"
-761,mouiller ,1, mojar
-762,déshabiller ,1," desvestir, desnudar"
-763,invoquer ,1, invocar
-764,ralentir ,2," ralentizar, disminuir la velocidad"
-765,préoccuper ,1, preocupar
-766,dépenser ,1, gastar
-767,déboucher ,1," destapar, desembocar"
-768,siffler ,1, silbar
-769,accumuler ,1, acumular
-770,restituer ,1," restituir, devolver"
-771,retarder ,1, retrasar
-772,décrocher ,1," descolgar, conseguir (coloquial)"
-773,redouter ,1, temer
-774,influencer ,1, influenciar
-775,généraliser ,1, generalizar
-776,entamer ,1," empezar, iniciar"
-777,balayer ,1, barrer
-778,simplifier ,1, simplificar
-779,perfectionner ,1, perfeccionar
-780,épuiser ,1, agotar
-781,épanouir ,3," florecer, prosperar"
-782,débarquer ,1," desembarcar, llegar"
-783,redevenir ,3, volver a ser
-784,éclaircir ,2," aclarar, iluminar"
-785,consommer ,1, consumir
-786,fendre ,3," hender, partir"
-787,soulager ,1, aliviar
-788,décourager ,1," desalentar, desanimar"
-789,engendrer ,1, engendrar
-790,fêter ,1," celebrar, festejar"
-791,renaître ,3, renacer
-792,affranchir ,3," liberar, franquear"
-793,freiner ,1, frenar
-794,racheter ,1," recomprar, redimir"
-795,initier ,1, iniciar
-796,dater ,1, fechar
-797,raser ,1," afeitar, derribar"
-798,solliciter ,1, solicitar
-799,errer ,1," errar, vagar"
-800,honorer ,1, honrar
-801,féliciter ,1, felicitar
-802,entourer ,1, rodear
-803,dépouiller ,1, despojar
-804,exciter ,1," excitar, entusiasmar"
-805,tâcher / tacher ,1," intentar, manchar"
-806,pleuvoir ,3, llover
-807,insérer ,1, insertar
-808,accommoder ,1, acomodar
-809,énumérer ,1, enumerar
-810,incliner ,1, inclinar
-811,convertir ,2, convertir
-812,exploser ,1, explotar
-813,redire ,3," repetir, volver a decir"
-814,méconnaître ,3," desconocer, ignorar"
-815,rallier ,1," reunir, unirse"
-816,nouer ,1," anudar, establecer"
-817,aménager ,1," acondicionar, arreglar"
-818,viser ,1," apuntar, aspirar"
-819,débrouiller ,1," desenredar, arreglárselas"
-820,sombrer ,1, hundirse
-821,masquer ,1," enmascarar, ocultar"
-822,ressusciter ,1, resucitar
-823,buter ,1," tropezar, obstinarse"
-824,mépriser ,1, despreciar
-825,découper ,1," recortar, cortar"
-826,proclamer ,1, proclamar
-827,menacer ,1, amenazar
-828,mater ,1," mirar, dominar (coloquial)"
-829,contrarier ,1," contrariar, frustrar"
-830,réjouir ,2, alegrar(se)
-831,cerner ,1," rodear, delimitar"
-832,gouverner ,1, gobernar
-833,dispenser ,1," dispensar, eximir"
-834,affecter ,1," afectar, asignar"
-835,renier ,1, renegar
-836,virer ,1," despedir, echar"
-837,périr ,2, perecer
-838,plaider ,1, abogar
-839,gonfler ,1, inflar
-840,saigner ,1, sangrar
-841,redonner ,1," devolver, dar de nuevo"
-842,fourrer ,1," meter, rellenar"
-843,hisser ,1, izar
-844,photographier ,1, fotografiar
-845,expédier ,1," enviar, despachar"
-846,étrangler ,1, estrangular
-847,puiser ,1," sacar, extraer"
-848,inciter ,1," incitar, animar"
-849,projeter ,1, proyectar
-850,accentuer ,1, acentuar
-851,sauvegarder ,1," guardar, respaldar"
-852,lasser ,1," cansar, hartar"
-853,exagérer ,1, exagerar
-854,méditer ,1, meditar
-855,insulter ,1, insultar
-856,choir ,3, caer (arcaico)
-857,lécher ,1, lamer
-858,décoller ,1, despegar
-859,emplir ,2, llenar
-860,abuser ,1, abusar
-861,pourrir ,2, pudrirse
-862,rembourser ,1, reembolsar
-863,autoriser ,1, autorizar
-864,gravir ,2," escalar, subir"
-865,frémir ,2, temblar
-866,débattre ,3, debatir
-867,tisser ,1, tejer
-868,compliquer ,1, complicar
-869,cocher ,1, marcar
-870,dépendre ,3, depender
-871,équilibrer ,1, equilibrar
-872,détendre ,3, relajar
-873,rater ,1," fallar, perder"
-874,déborder ,1, desbordar
-875,reconstruire ,3, reconstruir
-876,redescendre ,3, volver a bajar
-877,gâcher ,1," estropear, arruinar"
-878,copier ,1, copiar
-879,contredire ,3, contradecir
-880,plaisanter ,1, bromear
-881,abîmer,1," dañar, estropear"
-882,évacuer ,1, evacuar
-883,grossir ,2," engordar, agrandar"
-884,résonner ,1, resonar
-885,aggraver ,1, agravar
-886,conformer ,1, conformar
-887,hausser ,1," alzar, levantar"
-888,administrer ,1, administrar
-889,dissocier ,1, disociar
-890,effondrer ,1, derrumbar(se)
-891,pressentir ,3, presentir
-892,gueuler ,1, gritar (coloquial)
-893,disputer ,1," discutir, disputar"
-894,coûter,1, costar
-895,fusiller ,1, fusilar
-896,coïncider ,1, coincidir
-897,chialer ,1, llorar (coloquial)
-898,différencier ,1, diferenciar
-899,recommander ,1, recomendar
-900,modeler ,1, modelar
-901,foncer ,1," apresurarse, ir rápido"
-902,équiper ,1, equipar
-903,décharger ,1, descargar
-904,inspecter ,1, inspeccionar
-905,tousser ,1, toser
-906,aligner ,1, alinear
-907,instituer ,1, instituir
-908,violer ,1, violar
-909,énoncer ,1, enunciar
-910,gérer ,1, gestionar
-911,ébranler ,1," sacudir, conmover"
-912,assigner ,1, asignar
-913,émerger ,1, emerger
-914,planquer ,1, esconder (coloquial)
-915,liquider ,1, liquidar
-916,réprimer ,1, reprimir
-917,démarrer ,1," arrancar, empezar"
-918,frayer ,1," abrir camino, rozar"
-919,effrayer ,1, asustar
-920,contourner ,1," rodear, eludir"
-921,référer ,1, referir
-922,tâter ,1," palpar, tentar"
-923,retracer ,1," trazar de nuevo, relatar"
-924,différer ,1, diferir
-925,semer ,1, sembrar
-926,commenter ,1, comentar
-927,camper ,1, acampar
-928,barrer ,1," bloquear, tachar"
-929,pater ,1, sufrir
-930,flatter ,1, halagar
-931,ranimer ,1, reanimar
-932,confronter ,1, confrontar
-933,confesser ,1, confesar
-934,retentir ,2, resonar
-935,sursauter ,1, sobresaltarse
-936,incarner ,1, encarnar
-937,anéantir ,3, aniquilar
-938,détester ,1, detestar
-939,tremper ,1," mojar, empapar"
-940,feindre ,3, fingir
-941,regrouper ,1, reagrupar
-942,doter ,1, dotar
-943,économiser ,1," economizar, ahorrar"
-944,égarer ,1," extraviar, perder"
-945,articuler ,1, articular
-946,refroidir ,2, enfriar
-947,brouiller ,1," enturbiar, confundir"
-948,adhérer ,1," adherir, unirse"
-949,recruter ,1, reclutar
-950,attendrir ,2, enternecer
-951,trier ,1, clasificar
-952,tordre ,3, torcer
-953,ramper ,1, arrastrarse
-954,aventurer ,1, aventurar(se)
-955,détailler ,1, detallar
-956,assassiner ,1, asesinar
-957,restreindre ,3, restringir
-958,apprivoiser ,1, domesticar
-959,défier ,1, desafiar
-960,impressionner ,1, impresionar
-961,pointer ,1, apuntar
-962,engloutir ,2, engullir
-963,envelopper ,1, envolver
-964,ruiner ,1, arruinar
-965,réconcilier ,1, reconciliar
-966,abolir ,2, abolir
-967,corner ,1," doblar (una página), tocar la bocina"
-968,manipuler ,1, manipular
-969,esquisser ,1, esbozar
-970,amorcer ,1," iniciar, cebar"
-971,dériver ,1, derivar
-972,incorporer ,1, incorporar
-973,ronfler ,1, roncar
-974,disperser ,1, dispersar
-975,replacer ,1," reemplazar, volver a colocar"
-976,roder ,1, merodear
-977,échouer ,1, fracasar
-978,mélanger ,1, mezclar
-979,dévoiler ,1," revelar, develar"
-980,détecter ,1, detectar
-981,raccrocher ,1, colgar (el teléfono)
-982,applaudir ,2, aplaudir
-983,excéder ,1, exceder
-984,reparaître ,3, reaparecer
-985,financer ,1, financiar
+16,s'en aller,3,irse
+17,rire ,3, reír
+18,vivre ,3, vivir
+19,laisser ,1, dejar
+20,rendre ,3," devolver, rendir"
+21,sourire ,3, sonreír
+22,venir ,3, venir
+23,comprendre ,3," comprender, entender"
+24,penser ,1, pensar
+25,chercher ,1, buscar
+26,croire ,3, creer
+27,entendre ,3, oír
+28,tenir ,3," sostener, tener"
+29,demander ,1," pedir, preguntar"
+30,se souvenir,3,recordar
+31,attendre ,3, esperar
+32,sortir ,2, salir
+33,se souvenir,3,acordarse
+34,regarder ,1, mirar
+35,jouer ,1, jugar
+36,écrire ,3, escribir
+37,connaître ,3," conocer, saber"
+38,devenir ,3,llegar a ser
+39,mourir ,3," morir, fallecer"
+40,rester ,1,permanecer
+41,retrouver,1," reencontrar, encontrar"
+42,se convertir,3,convertirse
+43,entrer ,1, entrar
+44,manger ,1, comer
+45,tomber ,1, caer
+46,rester,1,quedarse
+47,tirer ,1," tirar, disparar"
+48,lire ,3, leer
+49,suivre ,3, seguir
+50,répondre ,3," responder, contestar"
+51,obtenir ,3," obtener, conseguir"
+52,perdre ,3, perder
+53,expliquer ,1, explicar
+54,assurer,1, asegurar
+55,servir ,3, servir
+56,porter ,1, llevar
+57,montrer ,1," mostrar, enseñar"
+58,éviter ,1, evitar
+59,arriver ,1," llegar, ocurrir"
+60,vouloir ,3, querer
+61,reconnaître ,3, reconocer
+62,monter ,1," subir, montar"
+63,boire ,3," beber, tomar"
+64,oublier ,1, olvidar
+65,poser ,1," poner, colocar"
+66,aimer ,1," amar, gustar"
+67,arrêter,1," detener, parar"
+68,sentir,3," sentir, oler"
+69,atteindre ,3," alcanzar, lograr"
+70,revenir ,3," volver, regresar"
+71,devoir ,3," deber, tener que"
+72,changer,1, cambiar
+73,dormir ,3, dormir
+74,permettre ,3, permitir
+75,quitter ,1," dejar, abandonar"
+76,reprendre ,3," retomar, reanudar"
+77,appeler ,1, llamar
+78,dîner,1, cenar
+79,apprendre ,3," aprender, enseñar"
+80,empêcher ,1, impedir
+81,établir ,2, establecer
+82,travailler ,1, trabajar
+83,garder ,1," guardar, mantener"
+84,marcher ,1," caminar, andar"
+85,imaginer,1, imaginar
+86,considérer ,1, considerar
+87,tendre ,3," tender, estirar"
+88,lever,1," levantar, alzar"
+89,tourner,1, girar
+90,gagner ,1, ganar
+91,recevoir ,3, recibir
+92,revoir ,3," revisar, volver a ver"
+93,aider ,1, ayudar
+94,créer ,1, crear
+95,découvrir ,3, descubrir
+96,compter ,1, contar
+97,tuer ,1, matar
+98,courir ,3, correr
+99,rentrer ,1," regresar, volver"
+100,réaliser,1,realizar
+101,toucher ,1, tocar
+102,finir ,2," terminar, acabar"
+103,descendre ,3," bajar, descender"
+104,ajouter ,1, añadir
+105,présenter,1, presentar
+106,se rendre compte,1,darse cuenta
+107,essayer ,1," intentar, probar"
+108,coucher,1,acostar
+109,occuper,1, ocupar
+110,asseoir,3,sentar
+111,jeter ,1," lanzar, tirar"
+112,payer ,1, pagar
+113,définir ,2, definir
+114,déjeûner ,1," almorzar, desayunar"
+115,se coucher,1,acostarse
+116,agir ,2, actuar
+117,choisir ,2," elegir, escoger"
+118,distinguer ,1, distinguir
+119,s'asseoir,3,sentarse
+120,préparer ,1, preparar
+121,apparaître ,3, aparecer
+122,remettre ,3," entregar, devolver"
+123,raconter ,1, contar
+124,échapper,1, escapar
+125,acheter ,1, comprar
+126,rejoindre ,3," reunirse, unirse"
+127,battre,3," batir, golpear"
+128,écouter ,1, escuchar
+129,offrir ,3," ofrecer, regalar"
+130,glisser ,1," deslizar, resbalar"
+131,conduire ,3," conducir, manejar"
+132,paraître ,3," parecer, aparecer"
+133,exprimer,1, expresar
+134,pleurer ,1, llorar
+135,étudier ,1, estudiar
+136,retourner,1," volver, regresar"
+137,accepter ,1, aceptar
+138,défendre,3, defender
+139,maintenir ,3, mantener
+140,rappeler,1, recordar
+141,continuer ,1, continuar
+142,disparaître ,3, desaparecer
+143,commencer ,1," comenzar, empezar"
+144,produire ,3, producir
+145,officier ,1, oficiar
+146,observer ,1, observar
+147,apporter ,1," aportar, traer"
+148,former ,1, formar
+149,admettre ,3, admitir
+150,retenir ,3, retener
+151,fournir ,2," proporcionar, suministrar"
+152,déterminer ,1, determinar
+153,pousser ,1, empujar
+154,rencontrer ,1," encontrar, conocer"
+155,fixer ,1, fijar
+156,construire ,3, construir
+157,constater ,1," constatar, notar"
+158,remarquer ,1,notar
+159,cacher,1," esconder, ocultar"
+160,développer,1, desarrollar
+161,prévoir ,3," prever, planear"
+162,préciser ,1, precisar
+163,réduire ,3, reducir
+164,constituer ,1, constituir
+165,résoudre ,3," resolver, solucionar"
+166,crier ,1, gritar
+167,sauver,1," salvar, rescatar"
+168,remonter ,1," subir de nuevo, remontar"
+169,imposer ,1, imponer
+170,naître ,3, nacer
+171,envoyer ,1," enviar, mandar"
+172,souffrir ,3," sufrir, padecer"
+173,tenter ,1," intentar, tentar"
+174,juger ,1, juzgar
+175,bouger,1,mover
+176,exercer ,1, ejercer
+177,intervenir ,3, intervenir
+178,supporter ,1," soportar, apoyar"
+179,mesurer ,1, medir
+180,sauter ,1, saltar
+181,apercevoir,3," percibir, notar"
+182,conserver ,1, conservar
+183,représenter ,1, representar
+184,placer,1, colocar
+185,se bouger,1,moverse
+186,traiter,1, tratar
+187,appliquer ,1, aplicar
+188,remplacer ,1," reemplazar, sustituir"
+189,baiser ,1, besar
+190,étendre,3, extender
+191,mener ,1," llevar, dirigir"
+192,affirmer ,1, afirmar
+193,satisfaire ,3, satisfacer
+194,réfléchir ,3," reflexionar, pensar"
+195,chanter ,1, cantar
+196,vendre ,3, vender
+197,traverser ,1," cruzar, atravesar"
+198,fier,1, confiar
+199,décider,1, decidir
+200,entraîner,1," entrenar, acarrear"
+201,avancer ,1, avanzar
+202,refuser ,1," rechazar, rehusar"
+203,abandonner ,1, abandonar
+204,protéger,1, proteger
+205,noter ,1," anotar, notar"
+206,remplir ,2," llenar, cumplir"
+207,fermer,1, cerrar
+208,dégager ,1," liberar, despejar"
+209,ramener,1," traer de vuelta, devolver"
+210,poursuivre ,3," perseguir, continuar"
+211,couper ,1, cortar
+212,embrasser,1," abrazar, besar"
+213,décrire ,3, describir
+214,répéter ,1, repetir
+215,organiser ,1, organizar
+216,vérifier ,1," verificar, comprobar"
+217,danser ,1, bailar
+218,espérer ,1, esperar
+219,frapper ,1," golpear, pegar"
+220,accomplir ,2," cumplir, realizar"
+221,exister ,1, existir
+222,avouer ,1," confesar, admitir"
+223,couler ,1,fluir
+224,élever,1," elevar, criar"
+225,parvenir ,3," lograr, alcanzar"
+226,arracher ,1, arrancar
+227,citer ,1, citar
+228,provoquer ,1, provocar
+229,renoncer ,1, renunciar
+230,approcher ,1," acercar, aproximar"
+231,lancer ,1, lanzar
+232,séparer,1, separar
+233,transformer,1, transformar
+234,se couler,1,hundirse
+235,examiner ,1, examinar
+236,justifier ,1, justificar
+237,installer,1, instalar
+238,respirer ,1, respirar
+239,rêver ,1, soñar
+240,prévenir ,3," prevenir, avisar"
+241,taire ,3, callar
+242,relever ,1," levantar, relevar"
+243,plancher ,1, trabajar duro
+244,livrer ,1, entregar
+245,pénétrer ,1, penetrar
+246,détruire ,3, destruir
+247,rouler ,1," rodar, conducir"
+248,discuter ,1, discutir
+249,modifier ,1, modificar
+250,participer ,1, participar
+251,régler ,1," resolver, ajustar"
+252,engager ,1," comprometer, contratar"
+253,employer ,1, emplear
+254,profiter ,1," aprovechar, disfrutar"
+255,concevoir ,3, concebir
+256,envisager ,1," contemplar, considerar"
+257,soutenir ,3," apoyar, sostener"
+258,promener,1, pasear
+259,conclure ,3, concluir
+260,nourrir ,2, alimentar
+261,prouver ,1," probar, demostrar"
+262,douter ,1, dudar
+263,laver,1, lavar
+264,disposer,1, disponer
+265,aboutir ,3," culminar, llevar a cabo"
+266,dépasser ,1, superar
+267,intéresser,1, interesar
+268,prononcer ,1, pronunciar
+269,apprécier ,1, apreciar
+270,rechercher ,1, buscar
+271,assister ,1, asistir
+272,marquer,1, marcar
+273,lutter ,1, luchar
+274,effectuer,1," efectuar, realizar"
+275,rompre ,3, romper
+276,partager ,1, compartir
+277,supposer ,1, suponer
+278,accorder ,1," conceder, otorgar"
+279,procéder ,1, proceder
+280,casser ,1, romper
+281,convaincre ,3, convencer
+282,éloigner,1," alejar, apartar"
+283,emporter ,1, llevar
+284,introduire ,3, introducir
+285,augmenter ,1, aumentar
+286,évoquer ,1," evocar, mencionar"
+287,amener ,1," llevar, traer"
+288,enlever ,1," quitar, eliminar"
+289,désigner ,1, designar
+290,franchir ,3," cruzar, atravesar"
+291,réveiller,1, despertar
+292,écarter,1," apartar, alejar"
+293,proposer ,1, proponer
+294,calculer ,1, calcular
+295,diriger,1, dirigir
+296,posséder ,1, poseer
+297,retirer,1," retirar, quitar"
+298,durer ,1, durar
+299,voler ,1," volar, robar"
+300,crever ,1," reventar, morir"
+301,résister ,1, resistir
+302,deviner ,1, adivinar
+303,tromper,1, engañar
+304,dresser,1," erigir, levantar"
+305,céder ,1, ceder
+306,craindre ,3, temer
+307,prêter ,1, prestar
+308,couvrir ,3, cubrir
+309,ménager ,1," manejar, tratar con cuidado"
+310,traîner,1," arrastrar, deambular"
+311,cesser ,1," cesar, parar"
+312,traduire ,3, traducir
+313,aborder ,1,abordar
+314,confondre ,3, confundir
+315,peindre ,3, pintar
+316,entreprendre ,3, emprender
+317,débarrasser,1,quitar
+318,comparer ,1, comparar
+319,entretenir ,3, mantener
+320,amuser,1, divertir
+321,plaindre ,3," compadecer, lamentar"
+322,fabriquer ,1, fabricar
+323,attaquer ,1, atacar
+324,combattre ,3," combatir, luchar"
+325,s'approcher,1,acercarse à
+326,accroître ,3," incrementar, aumentar"
+327,ignorer ,1," ignorar, desconocer"
+328,reposer,1, descansar
+329,attirer,1, atraer
+330,songer ,1," pensar, soñar"
+331,se débarrasser,1,deshacerse de
+332,emmener ,1, llevar
+333,opposer ,1, oponer
+334,visiter ,1, visitar
+335,améliorer ,1, mejorar
+336,annoncer ,1, anunciar
+337,éprouver ,1," experimentar, sentir"
+338,accompagner,1, acompañar
+339,recommencer ,1," recomenzar, empezar de nuevo"
+340,conseiller ,1, aconsejar
+341,brûler,1, quemar
+342,adresser,1," dirigir, enviar"
+343,adapter,1, adaptar
+344,prétendre ,3," pretender, afirmar"
+345,rapprocher,1, acercar
+346,confier,1," confiar, encomendar"
+347,indiquer ,1, indicar
+348,nier ,1, negar
+349,signaler ,1, señalar
+350,serrer,1," apretar, estrechar"
+351,démontrer ,1, demostrar
+352,réussir ,3," lograr, tener éxito"
+353,soumettre ,3, someter
+354,appuyer,1, apoyar
+355,surveiller,1, vigilar
+356,prier ,1," rezar, rogar"
+357,éclater ,1, estallar
+358,acquérir ,3, adquirir
+359,chasser ,1," cazar, ahuyentar"
+360,endormir,3,adormecer
+361,attribuer ,1, atribuir
+362,souligner ,1, subrayar
+363,épouser,1, casarse con
+364,adopter ,1, adoptar
+365,interroger ,1," interrogar, preguntar"
+366,révéler ,1, revelar
+367,éclairer ,1," iluminar, aclarar"
+368,limiter ,1, limitar
+369,demeurer ,1,permanecer
+370,libérer,1, liberar
+371,inventer ,1, inventar
+372,consacrer,1," consagrar, dedicar"
+373,faciliter ,1, facilitar
+374,s'endormir,3,dormirse
+375,ranger,1," ordenar, arreglar"
+376,plaire ,3," gustar, agradar"
+377,goûter,1, probar
+378,effacer ,1, borrar
+379,communiquer,1, comunicar
+380,exécuter ,1, ejecutar
+381,boucher ,1," tapar, obstruir"
+382,répartir ,2," repartir, distribuir"
+383,repartir ,3,repartir
+384,réunir,2," reunir, juntar"
+385,respecter ,1, respetar
+386,interpréter ,1, interpretar
+387,forcer ,1, forzar
+388,contrôler,1, controlar
+389,vaincre ,3, vencer
+390,ficher ,1," archivar, fastidiar"
+391,lâcher ,1, soltar
+392,trembler ,1, temblar
+393,supprimer ,1," suprimir, eliminar"
+394,identifier,1, identificar
+395,opérer ,1, operar
+396,diminuer ,1, disminuir
+397,imiter ,1, imitar
+398,manifester,1, manifestar
+399,insister ,1, insistir
+400,admirer ,1, admirar
+401,rétablir,2, restablecer
+402,filer ,1,hilar
+403,contenter,1," contentar, satisfacer"
+404,mêler,1, mezclar
+405,nommer ,1, nombrar
+406,exposer ,1, exponer
+407,écraser ,1, aplastar
+408,marier,1, casar
+409,achever ,1," completar, terminar"
+410,jouir ,2," disfrutar, gozar"
+411,surprendre ,3, sorprender
+412,soulever,1, levantar
+413,fondre ,3,fundir
+414,dissimuler,1, disimular
+415,allumer,1," encender, prender"
+416,consulter ,1, consultar
+417,briser ,1," romper, quebrar"
+418,obéir ,2, obedecer
+419,reconstituer ,1, reconstituir
+420,enfoncer ,1," hundir, clavar"
+421,analyser ,1, analizar
+422,éliminer ,1, eliminar
+423,étonner,1," asombrar, sorprender"
+424,terminer ,1, terminar
+425,procurer ,1, procurar
+426,contempler,1, contemplar
+427,peser ,1, pesar
+428,transporter ,1, transportar
+429,ressembler ,1, parecerse
+430,se fondre,3,derretirse
+431,classer ,1, clasificar
+432,éteindre ,3, apagar
+433,inscrire ,3, inscribir
+434,déplacer,1," desplazar, mover"
+435,habiter,1," habitar, vivir"
+436,ramasser ,1, recoger
+437,attacher,1, atar
+438,accueillir ,3," acoger, recibir"
+439,sonner ,1," sonar, tocar"
+440,substituer ,1, sustituir
+441,déceler ,1, detectar
+442,soigner,1, cuidar
+443,fumer ,1, fumar
+444,arranger,1," arreglar, ordenar"
+445,parcourir ,3, recorrer
+446,reculer,1, retroceder
+447,claquer ,1, chasquear
+448,veiller ,1," velar, vigilar"
+449,compléter ,1, completar
+450,publier ,1, publicar
+451,hésiter ,1," dudar, vacilar"
+452,téléphoner ,1," telefonear, llamar"
+453,contenir ,3, contener
+454,dominer ,1, dominar
+455,transmettre ,3, transmitir
+456,causer ,1, causar
+457,situer ,1," situar, ubicar"
+458,détacher ,1," desprender, separar"
+459,fonctionner ,1, funcionar
+460,rassurer,1, tranquilizar
+461,avaler ,1, tragar
+462,associer ,1, asociar
+463,rassembler ,1," reunir, juntar"
+464,saluer ,1, saludar
+465,briller ,1, brillar
+466,commander ,1," comandar, ordenar"
+467,valoir ,3, valer
+468,reproduire ,3, reproducir
+469,recueillir ,3, recoger
+470,taper ,1," teclear, golpear"
+471,isoler ,1, aislar
+472,mentir ,3, mentir
+473,rattraper ,1," alcanzar, atrapar"
+474,multiplier ,1, multiplicar
+475,orienter,1, orientar
+476,user ,1," usar, desgastar"
+477,affronter ,1," afrontar, enfrentar"
+478,enseigner ,1, enseñar
+479,falloir ,3," hacer falta, necesitar"
+480,enfermer ,1, encerrar
+481,dessiner ,1, dibujar
+482,favoriser ,1, favorecer
+483,retomber ,1, recaer
+484,recourir ,3, recurrir
+485,pratiquer ,1, practicar
+486,abattre ,3," abatir, derribar"
+487,baisser ,1, bajar
+488,bénéficier ,1, beneficiar
+489,fonder ,1, fundar
+490,exiger ,1, exigir
+491,réparer ,1, reparar
+492,risquer ,1, arriesgar
+493,percevoir ,3, percibir
+494,comporter ,1, comportar
+495,vider ,1, vaciar
+496,accéder ,1, acceder
+497,composer ,1, componer
+498,formuler ,1, formular
+499,caresser ,1, acariciar
+500,signer ,1, firmar
+501,prolonger ,1, prolongar
+502,varier ,1, variar
+503,détourner ,1, desviar
+504,rapporter ,1," reportar, devolver"
+505,consoler ,1, consolar
+506,éveiller ,1, despertar
+507,regagner ,1," recuperar, volver a ganar"
+508,calmer ,1, calmar
+509,survivre ,3, sobrevivir
+510,renforcer ,1," reforzar, fortalecer"
+511,réclamer ,1, reclamar
+512,plonger ,1," sumergir, bucear"
+513,ressortir ,3," salir de nuevo, destacar"
+514,attraper ,1," atrapar, coger"
+515,négliger ,1," descuidar, negligir"
+516,figurer ,1," figurar, aparecer"
+517,corriger ,1, corregir
+518,chier ,1, cagar
+519,hurler ,1," gritar, aullar"
+520,craquer ,1,crujir
+521,préserver ,1, preservar
+522,récupérer ,1, recuperar
+523,accrocher ,1," colgar, enganchar"
+524,grandir ,3, crecer
+525,reprocher ,1, reprochar
+526,habiller,1,vestir
+527,tarder ,1, tardar
+528,déposer ,1," depositar, dejar"
+529,assumer ,1, asumir
+530,évaluer ,1, evaluar
+531,susciter ,1, suscitar
+532,noyer ,1, ahogar
+533,regretter ,1,lamentar
+534,exploiter ,1, explotar
+535,remuer ,1," mover, revolver"
+536,remercier,1, agradecer
+537,inviter ,1, invitar
+538,se craquer,1,romperse
+539,rejeter ,1, rechazar
+540,déduire ,3, deducir
+541,charger ,1, cargar
+542,échanger ,1, intercambiar
+543,appartenir ,3, pertenecer
+544,persuader ,1, persuadir
+545,planter ,1, plantar
+546,s'habiller,1,vestirse
+547,distraire ,3, distraer
+548,percer ,1, perforar
+549,tracer ,1, trazar
+550,guider ,1, guiar
+551,bâtir ,2," construir, edificar"
+552,combler ,1," colmar, llenar"
+553,déranger ,1," molestar, perturbar"
+554,déclarer ,1, declarar
+555,se repentir,1,arrepentirse
+556,interrompre ,3, interrumpir
+557,plier ,1, doblar
+558,inquiéter,1," inquietar, preocupar"
+559,secouer,1, sacudir
+560,bouffer ,1," comer (coloquial), zampar"
+561,entrevoir ,3," entrever, vislumbrar"
+562,souffler ,1, soplar
+563,souhaiter ,1, desear
+564,discerner ,1, discernir
+565,confirmer ,1, confirmar
+566,allonger ,1,alargar
+567,grimper ,1," trepar, escalar"
+568,pardonner ,1, perdonar
+569,repérer ,1," localizar, detectar"
+570,estimer ,1," estimar, valorar"
+571,presser ,1," presionar, apretar"
+572,creuser ,1," cavar, excavar"
+573,lier ,1," ligar, unir"
+574,clocher ,1," estar mal, no funcionar bien (coloquial)"
+575,boulanger ,1," hacer pan, panificar"
+576,verser ,1," verter, derramar"
+577,refermer ,1," volver a cerrar, cerrar de nuevo"
+578,repousser ,1," rechazar, posponer"
+579,piquer ,1," picar, pinchar, robar (coloquial)"
+580,obliger ,1, obligar
+581,pencher,1,inclinar
+582,informer,1, informar
+583,correspondre ,3, corresponder
+584,conquérir ,3, conquistar
+585,étouffer ,1," asfixiar, sofocar"
+586,déchiffrer ,1, descifrar
+587,s'allonger,1,tumbarse
+588,ressentir ,3, sentir
+589,sacrifier ,1, sacrificar
+590,mordre ,3, morder
+591,désirer ,1, desear
+592,excuser,1," excusar, disculpar"
+593,encourager ,1," animar, alentar"
+594,subsister ,1, subsistir
+595,explorer ,1, explorar
+596,nettoyer ,1, limpiar
+597,délivrer ,1," liberar, entregar"
+598,gêner ,1," molestar, incomodar"
+599,coller ,1," pegar, adherir"
+600,avertir ,2," advertir, avisar"
+601,ôter ,1," quitar, remover"
+602,élargir ,2," ampliar, ensanchar"
+603,intégrer ,1, integrar
+604,se pencher,1,inclinarse
+605,garantir ,2, garantizar
+606,renouveler ,1, renovar
+607,oser ,1, atreverse
+608,fouiller ,1," registrar, hurgar"
+609,répandre ,3," difundir, esparcir"
+610,résumer ,1, resumir
+611,interdire ,3, prohibir
+612,pisser ,1, orinar
+613,convenir ,3," convenir, acordar"
+614,venger ,1, vengar
+615,surmonter ,1, superar
+616,rédiger ,1, redactar
+617,contribuer ,1, contribuir
+618,jaillir ,2," brotar, surgir"
+619,emprunter ,1, pedir prestado
+620,défiler ,1, desfilar
+621,agiter ,1, agitar
+622,séduire ,3, seducir
+623,revivre ,3, revivir
+624,signifier ,1, significar
+625,flotter ,1, flotar
+626,défaire ,3, deshacer
+627,croître ,3, crecer
+628,concilier ,1, conciliar
+629,émettre ,3, emitir
+630,concentrer,1, concentrar
+631,suffire ,3," bastar, ser suficiente"
+632,renvoyer ,1," despedir, enviar de nuevo"
+633,renverser ,1," derribar, volcar"
+634,commettre ,3, cometer
+635,inspirer ,1, inspirar
+636,troubler ,1," turbar, perturbar"
+637,chauffer ,1, calentar
+638,balancer ,1," balancear, lanzar (coloquial)"
+639,réserver ,1, reservar
+640,soucier ,1, preocupar(se)
+641,mentionner ,1, mencionar
+642,enregistrer ,1," grabar, registrar"
+643,réchauffer ,1, recalentar
+644,élaborer ,1, elaborar
+645,assimiler ,1, asimilar
+646,dénoncer ,1, denunciar
+647,voyager ,1, viajar
+648,témoigner ,1," testificar, atestiguar"
+649,précipiter,1, precipitar
+650,suggérer ,1, sugerir
+651,embarquer ,1, embarcar
+652,loger ,1,alojar
+653,régner ,1, reinar
+654,distribuer ,1, distribuir
+655,sécher ,1, secar
+656,enrichir,3, enriquecer
+657,soupçonner,1, sospechar
+658,essuyer ,1," secar, limpiar"
+659,dissoudre ,3, disolver
+660,compenser ,1, compensar
+661,grouper ,1, agrupar
+662,cueillir ,3," recoger, cosechar"
+663,manier ,1, manejar
+664,caractériser ,1, caracterizar
+665,progresser ,1, progresar
+666,absorber ,1, absorber
+667,maîtriser,1," dominar, controlar"
+668,basculer ,1," volcar, bascular"
+669,compromettre ,3, comprometer
+670,circuler ,1, circular
+671,pécher ,1, pecar
+672,pêcher ,1, pescar
+673,déclencher ,1, desencadenar
+674,se loger,1,hospedarse
+675,alimenter ,1, alimentar
+676,épargner ,1," ahorrar, perdonar"
+677,instruire ,3, instruir
+678,apaiser ,1," apaciguar, calmar"
+679,remédier ,1, remediar
+680,accuser ,1, acusar
+681,cracher ,1, escupir
+682,heurter ,1," chocar, golpear"
+683,enfiler ,1,ensartar
+684,souper ,1, cenar
+685,redresser ,1, enderezar
+686,nager ,1, nadar
+687,coudre ,3, coser
+688,envahir ,2, invadir
+689,ennuyer ,1," aburrir, molestar"
+690,louer ,1," alquilar, elogiar"
+691,évoluer ,1, evolucionar
+692,préférer ,1, preferir
+693,habituer,1," habituar, acostumbrar"
+694,repasser ,1," planchar, volver a pasar"
+695,soustraire ,3, sustraer
+696,baigner ,1, bañar
+697,consentir ,3, consentir
+698,condamner ,1, condenar
+699,négocier ,1, negociar
+700,guetter ,1," acechar, vigilar"
+701,protester ,1, protestar
+702,reporter ,1," aplazar, posponer"
+703,sembler ,1, parecer
+704,bondir ,2," saltar, brincar"
+705,vibrer ,1, vibrar
+706,dissiper ,1, disipar
+707,s'enfiler,1,ponerse (ropa)
+708,pendre ,3, colgar
+709,rattacher ,1," volver a atar, vincular"
+710,moquer,1, burlarse
+711,trancher ,1," cortar, decidir"
+712,atténuer ,1, atenuar
+713,déchirer ,1," romper, desgarrar"
+714,priver ,1, privar
+715,voter ,1, votar
+716,triompher ,1, triunfar
+717,murmurer ,1, murmurar
+718,repentir,3, arrepentirse
+719,pourvoir ,3, proveer
+720,édifier ,1, edificar
+721,exclure ,3, excluir
+722,renseigner,1, informar
+723,enterrer ,1, enterrar
+724,parer ,1," adornar, proteger"
+725,ordonner ,1, ordenar
+726,gratter ,1, rascar
+727,diviser ,1, dividir
+728,frotter ,1, frotar
+729,déployer ,1, desplegar
+730,rigoler ,1, reírse (coloquial)
+731,raisonner ,1, razonar
+732,tailler ,1," tallar, recortar"
+733,bavarder ,1," charlar, chatear"
+734,illustrer ,1, ilustrar
+735,capter ,1, captar
+736,relire ,3, releer
+737,mériter ,1, merecer
+738,émouvoir ,3, emocionar
+739,revêtir ,3," revestir, vestir"
+740,dérouler ,1,desenrollar
+741,étaler ,1, extender
+742,dérober ,1, robar
+743,fréquenter ,1, frecuentar
+744,abriter ,1," albergar, refugiar"
+745,promettre ,3, prometer
+746,blesser ,1," herir, lastimar"
+747,approuver ,1, aprobar
+748,animer ,1, animar
+749,cultiver ,1, cultivar
+750,relier ,1," enlazar, conectar"
+751,célébrer ,1, celebrar
+752,dévorer ,1, devorar
+753,résigner,1, resignar(se)
+754,hâter,1," apresurar, acelerar"
+755,contester ,1," impugnar, cuestionar"
+756,vanter,1," alabar, presumir"
+757,recouvrir ,3," recubrir, cubrir"
+758,critiquer ,1, criticar
+759,croiser ,1, cruzar
+760,doubler ,1," doblar, adelantar"
+761,conférer ,1, conferir
+762,réciter ,1, recitar
+763,restaurer ,1, restaurar
+764,résulter ,1, resultar
+765,se dérouler,1,desarrollarse
+766,qualifier ,1, calificar
+767,promouvoir ,3, promover
+768,attarder,1,retrasar(se)
+769,gémir ,3, gemir
+770,bûcher ,1," estudiar mucho, empollar"
+771,combiner ,1, combinar
+772,approfondir ,3, profundizar
+773,succéder ,1," suceder, seguir"
+774,coordonner ,1, coordinar
+775,abaisser ,1," bajar, disminuir"
+776,cogner ,1, golpear
+777,imprimer ,1, imprimir
+778,accélérer ,1, acelerar
+779,jurer ,1," jurar, maldecir"
+780,contraindre ,3," obligar, coaccionar"
+781,mouiller ,1, mojar
+782,déshabiller,1," desvestir, desnudar"
+783,invoquer ,1, invocar
+784,ralentir ,2," ralentizar, disminuir la velocidad"
+785,préoccuper,1, preocupar
+786,dépenser ,1, gastar
+787,déboucher ,1," destapar, desembocar"
+788,siffler ,1, silbar
+789,accumuler ,1, acumular
+790,restituer ,1," restituir, devolver"
+791,retarder ,1, retrasar
+792,décrocher ,1," descolgar, conseguir (coloquial)"
+793,redouter ,1, temer
+794,s'attarder,1,demorarse
+795,influencer ,1, influenciar
+796,généraliser ,1, generalizar
+797,entamer ,1," empezar, iniciar"
+798,balayer ,1, barrer
+799,simplifier ,1, simplificar
+800,perfectionner ,1, perfeccionar
+801,épuiser ,1, agotar
+802,épanouir,3," florecer, prosperar"
+803,débarquer ,1," desembarcar, llegar"
+804,redevenir ,3, volver a ser
+805,éclaircir ,2," aclarar, iluminar"
+806,consommer ,1, consumir
+807,fendre ,3," hender, partir"
+808,soulager ,1, aliviar
+809,décourager ,1," desalentar, desanimar"
+810,engendrer ,1, engendrar
+811,fêter ,1," celebrar, festejar"
+812,renaître ,3, renacer
+813,affranchir ,3," liberar, franquear"
+814,freiner ,1, frenar
+815,racheter ,1," recomprar, redimir"
+816,initier ,1, iniciar
+817,dater ,1, fechar
+818,raser ,1," afeitar, derribar"
+819,solliciter ,1, solicitar
+820,errer ,1," errar, vagar"
+821,honorer ,1, honrar
+822,féliciter ,1, felicitar
+823,entourer ,1, rodear
+824,dépouiller ,1, despojar
+825,exciter ,1," excitar, entusiasmar"
+826,tâcher,1," intentar, manchar"
+827,pleuvoir ,3, llover
+828,insérer ,1, insertar
+829,accommoder ,1, acomodar
+830,énumérer ,1, enumerar
+831,incliner ,1, inclinar
+832,convertir ,2, convertir
+833,exploser ,1, explotar
+834,redire ,3," repetir, volver a decir"
+835,méconnaître ,3," desconocer, ignorar"
+836,rallier ,1,reunir
+837,nouer ,1," anudar, establecer"
+838,aménager ,1," acondicionar, arreglar"
+839,viser ,1," apuntar, aspirar"
+840,débrouiller,1," desenredar, arreglárselas"
+841,sombrer ,1, hundirse
+842,masquer ,1," enmascarar, ocultar"
+843,ressusciter ,1, resucitar
+844,buter ,1,tropezar
+845,mépriser ,1, despreciar
+846,découper ,1," recortar, cortar"
+847,proclamer ,1, proclamar
+848,menacer ,1, amenazar
+849,mater ,1," mirar, dominar (coloquial)"
+850,contrarier ,1," contrariar, frustrar"
+851,réjouir,2, alegrar(se)
+852,cerner ,1," rodear, delimitar"
+853,gouverner ,1, gobernar
+854,dispenser ,1," dispensar, eximir"
+855,affecter ,1," afectar, asignar"
+856,renier ,1, renegar
+857,virer ,1," despedir, echar"
+858,périr ,2, perecer
+859,plaider ,1, abogar
+860,gonfler ,1, inflar
+861,saigner ,1, sangrar
+862,redonner ,1," devolver, dar de nuevo"
+863,s'unir,1,unirse
+864,fourrer ,1," meter, rellenar"
+865,hisser ,1, izar
+866,photographier ,1, fotografiar
+867,expédier ,1," enviar, despachar"
+868,étrangler ,1, estrangular
+869,puiser ,1," sacar, extraer"
+870,inciter ,1," incitar, animar"
+871,projeter ,1, proyectar
+872,accentuer ,1, acentuar
+873,s'obstiner,1,obstinarse
+874,sauvegarder ,1," guardar, respaldar"
+875,lasser ,1," cansar, hartar"
+876,exagérer ,1, exagerar
+877,méditer ,1, meditar
+878,insulter ,1, insultar
+879,choir ,3, caer (arcaico)
+880,lécher ,1, lamer
+881,décoller ,1, despegar
+882,emplir ,2, llenar
+883,abuser ,1, abusar
+884,pourrir ,2, pudrirse
+885,rembourser ,1, reembolsar
+886,autoriser ,1, autorizar
+887,gravir ,2," escalar, subir"
+888,frémir ,2, temblar
+889,débattre ,3, debatir
+890,tisser ,1, tejer
+891,compliquer ,1, complicar
+892,cocher ,1, marcar
+893,dépendre ,3, depender
+894,équilibrer ,1, equilibrar
+895,détendre ,3, relajar
+896,rater ,1," fallar, perder"
+897,déborder ,1, desbordar
+898,reconstruire ,3, reconstruir
+899,redescendre ,3, volver a bajar
+900,gâcher ,1," estropear, arruinar"
+901,copier ,1, copiar
+902,contredire ,3, contradecir
+903,plaisanter ,1, bromear
+904,abîmer,1," dañar, estropear"
+905,évacuer ,1, evacuar
+906,grossir ,2," engordar, agrandar"
+907,résonner ,1, resonar
+908,aggraver ,1, agravar
+909,conformer,1, conformar
+910,hausser ,1," alzar, levantar"
+911,administrer ,1, administrar
+912,dissocier ,1, disociar
+913,effondrer,1, derrumbar(se)
+914,pressentir ,3, presentir
+915,gueuler ,1, gritar (coloquial)
+916,disputer ,1," discutir, disputar"
+917,coûter,1, costar
+918,fusiller ,1, fusilar
+919,coïncider ,1, coincidir
+920,chialer ,1, llorar (coloquial)
+921,différencier ,1, diferenciar
+922,recommander ,1, recomendar
+923,modeler ,1, modelar
+924,foncer ,1,ir rápido
+925,équiper ,1, equipar
+926,décharger ,1, descargar
+927,inspecter ,1, inspeccionar
+928,tousser ,1, toser
+929,aligner ,1, alinear
+930,instituer ,1, instituir
+931,violer ,1, violar
+932,énoncer ,1, enunciar
+933,gérer ,1, gestionar
+934,ébranler ,1," sacudir, conmover"
+935,assigner ,1, asignar
+936,émerger ,1, emerger
+937,planquer ,1, esconder (coloquial)
+938,liquider ,1, liquidar
+939,réprimer ,1, reprimir
+940,démarrer ,1," arrancar, empezar"
+941,frayer ,1," abrir camino, rozar"
+942,effrayer ,1, asustar
+943,contourner ,1," rodear, eludir"
+944,référer ,1, referir
+945,tâter ,1," palpar, tentar"
+946,retracer ,1," trazar de nuevo, relatar"
+947,différer ,1, diferir
+948,semer ,1, sembrar
+949,commenter ,1, comentar
+950,camper ,1, acampar
+951,barrer ,1," bloquear, tachar"
+952,pater ,1, sufrir
+953,se dépêcher,1,apresurarse
+954,flatter ,1, halagar
+955,ranimer ,1, reanimar
+956,confronter ,1, confrontar
+957,confesser ,1, confesar
+958,retentir ,2, resonar
+959,sursauter,1, sobresaltarse
+960,incarner ,1, encarnar
+961,anéantir ,3, aniquilar
+962,détester ,1, detestar
+963,tremper ,1," mojar, empapar"
+964,feindre ,3, fingir
+965,regrouper,1, reagrupar
+966,doter ,1, dotar
+967,économiser ,1," economizar, ahorrar"
+968,égarer,1," extraviar, perder"
+969,articuler ,1, articular
+970,refroidir,2, enfriar
+971,brouiller,1," enturbiar, confundir"
+972,adhérer ,1,adherir
+973,recruter ,1, reclutar
+974,attendrir ,2, enternecer
+975,trier ,1, clasificar
+976,tordre ,3, torcer
+977,ramper ,1, arrastrarse
+978,aventurer,1, aventurar(se)
+979,détailler ,1, detallar
+980,assassiner ,1, asesinar
+981,restreindre ,3, restringir
+982,apprivoiser ,1, domesticar
+983,défier ,1, desafiar
+984,impressionner ,1, impresionar
+985,pointer ,1, apuntar
+986,engloutir ,2, engullir
+987,envelopper ,1, envolver
+988,ruiner ,1, arruinar
+989,réconcilier,1, reconciliar
+990,abolir ,2, abolir
+991,corner ,1," doblar (una página), tocar la bocina"
+992,manipuler ,1, manipular
+993,esquisser ,1, esbozar
+994,amorcer ,1," iniciar, cebar"
+995,dériver ,1, derivar
+996,incorporer ,1, incorporar
+997,ronfler ,1, roncar
+998,disperser,1, dispersar
+999,replacer ,1," reemplazar, volver a colocar"
+1000,roder ,1, merodear
+1001,échouer ,1, fracasar
+1002,mélanger,1, mezclar
+1003,dévoiler ,1," revelar, develar"
+1004,détecter ,1, detectar
+1005,raccrocher ,1, colgar (el teléfono)
+1006,applaudir ,2, aplaudir
+1007,excéder ,1, exceder
+1008,reparaître ,3, reaparecer
+1009,financer ,1, financiar
+1010,se conformer,1, conformar
+1011,s'effondrer,1, derrumbar(se)
+1012,se sursauter,1, sobresaltarse
+1013,se regrouper,1, reagrupar
+1014,s'égarer,1," extraviar, perder"
+1015,se refroidir,2, enfriar
+1016,se brouiller,1," enturbiar, confundir"
+1017,s'aventurer,1, aventurar(se)
+1018,se réconcilier,1, reconciliar
+1019,se disperser,1, dispersar
+1020,se mélanger,1, mezclar
+1021,se retrouver,1,encontrarse
+1022,s'assurer,1,asegurarse
+1023,s'arrêter,1,detenerse
+1024,se sentir,3,sentirse
+1025,se changer,1,cambiarse
+1026,s'imaginer,1,imaginarse
+1027,se lever,1,levantarse
+1028,se tourner,1,girarse
+1029,se réaliser,1,realizarse
+1030,se présenter,1,presentarse
+1031,s'occuper,1,ocuparse
+1032,s'échapper,1,escaparse
+1033,se battre,3,pelearse
+1034,s'exprimer,1,expresarse
+1035,se retourner,1,darse la vuelta
+1036,se défendre,3,defenderse
+1037,se rappeler,1,recordarse
+1038,se cacher,1,esconderse
+1039,se développer,1,desarrollarse
+1040,se sauver,1,salvarse
+1041,s'apercevoir,3,darse cuenta
+1042,se placer,1,colocarse
+1043,se traiter,1,tratarse
+1044,s'étendre,3,extenderse
+1045,se fier,1,fiarse
+1046,se décider,1,decidirse
+1047,entrainer,1,entrenar
+1048,se protéger,1,protegerse
+1049,se fermer,1,cerrarse
+1050,se ramener,1,traerse
+1051,s'embrasser,1,besarse
+1052,s'élever,1,elevarse
+1053,se séparer,1,separarse
+1054,se transformer,1,transformarse
+1055,s'installer,1,instalarse
+1056,se promener,1,pasearse
+1057,se laver,1,lavarse
+1058,se disposer,1,disponerse
+1059,s'intéresser,1,interesarse
+1060,se marquer,1,marcarse
+1061,s'effectuer,1,efectuarse
+1062,s'éloigner,1,alejarse
+1063,se réveiller,1,despertarse
+1064,s'écarter,1,apartarse
+1065,se diriger,1,dirigirse
+1066,se retirer,1,retirarse
+1067,se tromper,1,equivocarse
+1068,se dresser,1,levantarse
+1069,se traîner,1,arrastrarse
+1070,se débarrasser,1,deshacerse
+1071,s'amuser,1,divertirse
+1072,se reposer,1, descansar
+1073,s'attirer,1,atraerse
+1074,s'accompagner,1,acompañarse
+1075,s'adresser,1,dirigirse
+1076,s'adapter,1,adaptarse
+1077,se rapprocher,1,acercarse
+1078,se confier,1,confiarse
+1079,se serrer,1,apretarse
+1080,s'appuyer,1,apoyarse
+1081,se surveiller,1,vigilarse
+1082,s'épouser,1,casarse
+1083,se libérer,1,liberarse
+1084,se consacrer,1,consagrarse
+1085,se ranger,1,ordenarse
+1086,se communiquer,1,comunicarse
+1087,se réunir,2,reunirse
+1088,se contrôler,1,controlarse
+1089,s'identifier,1,identificarse
+1090,se manifester,1,manifestarse
+1091,se rétablir,2,restablecerse
+1092,se contenter,1,contentarse
+1093,se mêler,1,mezclarse
+1094,se marier,1,casarse
+1095,se soulever,1,levantarse
+1096,se dissimuler,1,disimularse
+1097,s'allumer,1,encenderse
+1098,s'étonner,1,asombrarse
+1099,se contempler,1,contemplarse
+1100,se déplacer,1,desplazarse
+1101,s'habiter,1,habitarse
+1102,s'attacher,1,atarse
+1103,se soigner,1,cuidarse
+1104,s'arranger,1,arreglarse
+1105,se reculer,1,retrocederse
+1106,se rassurer,1,tranquilizarse
+1107,s'orienter,1,orientarse
+1108,se remercier,1,agradecerse
+1109,s'inquiéter,1,inquietarse
+1110,se secouer,1,sacudirse
+1111,s'informer,1,informarse
+1112,s'excuser,1,disculparse
+1113,se concentrer,1,concentrarse
+1114,se précipiter,1,precipitarse
+1115,s'enrichir,3,enriquecerse
+1116,se soupçonner,1,sospecharse
+1117,maitriser,1,dominar
+1118,s'habituer,1,acostumbrarse
+1119,se moquer,1, burlarse
+1120,se renseigner,1,informarse
+1121,se résigner,1,resignarse
+1122,se hâter,1,apresurarse
+1123,se vanter,1,presumir
+1124,s'attarder,1,retrasarse
+1125,se déshabiller,1,desvestirse
+1126,se préoccuper,1,preocuparse
+1127,s'épanouir,3,florecer
+1128,tacher,1,manchar
+1129,se débrouiller,1,arreglárselas
+1130,se réjouir,2,alegrarse

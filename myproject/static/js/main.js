@@ -170,3 +170,227 @@ document.body.addEventListener('htmx:afterSwap', (evt) => {
 document.body.addEventListener('htmx:wsAfterMessage', () => {
   scrollMessagesToBottom();
 });
+
+// === VERB CONJUGATION FUNCTIONS ===
+let verbConjugationData = {
+    availableTenses: {},
+    currentLevel: 'easy',
+    initialized: false
+};
+
+function initVerbConjugation() {
+    const sessionForm = document.getElementById('sessionForm');
+    if (!sessionForm) {
+        // Not on conjugation page, reset initialization flag
+        verbConjugationData.initialized = false;
+        return;
+    }
+    
+    // Prevent multiple initializations on the same page
+    if (verbConjugationData.initialized) return;
+    verbConjugationData.initialized = true;
+    
+    loadTenses('fr'); // Load French tenses by default
+    selectLevel('easy'); // Select easy by default
+    
+    // Remove existing event listeners to prevent duplicates
+    const languageRadios = document.querySelectorAll('input[name="language"]');
+    const difficultyRadios = document.querySelectorAll('input[name="difficulty_level"]');
+    
+    // Language change handler
+    languageRadios.forEach(radio => {
+        radio.removeEventListener('change', handleLanguageChange);
+        radio.addEventListener('change', handleLanguageChange);
+    });
+    
+    // Level radio button handlers
+    difficultyRadios.forEach(radio => {
+        radio.removeEventListener('change', handleDifficultyChange);
+        radio.addEventListener('change', handleDifficultyChange);
+    });
+    
+    // Form validation before submit
+    sessionForm.removeEventListener('submit', handleFormSubmit);
+    sessionForm.addEventListener('submit', handleFormSubmit);
+}
+
+function handleLanguageChange() {
+    loadTenses(this.value);
+    selectLevel(verbConjugationData.currentLevel);
+}
+
+function handleDifficultyChange() {
+    if (this.checked) {
+        const level = this.dataset.level;
+        selectLevel(level);
+    }
+}
+
+function handleFormSubmit(e) {
+    const checkedTenses = document.querySelectorAll('input[name="selected_tenses"]:checked');
+    if (checkedTenses.length === 0) {
+        e.preventDefault();
+        alert('Please select at least one tense to practice.');
+        return false;
+    }
+}
+
+function loadTenses(language) {
+    const tensesUrl = document.querySelector('[data-tenses-url]')?.dataset.tensesUrl;
+    if (!tensesUrl) return;
+    
+    fetch(`${tensesUrl}?language=${language}`)
+        .then(response => response.json())
+        .then(data => {
+            verbConjugationData.availableTenses = data.tenses;
+            renderTenseTable();
+            if (verbConjugationData.currentLevel) {
+                selectLevel(verbConjugationData.currentLevel);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading tenses:', error);
+        });
+}
+
+function renderTenseTable() {
+    const tableContainer = document.getElementById('tenseCheckboxes');
+    if (!tableContainer) return;
+    
+    tableContainer.innerHTML = '<table><tbody id="tense-table-body"></tbody></table>';
+    const tableBody = document.getElementById('tense-table-body');
+
+    const difficultyLevels = {
+        'easy': { tenses: [], color: '#22c55e' },
+        'medium': { tenses: [], color: '#eab308' },
+        'hard': { tenses: [], color: '#ef4444' },
+        'extreme': { tenses: [], color: '#000000' }
+    };
+
+    Object.keys(verbConjugationData.availableTenses).forEach(difficulty => {
+        if (difficultyLevels[difficulty]) {
+            difficultyLevels[difficulty].tenses = verbConjugationData.availableTenses[difficulty];
+        }
+    });
+
+    Object.keys(difficultyLevels).forEach(level => {
+        const levelData = difficultyLevels[level];
+        
+        if (levelData.tenses && levelData.tenses.length > 0) {
+            levelData.tenses.forEach(tense => {
+                const row = tableBody.insertRow();
+                row.className = 'tense-checkbox-item';
+                row.style.borderLeftColor = levelData.color;
+                
+                row.innerHTML = `
+                    <label class="tense-checkbox-label">
+                        <input type="checkbox" name="selected_tenses" value="${tense}" class="tense-checkbox" onchange="handleManualTenseSelection()">
+                        <span class="tense-name">${tense}</span>
+                    </label>
+                `;
+            });
+        }
+    });
+}
+
+function selectLevel(level) {
+    verbConjugationData.currentLevel = level;
+    
+    const levelRadio = document.querySelector(`input[name="difficulty_level"][value="${level}"]`);
+    if (levelRadio) {
+        levelRadio.checked = true;
+    }
+    
+    const checkboxes = document.querySelectorAll('input[name="selected_tenses"]');
+    checkboxes.forEach(checkbox => {
+        const tense = checkbox.value;
+        let shouldCheck = false;
+        
+        if (level === 'easy') {
+            shouldCheck = verbConjugationData.availableTenses.easy && verbConjugationData.availableTenses.easy.includes(tense);
+        } else if (level === 'medium') {
+            shouldCheck = (verbConjugationData.availableTenses.easy && verbConjugationData.availableTenses.easy.includes(tense)) ||
+                         (verbConjugationData.availableTenses.medium && verbConjugationData.availableTenses.medium.includes(tense));
+        } else if (level === 'hard') {
+            shouldCheck = (verbConjugationData.availableTenses.easy && verbConjugationData.availableTenses.easy.includes(tense)) ||
+                         (verbConjugationData.availableTenses.medium && verbConjugationData.availableTenses.medium.includes(tense)) ||
+                         (verbConjugationData.availableTenses.hard && verbConjugationData.availableTenses.hard.includes(tense));
+        }
+        
+        checkbox.checked = shouldCheck;
+    });
+    
+    updateConjugationLevelInput(level);
+}
+
+function handleManualTenseSelection() {
+    const checkedTenses = Array.from(document.querySelectorAll('input[name="selected_tenses"]:checked'))
+                              .map(cb => cb.value);
+    
+    const easyTenses = verbConjugationData.availableTenses.easy || [];
+    const mediumTenses = [...easyTenses, ...(verbConjugationData.availableTenses.medium || [])];
+    const hardTenses = [...mediumTenses, ...(verbConjugationData.availableTenses.hard || [])];
+    
+    if (arraysEqual(checkedTenses.sort(), easyTenses.slice().sort())) {
+        verbConjugationData.currentLevel = 'easy';
+    } else if (arraysEqual(checkedTenses.sort(), mediumTenses.slice().sort())) {
+        verbConjugationData.currentLevel = 'medium';
+    } else if (arraysEqual(checkedTenses.sort(), hardTenses.slice().sort())) {
+        verbConjugationData.currentLevel = 'hard';
+    } else {
+        verbConjugationData.currentLevel = 'custom';
+    }
+    
+    if (verbConjugationData.currentLevel !== 'custom') {
+        const levelRadio = document.querySelector(`input[name="difficulty_level"][value="${verbConjugationData.currentLevel}"]`);
+        if (levelRadio) {
+            levelRadio.checked = true;
+        }
+    } else {
+        document.querySelectorAll('input[name="difficulty_level"]').forEach(radio => {
+            radio.checked = false;
+        });
+    }
+    
+    updateConjugationLevelInput(verbConjugationData.currentLevel);
+}
+
+function updateConjugationLevelInput(level) {
+    const existingInput = document.getElementById('conjugation_level_input');
+    if (existingInput) {
+        existingInput.remove();
+    }
+    
+    const hiddenInput = document.createElement('input');
+    hiddenInput.type = 'hidden';
+    hiddenInput.name = 'conjugation_level';
+    hiddenInput.value = level;
+    hiddenInput.id = 'conjugation_level_input';
+    
+    const form = document.getElementById('sessionForm');
+    if (form) {
+        form.appendChild(hiddenInput);
+    }
+}
+
+function arraysEqual(a, b) {
+    if (a.length !== b.length) return false;
+    return a.every((val, index) => val === b[index]);
+}
+
+// Initialize verb conjugation when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    initVerbConjugation();
+});
+
+// Also initialize when navigating to the page (for SPA-like behavior)
+document.body.addEventListener('htmx:afterSettle', function() {
+    initVerbConjugation();
+});
+
+// Fallback: initialize immediately if DOM is already ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initVerbConjugation);
+} else {
+    initVerbConjugation();
+}

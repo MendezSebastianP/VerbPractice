@@ -1,0 +1,94 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <div class="container" data-tenses-url="{% url 'verbs_conjugation:get_tenses' %}">
+        <form id="sessionForm" class="form-with-validation" method="post" action="{% url 'verbs_conjugation:start_session' %}">
+            {% csrf_token %}
+            <h1 class="page-title--elevated">{{ title }}</h1>
+            
+            <!-- Language Selection -->
+            <div class="options-buttom-container">
+                <div class="options-buttom-heading">Language</div>
+                <div class="options-buttom-wrapper">
+                    <input class="input" type="radio" id="lang_fr" name="language" value="fr" checked>
+                    <label class="options-buttom" for="lang_fr">
+                        <span class="off">French</span>
+                        <span class="on">🇫🇷 French</span>
+                    </label>
+                    
+                    <input class="input" type="radio" id="lang_es" name="language" value="es">
+                    <label class="options-buttom" for="lang_es">
+                        <span class="off">Spanish</span>
+                        <span class="on">🇪🇸 Spanish</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Difficulty Level -->
+            <div class="options-buttom-container">
+                <div class="options-buttom-heading">Quick Selection</div>
+                <div class="options-buttom-wrapper">
+                    <input class="input" type="radio" id="level_easy" name="difficulty_level" value="easy" data-level="easy" checked>
+                    <label class="options-buttom difficulty-easy" for="level_easy">
+                        <span class="off">Easy</span>
+                        <span class="on">Easy</span>
+                    </label>
+                    
+                    <input class="input" type="radio" id="level_medium" name="difficulty_level" value="medium" data-level="medium">
+                    <label class="options-buttom difficulty-medium" for="level_medium">
+                        <span class="off">Medium</span>
+                        <span class="on">Medium</span>
+                    </label>
+                    
+                    <input class="input" type="radio" id="level_hard" name="difficulty_level" value="hard" data-level="hard">
+                    <label class="options-buttom difficulty-hard" for="level_hard">
+                        <span class="off">Hard</span>
+                        <span class="on">Hard</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Tense Selection (always visible) -->
+            <div class="options-buttom-container">
+                <div class="options-buttom-heading">Select Tenses</div>
+                <div id="tenseCheckboxes" class="tense-checklist">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+
+            <!-- Fill Level -->
+            <div class="options-buttom-container">
+                <div class="options-buttom-heading">Fill Level (Pre-fill assistance)</div>
+                <div class="options-buttom-wrapper">
+                    <input class="input" type="radio" id="fill_easy" name="fill_level" value="easy" checked>
+                    <label class="options-buttom" for="fill_easy">
+                        <span class="off">Easy</span>
+                        <span class="on">80% filled</span>
+                    </label>
+                    
+                    <input class="input" type="radio" id="fill_medium" name="fill_level" value="medium">
+                    <label class="options-buttom" for="fill_medium">
+                        <span class="off">Medium</span>
+                        <span class="on">20% filled</span>
+                    </label>
+                    
+                    <input class="input" type="radio" id="fill_hard" name="fill_level" value="hard">
+                    <label class="options-buttom" for="fill_hard">
+                        <span class="off">Hard</span>
+                        <span class="on">0% filled</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="options-buttom-container">
+                <button type="submit" class="options-buttom" style="background-color: rgb(140, 196, 157); color: white; border-color: rgb(140, 196, 157); min-width: 200px;">
+                    Start Training Session
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

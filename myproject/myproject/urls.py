@@ -27,6 +27,7 @@ urlpatterns = [
     path('users/', include('users.urls')),
     path('verbs/', include('verbs.urls')),
 	path('word_training/', include('word_training.urls')),
+    path('verbs_conjugation/', include('verbs_conjugation.urls')),
     path("chat/", include("chat.urls")),
 
 ]

@@ -1,0 +1,466 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="center-page">
+    <!-- Session Info -->
+    <div class="form-with-validation" style="max-width: 600px; margin-bottom: 1rem;">
+        <h1 class="page-title--elevated">
+            <span id="currentVerb">Loading...</span>
+        </h1>
+        
+        <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; font-size: 1rem;">
+            <div>
+                <strong>Language:</strong>
+                {% if config_obj.language == 'fr' %}🇫🇷 French{% else %}🇪🇸 Spanish{% endif %}
+            </div>
+            <div>
+                <strong>Level:</strong>
+                {% if config_obj.conjugation_level == 'easy' %}Easy
+                {% elif config_obj.conjugation_level == 'medium' %}Medium
+                {% elif config_obj.conjugation_level == 'hard' %}Hard
+                {% else %}Custom{% endif %}
+            </div>
+            <div>
+                <strong>Fill:</strong>
+                {% if config_obj.fill_level == 'easy' %}80%
+                {% elif config_obj.fill_level == 'medium' %}20%
+                {% else %}0%{% endif %}
+            </div>
+            <div>
+                <span id="verbInfo">Verb ID: -</span>
+            </div>
+        </div>
+        
+        <!-- Action buttons -->
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center;">
+            <button class="button-68" onclick="checkAnswers()" style="margin: 0;">Check Answers</button>
+            <button class="button-68" onclick="showHints()" style="margin: 0;">Show Hints</button>
+            <button class="button-68" onclick="getNewVerb()" style="margin: 0;">New Verb</button>
+        </div>
+        
+        <div style="text-align: center; margin-top: 1rem;">
+            <a href="{% url 'verbs_conjugation:session_menu' %}" style="font-size: 1rem;">← Back to Menu</a>
+        </div>
+    </div>
+
+    <!-- Conjugation Table -->
+    <div class="scroll-container" style="width: 90vw; max-width: 800px; height: 60vh;">
+        <div class="verb-header-inside">
+            Conjugation Table
+        </div>
+        <div id="conjugationTable" class="content">
+            <div style="text-align: center; padding: 2rem; font-size: 1rem;">
+                <div>Loading conjugation table...</div>
+                <div style="margin-top: 1rem; color: #558a76;">Please wait while we prepare your verb practice session.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Session configuration from Django
+const sessionConfig = JSON.parse('{{ config|escapejs }}');
+
+// Pronouns for each language
+const pronouns = {
+    'fr': ['je', 'tu', 'il/elle', 'nous', 'vous', 'ils/elles'],
+    'es': ['yo', 'tú', 'él/ella', 'nosotros', 'vosotros', 'ellos/ellas']
+};
+
+let currentVerbData = null;
+let selectedTenses = [];
+let currentTenseIndex = 0;
+let currentPronounIndex = 0;
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    getNewVerb();
+});
+
+function getNewVerb() {
+    // Show loading state
+    document.getElementById('currentVerb').textContent = 'Loading...';
+    document.getElementById('verbInfo').textContent = 'Fetching verb...';
+    document.getElementById('conjugationTable').innerHTML = `
+        <div style="text-align: center; padding: 2rem; font-size: 1rem;">
+            <div>Loading new verb...</div>
+            <div style="margin-top: 1rem; color: #558a76;">Please wait while we prepare your practice.</div>
+        </div>
+    `;
+    
+    // Get new verb from backend
+    fetch('/verbs_conjugation/api/get-verb/')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch verb');
+            }
+            return response.json();
+        })
+        .then(data => {
+            currentVerbData = data;
+            selectedTenses = data.selected_tenses;
+            
+            // Update UI
+            document.getElementById('currentVerb').textContent = `${data.verb} (${data.translation})`;
+            document.getElementById('verbInfo').textContent = `Verb ID: ${data.verb_id}`;
+            
+            // Generate the conjugation table
+            generateConjugationTable();
+        })
+        .catch(error => {
+            console.error('Error fetching verb:', error);
+            document.getElementById('conjugationTable').innerHTML = `
+                <div style="text-align: center; padding: 2rem; color: #dc3545;">
+                    <div>Error loading verb: ${error.message}</div>
+                    <button onclick="getNewVerb()" class="button-68" style="margin-top: 1rem;">Try Again</button>
+                </div>
+            `;
+        });
+}
+
+function generateConjugationTable() {
+    if (!currentVerbData || !selectedTenses.length) {
+        return;
+    }
+    
+    const tableContainer = document.getElementById('conjugationTable');
+    const language = sessionConfig.language;
+    const verbPronouns = pronouns[language];
+    
+    // Reset navigation indices
+    currentTenseIndex = 0;
+    currentPronounIndex = 0;
+    
+    let tableHTML = `
+        <table style="width: 100%; border-collapse: collapse; font-size: small;">
+            <thead>
+                <tr style="background-color: rgb(140, 196, 157); color: white;">
+                    <th style="padding: 0.5rem; border: 1px solid #ccc; text-align: left;">Pronoun</th>
+    `;
+    
+    // Add tense headers
+    selectedTenses.forEach(tense => {
+        tableHTML += `<th style="padding: 0.5rem; border: 1px solid #ccc; text-align: center;">${tense}</th>`;
+    });
+    
+    tableHTML += `
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    // Add rows for each pronoun
+    verbPronouns.forEach((pronoun, pIndex) => {
+        const rowClass = pIndex % 2 === 0 ? 'style="background-color: #fff;"' : 'style="background-color: #c7e7d6;"';
+        tableHTML += `
+            <tr ${rowClass}>
+                <td style="padding: 0.5rem; border: 1px solid #ccc; font-weight: bold; background-color: #f8f9fa;">${pronoun}</td>
+        `;
+        
+        selectedTenses.forEach((tense, tIndex) => {
+            const inputId = `conj_${pIndex}_${tIndex}`;
+            const shouldPreFill = shouldPreFillCell();
+            const correctAnswer = getCorrectAnswer(pronoun, tense);
+            
+            tableHTML += `
+                <td style="padding: 0.3rem; border: 1px solid #ccc;">
+                    <input 
+                        type="text" 
+                        class="conjugation-input" 
+                        id="${inputId}"
+                        data-pronoun="${pronoun}"
+                        data-tense="${tense}"
+                        data-pronoun-index="${pIndex}"
+                        data-tense-index="${tIndex}"
+                        placeholder="${correctAnswer || '...'}"
+                        ${shouldPreFill ? `value="${correctAnswer}" readonly` : ''}
+                        style="width: 100%; padding: 0.3rem; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; ${shouldPreFill ? 'background-color: #e9ecef; color: #6c757d;' : ''}"
+                        onkeydown="handleInputNavigation(event, ${pIndex}, ${tIndex})"
+                    >
+                </td>
+            `;
+        });
+        
+        tableHTML += `</tr>`;
+    });
+    
+    tableHTML += `
+            </tbody>
+        </table>
+    `;
+    
+    tableContainer.innerHTML = tableHTML;
+    
+    // Focus on first non-readonly input
+    focusFirstInput();
+}
+
+function shouldPreFillCell() {
+    const fillLevel = sessionConfig.fill_level;
+    const random = Math.random();
+    
+    if (fillLevel === 'easy') return random < 0.8;  // 80%
+    if (fillLevel === 'medium') return random < 0.2; // 20%
+    return false; // 0% for hard
+}
+
+function getCorrectAnswer(pronoun, tense) {
+    if (currentVerbData && currentVerbData.all_conjugations && 
+        currentVerbData.all_conjugations[tense] && 
+        currentVerbData.all_conjugations[tense][pronoun]) {
+        return currentVerbData.all_conjugations[tense][pronoun];
+    }
+    return '';
+}
+
+function focusFirstInput() {
+    // Find first non-readonly input and focus on it
+    const inputs = document.querySelectorAll('.conjugation-input:not([readonly])');
+    if (inputs.length > 0) {
+        inputs[0].focus();
+        const pIndex = parseInt(inputs[0].dataset.pronounIndex);
+        const tIndex = parseInt(inputs[0].dataset.tenseIndex);
+        currentPronounIndex = pIndex;
+        currentTenseIndex = tIndex;
+    }
+}
+
+function handleInputNavigation(event, pronounIndex, tenseIndex) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        
+        // Find next input to focus
+        let nextInput = findNextInput(pronounIndex, tenseIndex);
+        
+        if (nextInput) {
+            nextInput.focus();
+            currentPronounIndex = parseInt(nextInput.dataset.pronounIndex);
+            currentTenseIndex = parseInt(nextInput.dataset.tenseIndex);
+        } else {
+            // Reached end of current verb - submit and get new verb
+            submitCurrentVerb();
+        }
+    }
+}
+
+function findNextInput(currentPronounIndex, currentTenseIndex) {
+    const inputs = document.querySelectorAll('.conjugation-input:not([readonly])');
+    const inputsArray = Array.from(inputs);
+    
+    // Find current input index
+    const currentInputId = `conj_${currentPronounIndex}_${currentTenseIndex}`;
+    const currentInput = document.getElementById(currentInputId);
+    const currentIndex = inputsArray.indexOf(currentInput);
+    
+    // Return next input if it exists
+    if (currentIndex >= 0 && currentIndex < inputsArray.length - 1) {
+        return inputsArray[currentIndex + 1];
+    }
+    
+    return null;
+}
+
+function submitCurrentVerb() {
+    // Collect all answers
+    const inputs = document.querySelectorAll('.conjugation-input:not([readonly])');
+    const answers = {};
+    
+    inputs.forEach(input => {
+        if (input.value.trim()) {
+            answers[input.dataset.pronoun] = input.value.trim();
+        }
+    });
+    
+    if (Object.keys(answers).length === 0) {
+        alert('Please fill in at least one conjugation before moving to the next verb.');
+        return;
+    }
+    
+    // Submit answers to backend
+    const submitData = {
+        verb_id: currentVerbData.verb_id,
+        tense: currentVerbData.selected_tense,
+        answers: answers
+    };
+    
+    fetch('/verbs_conjugation/api/submit-answers/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify(submitData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert('Error: ' + data.error);
+            return;
+        }
+        
+        // Show quick feedback
+        showQuickFeedback(data);
+        
+        // Get new verb after short delay
+        setTimeout(() => {
+            getNewVerb();
+        }, 2000);
+    })
+    .catch(error => {
+        console.error('Error submitting answers:', error);
+        alert('Error submitting answers. Please try again.');
+    });
+}
+
+function showQuickFeedback(data) {
+    const score = data.score;
+    const accuracy = score.accuracy;
+    
+    // Create feedback overlay
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        text-align: center;
+        border: 3px solid ${accuracy >= 70 ? '#28a745' : accuracy >= 50 ? '#ffc107' : '#dc3545'};
+    `;
+    
+    overlay.innerHTML = `
+        <h3 style="margin: 0 0 1rem 0; color: ${accuracy >= 70 ? '#28a745' : accuracy >= 50 ? '#f57c00' : '#dc3545'};">
+            ${accuracy >= 70 ? '🎉 Great Job!' : accuracy >= 50 ? '👍 Good Effort!' : '💪 Keep Practicing!'}
+        </h3>
+        <p style="margin: 0; font-size: 1.2rem;">
+            Score: ${score.correct}/${score.total} (${accuracy}%)
+        </p>
+        <p style="margin: 0.5rem 0 0 0; color: #666;">
+            Loading next verb...
+        </p>
+    `;
+    
+    document.body.appendChild(overlay);
+    
+    // Remove overlay after 1.8 seconds
+    setTimeout(() => {
+        document.body.removeChild(overlay);
+    }, 1800);
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function checkAnswers() {
+    // Collect all non-readonly answers
+    const inputs = document.querySelectorAll('.conjugation-input:not([readonly])');
+    const answers = {};
+    
+    inputs.forEach(input => {
+        if (input.value.trim()) {
+            answers[input.dataset.pronoun] = input.value.trim();
+        }
+    });
+    
+    if (Object.keys(answers).length === 0) {
+        alert('Please fill in some conjugations first!');
+        return;
+    }
+    
+    // Submit for checking
+    const submitData = {
+        verb_id: currentVerbData.verb_id,
+        tense: currentVerbData.selected_tense,
+        answers: answers
+    };
+    
+    fetch('/verbs_conjugation/api/submit-answers/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify(submitData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert('Error: ' + data.error);
+            return;
+        }
+        
+        // Update input styling based on results
+        inputs.forEach(input => {
+            const pronoun = input.dataset.pronoun;
+            if (data.results[pronoun]) {
+                const result = data.results[pronoun];
+                if (result.is_correct) {
+                    input.style.borderColor = '#198754';
+                    input.style.backgroundColor = '#d1e7dd';
+                } else {
+                    input.style.borderColor = '#dc3545';
+                    input.style.backgroundColor = '#f8d7da';
+                }
+            }
+        });
+        
+        // Show score
+        const score = data.score;
+        alert(`Score: ${score.correct}/${score.total} (${score.accuracy}%)`);
+        
+    })
+    .catch(error => {
+        console.error('Error checking answers:', error);
+        alert('Error checking answers. Please try again.');
+    });
+}
+
+function showHints() {
+    // Show correct answers as hints for empty fields
+    const inputs = document.querySelectorAll('.conjugation-input:not([readonly])');
+    
+    inputs.forEach(input => {
+        if (!input.value.trim()) {
+            const pronoun = input.dataset.pronoun;
+            const tense = input.dataset.tense;
+            const correctAnswer = getCorrectAnswer(pronoun, tense);
+            
+            if (correctAnswer) {
+                input.placeholder = correctAnswer;
+                input.style.backgroundColor = '#fff3cd';
+                input.style.borderColor = '#ffc107';
+            }
+        }
+    });
+}
+</script>
+
+<style>
+.conjugation-input {
+    transition: all 0.3s ease;
+}
+
+.conjugation-input:focus {
+    border-color: #0d6efd !important;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+</style>
+{% endblock %}

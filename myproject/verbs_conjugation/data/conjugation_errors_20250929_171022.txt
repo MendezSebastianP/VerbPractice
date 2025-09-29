@@ -1,0 +1,5 @@
+Conjugation Errors Log - 2025-09-29 17:10:23
+============================================================
+
+Verb ID 106: French verb 'se rendre compte' returned None (not found or unsupported)
+Verb ID 1129: Spanish verb 'arreglárselas' returned None (not found or unsupported)

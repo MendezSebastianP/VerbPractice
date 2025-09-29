@@ -62,6 +62,7 @@
 <script>
 // Session configuration from Django
 const sessionConfig = JSON.parse('{{ config|escapejs }}');
+console.log('Session config loaded:', sessionConfig);
 
 // Pronouns for each language
 const pronouns = {
@@ -74,12 +75,30 @@ let selectedTenses = [];
 let currentTenseIndex = 0;
 let currentPronounIndex = 0;
 
-// Initialize when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    getNewVerb();
+// Initialize when page loads - handle both regular page loads and HTMX loads
+function initializeVerbTraining() {
+    console.log('Initializing verb conjugation training...');
+    // Add a small delay to ensure everything is fully loaded
+    setTimeout(() => {
+        console.log('Starting initial verb fetch...');
+        getNewVerb();
+    }, 100);
+}
+
+// Handle regular page loads
+document.addEventListener('DOMContentLoaded', initializeVerbTraining);
+
+// Handle HTMX page loads (when navigating via HTMX)
+document.addEventListener('htmx:afterSettle', function(event) {
+    // Only initialize if we're on the training page
+    if (event.target.querySelector('#conjugationTable')) {
+        console.log('HTMX page loaded, initializing verb conjugation training...');
+        initializeVerbTraining();
+    }
 });
 
 function getNewVerb() {
+    console.log('getNewVerb() called');
     // Show loading state
     document.getElementById('currentVerb').textContent = 'Loading...';
     document.getElementById('verbInfo').textContent = 'Fetching verb...';
@@ -91,14 +110,38 @@ function getNewVerb() {
     `;
     
     // Get new verb from backend
-    fetch('/verbs_conjugation/api/get-verb/')
+    fetch('/verbs_conjugation/api/get-verb/', {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',  // Helps Django identify AJAX requests
+        },
+        credentials: 'same-origin'  // Ensure cookies are sent
+    })
         .then(response => {
+            console.log('Fetch response received:', response.status, response.url);
+            // Check if we got redirected to login page
+            if (response.url.includes('/login/') || response.url.includes('/accounts/login/')) {
+                throw new Error('Please log in to continue');
+            }
+            
             if (!response.ok) {
-                throw new Error('Failed to fetch verb');
+                return response.text().then(text => {
+                    try {
+                        const errorData = JSON.parse(text);
+                        throw new Error(errorData.error || 'Failed to fetch verb');
+                    } catch (e) {
+                        throw new Error(`Server error: ${response.status}`);
+                    }
+                });
             }
             return response.json();
         })
         .then(data => {
+            console.log('Verb data received:', data);
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            
             currentVerbData = data;
             selectedTenses = data.selected_tenses;
             
@@ -108,13 +151,33 @@ function getNewVerb() {
             
             // Generate the conjugation table
             generateConjugationTable();
+            console.log('Conjugation table generated successfully');
         })
         .catch(error => {
             console.error('Error fetching verb:', error);
+            let errorMessage = error.message;
+            let actionButton = '<button onclick="getNewVerb()" class="button-68" style="margin-top: 1rem;">Try Again</button>';
+            
+            if (errorMessage.includes('log in')) {
+                actionButton = '<a href="/login/" class="button-68" style="margin-top: 1rem; display: inline-block; text-decoration: none;">Login</a>';
+            } else if (errorMessage.includes('No active session')) {
+                actionButton = '<a href="/verbs_conjugation/" class="button-68" style="margin-top: 1rem; display: inline-block; text-decoration: none;">Start New Session</a>';
+            } else if (errorMessage.includes('No verbs available')) {
+                // If no verbs available, show a more helpful message
+                actionButton = `
+                    <div style="margin-top: 1rem;">
+                        <div style="color: #856404; margin-bottom: 1rem;">
+                            ⚠️ No verbs available for practice. Check console for debug info.
+                        </div>
+                        <button onclick="getNewVerb()" class="button-68">Try Again</button>
+                    </div>
+                `;
+            }
+            
             document.getElementById('conjugationTable').innerHTML = `
                 <div style="text-align: center; padding: 2rem; color: #dc3545;">
-                    <div>Error loading verb: ${error.message}</div>
-                    <button onclick="getNewVerb()" class="button-68" style="margin-top: 1rem;">Try Again</button>
+                    <div>Error loading verb: ${errorMessage}</div>
+                    ${actionButton}
                 </div>
             `;
         });
@@ -161,26 +224,38 @@ function generateConjugationTable() {
         
         selectedTenses.forEach((tense, tIndex) => {
             const inputId = `conj_${pIndex}_${tIndex}`;
-            const shouldPreFill = shouldPreFillCell();
             const correctAnswer = getCorrectAnswer(pronoun, tense);
+            const isMissing = correctAnswer === '-';
+            const shouldPreFill = shouldPreFillCell();
             
-            tableHTML += `
-                <td style="padding: 0.3rem; border: 1px solid #ccc;">
-                    <input 
-                        type="text" 
-                        class="conjugation-input" 
-                        id="${inputId}"
-                        data-pronoun="${pronoun}"
-                        data-tense="${tense}"
-                        data-pronoun-index="${pIndex}"
-                        data-tense-index="${tIndex}"
-                        placeholder="${correctAnswer || '...'}"
-                        ${shouldPreFill ? `value="${correctAnswer}" readonly` : ''}
-                        style="width: 100%; padding: 0.3rem; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; ${shouldPreFill ? 'background-color: #e9ecef; color: #6c757d;' : ''}"
-                        onkeydown="handleInputNavigation(event, ${pIndex}, ${tIndex})"
-                    >
-                </td>
-            `;
+            if (isMissing) {
+                // For missing conjugations, show "-" as readonly
+                tableHTML += `
+                    <td style="padding: 0.3rem; border: 1px solid #ccc; background-color: #f8f9fa;">
+                        <div style="text-align: center; padding: 0.3rem; color: #6c757d; font-style: italic;">
+                            -
+                        </div>
+                    </td>
+                `;
+            } else {
+                tableHTML += `
+                    <td style="padding: 0.3rem; border: 1px solid #ccc;">
+                        <input 
+                            type="text" 
+                            class="conjugation-input" 
+                            id="${inputId}"
+                            data-pronoun="${pronoun}"
+                            data-tense="${tense}"
+                            data-pronoun-index="${pIndex}"
+                            data-tense-index="${tIndex}"
+                            placeholder="${correctAnswer || '...'}"
+                            ${shouldPreFill ? `value="${correctAnswer}" readonly` : ''}
+                            style="width: 100%; padding: 0.3rem; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; ${shouldPreFill ? 'background-color: #e9ecef; color: #6c757d;' : ''}"
+                            onkeydown="handleInputNavigation(event, ${pIndex}, ${tIndex})"
+                        >
+                    </td>
+                `;
+            }
         });
         
         tableHTML += `</tr>`;
@@ -216,7 +291,7 @@ function getCorrectAnswer(pronoun, tense) {
 }
 
 function focusFirstInput() {
-    // Find first non-readonly input and focus on it
+    // Find first non-readonly input and focus on it (skip cells with "-")
     const inputs = document.querySelectorAll('.conjugation-input:not([readonly])');
     if (inputs.length > 0) {
         inputs[0].focus();
@@ -289,11 +364,25 @@ function submitCurrentVerb() {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
+            'X-CSRFToken': getCookie('csrftoken'),
+            'X-Requested-With': 'XMLHttpRequest'
         },
+        credentials: 'same-origin',
         body: JSON.stringify(submitData)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => {
+                try {
+                    const errorData = JSON.parse(text);
+                    throw new Error(errorData.error || 'Failed to submit answers');
+                } catch (e) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+            });
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.error) {
             alert('Error: ' + data.error);
@@ -396,11 +485,25 @@ function checkAnswers() {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
+            'X-CSRFToken': getCookie('csrftoken'),
+            'X-Requested-With': 'XMLHttpRequest'
         },
+        credentials: 'same-origin',
         body: JSON.stringify(submitData)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => {
+                try {
+                    const errorData = JSON.parse(text);
+                    throw new Error(errorData.error || 'Failed to check answers');
+                } catch (e) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+            });
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.error) {
             alert('Error: ' + data.error);

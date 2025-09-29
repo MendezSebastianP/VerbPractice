@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from verbs.services import ConjugationEngine, init_user_conjugations, preselect_conjugation_verbs
+from verbs.services import ConjugationEngine, init_user_conjugations, preselect_conjugation_verbs, should_unlock_new_conjugation_verbs, add_new_conjugation_verbs
 from verbs.models import UserConjugation
 from .models import VerbConjugation
 import csv
@@ -148,6 +148,11 @@ def training_session(request):
 def get_practice_verb(request):
     """API endpoint to get a verb for practice"""
     try:
+        # Check if this is an AJAX request and user is not authenticated
+        if not request.user.is_authenticated:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'error': 'Authentication required'}, status=401)
+        
         # Get session configuration
         config = request.session.get('conjugation_config')
         if not config:
@@ -190,10 +195,37 @@ def get_practice_verb(request):
         selected_verb_ids = preselect_conjugation_verbs(
             request.user, language, selected_tenses, 1
         )
+        
+        # Debug logging to understand the issue
+        user_conjugations_count = UserConjugation.objects.filter(
+            user=request.user, language=language, unlocked=True
+        ).count()
+        
+        print(f"DEBUG - User: {request.user.id}")
+        print(f"DEBUG - Language: {language}")
+        print(f"DEBUG - Selected tenses: {selected_tenses}")
+        print(f"DEBUG - Available user conjugations: {user_conjugations_count}")
+        print(f"DEBUG - Selected verb IDs: {selected_verb_ids}")
+        
         questions = engine.generate_questions(selected_verb_ids, selected_tenses)
+        print(f"DEBUG - Generated questions: {len(questions) if questions else 0}")
         
         if not questions:
-            return JsonResponse({'error': 'No verbs available for practice'}, status=404)
+            # Let's investigate why no questions were generated
+            if not selected_verb_ids:
+                print("DEBUG - No verb IDs selected by preselect_conjugation_verbs")
+            else:
+                # Check if the selected verbs have conjugations for the selected tenses
+                for verb_id in selected_verb_ids:
+                    for tense in selected_tenses:
+                        conjugations_count = VerbConjugation.objects.filter(
+                            verb_id=verb_id,
+                            language=language,
+                            tense=tense
+                        ).count()
+                        print(f"DEBUG - Verb {verb_id}, Tense {tense}: {conjugations_count} conjugations")
+            
+            return JsonResponse({'error': 'No verbs available for practice'}, status=200)
         
         question = questions[0]
         
@@ -211,8 +243,18 @@ def get_practice_verb(request):
                 tense=tense
             ).values_list('pronoun', 'conjugated_form')
             
+            # Always include the tense, even if no conjugations exist
             if conjugations:
                 all_conjugations[tense] = dict(conjugations)
+                print(f"DEBUG - Tense {tense}: {len(conjugations)} conjugations found")
+            else:
+                # For missing tenses, create entries with "-" for all pronouns
+                pronouns_for_language = {
+                    'FR': ['je', 'tu', 'il/elle', 'nous', 'vous', 'ils/elles'],
+                    'ES': ['yo', 'tú', 'él/ella', 'nosotros', 'vosotros', 'ellos/ellas']
+                }
+                all_conjugations[tense] = {pronoun: '-' for pronoun in pronouns_for_language[language]}
+                print(f"DEBUG - Tense {tense}: No conjugations found, using '-' for all pronouns")
         
         return JsonResponse({
             'verb_id': question['verb_id'],

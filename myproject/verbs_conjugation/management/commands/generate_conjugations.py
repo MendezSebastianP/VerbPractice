@@ -5,9 +5,177 @@ import re
 from django.core.management.base import BaseCommand
 from django.conf import settings
 from datetime import datetime
+from verbs_conjugation.models import VerbConjugation
+from verbs.models import Verb
 
 class Command(BaseCommand):
     help = 'Generates a CSV file with conjugations for French and Spanish verbs.'
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--add-compound-tenses',
+            action='store_true',
+            help='Add missing compound tenses (Passé composé, etc.) to existing data',
+        )
+
+    def generate_passe_compose_french(self, verb_infinitive):
+        """
+        Generate Passé composé conjugations for French verbs.
+        
+        This manually creates compound tenses since mlconjug3 doesn't handle them well.
+        """
+        
+        # Define verbs that use être as auxiliary (motion/state change verbs and reflexive verbs)
+        # NOTE: être as a verb uses avoir as auxiliary (j'ai été), it's NOT in this list
+        etre_verbs = {
+            'aller', 'venir', 'arriver', 'partir', 'sortir', 'entrer', 'rentrer', 
+            'monter', 'descendre', 'naître', 'mourir', 'tomber', 'rester', 
+            'retourner', 'devenir', 'revenir', 'passer'
+        }
+        
+        # Common past participles for frequent verbs
+        past_participles = {
+            'être': 'été', 'avoir': 'eu', 'aller': 'allé', 'venir': 'venu',
+            'faire': 'fait', 'dire': 'dit', 'voir': 'vu', 'savoir': 'su',
+            'pouvoir': 'pu', 'vouloir': 'voulu', 'devoir': 'dû', 'falloir': 'fallu',
+            'prendre': 'pris', 'mettre': 'mis', 'donner': 'donné', 'parler': 'parlé',
+            'finir': 'fini', 'choisir': 'choisi', 'attendre': 'attendu', 'vendre': 'vendu',
+            'manger': 'mangé', 'acheter': 'acheté', 'appeler': 'appelé', 'jeter': 'jeté',
+            'commencer': 'commencé', 'préférer': 'préféré', 'espérer': 'espéré',
+            'créer': 'créé', 'employer': 'employé', 'essayer': 'essayé',
+            # Weather/impersonal verbs
+            'pleuvoir': 'plu', 'neiger': 'neigé'
+        }
+        
+        # Determine auxiliary verb and past participle
+        uses_etre = verb_infinitive in etre_verbs or verb_infinitive.startswith('se ')
+        auxiliary = 'être' if uses_etre else 'avoir'
+        
+        # Get past participle
+        if verb_infinitive in past_participles:
+            past_participle = past_participles[verb_infinitive]
+        else:
+            # Generate regular past participle based on verb ending
+            if verb_infinitive.endswith('er'):
+                past_participle = verb_infinitive[:-2] + 'é'
+            elif verb_infinitive.endswith('ir'):
+                past_participle = verb_infinitive[:-2] + 'i'
+            elif verb_infinitive.endswith('re'):
+                past_participle = verb_infinitive[:-2] + 'u'
+            else:
+                past_participle = verb_infinitive + 'é'  # fallback
+        
+        # Auxiliary conjugations in present
+        if auxiliary == 'avoir':
+            aux_conjugations = {
+                'je': "j'ai", 'tu': 'as', 'il (elle, on)': 'a',
+                'nous': 'avons', 'vous': 'avez', 'ils (elles)': 'ont'
+            }
+        else:  # être
+            aux_conjugations = {
+                'je': 'suis', 'tu': 'es', 'il (elle, on)': 'est',
+                'nous': 'sommes', 'vous': 'êtes', 'ils (elles)': 'sont'
+            }
+        
+        # Generate Passé composé conjugations
+        passe_compose_conjugations = []
+        
+        for pronoun, aux_form in aux_conjugations.items():
+            if uses_etre:
+                # With être, add agreement markers
+                if pronoun in ['je', 'tu']:
+                    conjugated_form = f"{aux_form} {past_participle}(e)"
+                elif pronoun == 'il (elle, on)':
+                    conjugated_form = f"{aux_form} {past_participle}(e)"
+                elif pronoun == 'nous':
+                    conjugated_form = f"{aux_form} {past_participle}(e)s"
+                elif pronoun == 'vous':
+                    conjugated_form = f"{aux_form} {past_participle}(e)(s)"
+                elif pronoun == 'ils (elles)':
+                    conjugated_form = f"{aux_form} {past_participle}(e)s"
+                else:
+                    conjugated_form = f"{aux_form} {past_participle}"
+            else:
+                # With avoir, no agreement in most cases
+                conjugated_form = f"{aux_form} {past_participle}"
+            
+            passe_compose_conjugations.append(('Indicatif', 'Passé composé', pronoun, conjugated_form))
+        
+        return passe_compose_conjugations
+
+    def add_compound_tenses_to_database(self):
+        """
+        Add missing compound tenses to the database for existing verbs.
+        """
+        self.stdout.write(self.style.SUCCESS('Adding compound tenses to existing verbs...'))
+        
+        # Get all French verbs from the database
+        french_verbs = Verb.objects.all()
+        
+        added_count = 0
+        
+        for verb in french_verbs:
+            verb_infinitive = verb.infinitive
+            
+            # Check if this verb already has Passé composé
+            existing_passe_compose = VerbConjugation.objects.filter(
+                verb=verb,
+                language='FR',
+                tense='Passé composé'
+            ).exists()
+            
+            if not existing_passe_compose:
+                # Generate Passé composé conjugations
+                passe_compose_conjugations = self.generate_passe_compose_french(verb_infinitive)
+                
+                # Add to database
+                for mood, tense, pronoun, conjugated_form in passe_compose_conjugations:
+                    VerbConjugation.objects.create(
+                        verb=verb,
+                        language='FR',
+                        mood=mood,
+                        tense=tense,
+                        pronoun=pronoun,
+                        conjugated_form=conjugated_form
+                    )
+                    added_count += 1
+                
+                self.stdout.write(f'Added Passé composé for {verb_infinitive} (ID: {verb.id})')
+        
+        # Also fix "Conditionnel présent" by copying from "Conditionnel - Présent"
+        self.stdout.write('Fixing Conditionnel présent tense names...')
+        
+        conditionnel_present = VerbConjugation.objects.filter(
+            language='FR',
+            mood='Conditionnel',
+            tense='Présent'
+        )
+        
+        fixed_count = 0
+        for conj in conditionnel_present:
+            # Check if "Conditionnel présent" version already exists
+            existing = VerbConjugation.objects.filter(
+                verb=conj.verb,
+                language='FR',
+                mood='Indicatif',
+                tense='Conditionnel présent',
+                pronoun=conj.pronoun
+            ).exists()
+            
+            if not existing:
+                # Create the "Conditionnel présent" version
+                VerbConjugation.objects.create(
+                    verb=conj.verb,
+                    language='FR',
+                    mood='Indicatif',
+                    tense='Conditionnel présent',
+                    pronoun=conj.pronoun,
+                    conjugated_form=conj.conjugated_form
+                )
+                fixed_count += 1
+        
+        self.stdout.write(self.style.SUCCESS(f'✅ Added {added_count} Passé composé conjugations'))
+        self.stdout.write(self.style.SUCCESS(f'✅ Fixed {fixed_count} Conditionnel présent conjugations'))
 
     def is_reflexive_verb(self, verb_text):
         """Check if a Spanish verb is reflexive based on its text pattern."""
@@ -152,6 +320,14 @@ class Command(BaseCommand):
         return conjugations
 
     def handle(self, *args, **options):
+        # Check if we should only add compound tenses
+        if options['add_compound_tenses']:
+            self.add_compound_tenses_to_database()
+            return
+        
+        # Original conjugation generation logic
+        self.stdout.write(self.style.SUCCESS('🚀 Starting comprehensive verb conjugation generation...'))
+        self.stdout.write(self.style.SUCCESS('📝 This includes all basic tenses from mlconjug3 + compound tenses like Passé composé'))
         # Path to the source CSV file with verbs
         verbs_csv_path = os.path.join(settings.BASE_DIR, 'verbs', 'data', '1000verbs.csv')
         
@@ -164,9 +340,14 @@ class Command(BaseCommand):
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         error_log_path = os.path.join(output_dir, f'conjugation_errors_{timestamp}.txt')
 
-        # Initialize conjugators
-        fr_conjugator = mlconjug3.Conjugator(language='fr')
-        es_conjugator = mlconjug3.Conjugator(language='es')
+        try:
+            # Initialize conjugators
+            fr_conjugator = mlconjug3.Conjugator(language='fr')
+            es_conjugator = mlconjug3.Conjugator(language='es')
+        except Exception as e:
+            self.stderr.write(self.style.ERROR(f'Error initializing mlconjug3: {e}'))
+            self.stderr.write(self.style.ERROR('Try running with --add-compound-tenses to only add missing tenses to existing data'))
+            return
 
         verbs_to_conjugate = []
         with open(verbs_csv_path, 'r', encoding='utf-8-sig') as f:
@@ -209,16 +390,20 @@ class Command(BaseCommand):
                             fr_verb = fr_conjugator.conjugate(french_verb)
                             # Use 'is not None' instead of 'if fr_verb' to avoid mlconjug3 __len__ bug
                             if fr_verb is not None:
+                                # First, add all basic conjugations from mlconjug3
+                                basic_conjugations_added = 0
                                 try:
                                     for conjugation_tuple in fr_verb.iterate():
                                         if len(conjugation_tuple) == 4:  # (mood, tense, pronoun, conjugated_form)
                                             mood, tense, pronoun, conjugated = conjugation_tuple
                                             if conjugated:  # Skip None values
                                                 writer.writerow([verb_data['id'], 'FR', mood, tense, pronoun, conjugated])
+                                                basic_conjugations_added += 1
                                         elif len(conjugation_tuple) == 3:  # (mood, tense, infinitive_form)
                                             mood, tense, conjugated = conjugation_tuple
                                             if conjugated:  # Skip None values
                                                 writer.writerow([verb_data['id'], 'FR', mood, tense, '', conjugated])
+                                                basic_conjugations_added += 1
                                 except AttributeError as attr_error:
                                     # Handle mlconjug3 bug with impersonal verbs like "falloir"
                                     # Try to extract conjugations directly from full_forms
@@ -227,10 +412,27 @@ class Command(BaseCommand):
                                         self.stdout.write(self.style.SUCCESS(f"Verb ID {verb_data['id']}: Using fallback method for French verb '{french_verb}' - found {len(fallback_conjugations)} conjugations"))
                                         for mood, tense, pronoun, conjugated in fallback_conjugations:
                                             writer.writerow([verb_data['id'], 'FR', mood, tense, pronoun, conjugated])
+                                            basic_conjugations_added += 1
                                     else:
                                         error_msg = f"Verb ID {verb_data['id']}: mlconjug3 library bug with French verb '{french_verb}' and fallback failed: {attr_error}\n"
                                         error_log.write(error_msg)
                                         self.stderr.write(self.style.WARNING(error_msg.strip()))
+                                
+                                # Now add compound tenses (Passé composé, etc.)
+                                compound_conjugations_added = 0
+                                try:
+                                    passe_compose_conjugations = self.generate_passe_compose_french(french_verb)
+                                    for mood, tense, pronoun, conjugated_form in passe_compose_conjugations:
+                                        writer.writerow([verb_data['id'], 'FR', mood, tense, pronoun, conjugated_form])
+                                        compound_conjugations_added += 1
+                                    
+                                    if basic_conjugations_added > 0 or compound_conjugations_added > 0:
+                                        self.stdout.write(f"✅ Verb ID {verb_data['id']} '{french_verb}': {basic_conjugations_added} basic + {compound_conjugations_added} compound = {basic_conjugations_added + compound_conjugations_added} total conjugations")
+                                        
+                                except Exception as compound_error:
+                                    error_msg = f"Verb ID {verb_data['id']}: Could not generate compound tenses for French verb '{french_verb}': {compound_error}\n"
+                                    error_log.write(error_msg)
+                                    self.stderr.write(self.style.WARNING(error_msg.strip()))
                             else:
                                 error_msg = f"Verb ID {verb_data['id']}: French verb '{french_verb}' returned None (not found or unsupported)\n"
                                 error_log.write(error_msg)

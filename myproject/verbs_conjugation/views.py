@@ -25,33 +25,26 @@ def get_available_tenses(request):
     language = request.GET.get('language', 'fr')
     
     # Define tenses ordered from most used/easy to hardest/least used
+    # IMPORTANT: These names must match exactly what's in the database
     french_tenses = {
         # Easy level tenses - most commonly used by native speakers
         'easy': [
-            'Présent',           # Most used - I am, you are, etc.
-            'Futur',             # Simple future - I will be  
+            'présent',           # Most used - I am, you are, etc.
+            'futur',             # Simple future - I will be  
             'Passé composé',     # Perfect past - I have been
         ],
         # Medium level adds these - moderately common
         'medium': [
-            'Imparfait',         # Imperfect past - I was being
+            'imparfait',         # Imperfect past - I was being
             'Conditionnel présent',  # Would + verb
-            'Impératif présent', # Commands - Be! Do!
-            'Futur antérieur',   # Future perfect - I will have been
+            'Impératif',         # Commands - Be! Do!
         ],
         # Hard level adds these - advanced but still used
         'hard': [
             'Subjonctif présent',    # Subjunctive - doubt, emotion
-            'Passé simple',          # Literary past - formal writing only  
-            'Plus-que-parfait',      # Pluperfect - I had been
-        ],
-        # Extremely advanced - beyond hard, rarely used even by natives
-        'extreme': [
-            'Conditionnel passé',    # Would have + past participle
+            'passé simple',          # Literary past - formal writing only  
             'Subjonctif imparfait',  # Imperfect subjunctive - very formal
-            'Subjonctif plus-que-parfait',  # Past perfect subjunctive - extremely rare
-            'Subjonctif passé'       # Past subjunctive - literary
-        ]
+        ],
     }
 
     spanish_tenses = {
@@ -59,28 +52,21 @@ def get_available_tenses(request):
         'easy': [
             'Presente',          # Most used - I am, you are, etc.
             'Futuro',            # Simple future - I will be
-            'Pretérito perfecto compuesto',  # Perfect past - I have been
+            'pretérito perfecto compuesto',  # Perfect past - I have been
         ],
         # Medium level adds these - moderately common
         'medium': [
-            'Pretérito imperfecto',  # Imperfect past - I was being
-            'Condicional',           # Would + verb
+            'Imperfecto',        # Imperfect past - I was being
+            'Condicional',       # Would + verb
             'Imperativo',        # Commands - Be! Do!
-            'Futuro perfecto',   # Future perfect - I will have been
+            'futuro perfecto',   # Future perfect - I will have been
         ],
         # Hard level adds these - advanced but still used
         'hard': [
             'Subjuntivo presente',    # Subjunctive - doubt, emotion
-            'Pretérito indefinido',      # Preterite - completed past actions
-            'Pretérito pluscuamperfecto',  # Pluperfect - I had been (equivalent to plus-que-parfait)
+            'Pretérito indefinido',   # Preterite - completed past actions
+            'pretérito pluscuamperfecto',  # Pluperfect - I had been
         ],
-        # Extremely advanced - beyond hard, rarely used even by natives
-        'extreme': [
-            'Condicional compuesto',     # Would have + past participle
-            'Subjuntivo imperfecto',  # Imperfect subjunctive - formal
-            'Subjuntivo pluscuamperfecto',  # Past perfect subjunctive - extremely rare
-            'Subjuntivo perfecto'    # Past subjunctive - literary
-        ]
     }
 
     tenses = french_tenses if language == 'fr' else spanish_tenses
@@ -118,6 +104,10 @@ def start_training_session(request):
             'selected_tenses': selected_tenses,
         }
         
+        # Clear any existing training session
+        if 'current_session' in request.session:
+            del request.session['current_session']
+        
         # Redirect to training interface
         return redirect('verbs_conjugation:training_session')
         
@@ -125,6 +115,7 @@ def start_training_session(request):
         messages.error(request, f'Error starting training session: {str(e)}')
         return redirect('verbs_conjugation:session_menu')
 
+@login_required
 def training_session(request):
     """Display the verb conjugation training interface"""
     # Get session configuration
@@ -146,12 +137,15 @@ def training_session(request):
 
 @login_required
 def get_practice_verb(request):
-    """API endpoint to get a verb for practice"""
+    """API endpoint to get a verb for practice - returns session of 5 verbs"""
     try:
         # Check if this is an AJAX request and user is not authenticated
         if not request.user.is_authenticated:
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({'error': 'Authentication required'}, status=401)
+        
+        # Check if user wants to advance to next verb
+        advance_verb = request.GET.get('next', 'false').lower() == 'true'
         
         # Get session configuration
         config = request.session.get('conjugation_config')
@@ -164,18 +158,18 @@ def get_practice_verb(request):
         if config['conjugation_level'] == 'custom':
             selected_tenses = config['selected_tenses']
         else:
-            # Get tenses for the level
+            # Get tenses for the level - FIXED: Using actual database tense names
             if language == 'FR':
                 all_tenses = {
-                    'easy': ['Présent', 'Futur', 'Passé composé'],
-                    'medium': ['Imparfait', 'Conditionnel présent', 'Impératif présent', 'Futur antérieur'],
-                    'hard': ['Subjonctif présent', 'Passé simple', 'Plus-que-parfait']
+                    'easy': ['présent', 'futur', 'Passé composé'],
+                    'medium': ['imparfait', 'Conditionnel présent', 'Impératif'],
+                    'hard': ['Subjonctif présent', 'passé simple', 'Subjonctif imparfait']
                 }
             else:
                 all_tenses = {
-                    'easy': ['Presente', 'Futuro', 'Pretérito perfecto compuesto'],
-                    'medium': ['Pretérito imperfecto', 'Condicional', 'Imperativo', 'Futuro perfecto'],
-                    'hard': ['Subjuntivo presente', 'Pretérito indefinido', 'Pretérito pluscuamperfecto']
+                    'easy': ['Presente', 'Futuro', 'pretérito perfecto compuesto'],
+                    'medium': ['Imperfecto', 'Condicional', 'Imperativo', 'futuro perfecto'],
+                    'hard': ['Subjuntivo presente', 'Pretérito indefinido', 'pretérito pluscuamperfecto']
                 }
             
             selected_tenses = []
@@ -190,82 +184,126 @@ def get_practice_verb(request):
         if not UserConjugation.objects.filter(user=request.user, language=language).exists():
             init_user_conjugations(request.user, language, 10)
         
-        # Use our ConjugationEngine to get practice questions
+        # Check if we already have a session in progress
+        if 'current_session' not in request.session:
+            # Start new session - select 5 verbs for the entire session
+            print(f"\n🎯 STARTING NEW SESSION")
+            print(f"Language: {language}, Level: {config['conjugation_level']}")
+            print(f"Selected tenses: {selected_tenses}")
+            
+            selected_verb_ids = preselect_conjugation_verbs(
+                request.user, language, selected_tenses, 5  # Changed to 5 verbs
+            )
+            
+            if not selected_verb_ids:
+                print("❌ No verbs available for session")
+                return JsonResponse({'error': 'No verbs available for practice'}, status=200)
+            
+            # Get verb information and scores
+            session_verbs = []
+            print(f"\n📚 SESSION VERBS AND SCORES:")
+            for i, verb_id in enumerate(selected_verb_ids, 1):
+                user_conj = UserConjugation.objects.get(
+                    user=request.user, verb_id=verb_id, language=language
+                )
+                
+                # Get current scores for this verb
+                verb_scores = {}
+                for tense in selected_tenses:
+                    score = user_conj.tense_scores.get(tense, 1000)  # Default score
+                    verb_scores[tense] = score
+                
+                session_verbs.append({
+                    'verb_id': verb_id,
+                    'infinitive': user_conj.verb.infinitive,
+                    'translation': user_conj.verb.translation,
+                    'scores': verb_scores
+                })
+                
+                print(f"  {i}. {user_conj.verb.infinitive} ({user_conj.verb.translation})")
+                for tense, score in verb_scores.items():
+                    print(f"     {tense}: {score}")
+            
+            # Store session data
+            request.session['current_session'] = {
+                'verbs': session_verbs,
+                'selected_tenses': selected_tenses,
+                'current_verb_index': 0,
+                'language': language
+            }
+            request.session.save()
+        
+        # Get current session data
+        session_data = request.session['current_session']
+        current_index = session_data['current_verb_index']
+        
+        # If user requested to advance to next verb, increment the index
+        if advance_verb and current_index < len(session_data['verbs']) - 1:
+            current_index += 1
+            request.session['current_session']['current_verb_index'] = current_index
+            request.session.save()
+            print(f"⏭️ ADVANCING TO NEXT VERB")
+        
+        # Check if session is complete
+        if current_index >= len(session_data['verbs']):
+            print("✅ SESSION COMPLETE!")
+            del request.session['current_session']
+            return JsonResponse({'session_complete': True})
+        
+        # Get current verb
+        current_verb = session_data['verbs'][current_index]
+        verb_id = current_verb['verb_id']
+        
+        print(f"\n🔍 EVALUATING VERB {current_index + 1}/5: {current_verb['infinitive']}")
+        
+        # Use our ConjugationEngine to generate questions for this specific verb
         engine = ConjugationEngine(request.user, language)
-        selected_verb_ids = preselect_conjugation_verbs(
-            request.user, language, selected_tenses, 1
-        )
-        
-        # Debug logging to understand the issue
-        user_conjugations_count = UserConjugation.objects.filter(
-            user=request.user, language=language, unlocked=True
-        ).count()
-        
-        print(f"DEBUG - User: {request.user.id}")
-        print(f"DEBUG - Language: {language}")
-        print(f"DEBUG - Selected tenses: {selected_tenses}")
-        print(f"DEBUG - Available user conjugations: {user_conjugations_count}")
-        print(f"DEBUG - Selected verb IDs: {selected_verb_ids}")
-        
-        questions = engine.generate_questions(selected_verb_ids, selected_tenses)
-        print(f"DEBUG - Generated questions: {len(questions) if questions else 0}")
+        questions = engine.generate_questions([verb_id], selected_tenses)
         
         if not questions:
-            # Let's investigate why no questions were generated
-            if not selected_verb_ids:
-                print("DEBUG - No verb IDs selected by preselect_conjugation_verbs")
-            else:
-                # Check if the selected verbs have conjugations for the selected tenses
-                for verb_id in selected_verb_ids:
-                    for tense in selected_tenses:
-                        conjugations_count = VerbConjugation.objects.filter(
-                            verb_id=verb_id,
-                            language=language,
-                            tense=tense
-                        ).count()
-                        print(f"DEBUG - Verb {verb_id}, Tense {tense}: {conjugations_count} conjugations")
-            
-            return JsonResponse({'error': 'No verbs available for practice'}, status=200)
+            print(f"❌ No conjugations available for {current_verb['infinitive']}")
+            # Skip to next verb
+            request.session['current_session']['current_verb_index'] += 1
+            request.session.save()
+            return get_practice_verb(request)  # Recursive call to try next verb
         
         question = questions[0]
-        
-        # Get the verb object for translation
-        user_conj = UserConjugation.objects.get(
-            user=request.user, verb_id=question['verb_id'], language=language
-        )
         
         # Get all conjugations for this verb/tense to provide the complete table
         all_conjugations = {}
         for tense in selected_tenses:
             conjugations = VerbConjugation.objects.filter(
-                verb_id=question['verb_id'],
+                verb_id=verb_id,
                 language=language,
                 tense=tense
             ).values_list('pronoun', 'conjugated_form')
             
-            # Always include the tense, even if no conjugations exist
             if conjugations:
                 all_conjugations[tense] = dict(conjugations)
-                print(f"DEBUG - Tense {tense}: {len(conjugations)} conjugations found")
             else:
                 # For missing tenses, create entries with "-" for all pronouns
                 pronouns_for_language = {
-                    'FR': ['je', 'tu', 'il/elle', 'nous', 'vous', 'ils/elles'],
+                    'FR': ['je', 'tu', 'il (elle, on)', 'nous', 'vous', 'ils (elles)'],
                     'ES': ['yo', 'tú', 'él/ella', 'nosotros', 'vosotros', 'ellos/ellas']
                 }
                 all_conjugations[tense] = {pronoun: '-' for pronoun in pronouns_for_language[language]}
-                print(f"DEBUG - Tense {tense}: No conjugations found, using '-' for all pronouns")
         
         return JsonResponse({
-            'verb_id': question['verb_id'],
-            'verb': user_conj.verb.infinitive,
-            'translation': user_conj.verb.translation,
+            'verb_id': verb_id,
+            'verb': current_verb['infinitive'],
+            'translation': current_verb['translation'],
             'selected_tense': question['tense'],
             'all_conjugations': all_conjugations,
-            'selected_tenses': selected_tenses
+            'selected_tenses': selected_tenses,
+            'session_progress': {
+                'current': current_index + 1,
+                'total': len(session_data['verbs']),
+                'verb_name': current_verb['infinitive']
+            }
         })
         
     except Exception as e:
+        print(f"❌ ERROR in get_practice_verb: {str(e)}")
         return JsonResponse({'error': str(e)}, status=500)
 
 
@@ -330,6 +368,22 @@ def submit_answers(request):
         
         accuracy = (correct_count / total_count * 100) if total_count > 0 else 0
         
+        # Get current verb info for logging
+        session_data = request.session.get('current_session')
+        if session_data:
+            current_index = session_data['current_verb_index']
+            current_verb = session_data['verbs'][current_index]
+            
+            print(f"📊 VERB COMPLETED: {current_verb['infinitive']}")
+            print(f"   Tense: {tense}")
+            print(f"   Score: {correct_count}/{total_count} ({accuracy:.1f}%)")
+            if new_score:
+                print(f"   New tense score: {new_score}")
+            
+            # Advance to next verb
+            request.session['current_session']['current_verb_index'] += 1
+            request.session.save()
+        
         return JsonResponse({
             'results': results,
             'score': {
@@ -342,4 +396,23 @@ def submit_answers(request):
         })
         
     except Exception as e:
+        print(f"❌ ERROR in submit_answers: {str(e)}")
         return JsonResponse({'error': str(e)}, status=500)
+
+@login_required
+def debug_session(request):
+    """Debug endpoint to check session and user state"""
+    config = request.session.get('conjugation_config')
+    current_session = request.session.get('current_session')
+    
+    return JsonResponse({
+        'user_authenticated': request.user.is_authenticated,
+        'username': request.user.username if request.user.is_authenticated else None,
+        'has_config': bool(config),
+        'config': config,
+        'has_current_session': bool(current_session),
+        'session_info': {
+            'verb_count': len(current_session['verbs']) if current_session else 0,
+            'current_index': current_session.get('current_verb_index', 0) if current_session else 0,
+        } if current_session else None
+    })

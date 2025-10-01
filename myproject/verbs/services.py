@@ -106,7 +106,6 @@ class TrainingEngine:
             avg_prob = None
         else:
             avg_prob = sum(v.probability for v in top_verbs) / len(top_verbs)
-        print(avg_prob)
         if avg_prob is None:
             return
         if avg_prob > points_next_level:
@@ -116,41 +115,43 @@ class TrainingEngine:
 
 # Conjugation System Functions
 
-def init_user_conjugations(user, language='FR', n=10):
-    """Initialize first 10 verbs with all available tenses at score 1000"""
-    print(f"DEBUG init_user_conjugations - User: {user.id}, Language: {language}, Count: {n}")
+def init_user_conjugations(user: AbstractBaseUser, language: str, n: int = 10):
+    """Initialize conjugation tracking for a user with n base verbs"""
     
-    with transaction.atomic():
-        base_verbs = list(Verb.objects.order_by('id')[:n])
-        print(f"DEBUG init_user_conjugations - Found {len(base_verbs)} base verbs")
+    # Get base verbs (since frequency field doesn't exist, just get first verbs)
+    base_verbs = Verb.objects.all().order_by('id')[:n*2]
+    
+    if not base_verbs:
+        return
+    
+    created_count = 0
+    for verb in base_verbs:
+        # Check what tenses exist for this verb in this language
+        available_tenses = VerbConjugation.objects.filter(
+            verb=verb, language=language
+        ).values_list('tense', flat=True).distinct()
+        available_tenses_list = list(available_tenses)
         
-        for verb in base_verbs:
-            # Get all available tenses for this verb in specified language
-            available_tenses = VerbConjugation.objects.filter(
-                verb=verb, language=language
-            ).values_list('tense', flat=True).distinct()
-            
-            available_tenses_list = list(available_tenses)
-            print(f"DEBUG init_user_conjugations - Verb {verb.id} ({verb.infinitive}): {len(available_tenses_list)} tenses: {available_tenses_list}")
-            
-            # Initialize tense_scores with all tenses at 1000
-            initial_tense_scores = {tense: 1000 for tense in available_tenses_list}
+        if available_tenses_list:  # Only create if verb has conjugations
+            # Create initial tense scores (all start at 1000)
+            initial_scores = {tense: 1000 for tense in available_tenses_list}
             
             user_conj, created = UserConjugation.objects.get_or_create(
-                user=user, verb=verb, language=language,
+                user=user,
+                verb=verb,
+                language=language,
                 defaults={
                     'overall_score': 1000,
-                    'tense_scores': initial_tense_scores,
-                    'unlocked': True
+                    'total_attempts': 0,
+                    'unlocked': True,
+                    'tense_scores': initial_scores
                 }
             )
-            
             if created:
-                print(f"DEBUG init_user_conjugations - Created UserConjugation for verb {verb.id}")
-            else:
-                print(f"DEBUG init_user_conjugations - UserConjugation already exists for verb {verb.id}")
-    
-    print(f"DEBUG init_user_conjugations - Completed initialization")
+                created_count += 1
+        
+        if created_count >= n:
+            break
 
 
 def should_unlock_new_conjugation_verbs(user, language):
@@ -207,17 +208,12 @@ def preselect_conjugation_verbs(user, language, selected_tenses, length=10):
     """
     Select verbs for practice based on aggregated tense difficulties
     """
-    print(f"DEBUG preselect_conjugation_verbs - User: {user.id}, Language: {language}, Tenses: {selected_tenses}, Length: {length}")
-    
     # Get all unlocked verbs for user
     user_conjugations = UserConjugation.objects.filter(
         user=user, language=language, unlocked=True
     ).select_related('verb')
     
-    print(f"DEBUG preselect_conjugation_verbs - Found {user_conjugations.count()} unlocked user conjugations")
-    
     if not user_conjugations:
-        print("DEBUG preselect_conjugation_verbs - No user conjugations found, returning empty list")
         return []
     
     # Calculate aggregated difficulty for selected tenses
@@ -231,9 +227,6 @@ def preselect_conjugation_verbs(user, language, selected_tenses, length=10):
         # Average difficulty across selected tenses
         avg_difficulty = sum(selected_scores) / len(selected_scores)
         verb_weights.append((user_conj.verb.id, float(avg_difficulty)))
-        print(f"DEBUG preselect_conjugation_verbs - Verb {user_conj.verb.id} ({user_conj.verb.infinitive}): scores={selected_scores}, avg={avg_difficulty}")
-    
-    print(f"DEBUG preselect_conjugation_verbs - Calculated weights for {len(verb_weights)} verbs")
     
     # Apply weighted random selection (same algorithm as existing preselect_verbs)
     pool = verb_weights[:]
@@ -243,8 +236,6 @@ def preselect_conjugation_verbs(user, language, selected_tenses, length=10):
     chosen = []
     length = min(length, len(pool))
     
-    print(f"DEBUG preselect_conjugation_verbs - Starting selection for {length} verbs from pool of {len(pool)}")
-    
     for i in range(length):
         r = random.random()
         acc = 0.0
@@ -253,7 +244,6 @@ def preselect_conjugation_verbs(user, language, selected_tenses, length=10):
             acc += w
             if r <= acc:
                 chosen.append(vid)
-                print(f"DEBUG preselect_conjugation_verbs - Selected verb {vid} (random={r:.3f}, acc={acc:.3f})")
                 del pool[j]
                 s = sum(w2 for _, w2 in pool) or 1.0
                 pool = [(v2, w2 / s) for v2, w2 in pool]
@@ -261,10 +251,8 @@ def preselect_conjugation_verbs(user, language, selected_tenses, length=10):
                 break
         
         if not selected:
-            print(f"DEBUG preselect_conjugation_verbs - Failed to select verb in iteration {i}, r={r:.3f}")
             break
     
-    print(f"DEBUG preselect_conjugation_verbs - Final selection: {chosen}")
     return chosen
 
 
@@ -341,17 +329,12 @@ class ConjugationEngine:
     
     def generate_questions(self, verb_ids: List[int], selected_tenses: List[str]):
         """Generate conjugation questions for selected verbs and tenses"""
-        print(f"DEBUG generate_questions - Verb IDs: {verb_ids}, Tenses: {selected_tenses}")
-        
         questions = []
         
         for verb_id in verb_ids:
-            print(f"DEBUG generate_questions - Processing verb {verb_id}")
-            
             # Randomly select one tense from user's selected tenses for the main practice
             # But we'll return all conjugations for all selected tenses in the response
             main_tense = random.choice(selected_tenses)
-            print(f"DEBUG generate_questions - Selected main tense {main_tense} for verb {verb_id}")
             
             # Get conjugations for the main tense to ensure the question is valid
             main_conjugations = VerbConjugation.objects.filter(
@@ -366,9 +349,5 @@ class ConjugationEngine:
                     'tense': main_tense,
                     'pronouns': dict(main_conjugations)  # {'je': 'suis', 'tu': 'es', ...}
                 })
-                print(f"DEBUG generate_questions - Added question for verb {verb_id} with main tense {main_tense}")
-            else:
-                print(f"DEBUG generate_questions - No conjugations found for verb {verb_id}, main tense {main_tense}, skipping verb")
         
-        print(f"DEBUG generate_questions - Generated {len(questions)} questions")
         return questions

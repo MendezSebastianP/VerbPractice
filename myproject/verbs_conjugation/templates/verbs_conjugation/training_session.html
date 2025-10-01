@@ -75,18 +75,91 @@ let selectedTenses = [];
 let currentTenseIndex = 0;
 let currentPronounIndex = 0;
 
-// Initialize when page loads - handle both regular page loads and HTMX loads
+// Initialize the training session
 function initializeVerbTraining() {
     console.log('Initializing verb conjugation training...');
     // Add a small delay to ensure everything is fully loaded
     setTimeout(() => {
         console.log('Starting initial verb fetch...');
-        getNewVerb();
+        loadCurrentVerb(); // Use loadCurrentVerb for initial load
     }, 100);
 }
 
 // Handle regular page loads
 document.addEventListener('DOMContentLoaded', initializeVerbTraining);
+
+// Load current verb without advancing to next
+function loadCurrentVerb() {
+    console.log('loadCurrentVerb() called');
+    // Show loading state
+    document.getElementById('currentVerb').textContent = 'Loading...';
+    document.getElementById('verbInfo').textContent = 'Fetching verb...';
+    document.getElementById('conjugationTable').innerHTML = `
+        <div style="text-align: center; padding: 2rem; font-size: 1rem;">
+            <div>Loading verb...</div>
+            <div style="margin-top: 1rem; color: #558a76;">Please wait while we prepare your practice.</div>
+        </div>
+    `;
+    
+    // Get current verb from backend (without next parameter)
+    fetch('/verbs_conjugation/api/get-verb/', {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',  // Helps Django identify AJAX requests
+        },
+        credentials: 'same-origin'  // Ensure cookies are sent
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Current verb data received:', data);
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            
+            currentVerbData = data;
+            selectedTenses = data.selected_tenses;
+            
+            // Update UI
+            document.getElementById('currentVerb').textContent = `${data.verb} (${data.translation})`;
+            document.getElementById('verbInfo').textContent = `Verb ID: ${data.verb_id}`;
+            
+            // Generate the conjugation table
+            generateConjugationTable();
+            console.log('Conjugation table generated successfully');
+        })
+        .catch(error => {
+            console.error('Error loading current verb:', error);
+            let errorMessage = error.message;
+            let actionButton = '<button onclick="loadCurrentVerb()" class="button-68" style="margin-top: 1rem;">Try Again</button>';
+            
+            if (errorMessage.includes('log in')) {
+                actionButton = '<a href="/login/" class="button-68" style="margin-top: 1rem; display: inline-block; text-decoration: none;">Login</a>';
+            } else if (errorMessage.includes('No active session')) {
+                actionButton = '<a href="/verbs_conjugation/" class="button-68" style="margin-top: 1rem; display: inline-block; text-decoration: none;">Start New Session</a>';
+            } else if (errorMessage.includes('No verbs available')) {
+                actionButton = `
+                    <div style="margin-top: 1rem;">
+                        <div style="color: #856404; margin-bottom: 1rem;">
+                            ⚠️ No verbs available for practice. Check console for debug info.
+                        </div>
+                        <button onclick="loadCurrentVerb()" class="button-68">Try Again</button>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('conjugationTable').innerHTML = `
+                <div style="text-align: center; padding: 2rem; color: #dc3545;">
+                    <div>Error loading verb: ${errorMessage}</div>
+                    ${actionButton}
+                </div>
+            `;
+        });
+}
 
 // Handle HTMX page loads (when navigating via HTMX)
 document.addEventListener('htmx:afterSettle', function(event) {
@@ -109,8 +182,8 @@ function getNewVerb() {
         </div>
     `;
     
-    // Get new verb from backend
-    fetch('/verbs_conjugation/api/get-verb/', {
+    // Get new verb from backend (with next=true to advance to next verb)
+    fetch('/verbs_conjugation/api/get-verb/?next=true', {
         method: 'GET',
         headers: {
             'X-Requested-With': 'XMLHttpRequest',  // Helps Django identify AJAX requests

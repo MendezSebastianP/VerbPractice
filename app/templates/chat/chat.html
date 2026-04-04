@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% block title %}AI Tutor · LexArena{% endblock %}
+{% block content %}
+<section class="panel chat-main chat-single" x-data="chatClient()">
+  <div class="panel-header">
+    <div>
+      <p class="kicker">Learner-aware tutor</p>
+      <h1>AI practice room</h1>
+    </div>
+    {% if api_enabled %}
+      <span class="status-pill ready">Live tutor enabled</span>
+    {% else %}
+      <span class="status-pill muted">API key missing · fallback replies only</span>
+    {% endif %}
+  </div>
+
+  <p class="mode-copy">
+    The assistant sees your focus queue in the background, but the interface stays centered on the conversation instead of a diagnostic sidebar.
+  </p>
+
+  {% if focus_items %}
+    <div class="pill-list focus-pill-list">
+      {% for item in focus_items[:5] %}
+        <span>{{ item.label }} · {{ item.language_pair }}</span>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div id="chat-log" class="chat-log">
+    {% for message in messages %}
+      <article class="chat-bubble {{ message.role.value }}">
+        <span class="bubble-role">{{ 'You' if message.role.value == 'user' else 'Tutor' }}</span>
+        <p class="bubble-body">{{ message.content }}</p>
+      </article>
+    {% else %}
+      <div class="empty-state" id="chat-empty">No tutor history yet. Start with a prompt below and the thread will persist here.</div>
+    {% endfor %}
+  </div>
+
+  <div class="suggestion-list">
+    {% for prompt in suggestions %}
+      <button type="button" class="suggestion-chip" @click="fillPrompt({{ prompt|tojson }})">{{ prompt }}</button>
+    {% endfor %}
+  </div>
+
+  <form class="chat-form" @submit.prevent="send()">
+    <textarea x-model="message" rows="3" maxlength="1200" placeholder="Ask for a focused drill, a tense explanation, or a mini quiz."></textarea>
+    <div class="chat-form-footer">
+      <p class="muted small">Streaming uses Server-Sent Events and saves the conversation to the database.</p>
+      <button type="submit" class="btn primary" :disabled="isSending">
+        <span x-show="!isSending">Send prompt</span>
+        <span x-show="isSending">Streaming…</span>
+      </button>
+    </div>
+  </form>
+</section>
+{% endblock %}

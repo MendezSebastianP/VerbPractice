@@ -1,0 +1,72 @@
+rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text
+51,2,expliquer,explicar,1,53,explicar
+52,2,assurer,asegurar,1,54,asegurar
+53,2,servir,servir,1,55,servir
+54,2,porter,llevar,1,56,llevar
+55,2,montrer,mostrar,1,57,"mostrar, enseñar"
+55,2,montrer,enseñar,2,57,"mostrar, enseñar"
+56,2,éviter,evitar,1,58,evitar
+57,2,arriver,llegar,1,59,"llegar, ocurrir"
+57,2,arriver,ocurrir,2,59,"llegar, ocurrir"
+58,2,vouloir,querer,1,60,querer
+59,2,reconnaître,reconocer,1,61,reconocer
+60,2,monter,subir,1,62,"subir, montar"
+60,2,monter,montar,2,62,"subir, montar"
+61,2,boire,beber,1,63,"beber, tomar"
+61,2,boire,tomar,2,63,"beber, tomar"
+62,2,oublier,olvidar,1,64,olvidar
+63,2,poser,poner,1,65,"poner, colocar"
+63,2,poser,colocar,2,65,"poner, colocar"
+64,2,aimer,amar,1,66,"amar, gustar"
+64,2,aimer,gustar,2,66,"amar, gustar"
+65,2,arrêter,detener,1,67,"detener, parar"
+65,2,arrêter,parar,2,67,"detener, parar"
+66,2,sentir,sentir,1,68,"sentir, oler"
+66,2,sentir,oler,2,68,"sentir, oler"
+67,2,atteindre,alcanzar,1,69,"alcanzar, lograr"
+67,2,atteindre,lograr,2,69,"alcanzar, lograr"
+68,2,revenir,volver,1,70,"volver, regresar"
+68,2,revenir,regresar,2,70,"volver, regresar"
+69,2,devoir,deber,1,71,"deber, tener que"
+69,2,devoir,tener que,2,71,"deber, tener que"
+70,2,changer,cambiar,1,72,cambiar
+71,2,dormir,dormir,1,73,dormir
+72,2,permettre,permitir,1,74,permitir
+73,2,quitter,dejar,1,75,"dejar, abandonar"
+73,2,quitter,abandonar,2,75,"dejar, abandonar"
+74,2,reprendre,retomar,1,76,"retomar, reanudar"
+74,2,reprendre,reanudar,2,76,"retomar, reanudar"
+75,2,appeler,llamar,1,77,llamar
+76,2,dîner,cenar,1,78,cenar
+77,2,apprendre,aprender,1,79,"aprender, enseñar"
+77,2,apprendre,enseñar,2,79,"aprender, enseñar"
+78,2,empêcher,impedir,1,80,impedir
+79,2,établir,establecer,1,81,establecer
+80,2,travailler,trabajar,1,82,trabajar
+81,2,garder,guardar,1,83,"guardar, mantener"
+81,2,garder,mantener,2,83,"guardar, mantener"
+82,2,marcher,caminar,1,84,"caminar, andar"
+82,2,marcher,andar,2,84,"caminar, andar"
+83,2,imaginer,imaginar,1,85,imaginar
+84,2,considérer,considerar,1,86,considerar
+85,2,tendre,tender,1,87,"tender, estirar"
+85,2,tendre,estirar,2,87,"tender, estirar"
+86,2,lever,levantar,1,88,"levantar, alzar"
+86,2,lever,alzar,2,88,"levantar, alzar"
+87,2,tourner,girar,1,89,girar
+88,2,gagner,ganar,1,90,ganar
+89,2,recevoir,recibir,1,91,recibir
+90,2,revoir,revisar,1,92,"revisar, volver a ver"
+90,2,revoir,volver a ver,2,92,"revisar, volver a ver"
+91,2,aider,ayudar,1,93,ayudar
+92,2,créer,crear,1,94,crear
+93,2,découvrir,descubrir,1,95,descubrir
+94,2,compter,contar,1,96,contar
+95,2,tuer,matar,1,97,matar
+96,2,courir,correr,1,98,correr
+97,2,rentrer,regresar,1,99,"regresar, volver"
+97,2,rentrer,volver,2,99,"regresar, volver"
+98,2,réaliser,realizar,1,100,realizar
+99,2,toucher,tocar,1,101,tocar
+100,2,finir,terminar,1,102,"terminar, acabar"
+100,2,finir,acabar,2,102,"terminar, acabar"

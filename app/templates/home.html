@@ -1,0 +1,203 @@
+{% extends "layout.html" %}
+{% block title %}Dashboard · LexArena{% endblock %}
+{% block content %}
+<section class="dashboard-hero">
+  <article class="panel hero-main">
+    <p class="kicker">Daily cockpit</p>
+    <h1 class="hero-title">Level {{ profile.level if profile else 1 }} progress for {{ user.username }}</h1>
+    <p class="hero-copy">
+      Your queue is fully database-backed now, so words, verbs, chat prompts, and unfinished sessions all survive page reloads.
+    </p>
+
+    <div class="hero-actions">
+      <a class="btn primary" href="/training/words">Resume vocabulary</a>
+      <a class="btn secondary" href="/chat">Open AI tutor</a>
+    </div>
+
+    <div class="hero-stat-grid">
+      <div class="metric-card">
+        <span>Total XP</span>
+        <strong>{{ profile.xp if profile else 0 }}</strong>
+      </div>
+      <div class="metric-card">
+        <span>Current streak</span>
+        <strong>{{ profile.streak_days if profile else 0 }} days</strong>
+      </div>
+      <div class="metric-card">
+        <span>Tracked items</span>
+        <strong>{{ total_items }}</strong>
+      </div>
+      <div class="metric-card">
+        <span>Mastered items</span>
+        <strong>{{ mastered_items }}</strong>
+      </div>
+    </div>
+  </article>
+
+  <aside class="panel hero-side">
+    <div class="panel-header">
+      <div>
+        <p class="kicker">Momentum</p>
+        <h2>Today at a glance</h2>
+      </div>
+    </div>
+
+    <div class="score-stack">
+      <div class="score-row">
+        <span>Completed sessions</span>
+        <strong>{{ completed_sessions }}</strong>
+      </div>
+      <div class="score-row">
+        <span>Finished today</span>
+        <strong>{{ today_sessions }}</strong>
+      </div>
+      <div class="score-row">
+        <span>Word runs</span>
+        <strong>{{ mode_counts['word_translation'] }}</strong>
+      </div>
+      <div class="score-row">
+        <span>Verb runs</span>
+        <strong>{{ mode_counts['verb_translation'] }}</strong>
+      </div>
+      <div class="score-row">
+        <span>Conjugation runs</span>
+        <strong>{{ mode_counts['conjugation'] }}</strong>
+      </div>
+    </div>
+
+    {% if active_sessions %}
+      <div class="subsection">
+        <div class="panel-header tight">
+          <h3>Resume sessions</h3>
+        </div>
+        <div class="session-list">
+          {% for session in active_sessions %}
+            <a class="session-item" href="{{ session.href }}">
+              <div>
+                <strong>{{ session.title }}</strong>
+                <span>{{ session.language_pair }}</span>
+              </div>
+              <span>{{ session.progress_current }}/{{ session.progress_total or 0 }}</span>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </aside>
+</section>
+
+<section class="mode-grid">
+  {% for card in mode_cards %}
+    <a class="panel mode-card" href="{{ card.href }}">
+      <div class="panel-header tight">
+        <div>
+          <p class="kicker">{{ card.pair_label }}</p>
+          <h2>{{ card.title }}</h2>
+        </div>
+        <span class="pill-badge">{{ card.practiced }} practiced</span>
+      </div>
+      <p class="mode-copy">{{ card.description }}</p>
+      <div class="mode-stats">
+        <div><span>Unlocked</span><strong>{{ card.unlocked }}</strong></div>
+        <div><span>Mastered</span><strong>{{ card.mastered }}</strong></div>
+        <div><span>Avg. pressure</span><strong>{{ card.avg_probability }}</strong></div>
+      </div>
+      <div class="focus-mini-list">
+        {% for item in card.focus_items %}
+          <span>{{ item.label }}</span>
+        {% else %}
+          <span>Start a session to build focus data.</span>
+        {% endfor %}
+      </div>
+    </a>
+  {% endfor %}
+</section>
+
+<section class="dashboard-grid">
+  <article class="panel">
+    <div class="panel-header">
+      <div>
+        <p class="kicker">Focus queue</p>
+        <h2>Items asking for another pass</h2>
+      </div>
+    </div>
+    <div class="focus-list">
+      {% for item in weak_items %}
+        <div class="focus-item">
+          <div>
+            <strong>{{ item.label }}</strong>
+            <p>{{ item.item_type|replace('_', ' ') }} · {{ item.language_pair }}</p>
+          </div>
+          <div class="focus-metrics">
+            <span>Weight {{ item.probability }}</span>
+            <span>
+              {% if item.accuracy is not none %}
+                {{ item.accuracy }}% accuracy
+              {% else %}
+                New item
+              {% endif %}
+            </span>
+          </div>
+        </div>
+      {% else %}
+        <div class="empty-state">Your focus queue will populate as soon as you complete a few sessions.</div>
+      {% endfor %}
+    </div>
+  </article>
+
+  <article class="panel">
+    <div class="panel-header">
+      <div>
+        <p class="kicker">Tutor memory</p>
+        <h2>Recent chat context</h2>
+      </div>
+      <a href="/chat" class="text-link">Open chat</a>
+    </div>
+    <div class="message-preview-list">
+      {% for message in recent_messages %}
+        <div class="message-preview {{ message.role.value }}">
+          <span>{{ message.role.value }}</span>
+          <p>{{ message.content }}</p>
+        </div>
+      {% else %}
+        <div class="empty-state">No tutor history yet. Start with a targeted prompt and the assistant will remember the thread.</div>
+      {% endfor %}
+    </div>
+  </article>
+</section>
+
+<section class="panel">
+  <div class="panel-header">
+    <div>
+      <p class="kicker">History</p>
+      <h2>Recent completed sessions</h2>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table class="clean-table">
+      <thead>
+        <tr>
+          <th>Mode</th>
+          <th>Language pair</th>
+          <th>Score</th>
+          <th>Completed</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for session in recent_sessions %}
+          <tr>
+            <td>{{ session.mode.value|replace('_', ' ') }}</td>
+            <td>{{ session.language_pair }}</td>
+            <td>{{ '%.1f'|format(session.score or 0) }}%</td>
+            <td>{{ session.completed_at.strftime('%Y-%m-%d %H:%M') if session.completed_at else '-' }}</td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="4">No completed sessions yet.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

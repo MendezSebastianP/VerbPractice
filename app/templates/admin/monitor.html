@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block title %}Monitor · LexArena{% endblock %}
+{% block content %}
+<section
+  class="panel admin-monitor-shell"
+  hx-get="/admin/monitor/panel"
+  hx-trigger="load, every 4s"
+  hx-target="this"
+  hx-swap="innerHTML"
+>
+  <p class="muted">Loading monitor…</p>
+</section>
+{% endblock %}

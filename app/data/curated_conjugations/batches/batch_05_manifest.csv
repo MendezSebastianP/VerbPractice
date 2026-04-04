@@ -1,0 +1,69 @@
+rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text
+201,5,abandonner,abandonar,1,203,abandonar
+202,5,protéger,proteger,1,204,proteger
+203,5,noter,anotar,1,205,"anotar, notar"
+203,5,noter,notar,2,205,"anotar, notar"
+204,5,remplir,llenar,1,206,"llenar, cumplir"
+204,5,remplir,cumplir,2,206,"llenar, cumplir"
+205,5,fermer,cerrar,1,207,cerrar
+206,5,dégager,liberar,1,208,"liberar, despejar"
+206,5,dégager,despejar,2,208,"liberar, despejar"
+207,5,ramener,traer de vuelta,1,209,"traer de vuelta, devolver"
+207,5,ramener,devolver,2,209,"traer de vuelta, devolver"
+208,5,poursuivre,perseguir,1,210,"perseguir, continuar"
+208,5,poursuivre,continuar,2,210,"perseguir, continuar"
+209,5,couper,cortar,1,211,cortar
+210,5,embrasser,abrazar,1,212,"abrazar, besar"
+210,5,embrasser,besar,2,212,"abrazar, besar"
+211,5,décrire,describir,1,213,describir
+212,5,répéter,repetir,1,214,repetir
+213,5,organiser,organizar,1,215,organizar
+214,5,vérifier,verificar,1,216,"verificar, comprobar"
+214,5,vérifier,comprobar,2,216,"verificar, comprobar"
+215,5,danser,bailar,1,217,bailar
+216,5,espérer,esperar,1,218,esperar
+217,5,frapper,golpear,1,219,"golpear, pegar"
+217,5,frapper,pegar,2,219,"golpear, pegar"
+218,5,accomplir,cumplir,1,220,"cumplir, realizar"
+218,5,accomplir,realizar,2,220,"cumplir, realizar"
+219,5,exister,existir,1,221,existir
+220,5,avouer,confesar,1,222,"confesar, admitir"
+220,5,avouer,admitir,2,222,"confesar, admitir"
+221,5,couler,fluir,1,223,fluir
+222,5,élever,elevar,1,224,"elevar, criar"
+222,5,élever,criar,2,224,"elevar, criar"
+223,5,parvenir,lograr,1,225,"lograr, alcanzar"
+223,5,parvenir,alcanzar,2,225,"lograr, alcanzar"
+224,5,arracher,arrancar,1,226,arrancar
+225,5,citer,citar,1,227,citar
+226,5,provoquer,provocar,1,228,provocar
+227,5,renoncer,renunciar,1,229,renunciar
+228,5,approcher,acercar,1,230,"acercar, aproximar"
+228,5,approcher,aproximar,2,230,"acercar, aproximar"
+229,5,lancer,lanzar,1,231,lanzar
+230,5,séparer,separar,1,232,separar
+231,5,transformer,transformar,1,233,transformar
+232,5,se couler,hundirse,1,234,hundirse
+233,5,examiner,examinar,1,235,examinar
+234,5,justifier,justificar,1,236,justificar
+235,5,installer,instalar,1,237,instalar
+236,5,respirer,respirar,1,238,respirar
+237,5,rêver,soñar,1,239,soñar
+238,5,prévenir,prevenir,1,240,"prevenir, avisar"
+238,5,prévenir,avisar,2,240,"prevenir, avisar"
+239,5,taire,callar,1,241,callar
+240,5,relever,levantar,1,242,"levantar, relevar"
+240,5,relever,relevar,2,242,"levantar, relevar"
+241,5,plancher,trabajar duro,1,243,trabajar duro
+242,5,livrer,entregar,1,244,entregar
+243,5,pénétrer,penetrar,1,245,penetrar
+244,5,détruire,destruir,1,246,destruir
+245,5,rouler,rodar,1,247,"rodar, conducir"
+245,5,rouler,conducir,2,247,"rodar, conducir"
+246,5,discuter,discutir,1,248,discutir
+247,5,modifier,modificar,1,249,modificar
+248,5,participer,participar,1,250,participar
+249,5,régler,resolver,1,251,"resolver, ajustar"
+249,5,régler,ajustar,2,251,"resolver, ajustar"
+250,5,engager,comprometer,1,252,"comprometer, contratar"
+250,5,engager,contratar,2,252,"comprometer, contratar"

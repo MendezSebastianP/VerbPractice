@@ -1,0 +1,2237 @@
+verb_id,language,mood,tense,pronoun,conjugated_form
+1,FR,Infinitif,Infinitif,,être
+1,FR,Indicatif,présent,je,suis
+1,FR,Indicatif,présent,tu,es
+1,FR,Indicatif,présent,"il (elle, on)",est
+1,FR,Indicatif,présent,nous,sommes
+1,FR,Indicatif,présent,vous,êtes
+1,FR,Indicatif,présent,ils (elles),sont
+1,FR,Indicatif,imparfait,je,étais
+1,FR,Indicatif,imparfait,tu,étais
+1,FR,Indicatif,imparfait,"il (elle, on)",était
+1,FR,Indicatif,imparfait,nous,étions
+1,FR,Indicatif,imparfait,vous,étiez
+1,FR,Indicatif,imparfait,ils (elles),étaient
+1,FR,Indicatif,futur,je,serai
+1,FR,Indicatif,futur,tu,seras
+1,FR,Indicatif,futur,"il (elle, on)",sera
+1,FR,Indicatif,futur,nous,serons
+1,FR,Indicatif,futur,vous,serez
+1,FR,Indicatif,futur,ils (elles),seront
+1,FR,Indicatif,passé simple,je,fus
+1,FR,Indicatif,passé simple,tu,fus
+1,FR,Indicatif,passé simple,"il (elle, on)",fut
+1,FR,Indicatif,passé simple,nous,fûmes
+1,FR,Indicatif,passé simple,vous,fûtes
+1,FR,Indicatif,passé simple,ils (elles),furent
+1,FR,Conditionnel,Conditionnel présent,je,serais
+1,FR,Conditionnel,Conditionnel présent,tu,serais
+1,FR,Conditionnel,Conditionnel présent,"il (elle, on)",serait
+1,FR,Conditionnel,Conditionnel présent,nous,serions
+1,FR,Conditionnel,Conditionnel présent,vous,seriez
+1,FR,Conditionnel,Conditionnel présent,ils (elles),seraient
+1,FR,Subjonctif,Subjonctif présent,je,sois
+1,FR,Subjonctif,Subjonctif présent,tu,sois
+1,FR,Subjonctif,Subjonctif présent,"il (elle, on)",soit
+1,FR,Subjonctif,Subjonctif présent,nous,soyons
+1,FR,Subjonctif,Subjonctif présent,vous,soyez
+1,FR,Subjonctif,Subjonctif présent,ils (elles),soient
+1,FR,Subjonctif,Subjonctif imparfait,je,fusse
+1,FR,Subjonctif,Subjonctif imparfait,tu,fusses
+1,FR,Subjonctif,Subjonctif imparfait,"il (elle, on)",fût
+1,FR,Subjonctif,Subjonctif imparfait,nous,fussions
+1,FR,Subjonctif,Subjonctif imparfait,vous,fussiez
+1,FR,Subjonctif,Subjonctif imparfait,ils (elles),fussent
+1,FR,Imperatif,Impératif,,soyez
+1,FR,Participe,Participe présent,,étant
+1,FR,Participe,Participe passé,masculin singulier,été
+1,FR,Indicatif,Passé composé,je,j'ai été
+1,FR,Indicatif,Passé composé,tu,as été
+1,FR,Indicatif,Passé composé,"il (elle, on)",a été
+1,FR,Indicatif,Passé composé,nous,avons été
+1,FR,Indicatif,Passé composé,vous,avez été
+1,FR,Indicatif,Passé composé,ils (elles),ont été
+1,ES,Indicativo,Imperfecto,tú,í
+1,ES,Indicativo,Imperfecto,él/ella,ías
+1,ES,Indicativo,Imperfecto,vosotros,ió
+1,ES,Indicativo,Imperfecto,ellos/ellas,íamos
+1,ES,Indicativo,Pretérito pluscuamperfecto,yo,ido
+1,ES,Indicativo,Pretérito pluscuamperfecto,tú,ido
+1,ES,Indicativo,Pretérito pluscuamperfecto,él/ella,ido
+1,ES,Indicativo,Pretérito pluscuamperfecto,nosotros,ido
+1,ES,Indicativo,Pretérito pluscuamperfecto,vosotros,ido
+1,ES,Indicativo,Pretérito pluscuamperfecto,ellos/ellas,ido
+1,ES,Indicativo,Presente,yo,soy
+1,ES,Indicativo,Presente,tú,eres
+1,ES,Indicativo,Presente,él/ella,es
+1,ES,Indicativo,Presente,nosotros,somos
+1,ES,Indicativo,Presente,vosotros,sois
+1,ES,Indicativo,Presente,ellos/ellas,son
+1,ES,Indicativo,pretérito perfecto compuesto,yo,sido
+1,ES,Indicativo,pretérito perfecto compuesto,tú,sido
+1,ES,Indicativo,pretérito perfecto compuesto,él/ella,sido
+1,ES,Indicativo,pretérito perfecto compuesto,nosotros,sido
+1,ES,Indicativo,pretérito perfecto compuesto,vosotros,sido
+1,ES,Indicativo,pretérito perfecto compuesto,ellos/ellas,sido
+1,ES,Indicativo,Imperfecto,yo,era
+1,ES,Indicativo,Imperfecto,tú,eras
+1,ES,Indicativo,Imperfecto,él/ella,era
+1,ES,Indicativo,Imperfecto,nosotros,éramos
+1,ES,Indicativo,Imperfecto,vosotros,erais
+1,ES,Indicativo,Imperfecto,ellos/ellas,eran
+1,ES,Indicativo,pretérito pluscuamperfecto,yo,sido
+1,ES,Indicativo,pretérito pluscuamperfecto,tú,sido
+1,ES,Indicativo,pretérito pluscuamperfecto,él/ella,sido
+1,ES,Indicativo,pretérito pluscuamperfecto,nosotros,sido
+1,ES,Indicativo,pretérito pluscuamperfecto,vosotros,sido
+1,ES,Indicativo,pretérito pluscuamperfecto,ellos/ellas,sido
+1,ES,Indicativo,Pretérito indefinido,yo,fui
+1,ES,Indicativo,Pretérito indefinido,tú,fuiste
+1,ES,Indicativo,Pretérito indefinido,él/ella,fue
+1,ES,Indicativo,Pretérito indefinido,nosotros,fuimos
+1,ES,Indicativo,Pretérito indefinido,vosotros,fuisteis
+1,ES,Indicativo,Pretérito indefinido,ellos/ellas,fueron
+1,ES,Indicativo,pretérito anterior,yo,sido
+1,ES,Indicativo,pretérito anterior,tú,sido
+1,ES,Indicativo,pretérito anterior,él/ella,sido
+1,ES,Indicativo,pretérito anterior,nosotros,sido
+1,ES,Indicativo,pretérito anterior,vosotros,sido
+1,ES,Indicativo,pretérito anterior,ellos/ellas,sido
+1,ES,Indicativo,Futuro,yo,seré
+1,ES,Indicativo,Futuro,tú,serás
+1,ES,Indicativo,Futuro,él/ella,será
+1,ES,Indicativo,Futuro,nosotros,seremos
+1,ES,Indicativo,Futuro,vosotros,seréis
+1,ES,Indicativo,Futuro,ellos/ellas,serán
+1,ES,Indicativo,futuro perfecto,yo,sido
+1,ES,Indicativo,futuro perfecto,tú,sido
+1,ES,Indicativo,futuro perfecto,él/ella,sido
+1,ES,Indicativo,futuro perfecto,nosotros,sido
+1,ES,Indicativo,futuro perfecto,vosotros,sido
+1,ES,Indicativo,futuro perfecto,ellos/ellas,sido
+1,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,tú,iese
+1,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,él/ella,ieras
+1,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,vosotros,iese
+1,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,ellos/ellas,iéramos
+1,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,yo,ido
+1,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,tú,ido
+1,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,él/ella,ido
+1,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,nosotros,ido
+1,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,vosotros,ido
+1,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,ellos/ellas,ido
+1,ES,Subjuntivo,Subjuntivo futuro,yo,iré
+1,ES,Subjuntivo,Subjuntivo futuro,tú,iría
+1,ES,Subjuntivo,Subjuntivo futuro,él/ella,ieres
+1,ES,Subjuntivo,Subjuntivo futuro,nosotros,irá
+1,ES,Subjuntivo,Subjuntivo futuro,vosotros,iría
+1,ES,Subjuntivo,Subjuntivo futuro,ellos/ellas,iéremos
+1,ES,Subjuntivo,Subjuntivo futuro perfecto,yo,ido
+1,ES,Subjuntivo,Subjuntivo futuro perfecto,tú,ido
+1,ES,Subjuntivo,Subjuntivo futuro perfecto,él/ella,ido
+1,ES,Subjuntivo,Subjuntivo futuro perfecto,nosotros,ido
+1,ES,Subjuntivo,Subjuntivo futuro perfecto,vosotros,ido
+1,ES,Subjuntivo,Subjuntivo futuro perfecto,ellos/ellas,ido
+1,ES,Subjuntivo,Subjuntivo presente,yo,sea
+1,ES,Subjuntivo,Subjuntivo presente,tú,seas
+1,ES,Subjuntivo,Subjuntivo presente,él/ella,sea
+1,ES,Subjuntivo,Subjuntivo presente,nosotros,seamos
+1,ES,Subjuntivo,Subjuntivo presente,vosotros,seáis
+1,ES,Subjuntivo,Subjuntivo presente,ellos/ellas,sean
+1,ES,Subjuntivo,Subjuntivo pretérito perfecto,yo,sido
+1,ES,Subjuntivo,Subjuntivo pretérito perfecto,tú,sido
+1,ES,Subjuntivo,Subjuntivo pretérito perfecto,él/ella,sido
+1,ES,Subjuntivo,Subjuntivo pretérito perfecto,nosotros,sido
+1,ES,Subjuntivo,Subjuntivo pretérito perfecto,vosotros,sido
+1,ES,Subjuntivo,Subjuntivo pretérito perfecto,ellos/ellas,sido
+1,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,yo,fuera
+1,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,tú,fueras
+1,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,él/ella,fuera
+1,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,nosotros,fuéramos
+1,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,vosotros,fuerais
+1,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,ellos/ellas,fueran
+1,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,yo,sido
+1,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,tú,sido
+1,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,él/ella,sido
+1,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,nosotros,sido
+1,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,vosotros,sido
+1,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,ellos/ellas,sido
+1,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,yo,fuese
+1,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,tú,fueses
+1,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,él/ella,fuese
+1,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,nosotros,fuésemos
+1,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,vosotros,fueseis
+1,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,ellos/ellas,fuesen
+1,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,yo,sido
+1,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,tú,sido
+1,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,él/ella,sido
+1,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,nosotros,sido
+1,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,vosotros,sido
+1,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,ellos/ellas,sido
+1,ES,Subjuntivo,Subjuntivo futuro,yo,fuere
+1,ES,Subjuntivo,Subjuntivo futuro,tú,fueres
+1,ES,Subjuntivo,Subjuntivo futuro,él/ella,fuere
+1,ES,Subjuntivo,Subjuntivo futuro,nosotros,fuéremos
+1,ES,Subjuntivo,Subjuntivo futuro,vosotros,fuereis
+1,ES,Subjuntivo,Subjuntivo futuro,ellos/ellas,fueren
+1,ES,Subjuntivo,Subjuntivo futuro perfecto,yo,sido
+1,ES,Subjuntivo,Subjuntivo futuro perfecto,tú,sido
+1,ES,Subjuntivo,Subjuntivo futuro perfecto,él/ella,sido
+1,ES,Subjuntivo,Subjuntivo futuro perfecto,nosotros,sido
+1,ES,Subjuntivo,Subjuntivo futuro perfecto,vosotros,sido
+1,ES,Subjuntivo,Subjuntivo futuro perfecto,ellos/ellas,sido
+1,ES,Imperativo,Imperativo,tú,sé
+1,ES,Imperativo,Imperativo,él/ella,sea
+1,ES,Imperativo,Imperativo,nosotros,seamos
+1,ES,Imperativo,Imperativo,vosotros,sed
+1,ES,Imperativo,Imperativo,ellos/ellas,sean
+1,ES,Imperativo,Imperativo,tú no,seas
+1,ES,Imperativo,Imperativo,él/ella no,sea
+1,ES,Imperativo,Imperativo,nosotros no,seamos
+1,ES,Imperativo,Imperativo,vosotros no,seáis
+1,ES,Imperativo,Imperativo,ellos/ellas no,sean
+1,ES,Condicional,Condicional,yo,sería
+1,ES,Condicional,Condicional,tú,serías
+1,ES,Condicional,Condicional,él/ella,sería
+1,ES,Condicional,Condicional,nosotros,seríamos
+1,ES,Condicional,Condicional,vosotros,seríais
+1,ES,Condicional,Condicional,ellos/ellas,serían
+1,ES,Condicional,perfecto,yo,sido
+1,ES,Condicional,perfecto,tú,sido
+1,ES,Condicional,perfecto,él/ella,sido
+1,ES,Condicional,perfecto,nosotros,sido
+1,ES,Condicional,perfecto,vosotros,sido
+1,ES,Condicional,perfecto,ellos/ellas,sido
+1,ES,Infinitivo,Infinitivo,,ser
+1,ES,Gerundio,Gerundio,,siendo
+1,ES,Participo,Participo,,sido
+2,FR,Infinitif,Infinitif,,avoir
+2,FR,Indicatif,présent,je,ai
+2,FR,Indicatif,présent,tu,as
+2,FR,Indicatif,présent,"il (elle, on)",a
+2,FR,Indicatif,présent,nous,avons
+2,FR,Indicatif,présent,vous,avez
+2,FR,Indicatif,présent,ils (elles),ont
+2,FR,Indicatif,imparfait,je,avais
+2,FR,Indicatif,imparfait,tu,avais
+2,FR,Indicatif,imparfait,"il (elle, on)",avait
+2,FR,Indicatif,imparfait,nous,avions
+2,FR,Indicatif,imparfait,vous,aviez
+2,FR,Indicatif,imparfait,ils (elles),avaient
+2,FR,Indicatif,futur,je,aurai
+2,FR,Indicatif,futur,tu,auras
+2,FR,Indicatif,futur,"il (elle, on)",aura
+2,FR,Indicatif,futur,nous,aurons
+2,FR,Indicatif,futur,vous,aurez
+2,FR,Indicatif,futur,ils (elles),auront
+2,FR,Indicatif,passé simple,je,eus
+2,FR,Indicatif,passé simple,tu,eus
+2,FR,Indicatif,passé simple,"il (elle, on)",eut
+2,FR,Indicatif,passé simple,nous,eûmes
+2,FR,Indicatif,passé simple,vous,eûtes
+2,FR,Indicatif,passé simple,ils (elles),eurent
+2,FR,Conditionnel,Conditionnel présent,je,aurais
+2,FR,Conditionnel,Conditionnel présent,tu,aurais
+2,FR,Conditionnel,Conditionnel présent,"il (elle, on)",aurait
+2,FR,Conditionnel,Conditionnel présent,nous,aurions
+2,FR,Conditionnel,Conditionnel présent,vous,auriez
+2,FR,Conditionnel,Conditionnel présent,ils (elles),auraient
+2,FR,Subjonctif,Subjonctif présent,je,aie
+2,FR,Subjonctif,Subjonctif présent,tu,aies
+2,FR,Subjonctif,Subjonctif présent,"il (elle, on)",ait
+2,FR,Subjonctif,Subjonctif présent,nous,ayons
+2,FR,Subjonctif,Subjonctif présent,vous,ayez
+2,FR,Subjonctif,Subjonctif présent,ils (elles),aient
+2,FR,Subjonctif,Subjonctif imparfait,je,eusse
+2,FR,Subjonctif,Subjonctif imparfait,tu,eusses
+2,FR,Subjonctif,Subjonctif imparfait,"il (elle, on)",eût
+2,FR,Subjonctif,Subjonctif imparfait,nous,eussions
+2,FR,Subjonctif,Subjonctif imparfait,vous,eussiez
+2,FR,Subjonctif,Subjonctif imparfait,ils (elles),eussent
+2,FR,Imperatif,Impératif,,ayez
+2,FR,Participe,Participe présent,,ayant
+2,FR,Participe,Participe passé,masculin singulier,eu
+2,FR,Participe,Participe passé,masculin pluriel,eus
+2,FR,Participe,Participe passé,feminin singulier,eue
+2,FR,Participe,Participe passé,feminin pluriel,eues
+2,FR,Indicatif,Passé composé,je,j'ai eu
+2,FR,Indicatif,Passé composé,tu,as eu
+2,FR,Indicatif,Passé composé,"il (elle, on)",a eu
+2,FR,Indicatif,Passé composé,nous,avons eu
+2,FR,Indicatif,Passé composé,vous,avez eu
+2,FR,Indicatif,Passé composé,ils (elles),ont eu
+2,ES,Indicativo,Imperfecto,yo,tuelo
+2,ES,Indicativo,Imperfecto,él/ella,tolías
+2,ES,Indicativo,Imperfecto,nosotros,tuele
+2,ES,Indicativo,Imperfecto,ellos/ellas,tolíamos
+2,ES,Indicativo,Pretérito pluscuamperfecto,yo,tido
+2,ES,Indicativo,Pretérito pluscuamperfecto,tú,tido
+2,ES,Indicativo,Pretérito pluscuamperfecto,él/ella,tido
+2,ES,Indicativo,Pretérito pluscuamperfecto,nosotros,tido
+2,ES,Indicativo,Pretérito pluscuamperfecto,vosotros,tido
+2,ES,Indicativo,Pretérito pluscuamperfecto,ellos/ellas,tido
+2,ES,Indicativo,Presente,yo,tengo
+2,ES,Indicativo,Presente,tú,tienes
+2,ES,Indicativo,Presente,él/ella,tiene
+2,ES,Indicativo,Presente,nosotros,tenemos
+2,ES,Indicativo,Presente,vosotros,tenéis
+2,ES,Indicativo,Presente,ellos/ellas,tienen
+2,ES,Indicativo,pretérito perfecto compuesto,yo,tenido
+2,ES,Indicativo,pretérito perfecto compuesto,tú,tenido
+2,ES,Indicativo,pretérito perfecto compuesto,él/ella,tenido
+2,ES,Indicativo,pretérito perfecto compuesto,nosotros,tenido
+2,ES,Indicativo,pretérito perfecto compuesto,vosotros,tenido
+2,ES,Indicativo,pretérito perfecto compuesto,ellos/ellas,tenido
+2,ES,Indicativo,Imperfecto,yo,tenía
+2,ES,Indicativo,Imperfecto,tú,tenías
+2,ES,Indicativo,Imperfecto,él/ella,tenía
+2,ES,Indicativo,Imperfecto,nosotros,teníamos
+2,ES,Indicativo,Imperfecto,vosotros,teníais
+2,ES,Indicativo,Imperfecto,ellos/ellas,tenían
+2,ES,Indicativo,pretérito pluscuamperfecto,yo,tenido
+2,ES,Indicativo,pretérito pluscuamperfecto,tú,tenido
+2,ES,Indicativo,pretérito pluscuamperfecto,él/ella,tenido
+2,ES,Indicativo,pretérito pluscuamperfecto,nosotros,tenido
+2,ES,Indicativo,pretérito pluscuamperfecto,vosotros,tenido
+2,ES,Indicativo,pretérito pluscuamperfecto,ellos/ellas,tenido
+2,ES,Indicativo,Pretérito indefinido,yo,tuve
+2,ES,Indicativo,Pretérito indefinido,tú,tuviste
+2,ES,Indicativo,Pretérito indefinido,él/ella,tuvo
+2,ES,Indicativo,Pretérito indefinido,nosotros,tuvimos
+2,ES,Indicativo,Pretérito indefinido,vosotros,tuvisteis
+2,ES,Indicativo,Pretérito indefinido,ellos/ellas,tuvieron
+2,ES,Indicativo,pretérito anterior,yo,tenido
+2,ES,Indicativo,pretérito anterior,tú,tenido
+2,ES,Indicativo,pretérito anterior,él/ella,tenido
+2,ES,Indicativo,pretérito anterior,nosotros,tenido
+2,ES,Indicativo,pretérito anterior,vosotros,tenido
+2,ES,Indicativo,pretérito anterior,ellos/ellas,tenido
+2,ES,Indicativo,Futuro,yo,tendré
+2,ES,Indicativo,Futuro,tú,tendrás
+2,ES,Indicativo,Futuro,él/ella,tendrá
+2,ES,Indicativo,Futuro,nosotros,tendremos
+2,ES,Indicativo,Futuro,vosotros,tendréis
+2,ES,Indicativo,Futuro,ellos/ellas,tendrán
+2,ES,Indicativo,futuro perfecto,yo,tenido
+2,ES,Indicativo,futuro perfecto,tú,tenido
+2,ES,Indicativo,futuro perfecto,él/ella,tenido
+2,ES,Indicativo,futuro perfecto,nosotros,tenido
+2,ES,Indicativo,futuro perfecto,vosotros,tenido
+2,ES,Indicativo,futuro perfecto,ellos/ellas,tenido
+2,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,yo,tuela
+2,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,tú,toliese
+2,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,él/ella,tolieras
+2,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,nosotros,tuela
+2,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,vosotros,toliese
+2,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,ellos/ellas,toliéramos
+2,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,yo,tido
+2,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,tú,tido
+2,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,él/ella,tido
+2,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,nosotros,tido
+2,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,vosotros,tido
+2,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,ellos/ellas,tido
+2,ES,Subjuntivo,Subjuntivo futuro,yo,tiré
+2,ES,Subjuntivo,Subjuntivo futuro,tú,tiría
+2,ES,Subjuntivo,Subjuntivo futuro,él/ella,tieres
+2,ES,Subjuntivo,Subjuntivo futuro,nosotros,tirá
+2,ES,Subjuntivo,Subjuntivo futuro,vosotros,tiría
+2,ES,Subjuntivo,Subjuntivo futuro,ellos/ellas,tiéremos
+2,ES,Subjuntivo,Subjuntivo futuro perfecto,yo,tido
+2,ES,Subjuntivo,Subjuntivo futuro perfecto,tú,tido
+2,ES,Subjuntivo,Subjuntivo futuro perfecto,él/ella,tido
+2,ES,Subjuntivo,Subjuntivo futuro perfecto,nosotros,tido
+2,ES,Subjuntivo,Subjuntivo futuro perfecto,vosotros,tido
+2,ES,Subjuntivo,Subjuntivo futuro perfecto,ellos/ellas,tido
+2,ES,Subjuntivo,Subjuntivo presente,yo,tenga
+2,ES,Subjuntivo,Subjuntivo presente,tú,tengas
+2,ES,Subjuntivo,Subjuntivo presente,él/ella,tenga
+2,ES,Subjuntivo,Subjuntivo presente,nosotros,tengamos
+2,ES,Subjuntivo,Subjuntivo presente,vosotros,tengáis
+2,ES,Subjuntivo,Subjuntivo presente,ellos/ellas,tengan
+2,ES,Subjuntivo,Subjuntivo pretérito perfecto,yo,tenido
+2,ES,Subjuntivo,Subjuntivo pretérito perfecto,tú,tenido
+2,ES,Subjuntivo,Subjuntivo pretérito perfecto,él/ella,tenido
+2,ES,Subjuntivo,Subjuntivo pretérito perfecto,nosotros,tenido
+2,ES,Subjuntivo,Subjuntivo pretérito perfecto,vosotros,tenido
+2,ES,Subjuntivo,Subjuntivo pretérito perfecto,ellos/ellas,tenido
+2,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,yo,tuviera
+2,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,tú,tuvieras
+2,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,él/ella,tuviera
+2,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,nosotros,tuviéramos
+2,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,vosotros,tuvierais
+2,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,ellos/ellas,tuvieran
+2,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,yo,tenido
+2,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,tú,tenido
+2,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,él/ella,tenido
+2,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,nosotros,tenido
+2,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,vosotros,tenido
+2,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,ellos/ellas,tenido
+2,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,yo,tuviese
+2,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,tú,tuvieses
+2,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,él/ella,tuviese
+2,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,nosotros,tuviésemos
+2,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,vosotros,tuvieseis
+2,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,ellos/ellas,tuviesen
+2,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,yo,tenido
+2,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,tú,tenido
+2,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,él/ella,tenido
+2,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,nosotros,tenido
+2,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,vosotros,tenido
+2,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,ellos/ellas,tenido
+2,ES,Subjuntivo,Subjuntivo futuro,yo,tuviere
+2,ES,Subjuntivo,Subjuntivo futuro,tú,tuvieres
+2,ES,Subjuntivo,Subjuntivo futuro,él/ella,tuviere
+2,ES,Subjuntivo,Subjuntivo futuro,nosotros,tuviéremos
+2,ES,Subjuntivo,Subjuntivo futuro,vosotros,tuviereis
+2,ES,Subjuntivo,Subjuntivo futuro,ellos/ellas,tuvieren
+2,ES,Subjuntivo,Subjuntivo futuro perfecto,yo,tenido
+2,ES,Subjuntivo,Subjuntivo futuro perfecto,tú,tenido
+2,ES,Subjuntivo,Subjuntivo futuro perfecto,él/ella,tenido
+2,ES,Subjuntivo,Subjuntivo futuro perfecto,nosotros,tenido
+2,ES,Subjuntivo,Subjuntivo futuro perfecto,vosotros,tenido
+2,ES,Subjuntivo,Subjuntivo futuro perfecto,ellos/ellas,tenido
+2,ES,Imperativo,Imperativo,tú,ten
+2,ES,Imperativo,Imperativo,él/ella,tenga
+2,ES,Imperativo,Imperativo,nosotros,tengamos
+2,ES,Imperativo,Imperativo,vosotros,tened
+2,ES,Imperativo,Imperativo,ellos/ellas,tengan
+2,ES,Imperativo,Imperativo,tú no,tengas
+2,ES,Imperativo,Imperativo,él/ella no,tenga
+2,ES,Imperativo,Imperativo,nosotros no,tengamos
+2,ES,Imperativo,Imperativo,vosotros no,tengáis
+2,ES,Imperativo,Imperativo,ellos/ellas no,tengan
+2,ES,Condicional,Condicional,yo,tendría
+2,ES,Condicional,Condicional,tú,tendrías
+2,ES,Condicional,Condicional,él/ella,tendría
+2,ES,Condicional,Condicional,nosotros,tendríamos
+2,ES,Condicional,Condicional,vosotros,tendríais
+2,ES,Condicional,Condicional,ellos/ellas,tendrían
+2,ES,Condicional,perfecto,yo,tenido
+2,ES,Condicional,perfecto,tú,tenido
+2,ES,Condicional,perfecto,él/ella,tenido
+2,ES,Condicional,perfecto,nosotros,tenido
+2,ES,Condicional,perfecto,vosotros,tenido
+2,ES,Condicional,perfecto,ellos/ellas,tenido
+2,ES,Infinitivo,Infinitivo,,tener
+2,ES,Gerundio,Gerundio,,teniendo
+2,ES,Participo,Participo,,tenido
+3,FR,Infinitif,Infinitif,,faire
+3,FR,Indicatif,présent,je,fais
+3,FR,Indicatif,présent,tu,fais
+3,FR,Indicatif,présent,"il (elle, on)",fait
+3,FR,Indicatif,présent,nous,faisons
+3,FR,Indicatif,présent,vous,faites
+3,FR,Indicatif,présent,ils (elles),font
+3,FR,Indicatif,imparfait,je,faisais
+3,FR,Indicatif,imparfait,tu,faisais
+3,FR,Indicatif,imparfait,"il (elle, on)",faisait
+3,FR,Indicatif,imparfait,nous,faisions
+3,FR,Indicatif,imparfait,vous,faisiez
+3,FR,Indicatif,imparfait,ils (elles),faisaient
+3,FR,Indicatif,futur,je,ferai
+3,FR,Indicatif,futur,tu,feras
+3,FR,Indicatif,futur,"il (elle, on)",fera
+3,FR,Indicatif,futur,nous,ferons
+3,FR,Indicatif,futur,vous,ferez
+3,FR,Indicatif,futur,ils (elles),feront
+3,FR,Indicatif,passé simple,je,fis
+3,FR,Indicatif,passé simple,tu,fis
+3,FR,Indicatif,passé simple,"il (elle, on)",fit
+3,FR,Indicatif,passé simple,nous,fîmes
+3,FR,Indicatif,passé simple,vous,fîtes
+3,FR,Indicatif,passé simple,ils (elles),firent
+3,FR,Conditionnel,Conditionnel présent,je,ferais
+3,FR,Conditionnel,Conditionnel présent,tu,ferais
+3,FR,Conditionnel,Conditionnel présent,"il (elle, on)",ferait
+3,FR,Conditionnel,Conditionnel présent,nous,ferions
+3,FR,Conditionnel,Conditionnel présent,vous,feriez
+3,FR,Conditionnel,Conditionnel présent,ils (elles),feraient
+3,FR,Subjonctif,Subjonctif présent,je,fasse
+3,FR,Subjonctif,Subjonctif présent,tu,fasses
+3,FR,Subjonctif,Subjonctif présent,"il (elle, on)",fasse
+3,FR,Subjonctif,Subjonctif présent,nous,fassions
+3,FR,Subjonctif,Subjonctif présent,vous,fassiez
+3,FR,Subjonctif,Subjonctif présent,ils (elles),fassent
+3,FR,Subjonctif,Subjonctif imparfait,je,fisse
+3,FR,Subjonctif,Subjonctif imparfait,tu,fisses
+3,FR,Subjonctif,Subjonctif imparfait,"il (elle, on)",fît
+3,FR,Subjonctif,Subjonctif imparfait,nous,fissions
+3,FR,Subjonctif,Subjonctif imparfait,vous,fissiez
+3,FR,Subjonctif,Subjonctif imparfait,ils (elles),fissent
+3,FR,Imperatif,Impératif,,faites
+3,FR,Participe,Participe présent,,faisant
+3,FR,Participe,Participe passé,masculin singulier,fait
+3,FR,Participe,Participe passé,masculin pluriel,faits
+3,FR,Participe,Participe passé,feminin singulier,faite
+3,FR,Participe,Participe passé,feminin pluriel,faites
+3,FR,Indicatif,Passé composé,je,j'ai fait
+3,FR,Indicatif,Passé composé,tu,as fait
+3,FR,Indicatif,Passé composé,"il (elle, on)",a fait
+3,FR,Indicatif,Passé composé,nous,avons fait
+3,FR,Indicatif,Passé composé,vous,avez fait
+3,FR,Indicatif,Passé composé,ils (elles),ont fait
+3,ES,Indicativo,Imperfecto,tú,hí
+3,ES,Indicativo,Imperfecto,él/ella,hías
+3,ES,Indicativo,Imperfecto,vosotros,hió
+3,ES,Indicativo,Imperfecto,ellos/ellas,híamos
+3,ES,Indicativo,Pretérito pluscuamperfecto,yo,hido
+3,ES,Indicativo,Pretérito pluscuamperfecto,tú,hido
+3,ES,Indicativo,Pretérito pluscuamperfecto,él/ella,hido
+3,ES,Indicativo,Pretérito pluscuamperfecto,nosotros,hido
+3,ES,Indicativo,Pretérito pluscuamperfecto,vosotros,hido
+3,ES,Indicativo,Pretérito pluscuamperfecto,ellos/ellas,hido
+3,ES,Indicativo,Presente,yo,hago
+3,ES,Indicativo,Presente,tú,haces
+3,ES,Indicativo,Presente,él/ella,hace
+3,ES,Indicativo,Presente,nosotros,hacemos
+3,ES,Indicativo,Presente,vosotros,hacéis
+3,ES,Indicativo,Presente,ellos/ellas,hacen
+3,ES,Indicativo,pretérito perfecto compuesto,yo,hecho
+3,ES,Indicativo,pretérito perfecto compuesto,tú,hecho
+3,ES,Indicativo,pretérito perfecto compuesto,él/ella,hecho
+3,ES,Indicativo,pretérito perfecto compuesto,nosotros,hecho
+3,ES,Indicativo,pretérito perfecto compuesto,vosotros,hecho
+3,ES,Indicativo,pretérito perfecto compuesto,ellos/ellas,hecho
+3,ES,Indicativo,Imperfecto,yo,hacía
+3,ES,Indicativo,Imperfecto,tú,hacías
+3,ES,Indicativo,Imperfecto,él/ella,hacía
+3,ES,Indicativo,Imperfecto,nosotros,hacíamos
+3,ES,Indicativo,Imperfecto,vosotros,hacíais
+3,ES,Indicativo,Imperfecto,ellos/ellas,hacían
+3,ES,Indicativo,pretérito pluscuamperfecto,yo,hecho
+3,ES,Indicativo,pretérito pluscuamperfecto,tú,hecho
+3,ES,Indicativo,pretérito pluscuamperfecto,él/ella,hecho
+3,ES,Indicativo,pretérito pluscuamperfecto,nosotros,hecho
+3,ES,Indicativo,pretérito pluscuamperfecto,vosotros,hecho
+3,ES,Indicativo,pretérito pluscuamperfecto,ellos/ellas,hecho
+3,ES,Indicativo,Pretérito indefinido,yo,hice
+3,ES,Indicativo,Pretérito indefinido,tú,hiciste
+3,ES,Indicativo,Pretérito indefinido,él/ella,hizo
+3,ES,Indicativo,Pretérito indefinido,nosotros,hicimos
+3,ES,Indicativo,Pretérito indefinido,vosotros,hicisteis
+3,ES,Indicativo,Pretérito indefinido,ellos/ellas,hicieron
+3,ES,Indicativo,pretérito anterior,yo,hecho
+3,ES,Indicativo,pretérito anterior,tú,hecho
+3,ES,Indicativo,pretérito anterior,él/ella,hecho
+3,ES,Indicativo,pretérito anterior,nosotros,hecho
+3,ES,Indicativo,pretérito anterior,vosotros,hecho
+3,ES,Indicativo,pretérito anterior,ellos/ellas,hecho
+3,ES,Indicativo,Futuro,yo,haré
+3,ES,Indicativo,Futuro,tú,harás
+3,ES,Indicativo,Futuro,él/ella,hará
+3,ES,Indicativo,Futuro,nosotros,haremos
+3,ES,Indicativo,Futuro,vosotros,haréis
+3,ES,Indicativo,Futuro,ellos/ellas,harán
+3,ES,Indicativo,futuro perfecto,yo,hecho
+3,ES,Indicativo,futuro perfecto,tú,hecho
+3,ES,Indicativo,futuro perfecto,él/ella,hecho
+3,ES,Indicativo,futuro perfecto,nosotros,hecho
+3,ES,Indicativo,futuro perfecto,vosotros,hecho
+3,ES,Indicativo,futuro perfecto,ellos/ellas,hecho
+3,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,tú,hiese
+3,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,él/ella,hieras
+3,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,vosotros,hiese
+3,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,ellos/ellas,hiéramos
+3,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,yo,hido
+3,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,tú,hido
+3,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,él/ella,hido
+3,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,nosotros,hido
+3,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,vosotros,hido
+3,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,ellos/ellas,hido
+3,ES,Subjuntivo,Subjuntivo futuro,yo,hiré
+3,ES,Subjuntivo,Subjuntivo futuro,tú,hiría
+3,ES,Subjuntivo,Subjuntivo futuro,él/ella,hieres
+3,ES,Subjuntivo,Subjuntivo futuro,nosotros,hirá
+3,ES,Subjuntivo,Subjuntivo futuro,vosotros,hiría
+3,ES,Subjuntivo,Subjuntivo futuro,ellos/ellas,hiéremos
+3,ES,Subjuntivo,Subjuntivo futuro perfecto,yo,hido
+3,ES,Subjuntivo,Subjuntivo futuro perfecto,tú,hido
+3,ES,Subjuntivo,Subjuntivo futuro perfecto,él/ella,hido
+3,ES,Subjuntivo,Subjuntivo futuro perfecto,nosotros,hido
+3,ES,Subjuntivo,Subjuntivo futuro perfecto,vosotros,hido
+3,ES,Subjuntivo,Subjuntivo futuro perfecto,ellos/ellas,hido
+3,ES,Subjuntivo,Subjuntivo presente,yo,haga
+3,ES,Subjuntivo,Subjuntivo presente,tú,hagas
+3,ES,Subjuntivo,Subjuntivo presente,él/ella,haga
+3,ES,Subjuntivo,Subjuntivo presente,nosotros,hagamos
+3,ES,Subjuntivo,Subjuntivo presente,vosotros,hagáis
+3,ES,Subjuntivo,Subjuntivo presente,ellos/ellas,hagan
+3,ES,Subjuntivo,Subjuntivo pretérito perfecto,yo,hecho
+3,ES,Subjuntivo,Subjuntivo pretérito perfecto,tú,hecho
+3,ES,Subjuntivo,Subjuntivo pretérito perfecto,él/ella,hecho
+3,ES,Subjuntivo,Subjuntivo pretérito perfecto,nosotros,hecho
+3,ES,Subjuntivo,Subjuntivo pretérito perfecto,vosotros,hecho
+3,ES,Subjuntivo,Subjuntivo pretérito perfecto,ellos/ellas,hecho
+3,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,yo,hiciera
+3,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,tú,hicieras
+3,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,él/ella,hiciera
+3,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,nosotros,hiciéramos
+3,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,vosotros,hicierais
+3,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,ellos/ellas,hicieran
+3,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,yo,hecho
+3,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,tú,hecho
+3,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,él/ella,hecho
+3,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,nosotros,hecho
+3,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,vosotros,hecho
+3,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,ellos/ellas,hecho
+3,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,yo,hiciese
+3,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,tú,hicieses
+3,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,él/ella,hiciese
+3,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,nosotros,hiciésemos
+3,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,vosotros,hicieseis
+3,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,ellos/ellas,hiciesen
+3,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,yo,hecho
+3,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,tú,hecho
+3,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,él/ella,hecho
+3,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,nosotros,hecho
+3,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,vosotros,hecho
+3,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,ellos/ellas,hecho
+3,ES,Subjuntivo,Subjuntivo futuro,yo,hiciere
+3,ES,Subjuntivo,Subjuntivo futuro,tú,hicieres
+3,ES,Subjuntivo,Subjuntivo futuro,él/ella,hiciere
+3,ES,Subjuntivo,Subjuntivo futuro,nosotros,hiciéremos
+3,ES,Subjuntivo,Subjuntivo futuro,vosotros,hiciereis
+3,ES,Subjuntivo,Subjuntivo futuro,ellos/ellas,hicieren
+3,ES,Subjuntivo,Subjuntivo futuro perfecto,yo,hecho
+3,ES,Subjuntivo,Subjuntivo futuro perfecto,tú,hecho
+3,ES,Subjuntivo,Subjuntivo futuro perfecto,él/ella,hecho
+3,ES,Subjuntivo,Subjuntivo futuro perfecto,nosotros,hecho
+3,ES,Subjuntivo,Subjuntivo futuro perfecto,vosotros,hecho
+3,ES,Subjuntivo,Subjuntivo futuro perfecto,ellos/ellas,hecho
+3,ES,Imperativo,Imperativo,tú,haz
+3,ES,Imperativo,Imperativo,él/ella,haga
+3,ES,Imperativo,Imperativo,nosotros,hagamos
+3,ES,Imperativo,Imperativo,vosotros,haced
+3,ES,Imperativo,Imperativo,ellos/ellas,hagan
+3,ES,Imperativo,Imperativo,tú no,hagas
+3,ES,Imperativo,Imperativo,él/ella no,haga
+3,ES,Imperativo,Imperativo,nosotros no,hagamos
+3,ES,Imperativo,Imperativo,vosotros no,hagáis
+3,ES,Imperativo,Imperativo,ellos/ellas no,hagan
+3,ES,Condicional,Condicional,yo,haría
+3,ES,Condicional,Condicional,tú,harías
+3,ES,Condicional,Condicional,él/ella,haría
+3,ES,Condicional,Condicional,nosotros,haríamos
+3,ES,Condicional,Condicional,vosotros,haríais
+3,ES,Condicional,Condicional,ellos/ellas,harían
+3,ES,Condicional,perfecto,yo,hecho
+3,ES,Condicional,perfecto,tú,hecho
+3,ES,Condicional,perfecto,él/ella,hecho
+3,ES,Condicional,perfecto,nosotros,hecho
+3,ES,Condicional,perfecto,vosotros,hecho
+3,ES,Condicional,perfecto,ellos/ellas,hecho
+3,ES,Infinitivo,Infinitivo,,hacer
+3,ES,Gerundio,Gerundio,,haciendo
+3,ES,Participo,Participo,,hecho
+4,FR,Infinitif,Infinitif,,dire
+4,FR,Indicatif,présent,je,dis
+4,FR,Indicatif,présent,tu,dis
+4,FR,Indicatif,présent,"il (elle, on)",dit
+4,FR,Indicatif,présent,nous,disons
+4,FR,Indicatif,présent,vous,dites
+4,FR,Indicatif,présent,ils (elles),disent
+4,FR,Indicatif,imparfait,je,disais
+4,FR,Indicatif,imparfait,tu,disais
+4,FR,Indicatif,imparfait,"il (elle, on)",disait
+4,FR,Indicatif,imparfait,nous,disions
+4,FR,Indicatif,imparfait,vous,disiez
+4,FR,Indicatif,imparfait,ils (elles),disaient
+4,FR,Indicatif,futur,je,dirai
+4,FR,Indicatif,futur,tu,diras
+4,FR,Indicatif,futur,"il (elle, on)",dira
+4,FR,Indicatif,futur,nous,dirons
+4,FR,Indicatif,futur,vous,direz
+4,FR,Indicatif,futur,ils (elles),diront
+4,FR,Indicatif,passé simple,je,dis
+4,FR,Indicatif,passé simple,tu,dis
+4,FR,Indicatif,passé simple,"il (elle, on)",dit
+4,FR,Indicatif,passé simple,nous,dîmes
+4,FR,Indicatif,passé simple,vous,dîtes
+4,FR,Indicatif,passé simple,ils (elles),dirent
+4,FR,Conditionnel,Conditionnel présent,je,dirais
+4,FR,Conditionnel,Conditionnel présent,tu,dirais
+4,FR,Conditionnel,Conditionnel présent,"il (elle, on)",dirait
+4,FR,Conditionnel,Conditionnel présent,nous,dirions
+4,FR,Conditionnel,Conditionnel présent,vous,diriez
+4,FR,Conditionnel,Conditionnel présent,ils (elles),diraient
+4,FR,Subjonctif,Subjonctif présent,je,dise
+4,FR,Subjonctif,Subjonctif présent,tu,dises
+4,FR,Subjonctif,Subjonctif présent,"il (elle, on)",dise
+4,FR,Subjonctif,Subjonctif présent,nous,disions
+4,FR,Subjonctif,Subjonctif présent,vous,disiez
+4,FR,Subjonctif,Subjonctif présent,ils (elles),disent
+4,FR,Subjonctif,Subjonctif imparfait,je,disse
+4,FR,Subjonctif,Subjonctif imparfait,tu,disses
+4,FR,Subjonctif,Subjonctif imparfait,"il (elle, on)",dît
+4,FR,Subjonctif,Subjonctif imparfait,nous,dissions
+4,FR,Subjonctif,Subjonctif imparfait,vous,dissiez
+4,FR,Subjonctif,Subjonctif imparfait,ils (elles),dissent
+4,FR,Imperatif,Impératif,,dites
+4,FR,Participe,Participe présent,,disant
+4,FR,Participe,Participe passé,masculin singulier,dit
+4,FR,Participe,Participe passé,masculin pluriel,dits
+4,FR,Participe,Participe passé,feminin singulier,dite
+4,FR,Participe,Participe passé,feminin pluriel,dites
+4,FR,Indicatif,Passé composé,je,j'ai dit
+4,FR,Indicatif,Passé composé,tu,as dit
+4,FR,Indicatif,Passé composé,"il (elle, on)",a dit
+4,FR,Indicatif,Passé composé,nous,avons dit
+4,FR,Indicatif,Passé composé,vous,avez dit
+4,FR,Indicatif,Passé composé,ils (elles),ont dit
+4,ES,Indicativo,Imperfecto,tú,dí
+4,ES,Indicativo,Imperfecto,él/ella,días
+4,ES,Indicativo,Imperfecto,vosotros,dió
+4,ES,Indicativo,Imperfecto,ellos/ellas,díamos
+4,ES,Indicativo,Pretérito pluscuamperfecto,yo,dido
+4,ES,Indicativo,Pretérito pluscuamperfecto,tú,dido
+4,ES,Indicativo,Pretérito pluscuamperfecto,él/ella,dido
+4,ES,Indicativo,Pretérito pluscuamperfecto,nosotros,dido
+4,ES,Indicativo,Pretérito pluscuamperfecto,vosotros,dido
+4,ES,Indicativo,Pretérito pluscuamperfecto,ellos/ellas,dido
+4,ES,Indicativo,Presente,yo,digo
+4,ES,Indicativo,Presente,tú,dices
+4,ES,Indicativo,Presente,él/ella,dice
+4,ES,Indicativo,Presente,nosotros,decimos
+4,ES,Indicativo,Presente,vosotros,decís
+4,ES,Indicativo,Presente,ellos/ellas,dicen
+4,ES,Indicativo,pretérito perfecto compuesto,yo,dicho
+4,ES,Indicativo,pretérito perfecto compuesto,tú,dicho
+4,ES,Indicativo,pretérito perfecto compuesto,él/ella,dicho
+4,ES,Indicativo,pretérito perfecto compuesto,nosotros,dicho
+4,ES,Indicativo,pretérito perfecto compuesto,vosotros,dicho
+4,ES,Indicativo,pretérito perfecto compuesto,ellos/ellas,dicho
+4,ES,Indicativo,Imperfecto,yo,decía
+4,ES,Indicativo,Imperfecto,tú,decías
+4,ES,Indicativo,Imperfecto,él/ella,decía
+4,ES,Indicativo,Imperfecto,nosotros,decíamos
+4,ES,Indicativo,Imperfecto,vosotros,decíais
+4,ES,Indicativo,Imperfecto,ellos/ellas,decían
+4,ES,Indicativo,pretérito pluscuamperfecto,yo,dicho
+4,ES,Indicativo,pretérito pluscuamperfecto,tú,dicho
+4,ES,Indicativo,pretérito pluscuamperfecto,él/ella,dicho
+4,ES,Indicativo,pretérito pluscuamperfecto,nosotros,dicho
+4,ES,Indicativo,pretérito pluscuamperfecto,vosotros,dicho
+4,ES,Indicativo,pretérito pluscuamperfecto,ellos/ellas,dicho
+4,ES,Indicativo,Pretérito indefinido,yo,dije
+4,ES,Indicativo,Pretérito indefinido,tú,dijiste
+4,ES,Indicativo,Pretérito indefinido,él/ella,dijo
+4,ES,Indicativo,Pretérito indefinido,nosotros,dijimos
+4,ES,Indicativo,Pretérito indefinido,vosotros,dijisteis
+4,ES,Indicativo,Pretérito indefinido,ellos/ellas,dijeron
+4,ES,Indicativo,pretérito anterior,yo,dicho
+4,ES,Indicativo,pretérito anterior,tú,dicho
+4,ES,Indicativo,pretérito anterior,él/ella,dicho
+4,ES,Indicativo,pretérito anterior,nosotros,dicho
+4,ES,Indicativo,pretérito anterior,vosotros,dicho
+4,ES,Indicativo,pretérito anterior,ellos/ellas,dicho
+4,ES,Indicativo,Futuro,yo,diré
+4,ES,Indicativo,Futuro,tú,dirás
+4,ES,Indicativo,Futuro,él/ella,dirá
+4,ES,Indicativo,Futuro,nosotros,diremos
+4,ES,Indicativo,Futuro,vosotros,diréis
+4,ES,Indicativo,Futuro,ellos/ellas,dirán
+4,ES,Indicativo,futuro perfecto,yo,dicho
+4,ES,Indicativo,futuro perfecto,tú,dicho
+4,ES,Indicativo,futuro perfecto,él/ella,dicho
+4,ES,Indicativo,futuro perfecto,nosotros,dicho
+4,ES,Indicativo,futuro perfecto,vosotros,dicho
+4,ES,Indicativo,futuro perfecto,ellos/ellas,dicho
+4,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,tú,diese
+4,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,él/ella,dieras
+4,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,vosotros,diese
+4,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,ellos/ellas,diéramos
+4,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,yo,dido
+4,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,tú,dido
+4,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,él/ella,dido
+4,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,nosotros,dido
+4,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,vosotros,dido
+4,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,ellos/ellas,dido
+4,ES,Subjuntivo,Subjuntivo futuro,yo,diré
+4,ES,Subjuntivo,Subjuntivo futuro,tú,diría
+4,ES,Subjuntivo,Subjuntivo futuro,él/ella,dieres
+4,ES,Subjuntivo,Subjuntivo futuro,nosotros,dirá
+4,ES,Subjuntivo,Subjuntivo futuro,vosotros,diría
+4,ES,Subjuntivo,Subjuntivo futuro,ellos/ellas,diéremos
+4,ES,Subjuntivo,Subjuntivo futuro perfecto,yo,dido
+4,ES,Subjuntivo,Subjuntivo futuro perfecto,tú,dido
+4,ES,Subjuntivo,Subjuntivo futuro perfecto,él/ella,dido
+4,ES,Subjuntivo,Subjuntivo futuro perfecto,nosotros,dido
+4,ES,Subjuntivo,Subjuntivo futuro perfecto,vosotros,dido
+4,ES,Subjuntivo,Subjuntivo futuro perfecto,ellos/ellas,dido
+4,ES,Subjuntivo,Subjuntivo presente,yo,diga
+4,ES,Subjuntivo,Subjuntivo presente,tú,digas
+4,ES,Subjuntivo,Subjuntivo presente,él/ella,diga
+4,ES,Subjuntivo,Subjuntivo presente,nosotros,digamos
+4,ES,Subjuntivo,Subjuntivo presente,vosotros,digáis
+4,ES,Subjuntivo,Subjuntivo presente,ellos/ellas,digan
+4,ES,Subjuntivo,Subjuntivo pretérito perfecto,yo,dicho
+4,ES,Subjuntivo,Subjuntivo pretérito perfecto,tú,dicho
+4,ES,Subjuntivo,Subjuntivo pretérito perfecto,él/ella,dicho
+4,ES,Subjuntivo,Subjuntivo pretérito perfecto,nosotros,dicho
+4,ES,Subjuntivo,Subjuntivo pretérito perfecto,vosotros,dicho
+4,ES,Subjuntivo,Subjuntivo pretérito perfecto,ellos/ellas,dicho
+4,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,yo,dijera
+4,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,tú,dijeras
+4,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,él/ella,dijera
+4,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,nosotros,dijéramos
+4,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,vosotros,dijerais
+4,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,ellos/ellas,dijeran
+4,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,yo,dicho
+4,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,tú,dicho
+4,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,él/ella,dicho
+4,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,nosotros,dicho
+4,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,vosotros,dicho
+4,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,ellos/ellas,dicho
+4,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,yo,dijese
+4,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,tú,dijeses
+4,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,él/ella,dijese
+4,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,nosotros,dijésemos
+4,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,vosotros,dijeseis
+4,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,ellos/ellas,dijesen
+4,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,yo,dicho
+4,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,tú,dicho
+4,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,él/ella,dicho
+4,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,nosotros,dicho
+4,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,vosotros,dicho
+4,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,ellos/ellas,dicho
+4,ES,Subjuntivo,Subjuntivo futuro,yo,dijere
+4,ES,Subjuntivo,Subjuntivo futuro,tú,dijeres
+4,ES,Subjuntivo,Subjuntivo futuro,él/ella,dijere
+4,ES,Subjuntivo,Subjuntivo futuro,nosotros,dijéremos
+4,ES,Subjuntivo,Subjuntivo futuro,vosotros,dijereis
+4,ES,Subjuntivo,Subjuntivo futuro,ellos/ellas,dijeren
+4,ES,Subjuntivo,Subjuntivo futuro perfecto,yo,dicho
+4,ES,Subjuntivo,Subjuntivo futuro perfecto,tú,dicho
+4,ES,Subjuntivo,Subjuntivo futuro perfecto,él/ella,dicho
+4,ES,Subjuntivo,Subjuntivo futuro perfecto,nosotros,dicho
+4,ES,Subjuntivo,Subjuntivo futuro perfecto,vosotros,dicho
+4,ES,Subjuntivo,Subjuntivo futuro perfecto,ellos/ellas,dicho
+4,ES,Imperativo,Imperativo,tú,di
+4,ES,Imperativo,Imperativo,él/ella,diga
+4,ES,Imperativo,Imperativo,nosotros,digamos
+4,ES,Imperativo,Imperativo,vosotros,decid
+4,ES,Imperativo,Imperativo,ellos/ellas,digan
+4,ES,Imperativo,Imperativo,tú no,digas
+4,ES,Imperativo,Imperativo,él/ella no,diga
+4,ES,Imperativo,Imperativo,nosotros no,digamos
+4,ES,Imperativo,Imperativo,vosotros no,digáis
+4,ES,Imperativo,Imperativo,ellos/ellas no,digan
+4,ES,Condicional,Condicional,yo,diría
+4,ES,Condicional,Condicional,tú,dirías
+4,ES,Condicional,Condicional,él/ella,diría
+4,ES,Condicional,Condicional,nosotros,diríamos
+4,ES,Condicional,Condicional,vosotros,diríais
+4,ES,Condicional,Condicional,ellos/ellas,dirían
+4,ES,Condicional,perfecto,yo,dicho
+4,ES,Condicional,perfecto,tú,dicho
+4,ES,Condicional,perfecto,él/ella,dicho
+4,ES,Condicional,perfecto,nosotros,dicho
+4,ES,Condicional,perfecto,vosotros,dicho
+4,ES,Condicional,perfecto,ellos/ellas,dicho
+4,ES,Infinitivo,Infinitivo,,decir
+4,ES,Gerundio,Gerundio,,diciendo
+4,ES,Participo,Participo,,dicho
+5,FR,Infinitif,Infinitif,,voir
+5,FR,Indicatif,présent,je,vois
+5,FR,Indicatif,présent,tu,vois
+5,FR,Indicatif,présent,"il (elle, on)",voit
+5,FR,Indicatif,présent,nous,voyons
+5,FR,Indicatif,présent,vous,voyez
+5,FR,Indicatif,présent,ils (elles),voient
+5,FR,Indicatif,imparfait,je,voyais
+5,FR,Indicatif,imparfait,tu,voyais
+5,FR,Indicatif,imparfait,"il (elle, on)",voyait
+5,FR,Indicatif,imparfait,nous,voyions
+5,FR,Indicatif,imparfait,vous,voyiez
+5,FR,Indicatif,imparfait,ils (elles),voyaient
+5,FR,Indicatif,futur,je,verrai
+5,FR,Indicatif,futur,tu,verras
+5,FR,Indicatif,futur,"il (elle, on)",verra
+5,FR,Indicatif,futur,nous,verrons
+5,FR,Indicatif,futur,vous,verrez
+5,FR,Indicatif,futur,ils (elles),verront
+5,FR,Indicatif,passé simple,je,vis
+5,FR,Indicatif,passé simple,tu,vis
+5,FR,Indicatif,passé simple,"il (elle, on)",vit
+5,FR,Indicatif,passé simple,nous,vîmes
+5,FR,Indicatif,passé simple,vous,vîtes
+5,FR,Indicatif,passé simple,ils (elles),virent
+5,FR,Conditionnel,Conditionnel présent,je,verrais
+5,FR,Conditionnel,Conditionnel présent,tu,verrais
+5,FR,Conditionnel,Conditionnel présent,"il (elle, on)",verrait
+5,FR,Conditionnel,Conditionnel présent,nous,verrions
+5,FR,Conditionnel,Conditionnel présent,vous,verriez
+5,FR,Conditionnel,Conditionnel présent,ils (elles),verraient
+5,FR,Subjonctif,Subjonctif présent,je,voie
+5,FR,Subjonctif,Subjonctif présent,tu,voies
+5,FR,Subjonctif,Subjonctif présent,"il (elle, on)",voie
+5,FR,Subjonctif,Subjonctif présent,nous,voyions
+5,FR,Subjonctif,Subjonctif présent,vous,voyiez
+5,FR,Subjonctif,Subjonctif présent,ils (elles),voient
+5,FR,Subjonctif,Subjonctif imparfait,je,visse
+5,FR,Subjonctif,Subjonctif imparfait,tu,visses
+5,FR,Subjonctif,Subjonctif imparfait,"il (elle, on)",vît
+5,FR,Subjonctif,Subjonctif imparfait,nous,vissions
+5,FR,Subjonctif,Subjonctif imparfait,vous,vissiez
+5,FR,Subjonctif,Subjonctif imparfait,ils (elles),vissent
+5,FR,Imperatif,Impératif,,voyez
+5,FR,Participe,Participe présent,,voyant
+5,FR,Participe,Participe passé,masculin singulier,vu
+5,FR,Participe,Participe passé,masculin pluriel,vus
+5,FR,Participe,Participe passé,feminin singulier,vue
+5,FR,Participe,Participe passé,feminin pluriel,vues
+5,FR,Indicatif,Passé composé,je,j'ai vu
+5,FR,Indicatif,Passé composé,tu,as vu
+5,FR,Indicatif,Passé composé,"il (elle, on)",a vu
+5,FR,Indicatif,Passé composé,nous,avons vu
+5,FR,Indicatif,Passé composé,vous,avez vu
+5,FR,Indicatif,Passé composé,ils (elles),ont vu
+5,ES,Indicativo,Imperfecto,yo,vuelo
+5,ES,Indicativo,Imperfecto,él/ella,volías
+5,ES,Indicativo,Imperfecto,nosotros,vuele
+5,ES,Indicativo,Imperfecto,ellos/ellas,volíamos
+5,ES,Indicativo,Pretérito pluscuamperfecto,yo,vido
+5,ES,Indicativo,Pretérito pluscuamperfecto,tú,vido
+5,ES,Indicativo,Pretérito pluscuamperfecto,él/ella,vido
+5,ES,Indicativo,Pretérito pluscuamperfecto,nosotros,vido
+5,ES,Indicativo,Pretérito pluscuamperfecto,vosotros,vido
+5,ES,Indicativo,Pretérito pluscuamperfecto,ellos/ellas,vido
+5,ES,Indicativo,Presente,yo,veo
+5,ES,Indicativo,Presente,tú,ves
+5,ES,Indicativo,Presente,él/ella,ve
+5,ES,Indicativo,Presente,nosotros,vemos
+5,ES,Indicativo,Presente,vosotros,veis
+5,ES,Indicativo,Presente,ellos/ellas,ven
+5,ES,Indicativo,pretérito perfecto compuesto,yo,visto
+5,ES,Indicativo,pretérito perfecto compuesto,tú,visto
+5,ES,Indicativo,pretérito perfecto compuesto,él/ella,visto
+5,ES,Indicativo,pretérito perfecto compuesto,nosotros,visto
+5,ES,Indicativo,pretérito perfecto compuesto,vosotros,visto
+5,ES,Indicativo,pretérito perfecto compuesto,ellos/ellas,visto
+5,ES,Indicativo,Imperfecto,yo,veía
+5,ES,Indicativo,Imperfecto,tú,veías
+5,ES,Indicativo,Imperfecto,él/ella,veía
+5,ES,Indicativo,Imperfecto,nosotros,veíamos
+5,ES,Indicativo,Imperfecto,vosotros,veíais
+5,ES,Indicativo,Imperfecto,ellos/ellas,veían
+5,ES,Indicativo,pretérito pluscuamperfecto,yo,visto
+5,ES,Indicativo,pretérito pluscuamperfecto,tú,visto
+5,ES,Indicativo,pretérito pluscuamperfecto,él/ella,visto
+5,ES,Indicativo,pretérito pluscuamperfecto,nosotros,visto
+5,ES,Indicativo,pretérito pluscuamperfecto,vosotros,visto
+5,ES,Indicativo,pretérito pluscuamperfecto,ellos/ellas,visto
+5,ES,Indicativo,Pretérito indefinido,yo,vi
+5,ES,Indicativo,Pretérito indefinido,tú,viste
+5,ES,Indicativo,Pretérito indefinido,él/ella,vio
+5,ES,Indicativo,Pretérito indefinido,nosotros,vimos
+5,ES,Indicativo,Pretérito indefinido,vosotros,visteis
+5,ES,Indicativo,Pretérito indefinido,ellos/ellas,vieron
+5,ES,Indicativo,pretérito anterior,yo,visto
+5,ES,Indicativo,pretérito anterior,tú,visto
+5,ES,Indicativo,pretérito anterior,él/ella,visto
+5,ES,Indicativo,pretérito anterior,nosotros,visto
+5,ES,Indicativo,pretérito anterior,vosotros,visto
+5,ES,Indicativo,pretérito anterior,ellos/ellas,visto
+5,ES,Indicativo,Futuro,yo,veré
+5,ES,Indicativo,Futuro,tú,verás
+5,ES,Indicativo,Futuro,él/ella,verá
+5,ES,Indicativo,Futuro,nosotros,veremos
+5,ES,Indicativo,Futuro,vosotros,veréis
+5,ES,Indicativo,Futuro,ellos/ellas,verán
+5,ES,Indicativo,futuro perfecto,yo,visto
+5,ES,Indicativo,futuro perfecto,tú,visto
+5,ES,Indicativo,futuro perfecto,él/ella,visto
+5,ES,Indicativo,futuro perfecto,nosotros,visto
+5,ES,Indicativo,futuro perfecto,vosotros,visto
+5,ES,Indicativo,futuro perfecto,ellos/ellas,visto
+5,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,yo,vuela
+5,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,tú,voliese
+5,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,él/ella,volieras
+5,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,nosotros,vuela
+5,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,vosotros,voliese
+5,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,ellos/ellas,voliéramos
+5,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,yo,vido
+5,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,tú,vido
+5,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,él/ella,vido
+5,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,nosotros,vido
+5,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,vosotros,vido
+5,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,ellos/ellas,vido
+5,ES,Subjuntivo,Subjuntivo futuro,yo,viré
+5,ES,Subjuntivo,Subjuntivo futuro,tú,viría
+5,ES,Subjuntivo,Subjuntivo futuro,él/ella,vieres
+5,ES,Subjuntivo,Subjuntivo futuro,nosotros,virá
+5,ES,Subjuntivo,Subjuntivo futuro,vosotros,viría
+5,ES,Subjuntivo,Subjuntivo futuro,ellos/ellas,viéremos
+5,ES,Subjuntivo,Subjuntivo futuro perfecto,yo,vido
+5,ES,Subjuntivo,Subjuntivo futuro perfecto,tú,vido
+5,ES,Subjuntivo,Subjuntivo futuro perfecto,él/ella,vido
+5,ES,Subjuntivo,Subjuntivo futuro perfecto,nosotros,vido
+5,ES,Subjuntivo,Subjuntivo futuro perfecto,vosotros,vido
+5,ES,Subjuntivo,Subjuntivo futuro perfecto,ellos/ellas,vido
+5,ES,Subjuntivo,Subjuntivo presente,yo,vea
+5,ES,Subjuntivo,Subjuntivo presente,tú,veas
+5,ES,Subjuntivo,Subjuntivo presente,él/ella,vea
+5,ES,Subjuntivo,Subjuntivo presente,nosotros,veamos
+5,ES,Subjuntivo,Subjuntivo presente,vosotros,veáis
+5,ES,Subjuntivo,Subjuntivo presente,ellos/ellas,vean
+5,ES,Subjuntivo,Subjuntivo pretérito perfecto,yo,visto
+5,ES,Subjuntivo,Subjuntivo pretérito perfecto,tú,visto
+5,ES,Subjuntivo,Subjuntivo pretérito perfecto,él/ella,visto
+5,ES,Subjuntivo,Subjuntivo pretérito perfecto,nosotros,visto
+5,ES,Subjuntivo,Subjuntivo pretérito perfecto,vosotros,visto
+5,ES,Subjuntivo,Subjuntivo pretérito perfecto,ellos/ellas,visto
+5,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,yo,viera
+5,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,tú,vieras
+5,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,él/ella,viera
+5,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,nosotros,viéramos
+5,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,vosotros,vierais
+5,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,ellos/ellas,vieran
+5,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,yo,visto
+5,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,tú,visto
+5,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,él/ella,visto
+5,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,nosotros,visto
+5,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,vosotros,visto
+5,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,ellos/ellas,visto
+5,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,yo,viese
+5,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,tú,vieses
+5,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,él/ella,viese
+5,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,nosotros,viésemos
+5,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,vosotros,vieseis
+5,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,ellos/ellas,viesen
+5,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,yo,visto
+5,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,tú,visto
+5,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,él/ella,visto
+5,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,nosotros,visto
+5,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,vosotros,visto
+5,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,ellos/ellas,visto
+5,ES,Subjuntivo,Subjuntivo futuro,yo,viere
+5,ES,Subjuntivo,Subjuntivo futuro,tú,vieres
+5,ES,Subjuntivo,Subjuntivo futuro,él/ella,viere
+5,ES,Subjuntivo,Subjuntivo futuro,nosotros,viéremos
+5,ES,Subjuntivo,Subjuntivo futuro,vosotros,viereis
+5,ES,Subjuntivo,Subjuntivo futuro,ellos/ellas,vieren
+5,ES,Subjuntivo,Subjuntivo futuro perfecto,yo,visto
+5,ES,Subjuntivo,Subjuntivo futuro perfecto,tú,visto
+5,ES,Subjuntivo,Subjuntivo futuro perfecto,él/ella,visto
+5,ES,Subjuntivo,Subjuntivo futuro perfecto,nosotros,visto
+5,ES,Subjuntivo,Subjuntivo futuro perfecto,vosotros,visto
+5,ES,Subjuntivo,Subjuntivo futuro perfecto,ellos/ellas,visto
+5,ES,Imperativo,Imperativo,tú,ve
+5,ES,Imperativo,Imperativo,él/ella,vea
+5,ES,Imperativo,Imperativo,nosotros,veamos
+5,ES,Imperativo,Imperativo,vosotros,ved
+5,ES,Imperativo,Imperativo,ellos/ellas,vean
+5,ES,Imperativo,Imperativo,tú no,veas
+5,ES,Imperativo,Imperativo,él/ella no,vea
+5,ES,Imperativo,Imperativo,nosotros no,veamos
+5,ES,Imperativo,Imperativo,vosotros no,veáis
+5,ES,Imperativo,Imperativo,ellos/ellas no,vean
+5,ES,Condicional,Condicional,yo,vería
+5,ES,Condicional,Condicional,tú,verías
+5,ES,Condicional,Condicional,él/ella,vería
+5,ES,Condicional,Condicional,nosotros,veríamos
+5,ES,Condicional,Condicional,vosotros,veríais
+5,ES,Condicional,Condicional,ellos/ellas,verían
+5,ES,Condicional,perfecto,yo,visto
+5,ES,Condicional,perfecto,tú,visto
+5,ES,Condicional,perfecto,él/ella,visto
+5,ES,Condicional,perfecto,nosotros,visto
+5,ES,Condicional,perfecto,vosotros,visto
+5,ES,Condicional,perfecto,ellos/ellas,visto
+5,ES,Infinitivo,Infinitivo,,ver
+5,ES,Gerundio,Gerundio,,viendo
+5,ES,Participo,Participo,,visto
+6,FR,Infinitif,Infinitif,,prendre
+6,FR,Indicatif,présent,je,prends
+6,FR,Indicatif,présent,tu,prends
+6,FR,Indicatif,présent,"il (elle, on)",prend
+6,FR,Indicatif,présent,nous,prenons
+6,FR,Indicatif,présent,vous,prenez
+6,FR,Indicatif,présent,ils (elles),prennent
+6,FR,Indicatif,imparfait,je,prenais
+6,FR,Indicatif,imparfait,tu,prenais
+6,FR,Indicatif,imparfait,"il (elle, on)",prenait
+6,FR,Indicatif,imparfait,nous,prenions
+6,FR,Indicatif,imparfait,vous,preniez
+6,FR,Indicatif,imparfait,ils (elles),prenaient
+6,FR,Indicatif,futur,je,prendrai
+6,FR,Indicatif,futur,tu,prendras
+6,FR,Indicatif,futur,"il (elle, on)",prendra
+6,FR,Indicatif,futur,nous,prendrons
+6,FR,Indicatif,futur,vous,prendrez
+6,FR,Indicatif,futur,ils (elles),prendront
+6,FR,Indicatif,passé simple,je,pris
+6,FR,Indicatif,passé simple,tu,pris
+6,FR,Indicatif,passé simple,"il (elle, on)",prit
+6,FR,Indicatif,passé simple,nous,prîmes
+6,FR,Indicatif,passé simple,vous,prîtes
+6,FR,Indicatif,passé simple,ils (elles),prirent
+6,FR,Conditionnel,Conditionnel présent,je,prendrais
+6,FR,Conditionnel,Conditionnel présent,tu,prendrais
+6,FR,Conditionnel,Conditionnel présent,"il (elle, on)",prendrait
+6,FR,Conditionnel,Conditionnel présent,nous,prendrions
+6,FR,Conditionnel,Conditionnel présent,vous,prendriez
+6,FR,Conditionnel,Conditionnel présent,ils (elles),prendraient
+6,FR,Subjonctif,Subjonctif présent,je,prenne
+6,FR,Subjonctif,Subjonctif présent,tu,prennes
+6,FR,Subjonctif,Subjonctif présent,"il (elle, on)",prenne
+6,FR,Subjonctif,Subjonctif présent,nous,prenions
+6,FR,Subjonctif,Subjonctif présent,vous,preniez
+6,FR,Subjonctif,Subjonctif présent,ils (elles),prennent
+6,FR,Subjonctif,Subjonctif imparfait,je,prisse
+6,FR,Subjonctif,Subjonctif imparfait,tu,prisses
+6,FR,Subjonctif,Subjonctif imparfait,"il (elle, on)",prît
+6,FR,Subjonctif,Subjonctif imparfait,nous,prissions
+6,FR,Subjonctif,Subjonctif imparfait,vous,prissiez
+6,FR,Subjonctif,Subjonctif imparfait,ils (elles),prissent
+6,FR,Imperatif,Impératif,,prenez
+6,FR,Participe,Participe présent,,prenant
+6,FR,Participe,Participe passé,masculin singulier,pris
+6,FR,Participe,Participe passé,masculin pluriel,pris
+6,FR,Participe,Participe passé,feminin singulier,prise
+6,FR,Participe,Participe passé,feminin pluriel,prises
+6,FR,Indicatif,Passé composé,je,j'ai pris
+6,FR,Indicatif,Passé composé,tu,as pris
+6,FR,Indicatif,Passé composé,"il (elle, on)",a pris
+6,FR,Indicatif,Passé composé,nous,avons pris
+6,FR,Indicatif,Passé composé,vous,avez pris
+6,FR,Indicatif,Passé composé,ils (elles),ont pris
+6,ES,Indicativo,Imperfecto,tú,tomí
+6,ES,Indicativo,Imperfecto,él/ella,tomías
+6,ES,Indicativo,Imperfecto,vosotros,tomió
+6,ES,Indicativo,Imperfecto,ellos/ellas,tomíamos
+6,ES,Indicativo,Pretérito pluscuamperfecto,yo,tomido
+6,ES,Indicativo,Pretérito pluscuamperfecto,tú,tomido
+6,ES,Indicativo,Pretérito pluscuamperfecto,él/ella,tomido
+6,ES,Indicativo,Pretérito pluscuamperfecto,nosotros,tomido
+6,ES,Indicativo,Pretérito pluscuamperfecto,vosotros,tomido
+6,ES,Indicativo,Pretérito pluscuamperfecto,ellos/ellas,tomido
+6,ES,Indicativo,Presente,yo,tomo
+6,ES,Indicativo,Presente,tú,tomas
+6,ES,Indicativo,Presente,él/ella,toma
+6,ES,Indicativo,Presente,nosotros,tomamos
+6,ES,Indicativo,Presente,vosotros,tomáis
+6,ES,Indicativo,Presente,ellos/ellas,toman
+6,ES,Indicativo,pretérito perfecto compuesto,yo,tomado
+6,ES,Indicativo,pretérito perfecto compuesto,tú,tomado
+6,ES,Indicativo,pretérito perfecto compuesto,él/ella,tomado
+6,ES,Indicativo,pretérito perfecto compuesto,nosotros,tomado
+6,ES,Indicativo,pretérito perfecto compuesto,vosotros,tomado
+6,ES,Indicativo,pretérito perfecto compuesto,ellos/ellas,tomado
+6,ES,Indicativo,Imperfecto,yo,tomaba
+6,ES,Indicativo,Imperfecto,tú,tomabas
+6,ES,Indicativo,Imperfecto,él/ella,tomaba
+6,ES,Indicativo,Imperfecto,nosotros,tomábamos
+6,ES,Indicativo,Imperfecto,vosotros,tomabais
+6,ES,Indicativo,Imperfecto,ellos/ellas,tomaban
+6,ES,Indicativo,pretérito pluscuamperfecto,yo,tomado
+6,ES,Indicativo,pretérito pluscuamperfecto,tú,tomado
+6,ES,Indicativo,pretérito pluscuamperfecto,él/ella,tomado
+6,ES,Indicativo,pretérito pluscuamperfecto,nosotros,tomado
+6,ES,Indicativo,pretérito pluscuamperfecto,vosotros,tomado
+6,ES,Indicativo,pretérito pluscuamperfecto,ellos/ellas,tomado
+6,ES,Indicativo,Pretérito indefinido,yo,tomé
+6,ES,Indicativo,Pretérito indefinido,tú,tomaste
+6,ES,Indicativo,Pretérito indefinido,él/ella,tomó
+6,ES,Indicativo,Pretérito indefinido,nosotros,tomamos
+6,ES,Indicativo,Pretérito indefinido,vosotros,tomasteis
+6,ES,Indicativo,Pretérito indefinido,ellos/ellas,tomaron
+6,ES,Indicativo,pretérito anterior,yo,tomado
+6,ES,Indicativo,pretérito anterior,tú,tomado
+6,ES,Indicativo,pretérito anterior,él/ella,tomado
+6,ES,Indicativo,pretérito anterior,nosotros,tomado
+6,ES,Indicativo,pretérito anterior,vosotros,tomado
+6,ES,Indicativo,pretérito anterior,ellos/ellas,tomado
+6,ES,Indicativo,Futuro,yo,tomaré
+6,ES,Indicativo,Futuro,tú,tomarás
+6,ES,Indicativo,Futuro,él/ella,tomará
+6,ES,Indicativo,Futuro,nosotros,tomaremos
+6,ES,Indicativo,Futuro,vosotros,tomaréis
+6,ES,Indicativo,Futuro,ellos/ellas,tomarán
+6,ES,Indicativo,futuro perfecto,yo,tomado
+6,ES,Indicativo,futuro perfecto,tú,tomado
+6,ES,Indicativo,futuro perfecto,él/ella,tomado
+6,ES,Indicativo,futuro perfecto,nosotros,tomado
+6,ES,Indicativo,futuro perfecto,vosotros,tomado
+6,ES,Indicativo,futuro perfecto,ellos/ellas,tomado
+6,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,tú,tomiese
+6,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,él/ella,tomieras
+6,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,vosotros,tomiese
+6,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,ellos/ellas,tomiéramos
+6,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,yo,tomido
+6,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,tú,tomido
+6,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,él/ella,tomido
+6,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,nosotros,tomido
+6,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,vosotros,tomido
+6,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,ellos/ellas,tomido
+6,ES,Subjuntivo,Subjuntivo futuro,yo,tomiré
+6,ES,Subjuntivo,Subjuntivo futuro,tú,tomiría
+6,ES,Subjuntivo,Subjuntivo futuro,él/ella,tomieres
+6,ES,Subjuntivo,Subjuntivo futuro,nosotros,tomirá
+6,ES,Subjuntivo,Subjuntivo futuro,vosotros,tomiría
+6,ES,Subjuntivo,Subjuntivo futuro,ellos/ellas,tomiéremos
+6,ES,Subjuntivo,Subjuntivo futuro perfecto,yo,tomido
+6,ES,Subjuntivo,Subjuntivo futuro perfecto,tú,tomido
+6,ES,Subjuntivo,Subjuntivo futuro perfecto,él/ella,tomido
+6,ES,Subjuntivo,Subjuntivo futuro perfecto,nosotros,tomido
+6,ES,Subjuntivo,Subjuntivo futuro perfecto,vosotros,tomido
+6,ES,Subjuntivo,Subjuntivo futuro perfecto,ellos/ellas,tomido
+6,ES,Subjuntivo,Subjuntivo presente,yo,tome
+6,ES,Subjuntivo,Subjuntivo presente,tú,tomes
+6,ES,Subjuntivo,Subjuntivo presente,él/ella,tome
+6,ES,Subjuntivo,Subjuntivo presente,nosotros,tomemos
+6,ES,Subjuntivo,Subjuntivo presente,vosotros,toméis
+6,ES,Subjuntivo,Subjuntivo presente,ellos/ellas,tomen
+6,ES,Subjuntivo,Subjuntivo pretérito perfecto,yo,tomado
+6,ES,Subjuntivo,Subjuntivo pretérito perfecto,tú,tomado
+6,ES,Subjuntivo,Subjuntivo pretérito perfecto,él/ella,tomado
+6,ES,Subjuntivo,Subjuntivo pretérito perfecto,nosotros,tomado
+6,ES,Subjuntivo,Subjuntivo pretérito perfecto,vosotros,tomado
+6,ES,Subjuntivo,Subjuntivo pretérito perfecto,ellos/ellas,tomado
+6,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,yo,tomara
+6,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,tú,tomaras
+6,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,él/ella,tomara
+6,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,nosotros,tomáramos
+6,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,vosotros,tomarais
+6,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,ellos/ellas,tomaran
+6,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,yo,tomado
+6,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,tú,tomado
+6,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,él/ella,tomado
+6,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,nosotros,tomado
+6,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,vosotros,tomado
+6,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,ellos/ellas,tomado
+6,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,yo,tomase
+6,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,tú,tomases
+6,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,él/ella,tomase
+6,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,nosotros,tomásemos
+6,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,vosotros,tomaseis
+6,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,ellos/ellas,tomasen
+6,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,yo,tomado
+6,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,tú,tomado
+6,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,él/ella,tomado
+6,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,nosotros,tomado
+6,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,vosotros,tomado
+6,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,ellos/ellas,tomado
+6,ES,Subjuntivo,Subjuntivo futuro,yo,tomare
+6,ES,Subjuntivo,Subjuntivo futuro,tú,tomares
+6,ES,Subjuntivo,Subjuntivo futuro,él/ella,tomare
+6,ES,Subjuntivo,Subjuntivo futuro,nosotros,tomáremos
+6,ES,Subjuntivo,Subjuntivo futuro,vosotros,tomareis
+6,ES,Subjuntivo,Subjuntivo futuro,ellos/ellas,tomaren
+6,ES,Subjuntivo,Subjuntivo futuro perfecto,yo,tomado
+6,ES,Subjuntivo,Subjuntivo futuro perfecto,tú,tomado
+6,ES,Subjuntivo,Subjuntivo futuro perfecto,él/ella,tomado
+6,ES,Subjuntivo,Subjuntivo futuro perfecto,nosotros,tomado
+6,ES,Subjuntivo,Subjuntivo futuro perfecto,vosotros,tomado
+6,ES,Subjuntivo,Subjuntivo futuro perfecto,ellos/ellas,tomado
+6,ES,Imperativo,Imperativo,tú,toma
+6,ES,Imperativo,Imperativo,él/ella,tome
+6,ES,Imperativo,Imperativo,nosotros,tomemos
+6,ES,Imperativo,Imperativo,vosotros,tomad
+6,ES,Imperativo,Imperativo,ellos/ellas,tomen
+6,ES,Imperativo,Imperativo,tú no,tomes
+6,ES,Imperativo,Imperativo,él/ella no,tome
+6,ES,Imperativo,Imperativo,nosotros no,tomemos
+6,ES,Imperativo,Imperativo,vosotros no,toméis
+6,ES,Imperativo,Imperativo,ellos/ellas no,tomen
+6,ES,Condicional,Condicional,yo,tomaría
+6,ES,Condicional,Condicional,tú,tomarías
+6,ES,Condicional,Condicional,él/ella,tomaría
+6,ES,Condicional,Condicional,nosotros,tomaríamos
+6,ES,Condicional,Condicional,vosotros,tomaríais
+6,ES,Condicional,Condicional,ellos/ellas,tomarían
+6,ES,Condicional,perfecto,yo,tomado
+6,ES,Condicional,perfecto,tú,tomado
+6,ES,Condicional,perfecto,él/ella,tomado
+6,ES,Condicional,perfecto,nosotros,tomado
+6,ES,Condicional,perfecto,vosotros,tomado
+6,ES,Condicional,perfecto,ellos/ellas,tomado
+6,ES,Infinitivo,Infinitivo,,tomar
+6,ES,Gerundio,Gerundio,,tomando
+6,ES,Participo,Participo,,tomado
+7,FR,Infinitif,Infinitif,,pouvoir
+7,FR,Indicatif,présent,je,peux
+7,FR,Indicatif,présent,tu,peux
+7,FR,Indicatif,présent,"il (elle, on)",peut
+7,FR,Indicatif,présent,nous,pouvons
+7,FR,Indicatif,présent,vous,pouvez
+7,FR,Indicatif,présent,ils (elles),peuvent
+7,FR,Indicatif,imparfait,je,pouvais
+7,FR,Indicatif,imparfait,tu,pouvais
+7,FR,Indicatif,imparfait,"il (elle, on)",pouvait
+7,FR,Indicatif,imparfait,nous,pouvions
+7,FR,Indicatif,imparfait,vous,pouviez
+7,FR,Indicatif,imparfait,ils (elles),pouvaient
+7,FR,Indicatif,futur,je,pourrai
+7,FR,Indicatif,futur,tu,pourras
+7,FR,Indicatif,futur,"il (elle, on)",pourra
+7,FR,Indicatif,futur,nous,pourrons
+7,FR,Indicatif,futur,vous,pourrez
+7,FR,Indicatif,futur,ils (elles),pourront
+7,FR,Indicatif,passé simple,je,pus
+7,FR,Indicatif,passé simple,tu,pus
+7,FR,Indicatif,passé simple,"il (elle, on)",put
+7,FR,Indicatif,passé simple,nous,pûmes
+7,FR,Indicatif,passé simple,vous,pûtes
+7,FR,Indicatif,passé simple,ils (elles),purent
+7,FR,Conditionnel,Conditionnel présent,je,pourrais
+7,FR,Conditionnel,Conditionnel présent,tu,pourrais
+7,FR,Conditionnel,Conditionnel présent,"il (elle, on)",pourrait
+7,FR,Conditionnel,Conditionnel présent,nous,pourrions
+7,FR,Conditionnel,Conditionnel présent,vous,pourriez
+7,FR,Conditionnel,Conditionnel présent,ils (elles),pourraient
+7,FR,Subjonctif,Subjonctif présent,je,puisse
+7,FR,Subjonctif,Subjonctif présent,tu,puisses
+7,FR,Subjonctif,Subjonctif présent,"il (elle, on)",puisse
+7,FR,Subjonctif,Subjonctif présent,nous,puissions
+7,FR,Subjonctif,Subjonctif présent,vous,puissiez
+7,FR,Subjonctif,Subjonctif présent,ils (elles),puissent
+7,FR,Subjonctif,Subjonctif imparfait,je,pusse
+7,FR,Subjonctif,Subjonctif imparfait,tu,pusses
+7,FR,Subjonctif,Subjonctif imparfait,"il (elle, on)",pût
+7,FR,Subjonctif,Subjonctif imparfait,nous,pussions
+7,FR,Subjonctif,Subjonctif imparfait,vous,pussiez
+7,FR,Subjonctif,Subjonctif imparfait,ils (elles),pussent
+7,FR,Participe,Participe présent,,pouvant
+7,FR,Participe,Participe passé,masculin singulier,pu
+7,FR,Participe,Participe passé,masculin pluriel,pus
+7,FR,Participe,Participe passé,feminin singulier,pue
+7,FR,Participe,Participe passé,feminin pluriel,pues
+7,FR,Indicatif,Passé composé,je,j'ai pu
+7,FR,Indicatif,Passé composé,tu,as pu
+7,FR,Indicatif,Passé composé,"il (elle, on)",a pu
+7,FR,Indicatif,Passé composé,nous,avons pu
+7,FR,Indicatif,Passé composé,vous,avez pu
+7,FR,Indicatif,Passé composé,ils (elles),ont pu
+7,ES,Indicativo,Imperfecto,tú,pí
+7,ES,Indicativo,Imperfecto,él/ella,pías
+7,ES,Indicativo,Imperfecto,vosotros,pió
+7,ES,Indicativo,Imperfecto,ellos/ellas,píamos
+7,ES,Indicativo,Pretérito pluscuamperfecto,yo,pido
+7,ES,Indicativo,Pretérito pluscuamperfecto,tú,pido
+7,ES,Indicativo,Pretérito pluscuamperfecto,él/ella,pido
+7,ES,Indicativo,Pretérito pluscuamperfecto,nosotros,pido
+7,ES,Indicativo,Pretérito pluscuamperfecto,vosotros,pido
+7,ES,Indicativo,Pretérito pluscuamperfecto,ellos/ellas,pido
+7,ES,Indicativo,Presente,yo,puedo
+7,ES,Indicativo,Presente,tú,puedes
+7,ES,Indicativo,Presente,él/ella,puede
+7,ES,Indicativo,Presente,nosotros,podemos
+7,ES,Indicativo,Presente,vosotros,podéis
+7,ES,Indicativo,Presente,ellos/ellas,pueden
+7,ES,Indicativo,pretérito perfecto compuesto,yo,podido
+7,ES,Indicativo,pretérito perfecto compuesto,tú,podido
+7,ES,Indicativo,pretérito perfecto compuesto,él/ella,podido
+7,ES,Indicativo,pretérito perfecto compuesto,nosotros,podido
+7,ES,Indicativo,pretérito perfecto compuesto,vosotros,podido
+7,ES,Indicativo,pretérito perfecto compuesto,ellos/ellas,podido
+7,ES,Indicativo,Imperfecto,yo,podía
+7,ES,Indicativo,Imperfecto,tú,podías
+7,ES,Indicativo,Imperfecto,él/ella,podía
+7,ES,Indicativo,Imperfecto,nosotros,podíamos
+7,ES,Indicativo,Imperfecto,vosotros,podíais
+7,ES,Indicativo,Imperfecto,ellos/ellas,podían
+7,ES,Indicativo,pretérito pluscuamperfecto,yo,podido
+7,ES,Indicativo,pretérito pluscuamperfecto,tú,podido
+7,ES,Indicativo,pretérito pluscuamperfecto,él/ella,podido
+7,ES,Indicativo,pretérito pluscuamperfecto,nosotros,podido
+7,ES,Indicativo,pretérito pluscuamperfecto,vosotros,podido
+7,ES,Indicativo,pretérito pluscuamperfecto,ellos/ellas,podido
+7,ES,Indicativo,Pretérito indefinido,yo,pude
+7,ES,Indicativo,Pretérito indefinido,tú,pudiste
+7,ES,Indicativo,Pretérito indefinido,él/ella,pudo
+7,ES,Indicativo,Pretérito indefinido,nosotros,pudimos
+7,ES,Indicativo,Pretérito indefinido,vosotros,pudisteis
+7,ES,Indicativo,Pretérito indefinido,ellos/ellas,pudieron
+7,ES,Indicativo,pretérito anterior,yo,podido
+7,ES,Indicativo,pretérito anterior,tú,podido
+7,ES,Indicativo,pretérito anterior,él/ella,podido
+7,ES,Indicativo,pretérito anterior,nosotros,podido
+7,ES,Indicativo,pretérito anterior,vosotros,podido
+7,ES,Indicativo,pretérito anterior,ellos/ellas,podido
+7,ES,Indicativo,Futuro,yo,podré
+7,ES,Indicativo,Futuro,tú,podrás
+7,ES,Indicativo,Futuro,él/ella,podrá
+7,ES,Indicativo,Futuro,nosotros,podremos
+7,ES,Indicativo,Futuro,vosotros,podréis
+7,ES,Indicativo,Futuro,ellos/ellas,podrán
+7,ES,Indicativo,futuro perfecto,yo,podido
+7,ES,Indicativo,futuro perfecto,tú,podido
+7,ES,Indicativo,futuro perfecto,él/ella,podido
+7,ES,Indicativo,futuro perfecto,nosotros,podido
+7,ES,Indicativo,futuro perfecto,vosotros,podido
+7,ES,Indicativo,futuro perfecto,ellos/ellas,podido
+7,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,tú,piese
+7,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,él/ella,pieras
+7,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,vosotros,piese
+7,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,ellos/ellas,piéramos
+7,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,yo,pido
+7,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,tú,pido
+7,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,él/ella,pido
+7,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,nosotros,pido
+7,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,vosotros,pido
+7,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,ellos/ellas,pido
+7,ES,Subjuntivo,Subjuntivo futuro,yo,piré
+7,ES,Subjuntivo,Subjuntivo futuro,tú,piría
+7,ES,Subjuntivo,Subjuntivo futuro,él/ella,pieres
+7,ES,Subjuntivo,Subjuntivo futuro,nosotros,pirá
+7,ES,Subjuntivo,Subjuntivo futuro,vosotros,piría
+7,ES,Subjuntivo,Subjuntivo futuro,ellos/ellas,piéremos
+7,ES,Subjuntivo,Subjuntivo futuro perfecto,yo,pido
+7,ES,Subjuntivo,Subjuntivo futuro perfecto,tú,pido
+7,ES,Subjuntivo,Subjuntivo futuro perfecto,él/ella,pido
+7,ES,Subjuntivo,Subjuntivo futuro perfecto,nosotros,pido
+7,ES,Subjuntivo,Subjuntivo futuro perfecto,vosotros,pido
+7,ES,Subjuntivo,Subjuntivo futuro perfecto,ellos/ellas,pido
+7,ES,Subjuntivo,Subjuntivo presente,yo,pueda
+7,ES,Subjuntivo,Subjuntivo presente,tú,puedas
+7,ES,Subjuntivo,Subjuntivo presente,él/ella,pueda
+7,ES,Subjuntivo,Subjuntivo presente,nosotros,podamos
+7,ES,Subjuntivo,Subjuntivo presente,vosotros,podáis
+7,ES,Subjuntivo,Subjuntivo presente,ellos/ellas,puedan
+7,ES,Subjuntivo,Subjuntivo pretérito perfecto,yo,podido
+7,ES,Subjuntivo,Subjuntivo pretérito perfecto,tú,podido
+7,ES,Subjuntivo,Subjuntivo pretérito perfecto,él/ella,podido
+7,ES,Subjuntivo,Subjuntivo pretérito perfecto,nosotros,podido
+7,ES,Subjuntivo,Subjuntivo pretérito perfecto,vosotros,podido
+7,ES,Subjuntivo,Subjuntivo pretérito perfecto,ellos/ellas,podido
+7,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,yo,pudiera
+7,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,tú,pudieras
+7,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,él/ella,pudiera
+7,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,nosotros,pudiéramos
+7,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,vosotros,pudierais
+7,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,ellos/ellas,pudieran
+7,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,yo,podido
+7,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,tú,podido
+7,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,él/ella,podido
+7,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,nosotros,podido
+7,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,vosotros,podido
+7,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,ellos/ellas,podido
+7,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,yo,pudiese
+7,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,tú,pudieses
+7,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,él/ella,pudiese
+7,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,nosotros,pudiésemos
+7,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,vosotros,pudieseis
+7,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,ellos/ellas,pudiesen
+7,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,yo,podido
+7,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,tú,podido
+7,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,él/ella,podido
+7,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,nosotros,podido
+7,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,vosotros,podido
+7,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,ellos/ellas,podido
+7,ES,Subjuntivo,Subjuntivo futuro,yo,pudiere
+7,ES,Subjuntivo,Subjuntivo futuro,tú,pudieres
+7,ES,Subjuntivo,Subjuntivo futuro,él/ella,pudiere
+7,ES,Subjuntivo,Subjuntivo futuro,nosotros,pudiéremos
+7,ES,Subjuntivo,Subjuntivo futuro,vosotros,pudiereis
+7,ES,Subjuntivo,Subjuntivo futuro,ellos/ellas,pudieren
+7,ES,Subjuntivo,Subjuntivo futuro perfecto,yo,podido
+7,ES,Subjuntivo,Subjuntivo futuro perfecto,tú,podido
+7,ES,Subjuntivo,Subjuntivo futuro perfecto,él/ella,podido
+7,ES,Subjuntivo,Subjuntivo futuro perfecto,nosotros,podido
+7,ES,Subjuntivo,Subjuntivo futuro perfecto,vosotros,podido
+7,ES,Subjuntivo,Subjuntivo futuro perfecto,ellos/ellas,podido
+7,ES,Imperativo,Imperativo,tú,puede
+7,ES,Imperativo,Imperativo,él/ella,pueda
+7,ES,Imperativo,Imperativo,nosotros,podamos
+7,ES,Imperativo,Imperativo,vosotros,poded
+7,ES,Imperativo,Imperativo,ellos/ellas,puedan
+7,ES,Imperativo,Imperativo,tú no,puedas
+7,ES,Imperativo,Imperativo,él/ella no,pueda
+7,ES,Imperativo,Imperativo,nosotros no,podamos
+7,ES,Imperativo,Imperativo,vosotros no,podáis
+7,ES,Imperativo,Imperativo,ellos/ellas no,puedan
+7,ES,Condicional,Condicional,yo,podría
+7,ES,Condicional,Condicional,tú,podrías
+7,ES,Condicional,Condicional,él/ella,podría
+7,ES,Condicional,Condicional,nosotros,podríamos
+7,ES,Condicional,Condicional,vosotros,podríais
+7,ES,Condicional,Condicional,ellos/ellas,podrían
+7,ES,Condicional,perfecto,yo,podido
+7,ES,Condicional,perfecto,tú,podido
+7,ES,Condicional,perfecto,él/ella,podido
+7,ES,Condicional,perfecto,nosotros,podido
+7,ES,Condicional,perfecto,vosotros,podido
+7,ES,Condicional,perfecto,ellos/ellas,podido
+7,ES,Infinitivo,Infinitivo,,poder
+7,ES,Gerundio,Gerundio,,pudiendo
+7,ES,Participo,Participo,,podido
+8,FR,Infinitif,Infinitif,,parler
+8,FR,Indicatif,présent,je,parle
+8,FR,Indicatif,présent,tu,parles
+8,FR,Indicatif,présent,"il (elle, on)",parle
+8,FR,Indicatif,présent,nous,parlons
+8,FR,Indicatif,présent,vous,parlez
+8,FR,Indicatif,présent,ils (elles),parlent
+8,FR,Indicatif,imparfait,je,parlais
+8,FR,Indicatif,imparfait,tu,parlais
+8,FR,Indicatif,imparfait,"il (elle, on)",parlait
+8,FR,Indicatif,imparfait,nous,parlions
+8,FR,Indicatif,imparfait,vous,parliez
+8,FR,Indicatif,imparfait,ils (elles),parlaient
+8,FR,Indicatif,futur,je,parlerai
+8,FR,Indicatif,futur,tu,parleras
+8,FR,Indicatif,futur,"il (elle, on)",parlera
+8,FR,Indicatif,futur,nous,parlerons
+8,FR,Indicatif,futur,vous,parlerez
+8,FR,Indicatif,futur,ils (elles),parleront
+8,FR,Indicatif,passé simple,je,parlai
+8,FR,Indicatif,passé simple,tu,parlas
+8,FR,Indicatif,passé simple,"il (elle, on)",parla
+8,FR,Indicatif,passé simple,nous,parlâmes
+8,FR,Indicatif,passé simple,vous,parlâtes
+8,FR,Indicatif,passé simple,ils (elles),parlèrent
+8,FR,Conditionnel,Conditionnel présent,je,parlerais
+8,FR,Conditionnel,Conditionnel présent,tu,parlerais
+8,FR,Conditionnel,Conditionnel présent,"il (elle, on)",parlerait
+8,FR,Conditionnel,Conditionnel présent,nous,parlerions
+8,FR,Conditionnel,Conditionnel présent,vous,parleriez
+8,FR,Conditionnel,Conditionnel présent,ils (elles),parleraient
+8,FR,Subjonctif,Subjonctif présent,je,parle
+8,FR,Subjonctif,Subjonctif présent,tu,parles
+8,FR,Subjonctif,Subjonctif présent,"il (elle, on)",parle
+8,FR,Subjonctif,Subjonctif présent,nous,parlions
+8,FR,Subjonctif,Subjonctif présent,vous,parliez
+8,FR,Subjonctif,Subjonctif présent,ils (elles),parlent
+8,FR,Subjonctif,Subjonctif imparfait,je,parlasse
+8,FR,Subjonctif,Subjonctif imparfait,tu,parlasses
+8,FR,Subjonctif,Subjonctif imparfait,"il (elle, on)",parlât
+8,FR,Subjonctif,Subjonctif imparfait,nous,parlassions
+8,FR,Subjonctif,Subjonctif imparfait,vous,parlassiez
+8,FR,Subjonctif,Subjonctif imparfait,ils (elles),parlassent
+8,FR,Imperatif,Impératif,,parlez
+8,FR,Participe,Participe présent,,parlant
+8,FR,Participe,Participe passé,masculin singulier,parlé
+8,FR,Participe,Participe passé,masculin pluriel,parlés
+8,FR,Participe,Participe passé,feminin singulier,parlée
+8,FR,Participe,Participe passé,feminin pluriel,parlées
+8,FR,Indicatif,Passé composé,je,j'ai parlé
+8,FR,Indicatif,Passé composé,tu,as parlé
+8,FR,Indicatif,Passé composé,"il (elle, on)",a parlé
+8,FR,Indicatif,Passé composé,nous,avons parlé
+8,FR,Indicatif,Passé composé,vous,avez parlé
+8,FR,Indicatif,Passé composé,ils (elles),ont parlé
+8,ES,Indicativo,Imperfecto,tú,hablí
+8,ES,Indicativo,Imperfecto,él/ella,hablías
+8,ES,Indicativo,Imperfecto,vosotros,hablió
+8,ES,Indicativo,Imperfecto,ellos/ellas,hablíamos
+8,ES,Indicativo,Pretérito pluscuamperfecto,yo,hablido
+8,ES,Indicativo,Pretérito pluscuamperfecto,tú,hablido
+8,ES,Indicativo,Pretérito pluscuamperfecto,él/ella,hablido
+8,ES,Indicativo,Pretérito pluscuamperfecto,nosotros,hablido
+8,ES,Indicativo,Pretérito pluscuamperfecto,vosotros,hablido
+8,ES,Indicativo,Pretérito pluscuamperfecto,ellos/ellas,hablido
+8,ES,Indicativo,Presente,yo,hablo
+8,ES,Indicativo,Presente,tú,hablas
+8,ES,Indicativo,Presente,él/ella,habla
+8,ES,Indicativo,Presente,nosotros,hablamos
+8,ES,Indicativo,Presente,vosotros,habláis
+8,ES,Indicativo,Presente,ellos/ellas,hablan
+8,ES,Indicativo,pretérito perfecto compuesto,yo,hablado
+8,ES,Indicativo,pretérito perfecto compuesto,tú,hablado
+8,ES,Indicativo,pretérito perfecto compuesto,él/ella,hablado
+8,ES,Indicativo,pretérito perfecto compuesto,nosotros,hablado
+8,ES,Indicativo,pretérito perfecto compuesto,vosotros,hablado
+8,ES,Indicativo,pretérito perfecto compuesto,ellos/ellas,hablado
+8,ES,Indicativo,Imperfecto,yo,hablaba
+8,ES,Indicativo,Imperfecto,tú,hablabas
+8,ES,Indicativo,Imperfecto,él/ella,hablaba
+8,ES,Indicativo,Imperfecto,nosotros,hablábamos
+8,ES,Indicativo,Imperfecto,vosotros,hablabais
+8,ES,Indicativo,Imperfecto,ellos/ellas,hablaban
+8,ES,Indicativo,pretérito pluscuamperfecto,yo,hablado
+8,ES,Indicativo,pretérito pluscuamperfecto,tú,hablado
+8,ES,Indicativo,pretérito pluscuamperfecto,él/ella,hablado
+8,ES,Indicativo,pretérito pluscuamperfecto,nosotros,hablado
+8,ES,Indicativo,pretérito pluscuamperfecto,vosotros,hablado
+8,ES,Indicativo,pretérito pluscuamperfecto,ellos/ellas,hablado
+8,ES,Indicativo,Pretérito indefinido,yo,hablé
+8,ES,Indicativo,Pretérito indefinido,tú,hablaste
+8,ES,Indicativo,Pretérito indefinido,él/ella,habló
+8,ES,Indicativo,Pretérito indefinido,nosotros,hablamos
+8,ES,Indicativo,Pretérito indefinido,vosotros,hablasteis
+8,ES,Indicativo,Pretérito indefinido,ellos/ellas,hablaron
+8,ES,Indicativo,pretérito anterior,yo,hablado
+8,ES,Indicativo,pretérito anterior,tú,hablado
+8,ES,Indicativo,pretérito anterior,él/ella,hablado
+8,ES,Indicativo,pretérito anterior,nosotros,hablado
+8,ES,Indicativo,pretérito anterior,vosotros,hablado
+8,ES,Indicativo,pretérito anterior,ellos/ellas,hablado
+8,ES,Indicativo,Futuro,yo,hablaré
+8,ES,Indicativo,Futuro,tú,hablarás
+8,ES,Indicativo,Futuro,él/ella,hablará
+8,ES,Indicativo,Futuro,nosotros,hablaremos
+8,ES,Indicativo,Futuro,vosotros,hablaréis
+8,ES,Indicativo,Futuro,ellos/ellas,hablarán
+8,ES,Indicativo,futuro perfecto,yo,hablado
+8,ES,Indicativo,futuro perfecto,tú,hablado
+8,ES,Indicativo,futuro perfecto,él/ella,hablado
+8,ES,Indicativo,futuro perfecto,nosotros,hablado
+8,ES,Indicativo,futuro perfecto,vosotros,hablado
+8,ES,Indicativo,futuro perfecto,ellos/ellas,hablado
+8,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,tú,habliese
+8,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,él/ella,hablieras
+8,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,vosotros,habliese
+8,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,ellos/ellas,habliéramos
+8,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,yo,hablido
+8,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,tú,hablido
+8,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,él/ella,hablido
+8,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,nosotros,hablido
+8,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,vosotros,hablido
+8,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,ellos/ellas,hablido
+8,ES,Subjuntivo,Subjuntivo futuro,yo,habliré
+8,ES,Subjuntivo,Subjuntivo futuro,tú,habliría
+8,ES,Subjuntivo,Subjuntivo futuro,él/ella,hablieres
+8,ES,Subjuntivo,Subjuntivo futuro,nosotros,hablirá
+8,ES,Subjuntivo,Subjuntivo futuro,vosotros,habliría
+8,ES,Subjuntivo,Subjuntivo futuro,ellos/ellas,habliéremos
+8,ES,Subjuntivo,Subjuntivo futuro perfecto,yo,hablido
+8,ES,Subjuntivo,Subjuntivo futuro perfecto,tú,hablido
+8,ES,Subjuntivo,Subjuntivo futuro perfecto,él/ella,hablido
+8,ES,Subjuntivo,Subjuntivo futuro perfecto,nosotros,hablido
+8,ES,Subjuntivo,Subjuntivo futuro perfecto,vosotros,hablido
+8,ES,Subjuntivo,Subjuntivo futuro perfecto,ellos/ellas,hablido
+8,ES,Subjuntivo,Subjuntivo presente,yo,hable
+8,ES,Subjuntivo,Subjuntivo presente,tú,hables
+8,ES,Subjuntivo,Subjuntivo presente,él/ella,hable
+8,ES,Subjuntivo,Subjuntivo presente,nosotros,hablemos
+8,ES,Subjuntivo,Subjuntivo presente,vosotros,habléis
+8,ES,Subjuntivo,Subjuntivo presente,ellos/ellas,hablen
+8,ES,Subjuntivo,Subjuntivo pretérito perfecto,yo,hablado
+8,ES,Subjuntivo,Subjuntivo pretérito perfecto,tú,hablado
+8,ES,Subjuntivo,Subjuntivo pretérito perfecto,él/ella,hablado
+8,ES,Subjuntivo,Subjuntivo pretérito perfecto,nosotros,hablado
+8,ES,Subjuntivo,Subjuntivo pretérito perfecto,vosotros,hablado
+8,ES,Subjuntivo,Subjuntivo pretérito perfecto,ellos/ellas,hablado
+8,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,yo,hablara
+8,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,tú,hablaras
+8,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,él/ella,hablara
+8,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,nosotros,habláramos
+8,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,vosotros,hablarais
+8,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,ellos/ellas,hablaran
+8,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,yo,hablado
+8,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,tú,hablado
+8,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,él/ella,hablado
+8,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,nosotros,hablado
+8,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,vosotros,hablado
+8,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,ellos/ellas,hablado
+8,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,yo,hablase
+8,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,tú,hablases
+8,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,él/ella,hablase
+8,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,nosotros,hablásemos
+8,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,vosotros,hablaseis
+8,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,ellos/ellas,hablasen
+8,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,yo,hablado
+8,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,tú,hablado
+8,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,él/ella,hablado
+8,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,nosotros,hablado
+8,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,vosotros,hablado
+8,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,ellos/ellas,hablado
+8,ES,Subjuntivo,Subjuntivo futuro,yo,hablare
+8,ES,Subjuntivo,Subjuntivo futuro,tú,hablares
+8,ES,Subjuntivo,Subjuntivo futuro,él/ella,hablare
+8,ES,Subjuntivo,Subjuntivo futuro,nosotros,habláremos
+8,ES,Subjuntivo,Subjuntivo futuro,vosotros,hablareis
+8,ES,Subjuntivo,Subjuntivo futuro,ellos/ellas,hablaren
+8,ES,Subjuntivo,Subjuntivo futuro perfecto,yo,hablado
+8,ES,Subjuntivo,Subjuntivo futuro perfecto,tú,hablado
+8,ES,Subjuntivo,Subjuntivo futuro perfecto,él/ella,hablado
+8,ES,Subjuntivo,Subjuntivo futuro perfecto,nosotros,hablado
+8,ES,Subjuntivo,Subjuntivo futuro perfecto,vosotros,hablado
+8,ES,Subjuntivo,Subjuntivo futuro perfecto,ellos/ellas,hablado
+8,ES,Imperativo,Imperativo,tú,habla
+8,ES,Imperativo,Imperativo,él/ella,hable
+8,ES,Imperativo,Imperativo,nosotros,hablemos
+8,ES,Imperativo,Imperativo,vosotros,hablad
+8,ES,Imperativo,Imperativo,ellos/ellas,hablen
+8,ES,Imperativo,Imperativo,tú no,hables
+8,ES,Imperativo,Imperativo,él/ella no,hable
+8,ES,Imperativo,Imperativo,nosotros no,hablemos
+8,ES,Imperativo,Imperativo,vosotros no,habléis
+8,ES,Imperativo,Imperativo,ellos/ellas no,hablen
+8,ES,Condicional,Condicional,yo,hablaría
+8,ES,Condicional,Condicional,tú,hablarías
+8,ES,Condicional,Condicional,él/ella,hablaría
+8,ES,Condicional,Condicional,nosotros,hablaríamos
+8,ES,Condicional,Condicional,vosotros,hablaríais
+8,ES,Condicional,Condicional,ellos/ellas,hablarían
+8,ES,Condicional,perfecto,yo,hablado
+8,ES,Condicional,perfecto,tú,hablado
+8,ES,Condicional,perfecto,él/ella,hablado
+8,ES,Condicional,perfecto,nosotros,hablado
+8,ES,Condicional,perfecto,vosotros,hablado
+8,ES,Condicional,perfecto,ellos/ellas,hablado
+8,ES,Infinitivo,Infinitivo,,hablar
+8,ES,Gerundio,Gerundio,,hablando
+8,ES,Participo,Participo,,hablado
+9,FR,Infinitif,Infinitif,,aller
+9,FR,Indicatif,présent,je,vais
+9,FR,Indicatif,présent,tu,vas
+9,FR,Indicatif,présent,"il (elle, on)",va
+9,FR,Indicatif,présent,nous,allons
+9,FR,Indicatif,présent,vous,allez
+9,FR,Indicatif,présent,ils (elles),vont
+9,FR,Indicatif,imparfait,je,allais
+9,FR,Indicatif,imparfait,tu,allais
+9,FR,Indicatif,imparfait,"il (elle, on)",allait
+9,FR,Indicatif,imparfait,nous,allions
+9,FR,Indicatif,imparfait,vous,alliez
+9,FR,Indicatif,imparfait,ils (elles),allaient
+9,FR,Indicatif,futur,je,irai
+9,FR,Indicatif,futur,tu,iras
+9,FR,Indicatif,futur,"il (elle, on)",ira
+9,FR,Indicatif,futur,nous,irons
+9,FR,Indicatif,futur,vous,irez
+9,FR,Indicatif,futur,ils (elles),iront
+9,FR,Indicatif,passé simple,je,allai
+9,FR,Indicatif,passé simple,tu,allas
+9,FR,Indicatif,passé simple,"il (elle, on)",alla
+9,FR,Indicatif,passé simple,nous,allâmes
+9,FR,Indicatif,passé simple,vous,allâtes
+9,FR,Indicatif,passé simple,ils (elles),allèrent
+9,FR,Conditionnel,Conditionnel présent,je,irais
+9,FR,Conditionnel,Conditionnel présent,tu,irais
+9,FR,Conditionnel,Conditionnel présent,"il (elle, on)",irait
+9,FR,Conditionnel,Conditionnel présent,nous,irions
+9,FR,Conditionnel,Conditionnel présent,vous,iriez
+9,FR,Conditionnel,Conditionnel présent,ils (elles),iraient
+9,FR,Subjonctif,Subjonctif présent,je,aille
+9,FR,Subjonctif,Subjonctif présent,tu,ailles
+9,FR,Subjonctif,Subjonctif présent,"il (elle, on)",aille
+9,FR,Subjonctif,Subjonctif présent,nous,allions
+9,FR,Subjonctif,Subjonctif présent,vous,alliez
+9,FR,Subjonctif,Subjonctif présent,ils (elles),aillent
+9,FR,Subjonctif,Subjonctif imparfait,je,allasse
+9,FR,Subjonctif,Subjonctif imparfait,tu,allasses
+9,FR,Subjonctif,Subjonctif imparfait,"il (elle, on)",allât
+9,FR,Subjonctif,Subjonctif imparfait,nous,allassions
+9,FR,Subjonctif,Subjonctif imparfait,vous,allassiez
+9,FR,Subjonctif,Subjonctif imparfait,ils (elles),allassent
+9,FR,Imperatif,Impératif,,allez
+9,FR,Participe,Participe présent,,allant
+9,FR,Participe,Participe passé,masculin singulier,allé
+9,FR,Participe,Participe passé,masculin pluriel,allés
+9,FR,Participe,Participe passé,feminin singulier,allée
+9,FR,Participe,Participe passé,feminin pluriel,allées
+9,FR,Indicatif,Passé composé,je,suis allé(e)
+9,FR,Indicatif,Passé composé,tu,es allé(e)
+9,FR,Indicatif,Passé composé,"il (elle, on)",est allé(e)
+9,FR,Indicatif,Passé composé,nous,sommes allé(e)s
+9,FR,Indicatif,Passé composé,vous,êtes allé(e)(s)
+9,FR,Indicatif,Passé composé,ils (elles),sont allé(e)s
+9,ES,Indicativo,Imperfecto,tú,í
+9,ES,Indicativo,Imperfecto,él/ella,ías
+9,ES,Indicativo,Imperfecto,vosotros,ió
+9,ES,Indicativo,Imperfecto,ellos/ellas,íamos
+9,ES,Indicativo,Pretérito pluscuamperfecto,yo,ido
+9,ES,Indicativo,Pretérito pluscuamperfecto,tú,ido
+9,ES,Indicativo,Pretérito pluscuamperfecto,él/ella,ido
+9,ES,Indicativo,Pretérito pluscuamperfecto,nosotros,ido
+9,ES,Indicativo,Pretérito pluscuamperfecto,vosotros,ido
+9,ES,Indicativo,Pretérito pluscuamperfecto,ellos/ellas,ido
+9,ES,Indicativo,Presente,yo,voy
+9,ES,Indicativo,Presente,tú,vas
+9,ES,Indicativo,Presente,él/ella,va
+9,ES,Indicativo,Presente,nosotros,vamos
+9,ES,Indicativo,Presente,vosotros,vais
+9,ES,Indicativo,Presente,ellos/ellas,van
+9,ES,Indicativo,pretérito perfecto compuesto,yo,ido
+9,ES,Indicativo,pretérito perfecto compuesto,tú,ido
+9,ES,Indicativo,pretérito perfecto compuesto,él/ella,ido
+9,ES,Indicativo,pretérito perfecto compuesto,nosotros,ido
+9,ES,Indicativo,pretérito perfecto compuesto,vosotros,ido
+9,ES,Indicativo,pretérito perfecto compuesto,ellos/ellas,ido
+9,ES,Indicativo,Imperfecto,yo,iba
+9,ES,Indicativo,Imperfecto,tú,ibas
+9,ES,Indicativo,Imperfecto,él/ella,iba
+9,ES,Indicativo,Imperfecto,nosotros,íbamos
+9,ES,Indicativo,Imperfecto,vosotros,ibais
+9,ES,Indicativo,Imperfecto,ellos/ellas,iban
+9,ES,Indicativo,pretérito pluscuamperfecto,yo,ido
+9,ES,Indicativo,pretérito pluscuamperfecto,tú,ido
+9,ES,Indicativo,pretérito pluscuamperfecto,él/ella,ido
+9,ES,Indicativo,pretérito pluscuamperfecto,nosotros,ido
+9,ES,Indicativo,pretérito pluscuamperfecto,vosotros,ido
+9,ES,Indicativo,pretérito pluscuamperfecto,ellos/ellas,ido
+9,ES,Indicativo,Pretérito indefinido,yo,fui
+9,ES,Indicativo,Pretérito indefinido,tú,fuiste
+9,ES,Indicativo,Pretérito indefinido,él/ella,fue
+9,ES,Indicativo,Pretérito indefinido,nosotros,fuimos
+9,ES,Indicativo,Pretérito indefinido,vosotros,fuisteis
+9,ES,Indicativo,Pretérito indefinido,ellos/ellas,fueron
+9,ES,Indicativo,pretérito anterior,yo,ido
+9,ES,Indicativo,pretérito anterior,tú,ido
+9,ES,Indicativo,pretérito anterior,él/ella,ido
+9,ES,Indicativo,pretérito anterior,nosotros,ido
+9,ES,Indicativo,pretérito anterior,vosotros,ido
+9,ES,Indicativo,pretérito anterior,ellos/ellas,ido
+9,ES,Indicativo,Futuro,yo,iré
+9,ES,Indicativo,Futuro,tú,irás
+9,ES,Indicativo,Futuro,él/ella,irá
+9,ES,Indicativo,Futuro,nosotros,iremos
+9,ES,Indicativo,Futuro,vosotros,iréis
+9,ES,Indicativo,Futuro,ellos/ellas,irán
+9,ES,Indicativo,futuro perfecto,yo,ido
+9,ES,Indicativo,futuro perfecto,tú,ido
+9,ES,Indicativo,futuro perfecto,él/ella,ido
+9,ES,Indicativo,futuro perfecto,nosotros,ido
+9,ES,Indicativo,futuro perfecto,vosotros,ido
+9,ES,Indicativo,futuro perfecto,ellos/ellas,ido
+9,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,tú,iese
+9,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,él/ella,ieras
+9,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,vosotros,iese
+9,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,ellos/ellas,iéramos
+9,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,yo,ido
+9,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,tú,ido
+9,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,él/ella,ido
+9,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,nosotros,ido
+9,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,vosotros,ido
+9,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,ellos/ellas,ido
+9,ES,Subjuntivo,Subjuntivo futuro,yo,iré
+9,ES,Subjuntivo,Subjuntivo futuro,tú,iría
+9,ES,Subjuntivo,Subjuntivo futuro,él/ella,ieres
+9,ES,Subjuntivo,Subjuntivo futuro,nosotros,irá
+9,ES,Subjuntivo,Subjuntivo futuro,vosotros,iría
+9,ES,Subjuntivo,Subjuntivo futuro,ellos/ellas,iéremos
+9,ES,Subjuntivo,Subjuntivo futuro perfecto,yo,ido
+9,ES,Subjuntivo,Subjuntivo futuro perfecto,tú,ido
+9,ES,Subjuntivo,Subjuntivo futuro perfecto,él/ella,ido
+9,ES,Subjuntivo,Subjuntivo futuro perfecto,nosotros,ido
+9,ES,Subjuntivo,Subjuntivo futuro perfecto,vosotros,ido
+9,ES,Subjuntivo,Subjuntivo futuro perfecto,ellos/ellas,ido
+9,ES,Subjuntivo,Subjuntivo presente,yo,vaya
+9,ES,Subjuntivo,Subjuntivo presente,tú,vayas
+9,ES,Subjuntivo,Subjuntivo presente,él/ella,vaya
+9,ES,Subjuntivo,Subjuntivo presente,nosotros,vayamos
+9,ES,Subjuntivo,Subjuntivo presente,vosotros,vayáis
+9,ES,Subjuntivo,Subjuntivo presente,ellos/ellas,vayan
+9,ES,Subjuntivo,Subjuntivo pretérito perfecto,yo,ido
+9,ES,Subjuntivo,Subjuntivo pretérito perfecto,tú,ido
+9,ES,Subjuntivo,Subjuntivo pretérito perfecto,él/ella,ido
+9,ES,Subjuntivo,Subjuntivo pretérito perfecto,nosotros,ido
+9,ES,Subjuntivo,Subjuntivo pretérito perfecto,vosotros,ido
+9,ES,Subjuntivo,Subjuntivo pretérito perfecto,ellos/ellas,ido
+9,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,yo,fuera
+9,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,tú,fueras
+9,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,él/ella,fuera
+9,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,nosotros,fuéramos
+9,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,vosotros,fuerais
+9,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,ellos/ellas,fueran
+9,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,yo,fuese
+9,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,tú,fueses
+9,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,él/ella,fuese
+9,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,nosotros,fuésemos
+9,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,vosotros,fueseis
+9,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,ellos/ellas,fuesen
+9,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,yo,ido
+9,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,tú,ido
+9,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,él/ella,ido
+9,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,nosotros,ido
+9,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,vosotros,ido
+9,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,ellos/ellas,ido
+9,ES,Subjuntivo,Subjuntivo futuro,yo,fuere
+9,ES,Subjuntivo,Subjuntivo futuro,tú,fueres
+9,ES,Subjuntivo,Subjuntivo futuro,él/ella,fuere
+9,ES,Subjuntivo,Subjuntivo futuro,nosotros,fuéremos
+9,ES,Subjuntivo,Subjuntivo futuro,vosotros,fuereis
+9,ES,Subjuntivo,Subjuntivo futuro,ellos/ellas,fueren
+9,ES,Imperativo,Imperativo,tú,ve
+9,ES,Imperativo,Imperativo,él/ella,vaya
+9,ES,Imperativo,Imperativo,nosotros,vayamos
+9,ES,Imperativo,Imperativo,vosotros,id
+9,ES,Imperativo,Imperativo,ellos/ellas,vayan
+9,ES,Imperativo,Imperativo,tú no,vayas
+9,ES,Imperativo,Imperativo,él/ella no,vaya
+9,ES,Imperativo,Imperativo,nosotros no,vayamos
+9,ES,Imperativo,Imperativo,vosotros no,vayáis
+9,ES,Imperativo,Imperativo,ellos/ellas no,vayan
+9,ES,Condicional,Condicional,yo,iría
+9,ES,Condicional,Condicional,tú,irías
+9,ES,Condicional,Condicional,él/ella,iría
+9,ES,Condicional,Condicional,nosotros,iríamos
+9,ES,Condicional,Condicional,vosotros,iríais
+9,ES,Condicional,Condicional,ellos/ellas,irían
+9,ES,Condicional,perfecto,yo,ido
+9,ES,Condicional,perfecto,tú,ido
+9,ES,Condicional,perfecto,él/ella,ido
+9,ES,Condicional,perfecto,nosotros,ido
+9,ES,Condicional,perfecto,vosotros,ido
+9,ES,Condicional,perfecto,ellos/ellas,ido
+9,ES,Infinitivo,Infinitivo,,ir
+9,ES,Gerundio,Gerundio,,yendo
+9,ES,Participo,Participo,,ido
+10,FR,Infinitif,Infinitif,,savoir
+10,FR,Indicatif,présent,je,sais
+10,FR,Indicatif,présent,tu,sais
+10,FR,Indicatif,présent,"il (elle, on)",sait
+10,FR,Indicatif,présent,nous,savons
+10,FR,Indicatif,présent,vous,savez
+10,FR,Indicatif,présent,ils (elles),savent
+10,FR,Indicatif,imparfait,je,savais
+10,FR,Indicatif,imparfait,tu,savais
+10,FR,Indicatif,imparfait,"il (elle, on)",savait
+10,FR,Indicatif,imparfait,nous,savions
+10,FR,Indicatif,imparfait,vous,saviez
+10,FR,Indicatif,imparfait,ils (elles),savaient
+10,FR,Indicatif,futur,je,saurai
+10,FR,Indicatif,futur,tu,sauras
+10,FR,Indicatif,futur,"il (elle, on)",saura
+10,FR,Indicatif,futur,nous,saurons
+10,FR,Indicatif,futur,vous,saurez
+10,FR,Indicatif,futur,ils (elles),sauront
+10,FR,Indicatif,passé simple,je,sus
+10,FR,Indicatif,passé simple,tu,sus
+10,FR,Indicatif,passé simple,"il (elle, on)",sut
+10,FR,Indicatif,passé simple,nous,sûmes
+10,FR,Indicatif,passé simple,vous,sûtes
+10,FR,Indicatif,passé simple,ils (elles),surent
+10,FR,Conditionnel,Conditionnel présent,je,saurais
+10,FR,Conditionnel,Conditionnel présent,tu,saurais
+10,FR,Conditionnel,Conditionnel présent,"il (elle, on)",saurait
+10,FR,Conditionnel,Conditionnel présent,nous,saurions
+10,FR,Conditionnel,Conditionnel présent,vous,sauriez
+10,FR,Conditionnel,Conditionnel présent,ils (elles),sauraient
+10,FR,Subjonctif,Subjonctif présent,je,sache
+10,FR,Subjonctif,Subjonctif présent,tu,saches
+10,FR,Subjonctif,Subjonctif présent,"il (elle, on)",sache
+10,FR,Subjonctif,Subjonctif présent,nous,sachions
+10,FR,Subjonctif,Subjonctif présent,vous,sachiez
+10,FR,Subjonctif,Subjonctif présent,ils (elles),sachent
+10,FR,Subjonctif,Subjonctif imparfait,je,susse
+10,FR,Subjonctif,Subjonctif imparfait,tu,susses
+10,FR,Subjonctif,Subjonctif imparfait,"il (elle, on)",sût
+10,FR,Subjonctif,Subjonctif imparfait,nous,sussions
+10,FR,Subjonctif,Subjonctif imparfait,vous,sussiez
+10,FR,Subjonctif,Subjonctif imparfait,ils (elles),sussent
+10,FR,Imperatif,Impératif,,sachez
+10,FR,Participe,Participe présent,,sachant
+10,FR,Participe,Participe passé,masculin singulier,su
+10,FR,Participe,Participe passé,masculin pluriel,sus
+10,FR,Participe,Participe passé,feminin singulier,sue
+10,FR,Participe,Participe passé,feminin pluriel,sues
+10,FR,Indicatif,Passé composé,je,j'ai su
+10,FR,Indicatif,Passé composé,tu,as su
+10,FR,Indicatif,Passé composé,"il (elle, on)",a su
+10,FR,Indicatif,Passé composé,nous,avons su
+10,FR,Indicatif,Passé composé,vous,avez su
+10,FR,Indicatif,Passé composé,ils (elles),ont su
+10,ES,Indicativo,Imperfecto,tú,sí
+10,ES,Indicativo,Imperfecto,él/ella,sías
+10,ES,Indicativo,Imperfecto,vosotros,sió
+10,ES,Indicativo,Imperfecto,ellos/ellas,síamos
+10,ES,Indicativo,Pretérito pluscuamperfecto,yo,sido
+10,ES,Indicativo,Pretérito pluscuamperfecto,tú,sido
+10,ES,Indicativo,Pretérito pluscuamperfecto,él/ella,sido
+10,ES,Indicativo,Pretérito pluscuamperfecto,nosotros,sido
+10,ES,Indicativo,Pretérito pluscuamperfecto,vosotros,sido
+10,ES,Indicativo,Pretérito pluscuamperfecto,ellos/ellas,sido
+10,ES,Indicativo,Presente,yo,sé
+10,ES,Indicativo,Presente,tú,sabes
+10,ES,Indicativo,Presente,él/ella,sabe
+10,ES,Indicativo,Presente,nosotros,sabemos
+10,ES,Indicativo,Presente,vosotros,sabéis
+10,ES,Indicativo,Presente,ellos/ellas,saben
+10,ES,Indicativo,pretérito perfecto compuesto,yo,sabido
+10,ES,Indicativo,pretérito perfecto compuesto,tú,sabido
+10,ES,Indicativo,pretérito perfecto compuesto,él/ella,sabido
+10,ES,Indicativo,pretérito perfecto compuesto,nosotros,sabido
+10,ES,Indicativo,pretérito perfecto compuesto,vosotros,sabido
+10,ES,Indicativo,pretérito perfecto compuesto,ellos/ellas,sabido
+10,ES,Indicativo,Imperfecto,yo,sabía
+10,ES,Indicativo,Imperfecto,tú,sabías
+10,ES,Indicativo,Imperfecto,él/ella,sabía
+10,ES,Indicativo,Imperfecto,nosotros,sabíamos
+10,ES,Indicativo,Imperfecto,vosotros,sabíais
+10,ES,Indicativo,Imperfecto,ellos/ellas,sabían
+10,ES,Indicativo,pretérito pluscuamperfecto,yo,sabido
+10,ES,Indicativo,pretérito pluscuamperfecto,tú,sabido
+10,ES,Indicativo,pretérito pluscuamperfecto,él/ella,sabido
+10,ES,Indicativo,pretérito pluscuamperfecto,nosotros,sabido
+10,ES,Indicativo,pretérito pluscuamperfecto,vosotros,sabido
+10,ES,Indicativo,pretérito pluscuamperfecto,ellos/ellas,sabido
+10,ES,Indicativo,Pretérito indefinido,yo,supe
+10,ES,Indicativo,Pretérito indefinido,tú,supiste
+10,ES,Indicativo,Pretérito indefinido,él/ella,supo
+10,ES,Indicativo,Pretérito indefinido,nosotros,supimos
+10,ES,Indicativo,Pretérito indefinido,vosotros,supisteis
+10,ES,Indicativo,Pretérito indefinido,ellos/ellas,supieron
+10,ES,Indicativo,pretérito anterior,yo,sabido
+10,ES,Indicativo,pretérito anterior,tú,sabido
+10,ES,Indicativo,pretérito anterior,él/ella,sabido
+10,ES,Indicativo,pretérito anterior,nosotros,sabido
+10,ES,Indicativo,pretérito anterior,vosotros,sabido
+10,ES,Indicativo,pretérito anterior,ellos/ellas,sabido
+10,ES,Indicativo,Futuro,yo,sabré
+10,ES,Indicativo,Futuro,tú,sabrás
+10,ES,Indicativo,Futuro,él/ella,sabrá
+10,ES,Indicativo,Futuro,nosotros,sabremos
+10,ES,Indicativo,Futuro,vosotros,sabréis
+10,ES,Indicativo,Futuro,ellos/ellas,sabrán
+10,ES,Indicativo,futuro perfecto,yo,sabido
+10,ES,Indicativo,futuro perfecto,tú,sabido
+10,ES,Indicativo,futuro perfecto,él/ella,sabido
+10,ES,Indicativo,futuro perfecto,nosotros,sabido
+10,ES,Indicativo,futuro perfecto,vosotros,sabido
+10,ES,Indicativo,futuro perfecto,ellos/ellas,sabido
+10,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,tú,siese
+10,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,él/ella,sieras
+10,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,vosotros,siese
+10,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,ellos/ellas,siéramos
+10,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,yo,sido
+10,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,tú,sido
+10,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,él/ella,sido
+10,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,nosotros,sido
+10,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,vosotros,sido
+10,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,ellos/ellas,sido
+10,ES,Subjuntivo,Subjuntivo futuro,yo,siré
+10,ES,Subjuntivo,Subjuntivo futuro,tú,siría
+10,ES,Subjuntivo,Subjuntivo futuro,él/ella,sieres
+10,ES,Subjuntivo,Subjuntivo futuro,nosotros,sirá
+10,ES,Subjuntivo,Subjuntivo futuro,vosotros,siría
+10,ES,Subjuntivo,Subjuntivo futuro,ellos/ellas,siéremos
+10,ES,Subjuntivo,Subjuntivo futuro perfecto,yo,sido
+10,ES,Subjuntivo,Subjuntivo futuro perfecto,tú,sido
+10,ES,Subjuntivo,Subjuntivo futuro perfecto,él/ella,sido
+10,ES,Subjuntivo,Subjuntivo futuro perfecto,nosotros,sido
+10,ES,Subjuntivo,Subjuntivo futuro perfecto,vosotros,sido
+10,ES,Subjuntivo,Subjuntivo futuro perfecto,ellos/ellas,sido
+10,ES,Subjuntivo,Subjuntivo presente,yo,sepa
+10,ES,Subjuntivo,Subjuntivo presente,tú,sepas
+10,ES,Subjuntivo,Subjuntivo presente,él/ella,sepa
+10,ES,Subjuntivo,Subjuntivo presente,nosotros,sepamos
+10,ES,Subjuntivo,Subjuntivo presente,vosotros,sepáis
+10,ES,Subjuntivo,Subjuntivo presente,ellos/ellas,sepan
+10,ES,Subjuntivo,Subjuntivo pretérito perfecto,yo,sabido
+10,ES,Subjuntivo,Subjuntivo pretérito perfecto,tú,sabido
+10,ES,Subjuntivo,Subjuntivo pretérito perfecto,él/ella,sabido
+10,ES,Subjuntivo,Subjuntivo pretérito perfecto,nosotros,sabido
+10,ES,Subjuntivo,Subjuntivo pretérito perfecto,vosotros,sabido
+10,ES,Subjuntivo,Subjuntivo pretérito perfecto,ellos/ellas,sabido
+10,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,yo,supiera
+10,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,tú,supieras
+10,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,él/ella,supiera
+10,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,nosotros,supiéramos
+10,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,vosotros,supierais
+10,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,ellos/ellas,supieran
+10,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,yo,sabido
+10,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,tú,sabido
+10,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,él/ella,sabido
+10,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,nosotros,sabido
+10,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,vosotros,sabido
+10,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,ellos/ellas,sabido
+10,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,yo,supiese
+10,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,tú,supieses
+10,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,él/ella,supiese
+10,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,nosotros,supiésemos
+10,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,vosotros,supieseis
+10,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,ellos/ellas,supiesen
+10,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,yo,sabido
+10,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,tú,sabido
+10,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,él/ella,sabido
+10,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,nosotros,sabido
+10,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,vosotros,sabido
+10,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,ellos/ellas,sabido
+10,ES,Subjuntivo,Subjuntivo futuro,yo,supiere
+10,ES,Subjuntivo,Subjuntivo futuro,tú,supieres
+10,ES,Subjuntivo,Subjuntivo futuro,él/ella,supiere
+10,ES,Subjuntivo,Subjuntivo futuro,nosotros,supiéremos
+10,ES,Subjuntivo,Subjuntivo futuro,vosotros,supiereis
+10,ES,Subjuntivo,Subjuntivo futuro,ellos/ellas,supieren
+10,ES,Subjuntivo,Subjuntivo futuro perfecto,yo,sabido
+10,ES,Subjuntivo,Subjuntivo futuro perfecto,tú,sabido
+10,ES,Subjuntivo,Subjuntivo futuro perfecto,él/ella,sabido
+10,ES,Subjuntivo,Subjuntivo futuro perfecto,nosotros,sabido
+10,ES,Subjuntivo,Subjuntivo futuro perfecto,vosotros,sabido
+10,ES,Subjuntivo,Subjuntivo futuro perfecto,ellos/ellas,sabido
+10,ES,Imperativo,Imperativo,tú,sabe
+10,ES,Imperativo,Imperativo,él/ella,sepa
+10,ES,Imperativo,Imperativo,nosotros,sepamos
+10,ES,Imperativo,Imperativo,vosotros,sabed
+10,ES,Imperativo,Imperativo,ellos/ellas,sepan
+10,ES,Imperativo,Imperativo,tú no,sepas
+10,ES,Imperativo,Imperativo,él/ella no,sepa
+10,ES,Imperativo,Imperativo,nosotros no,sepamos
+10,ES,Imperativo,Imperativo,vosotros no,sepáis
+10,ES,Imperativo,Imperativo,ellos/ellas no,sepan
+10,ES,Condicional,Condicional,yo,sabría
+10,ES,Condicional,Condicional,tú,sabrías
+10,ES,Condicional,Condicional,él/ella,sabría
+10,ES,Condicional,Condicional,nosotros,sabríamos
+10,ES,Condicional,Condicional,vosotros,sabríais
+10,ES,Condicional,Condicional,ellos/ellas,sabrían
+10,ES,Condicional,perfecto,yo,sabido
+10,ES,Condicional,perfecto,tú,sabido
+10,ES,Condicional,perfecto,él/ella,sabido
+10,ES,Condicional,perfecto,nosotros,sabido
+10,ES,Condicional,perfecto,vosotros,sabido
+10,ES,Condicional,perfecto,ellos/ellas,sabido
+10,ES,Infinitivo,Infinitivo,,saber
+10,ES,Gerundio,Gerundio,,sabiendo
+10,ES,Participo,Participo,,sabido
+479,FR,Infinitif,Infinitif,,falloir
+479,FR,Indicatif,présent,"il (elle, on)",faut
+479,FR,Indicatif,imparfait,"il (elle, on)",fallait
+479,FR,Indicatif,futur,"il (elle, on)",faudra
+479,FR,Indicatif,passé simple,"il (elle, on)",fallut
+479,FR,Conditionnel,Conditionnel présent,"il (elle, on)",faudrait
+479,FR,Subjonctif,Subjonctif présent,"il (elle, on)",faille
+479,FR,Subjonctif,Subjonctif imparfait,"il (elle, on)",fallût
+479,FR,Participe,Participe passé,masculin singulier,fallu
+479,FR,Indicatif,Passé composé,je,j'ai fallu
+479,FR,Indicatif,Passé composé,tu,as fallu
+479,FR,Indicatif,Passé composé,"il (elle, on)",a fallu
+479,FR,Indicatif,Passé composé,nous,avons fallu
+479,FR,Indicatif,Passé composé,vous,avez fallu
+479,FR,Indicatif,Passé composé,ils (elles),ont fallu
+479,ES,Indicativo,Imperfecto,tú,hí
+479,ES,Indicativo,Imperfecto,él/ella,hías
+479,ES,Indicativo,Imperfecto,vosotros,hió
+479,ES,Indicativo,Imperfecto,ellos/ellas,híamos
+479,ES,Indicativo,Pretérito pluscuamperfecto,yo,hido
+479,ES,Indicativo,Pretérito pluscuamperfecto,tú,hido
+479,ES,Indicativo,Pretérito pluscuamperfecto,él/ella,hido
+479,ES,Indicativo,Pretérito pluscuamperfecto,nosotros,hido
+479,ES,Indicativo,Pretérito pluscuamperfecto,vosotros,hido
+479,ES,Indicativo,Pretérito pluscuamperfecto,ellos/ellas,hido
+479,ES,Indicativo,Presente,yo,hago
+479,ES,Indicativo,Presente,tú,haces
+479,ES,Indicativo,Presente,él/ella,hace
+479,ES,Indicativo,Presente,nosotros,hacemos
+479,ES,Indicativo,Presente,vosotros,hacéis
+479,ES,Indicativo,Presente,ellos/ellas,hacen
+479,ES,Indicativo,pretérito perfecto compuesto,yo,hecho
+479,ES,Indicativo,pretérito perfecto compuesto,tú,hecho
+479,ES,Indicativo,pretérito perfecto compuesto,él/ella,hecho
+479,ES,Indicativo,pretérito perfecto compuesto,nosotros,hecho
+479,ES,Indicativo,pretérito perfecto compuesto,vosotros,hecho
+479,ES,Indicativo,pretérito perfecto compuesto,ellos/ellas,hecho
+479,ES,Indicativo,Imperfecto,yo,hacía
+479,ES,Indicativo,Imperfecto,tú,hacías
+479,ES,Indicativo,Imperfecto,él/ella,hacía
+479,ES,Indicativo,Imperfecto,nosotros,hacíamos
+479,ES,Indicativo,Imperfecto,vosotros,hacíais
+479,ES,Indicativo,Imperfecto,ellos/ellas,hacían
+479,ES,Indicativo,pretérito pluscuamperfecto,yo,hecho
+479,ES,Indicativo,pretérito pluscuamperfecto,tú,hecho
+479,ES,Indicativo,pretérito pluscuamperfecto,él/ella,hecho
+479,ES,Indicativo,pretérito pluscuamperfecto,nosotros,hecho
+479,ES,Indicativo,pretérito pluscuamperfecto,vosotros,hecho
+479,ES,Indicativo,pretérito pluscuamperfecto,ellos/ellas,hecho
+479,ES,Indicativo,Pretérito indefinido,yo,hice
+479,ES,Indicativo,Pretérito indefinido,tú,hiciste
+479,ES,Indicativo,Pretérito indefinido,él/ella,hizo
+479,ES,Indicativo,Pretérito indefinido,nosotros,hicimos
+479,ES,Indicativo,Pretérito indefinido,vosotros,hicisteis
+479,ES,Indicativo,Pretérito indefinido,ellos/ellas,hicieron
+479,ES,Indicativo,pretérito anterior,yo,hecho
+479,ES,Indicativo,pretérito anterior,tú,hecho
+479,ES,Indicativo,pretérito anterior,él/ella,hecho
+479,ES,Indicativo,pretérito anterior,nosotros,hecho
+479,ES,Indicativo,pretérito anterior,vosotros,hecho
+479,ES,Indicativo,pretérito anterior,ellos/ellas,hecho
+479,ES,Indicativo,Futuro,yo,haré
+479,ES,Indicativo,Futuro,tú,harás
+479,ES,Indicativo,Futuro,él/ella,hará
+479,ES,Indicativo,Futuro,nosotros,haremos
+479,ES,Indicativo,Futuro,vosotros,haréis
+479,ES,Indicativo,Futuro,ellos/ellas,harán
+479,ES,Indicativo,futuro perfecto,yo,hecho
+479,ES,Indicativo,futuro perfecto,tú,hecho
+479,ES,Indicativo,futuro perfecto,él/ella,hecho
+479,ES,Indicativo,futuro perfecto,nosotros,hecho
+479,ES,Indicativo,futuro perfecto,vosotros,hecho
+479,ES,Indicativo,futuro perfecto,ellos/ellas,hecho
+479,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,tú,hiese
+479,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,él/ella,hieras
+479,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,vosotros,hiese
+479,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,ellos/ellas,hiéramos
+479,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,yo,hido
+479,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,tú,hido
+479,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,él/ella,hido
+479,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,nosotros,hido
+479,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,vosotros,hido
+479,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,ellos/ellas,hido
+479,ES,Subjuntivo,Subjuntivo futuro,yo,hiré
+479,ES,Subjuntivo,Subjuntivo futuro,tú,hiría
+479,ES,Subjuntivo,Subjuntivo futuro,él/ella,hieres
+479,ES,Subjuntivo,Subjuntivo futuro,nosotros,hirá
+479,ES,Subjuntivo,Subjuntivo futuro,vosotros,hiría
+479,ES,Subjuntivo,Subjuntivo futuro,ellos/ellas,hiéremos
+479,ES,Subjuntivo,Subjuntivo futuro perfecto,yo,hido
+479,ES,Subjuntivo,Subjuntivo futuro perfecto,tú,hido
+479,ES,Subjuntivo,Subjuntivo futuro perfecto,él/ella,hido
+479,ES,Subjuntivo,Subjuntivo futuro perfecto,nosotros,hido
+479,ES,Subjuntivo,Subjuntivo futuro perfecto,vosotros,hido
+479,ES,Subjuntivo,Subjuntivo futuro perfecto,ellos/ellas,hido
+479,ES,Subjuntivo,Subjuntivo presente,yo,haga
+479,ES,Subjuntivo,Subjuntivo presente,tú,hagas
+479,ES,Subjuntivo,Subjuntivo presente,él/ella,haga
+479,ES,Subjuntivo,Subjuntivo presente,nosotros,hagamos
+479,ES,Subjuntivo,Subjuntivo presente,vosotros,hagáis
+479,ES,Subjuntivo,Subjuntivo presente,ellos/ellas,hagan
+479,ES,Subjuntivo,Subjuntivo pretérito perfecto,yo,hecho
+479,ES,Subjuntivo,Subjuntivo pretérito perfecto,tú,hecho
+479,ES,Subjuntivo,Subjuntivo pretérito perfecto,él/ella,hecho
+479,ES,Subjuntivo,Subjuntivo pretérito perfecto,nosotros,hecho
+479,ES,Subjuntivo,Subjuntivo pretérito perfecto,vosotros,hecho
+479,ES,Subjuntivo,Subjuntivo pretérito perfecto,ellos/ellas,hecho
+479,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,yo,hiciera
+479,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,tú,hicieras
+479,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,él/ella,hiciera
+479,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,nosotros,hiciéramos
+479,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,vosotros,hicierais
+479,ES,Subjuntivo,Subjuntivo pretérito imperfecto 1,ellos/ellas,hicieran
+479,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,yo,hecho
+479,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,tú,hecho
+479,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,él/ella,hecho
+479,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,nosotros,hecho
+479,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,vosotros,hecho
+479,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 1,ellos/ellas,hecho
+479,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,yo,hiciese
+479,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,tú,hicieses
+479,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,él/ella,hiciese
+479,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,nosotros,hiciésemos
+479,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,vosotros,hicieseis
+479,ES,Subjuntivo,Subjuntivo pretérito imperfecto 2,ellos/ellas,hiciesen
+479,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,yo,hecho
+479,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,tú,hecho
+479,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,él/ella,hecho
+479,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,nosotros,hecho
+479,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,vosotros,hecho
+479,ES,Subjuntivo,Subjuntivo pretérito pluscuamperfecto 2,ellos/ellas,hecho
+479,ES,Subjuntivo,Subjuntivo futuro,yo,hiciere
+479,ES,Subjuntivo,Subjuntivo futuro,tú,hicieres
+479,ES,Subjuntivo,Subjuntivo futuro,él/ella,hiciere
+479,ES,Subjuntivo,Subjuntivo futuro,nosotros,hiciéremos
+479,ES,Subjuntivo,Subjuntivo futuro,vosotros,hiciereis
+479,ES,Subjuntivo,Subjuntivo futuro,ellos/ellas,hicieren
+479,ES,Subjuntivo,Subjuntivo futuro perfecto,yo,hecho
+479,ES,Subjuntivo,Subjuntivo futuro perfecto,tú,hecho
+479,ES,Subjuntivo,Subjuntivo futuro perfecto,él/ella,hecho
+479,ES,Subjuntivo,Subjuntivo futuro perfecto,nosotros,hecho
+479,ES,Subjuntivo,Subjuntivo futuro perfecto,vosotros,hecho
+479,ES,Subjuntivo,Subjuntivo futuro perfecto,ellos/ellas,hecho
+479,ES,Imperativo,Imperativo,tú,haz
+479,ES,Imperativo,Imperativo,él/ella,haga
+479,ES,Imperativo,Imperativo,nosotros,hagamos
+479,ES,Imperativo,Imperativo,vosotros,haced
+479,ES,Imperativo,Imperativo,ellos/ellas,hagan
+479,ES,Imperativo,Imperativo,tú no,hagas
+479,ES,Imperativo,Imperativo,él/ella no,haga
+479,ES,Imperativo,Imperativo,nosotros no,hagamos
+479,ES,Imperativo,Imperativo,vosotros no,hagáis
+479,ES,Imperativo,Imperativo,ellos/ellas no,hagan
+479,ES,Condicional,Condicional,yo,haría
+479,ES,Condicional,Condicional,tú,harías
+479,ES,Condicional,Condicional,él/ella,haría
+479,ES,Condicional,Condicional,nosotros,haríamos
+479,ES,Condicional,Condicional,vosotros,haríais
+479,ES,Condicional,Condicional,ellos/ellas,harían
+479,ES,Condicional,perfecto,yo,hecho
+479,ES,Condicional,perfecto,tú,hecho
+479,ES,Condicional,perfecto,él/ella,hecho
+479,ES,Condicional,perfecto,nosotros,hecho
+479,ES,Condicional,perfecto,vosotros,hecho
+479,ES,Condicional,perfecto,ellos/ellas,hecho
+479,ES,Infinitivo,Infinitivo,,hacer
+479,ES,Gerundio,Gerundio,,haciendo
+479,ES,Participo,Participo,,hecho

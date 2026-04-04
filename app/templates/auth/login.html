@@ -1,0 +1,33 @@
+{% extends "auth/base.html" %}
+{% block title %}Sign In · LexArena{% endblock %}
+{% block auth_content %}
+<form class="auth-form" method="post" action="/auth/login">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+  <p class="kicker">Welcome back</p>
+  <h2>Sign in</h2>
+  <p class="muted">Pick up your queue where you left it.</p>
+
+  {% if error %}
+    <div class="callout error">{{ error }}</div>
+  {% endif %}
+
+  <div class="field-block">
+    <label for="username">Username</label>
+    <input id="username" type="text" name="username" required autocomplete="username" data-autofocus>
+  </div>
+
+  <div class="field-block">
+    <label for="password">Password</label>
+    <input id="password" type="password" name="password" required autocomplete="current-password">
+  </div>
+
+  <button class="btn primary" type="submit">Enter LexArena</button>
+
+  <div class="auth-demo">
+    <span class="mono">Demo:</span>
+    <span class="mono">demo / demo12345</span>
+  </div>
+
+  <p class="auth-footer">No account yet? <a href="/auth/register">Create one</a></p>
+</form>
+{% endblock %}

@@ -5,6 +5,12 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.pytest_cache/
+
+# Build / packaging
+*.egg-info/
+.qa/
+.alembic-*.db
 
 # Django
 *.log
@@ -19,6 +25,9 @@ __pycache__/
 # Environment variables
 .env
 .env.local
+
+# Frontend
+frontend/node_modules/
 
 # Media files (if you don't want to track uploaded files)
 # media/

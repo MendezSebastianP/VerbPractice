@@ -1,0 +1,67 @@
+rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text
+251,6,employer,emplear,1,253,emplear
+252,6,profiter,aprovechar,1,254,"aprovechar, disfrutar"
+252,6,profiter,disfrutar,2,254,"aprovechar, disfrutar"
+253,6,concevoir,concebir,1,255,concebir
+254,6,envisager,contemplar,1,256,"contemplar, considerar"
+254,6,envisager,considerar,2,256,"contemplar, considerar"
+255,6,soutenir,apoyar,1,257,"apoyar, sostener"
+255,6,soutenir,sostener,2,257,"apoyar, sostener"
+256,6,promener,pasear,1,258,pasear
+257,6,conclure,concluir,1,259,concluir
+258,6,nourrir,alimentar,1,260,alimentar
+259,6,prouver,probar,1,261,"probar, demostrar"
+259,6,prouver,demostrar,2,261,"probar, demostrar"
+260,6,douter,dudar,1,262,dudar
+261,6,laver,lavar,1,263,lavar
+262,6,disposer,disponer,1,264,disponer
+263,6,aboutir,culminar,1,265,"culminar, llevar a cabo"
+263,6,aboutir,llevar a cabo,2,265,"culminar, llevar a cabo"
+264,6,dépasser,superar,1,266,superar
+265,6,intéresser,interesar,1,267,interesar
+266,6,prononcer,pronunciar,1,268,pronunciar
+267,6,apprécier,apreciar,1,269,apreciar
+268,6,rechercher,buscar,1,270,buscar
+269,6,assister,asistir,1,271,asistir
+270,6,marquer,marcar,1,272,marcar
+271,6,lutter,luchar,1,273,luchar
+272,6,effectuer,efectuar,1,274,"efectuar, realizar"
+272,6,effectuer,realizar,2,274,"efectuar, realizar"
+273,6,rompre,romper,1,275,romper
+274,6,partager,compartir,1,276,compartir
+275,6,supposer,suponer,1,277,suponer
+276,6,accorder,conceder,1,278,"conceder, otorgar"
+276,6,accorder,otorgar,2,278,"conceder, otorgar"
+277,6,procéder,proceder,1,279,proceder
+278,6,casser,romper,1,280,romper
+279,6,convaincre,convencer,1,281,convencer
+280,6,éloigner,alejar,1,282,"alejar, apartar"
+280,6,éloigner,apartar,2,282,"alejar, apartar"
+281,6,emporter,llevar,1,283,llevar
+282,6,introduire,introducir,1,284,introducir
+283,6,augmenter,aumentar,1,285,aumentar
+284,6,évoquer,evocar,1,286,"evocar, mencionar"
+284,6,évoquer,mencionar,2,286,"evocar, mencionar"
+285,6,amener,llevar,1,287,"llevar, traer"
+285,6,amener,traer,2,287,"llevar, traer"
+286,6,enlever,quitar,1,288,"quitar, eliminar"
+286,6,enlever,eliminar,2,288,"quitar, eliminar"
+287,6,désigner,designar,1,289,designar
+288,6,franchir,cruzar,1,290,"cruzar, atravesar"
+288,6,franchir,atravesar,2,290,"cruzar, atravesar"
+289,6,réveiller,despertar,1,291,despertar
+290,6,écarter,apartar,1,292,"apartar, alejar"
+290,6,écarter,alejar,2,292,"apartar, alejar"
+291,6,proposer,proponer,1,293,proponer
+292,6,calculer,calcular,1,294,calcular
+293,6,diriger,dirigir,1,295,dirigir
+294,6,posséder,poseer,1,296,poseer
+295,6,retirer,retirar,1,297,"retirar, quitar"
+295,6,retirer,quitar,2,297,"retirar, quitar"
+296,6,durer,durar,1,298,durar
+297,6,voler,volar,1,299,"volar, robar"
+297,6,voler,robar,2,299,"volar, robar"
+298,6,crever,reventar,1,300,"reventar, morir"
+298,6,crever,morir,2,300,"reventar, morir"
+299,6,résister,resistir,1,301,resistir
+300,6,deviner,adivinar,1,302,adivinar

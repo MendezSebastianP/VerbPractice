@@ -1,0 +1,49 @@
+[project]
+name = "verbpractice"
+version = "0.1.0"
+description = "VerbPractice FastAPI backend with SPA frontend"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.116.0",
+  "uvicorn[standard]>=0.31.0",
+  "jinja2>=3.1.5",
+  "sqlalchemy>=2.0.37",
+  "asyncpg>=0.30.0",
+  "alembic>=1.14.0",
+  "pydantic>=2.10.0",
+  "pydantic-settings>=2.7.1",
+  "python-multipart>=0.0.20",
+  "python-dotenv>=1.0.1",
+  "itsdangerous>=2.2.0",
+  "passlib[bcrypt]>=1.7.4",
+  "openai>=1.54.0",
+  "slowapi>=0.1.9",
+  "unidecode>=1.3.8",
+  "orjson>=3.10.15",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.3.3",
+  "pytest-asyncio>=0.24.0",
+  "httpx>=0.28.1",
+  "aiosqlite>=0.20.0",
+  "playwright>=1.54.0",
+  "pillow>=11.0.0",
+]
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+exclude = ["frontend*", "tests*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+markers = [
+  "visual: browser-based visual regression coverage",
+]

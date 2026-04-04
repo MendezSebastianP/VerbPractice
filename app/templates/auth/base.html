@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <title>{% block title %}LexArena{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Press+Start+2P&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body class="auth-body">
+  <div class="auth-glow" aria-hidden="true"></div>
+  <main class="auth-shell">
+    <section class="auth-stage">
+      <aside class="auth-story">
+        <p class="kicker">LexArena</p>
+        <h1 class="auth-title">Train words, verbs, and conjugation loops without losing the game feel.</h1>
+        <p class="auth-copy">
+          The FastAPI stack keeps the app fast and server-rendered while tracking streaks, weak spots, and session history in PostgreSQL.
+        </p>
+        <div class="auth-feature-list">
+          <div class="auth-feature">
+            <strong>Adaptive queue</strong>
+            <span>Hard items come back more often, with recency boosts built in.</span>
+          </div>
+          <div class="auth-feature">
+            <strong>Three modes</strong>
+            <span>Vocabulary, verb translation, and tense drills share one progress model.</span>
+          </div>
+          <div class="auth-feature">
+            <strong>Theme system</strong>
+            <span>Light, dark, and arcade modes all keep the same learning structure.</span>
+          </div>
+        </div>
+      </aside>
+
+      <section class="auth-panel">
+        {% block auth_content %}{% endblock %}
+      </section>
+    </section>
+  </main>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

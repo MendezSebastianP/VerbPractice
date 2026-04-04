@@ -1,0 +1,241 @@
+<div class="panel-header">
+  <div>
+    <p class="kicker">Internal monitor</p>
+    <h1>Live training diagnostics</h1>
+  </div>
+  <a class="btn secondary" href="/admin/api/live" target="_blank" rel="noopener">Open JSON feed</a>
+</div>
+
+<div class="mode-grid monitor-cards">
+  <div class="metric-card">
+    <span>Users</span>
+    <strong>{{ totals.users }}</strong>
+  </div>
+  <div class="metric-card">
+    <span>Active sessions</span>
+    <strong>{{ totals.active_sessions }}</strong>
+  </div>
+  <div class="metric-card">
+    <span>Completed sessions</span>
+    <strong>{{ totals.completed_sessions }}</strong>
+  </div>
+  <div class="metric-card">
+    <span>Session items</span>
+    <strong>{{ totals.session_items }}</strong>
+  </div>
+  <div class="metric-card">
+    <span>Progress rows</span>
+    <strong>{{ totals.progress_rows }}</strong>
+  </div>
+  <div class="metric-card">
+    <span>Chat messages</span>
+    <strong>{{ totals.chat_messages }}</strong>
+  </div>
+</div>
+
+<div class="dashboard-grid monitor-grid">
+  <article class="panel">
+    <div class="panel-header tight">
+      <div>
+        <p class="kicker">Accounts</p>
+        <h2>User state</h2>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table class="clean-table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Level</th>
+            <th>XP</th>
+            <th>Streak</th>
+            <th>Theme</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in users %}
+            <tr>
+              <td>{{ row.username }}</td>
+              <td>{{ row.level }}</td>
+              <td>{{ row.xp }}</td>
+              <td>{{ row.streak_days }}</td>
+              <td>{{ row.theme }}</td>
+            </tr>
+          {% else %}
+            <tr><td colspan="5">No users</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </article>
+
+  <article class="panel">
+    <div class="panel-header tight">
+      <div>
+        <p class="kicker">Runtime</p>
+        <h2>Active sessions</h2>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table class="clean-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>User</th>
+            <th>Mode</th>
+            <th>Pair</th>
+            <th>Started</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in active_sessions %}
+            <tr>
+              <td>{{ row.id }}</td>
+              <td>{{ row.user_id }}</td>
+              <td>{{ row.mode.value }}</td>
+              <td>{{ row.language_pair }}</td>
+              <td>{{ row.started_at.strftime('%H:%M:%S') if row.started_at else '-' }}</td>
+            </tr>
+          {% else %}
+            <tr><td colspan="5">No active sessions</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </article>
+</div>
+
+<article class="panel">
+  <div class="panel-header tight">
+    <div>
+      <p class="kicker">Recent scoring</p>
+      <h2>Latest session items</h2>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table class="clean-table">
+      <thead>
+        <tr>
+          <th>When</th>
+          <th>Session</th>
+          <th>Type</th>
+          <th>Prompt</th>
+          <th>Answer</th>
+          <th>Expected</th>
+          <th>Correct</th>
+          <th>Multiplier</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in recent_items %}
+          <tr>
+            <td>{{ item.timestamp.strftime('%H:%M:%S') if item.timestamp else '-' }}</td>
+            <td>#{{ item.session_id }}</td>
+            <td>{{ item.item_type.value }}</td>
+            <td>{{ item.prompt or '-' }}</td>
+            <td>{{ item.answer or '-' }}</td>
+            <td>{{ item.expected or '-' }}</td>
+            <td>{{ 'yes' if item.correct else 'no' }}</td>
+            <td>{{ '%.2f'|format(item.multiplier_applied or 0) }}</td>
+          </tr>
+        {% else %}
+          <tr><td colspan="8">No session items yet</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</article>
+
+<div class="dashboard-grid monitor-grid">
+  <article class="panel">
+    <div class="panel-header tight">
+      <div>
+        <p class="kicker">Progress rows</p>
+        <h2>Most recently touched learning state</h2>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table class="clean-table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Type</th>
+            <th>Item</th>
+            <th>Pair</th>
+            <th>Probability</th>
+            <th>Seen</th>
+            <th>Correct</th>
+            <th>Last seen</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in hottest_progress %}
+            <tr>
+              <td>{{ row.user_id }}</td>
+              <td>{{ row.item_type.value }}</td>
+              <td>{{ row.item_id }}</td>
+              <td>{{ row.language_pair }}</td>
+              <td>{{ '%.0f'|format(row.probability) }}</td>
+              <td>{{ row.times_seen }}</td>
+              <td>{{ row.times_correct }}</td>
+              <td>{{ row.last_seen.strftime('%H:%M:%S') if row.last_seen else '-' }}</td>
+            </tr>
+          {% else %}
+            <tr><td colspan="8">No progress rows yet</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </article>
+
+  <article class="panel">
+    <div class="panel-header tight">
+      <div>
+        <p class="kicker">Sessions + chat</p>
+        <h2>Recent completed loops</h2>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table class="clean-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>User</th>
+            <th>Mode</th>
+            <th>Score</th>
+            <th>Completed</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in recent_sessions %}
+            <tr>
+              <td>{{ row.id }}</td>
+              <td>{{ row.user_id }}</td>
+              <td>{{ row.mode.value }}</td>
+              <td>{{ '%.1f'|format(row.score or 0) }}%</td>
+              <td>{{ row.completed_at.strftime('%Y-%m-%d %H:%M:%S') if row.completed_at else '-' }}</td>
+            </tr>
+          {% else %}
+            <tr><td colspan="5">No completed sessions</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="subsection">
+      <div class="panel-header tight">
+        <h3>Recent chat messages</h3>
+      </div>
+      <div class="message-preview-list">
+        {% for message in recent_messages %}
+          <div class="message-preview {{ message.role.value }}">
+            <span>{{ message.role.value }}</span>
+            <p>{{ message.content }}</p>
+          </div>
+        {% else %}
+          <div class="empty-state">No chat history</div>
+        {% endfor %}
+      </div>
+    </div>
+  </article>
+</div>

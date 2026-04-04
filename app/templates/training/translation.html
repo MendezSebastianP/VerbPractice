@@ -1,0 +1,139 @@
+{% extends "layout.html" %}
+{% block title %}{{ title }} · LexArena{% endblock %}
+{% block content %}
+<section class="panel training-stage">
+  <div class="panel-header">
+    <div>
+      <p class="kicker">{{ direction_label }}</p>
+      <h1>{{ title }}</h1>
+    </div>
+    <div class="pill-list">
+      <span>{{ overview.unlocked }} unlocked</span>
+      <span>{{ overview.practiced }} practiced</span>
+      <span>{{ overview.mastered }} mastered</span>
+    </div>
+  </div>
+
+  {% if feedback %}
+    <div class="callout info">{{ feedback }}</div>
+  {% endif %}
+
+  {% if finished %}
+    <div class="callout success">Session complete. The queue has been rescored and new content may have unlocked.</div>
+  {% endif %}
+
+  {% if setup %}
+    <p class="mode-copy">
+      Weighted prompts keep weak translations circulating while mastered items fall back. Choose the loop size and direction, then start.
+    </p>
+
+    <form
+      method="post"
+      action="{{ '/training/words' if mode == 'word_translation' else '/training/verbs' }}"
+      class="stack-form"
+      hx-target="closest .training-stage"
+      hx-select=".training-stage"
+      hx-swap="outerHTML transition:true show:none"
+      hx-push-url="false"
+      hx-disabled-elt="find button, find input, find select, find textarea"
+    >
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <input type="hidden" name="action" value="start">
+
+      <div class="field-block">
+        <label>Session length</label>
+        <div class="toggle-grid">
+          {% for val in [5, 10, 20] %}
+            <label class="toggle-card">
+              <input type="radio" name="length" value="{{ val }}" {% if default_length == val %}checked{% endif %}>
+              <span>{{ val }} items</span>
+            </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="field-block">
+        <label>Direction</label>
+        <div class="toggle-grid">
+          {% if mode == 'word_translation' %}
+            <label class="toggle-card">
+              <input type="radio" name="direction" value="es_fr" {% if default_direction == 'es_fr' %}checked{% endif %}>
+              <span>Spanish → French</span>
+            </label>
+            <label class="toggle-card">
+              <input type="radio" name="direction" value="fr_es" {% if default_direction == 'fr_es' %}checked{% endif %}>
+              <span>French → Spanish</span>
+            </label>
+          {% else %}
+            <label class="toggle-card">
+              <input type="radio" name="direction" value="fr_es" {% if default_direction == 'fr_es' %}checked{% endif %}>
+              <span>French → Spanish</span>
+            </label>
+            <label class="toggle-card">
+              <input type="radio" name="direction" value="es_fr" {% if default_direction == 'es_fr' %}checked{% endif %}>
+              <span>Spanish → French</span>
+            </label>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="stat-strip">
+        <div class="metric-card compact">
+          <span>Average pressure</span>
+          <strong>{{ overview.avg_probability }}</strong>
+        </div>
+        <div class="metric-card compact">
+          <span>Scoring</span>
+          <strong>{{ '+10 / +7 XP' if mode == 'word_translation' else '+10 XP' }}</strong>
+        </div>
+      </div>
+
+      <button type="submit" class="btn primary">Launch session</button>
+    </form>
+  {% else %}
+    <div class="progress-card">
+      <div class="progress-topline">
+        <span>Session progress</span>
+        <strong>{{ progress_current }}/{{ progress_total }}</strong>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" style="width: {{ (progress_current / progress_total * 100) if progress_total else 0 }}%"></div>
+      </div>
+    </div>
+
+    <article class="prompt-card">
+      <p class="kicker">Prompt</p>
+      <h2 class="prompt-word">{{ question.prompt }}</h2>
+      <p class="muted">Type the best translation you know{% if mode == 'word_translation' %}. Synonyms are accepted in word mode{% endif %}.</p>
+
+      <form
+        method="post"
+        action="{{ '/training/words' if mode == 'word_translation' else '/training/verbs' }}"
+        class="stack-form"
+        hx-target="closest .training-stage"
+        hx-select=".training-stage"
+        hx-swap="outerHTML transition:true show:none"
+        hx-push-url="false"
+        hx-disabled-elt="find button, find input, find select, find textarea"
+      >
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <div class="inline-answer">
+          <input type="text" name="answer" placeholder="Type your answer" autocomplete="off" required data-autofocus>
+          <button type="submit" name="action" value="answer" class="btn primary">Submit</button>
+        </div>
+        <div class="stack-actions">
+          <button type="submit" name="action" value="hint" class="btn secondary" formnovalidate>Reveal hint</button>
+          <button type="submit" name="action" value="giveup" class="btn ghost" formnovalidate>Show answer</button>
+        </div>
+      </form>
+
+      {% if hint %}
+        <div class="hint-strip">
+          <span>Hint</span>
+          <code>{{ hint }}</code>
+        </div>
+      {% endif %}
+    </article>
+  {% endif %}
+</section>
+{% endblock %}

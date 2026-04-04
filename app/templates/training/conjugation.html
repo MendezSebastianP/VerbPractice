@@ -1,0 +1,173 @@
+{% extends "layout.html" %}
+{% block title %}Conjugation · LexArena{% endblock %}
+{% block content %}
+<section class="panel training-stage" x-data="conjugationSetup()" x-init='init({{ languages_payload|tojson }})'>
+  <div class="panel-header">
+    <div>
+      <p class="kicker">Tense tables</p>
+      <h1>Conjugation Training</h1>
+    </div>
+    <div class="pill-list">
+      <span>{{ overview.unlocked }} unlocked</span>
+      <span>{{ overview.practiced }} practiced</span>
+      <span>{{ overview.mastered }} mastered</span>
+    </div>
+  </div>
+
+  {% if feedback %}
+    <div class="callout info">{{ feedback }}</div>
+  {% endif %}
+
+  {% if finished %}
+    <div class="callout success">Conjugation session complete. Verb difficulty scores and unlock checks have been updated.</div>
+  {% endif %}
+
+  {% if setup %}
+    <p class="mode-copy">
+      Choose a language, set the tense depth, and run a full-table drill. The fill level now affects what the backend expects, not only the UI.
+    </p>
+
+    <form
+      method="post"
+      action="/training/conjugation"
+      class="stack-form"
+      hx-target="closest .training-stage"
+      hx-select=".training-stage"
+      hx-swap="outerHTML transition:true show:none"
+      hx-push-url="false"
+      hx-disabled-elt="find button, find input, find select, find textarea"
+    >
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <input type="hidden" name="action" value="start">
+
+      <div class="field-block">
+        <label>Language</label>
+        <select name="language" x-model="language" @change="syncTenses()">
+          {% for lang in languages %}
+            <option value="{{ lang.code }}">{{ lang.name }} ({{ lang.code }})</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="field-block">
+        <label>Difficulty</label>
+        <div class="toggle-grid">
+          <label class="toggle-card"><input type="radio" name="level" value="easy" x-model="level" @change="syncTenses()"><span>Easy core</span></label>
+          <label class="toggle-card"><input type="radio" name="level" value="medium" x-model="level" @change="syncTenses()"><span>Medium sweep</span></label>
+          <label class="toggle-card"><input type="radio" name="level" value="hard" x-model="level" @change="syncTenses()"><span>Full stack</span></label>
+          <label class="toggle-card"><input type="radio" name="level" value="custom" x-model="level" @change="syncTenses()"><span>Custom</span></label>
+        </div>
+      </div>
+
+      <div class="field-block">
+        <label>Prefill level</label>
+        <div class="toggle-grid">
+          <label class="toggle-card"><input type="radio" name="fill_level" value="easy" checked><span>80% visible</span></label>
+          <label class="toggle-card"><input type="radio" name="fill_level" value="medium"><span>20% visible</span></label>
+          <label class="toggle-card"><input type="radio" name="fill_level" value="hard"><span>0% visible</span></label>
+        </div>
+      </div>
+
+      <div class="field-block">
+        <label>Selected tenses</label>
+        <div class="toggle-grid tense-grid">
+          <template x-for="tense in visibleTenses" :key="tense">
+            <label class="toggle-card">
+              <input type="checkbox" name="selected_tenses" :value="tense" x-model="selectedTenses">
+              <span x-text="tense"></span>
+            </label>
+          </template>
+        </div>
+      </div>
+
+      <div class="stat-strip">
+        <div class="metric-card compact">
+          <span>Average pressure</span>
+          <strong>{{ overview.avg_probability }}</strong>
+        </div>
+        <div class="metric-card compact">
+          <span>Perfect table bonus</span>
+          <strong>+50 XP</strong>
+        </div>
+      </div>
+
+      <button type="submit" class="btn primary">Start conjugation run</button>
+    </form>
+  {% else %}
+    <div class="progress-card">
+      <div class="progress-topline">
+        <span>Verb progress</span>
+        <strong>{{ progress_current }}/{{ progress_total }}</strong>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" style="width: {{ (progress_current / progress_total * 100) if progress_total else 0 }}%"></div>
+      </div>
+    </div>
+
+    <article class="prompt-card">
+      <p class="kicker">Current verb</p>
+      <h2 class="prompt-word">{{ question.verb }}</h2>
+      <div class="pill-list">
+        {% for tense in question.selected_tenses %}
+          <span>{{ tense }}</span>
+        {% endfor %}
+      </div>
+
+      <form
+        method="post"
+        action="/training/conjugation"
+        class="stack-form"
+        hx-target="closest .training-stage"
+        hx-select=".training-stage"
+        hx-swap="outerHTML transition:true show:none"
+        hx-push-url="false"
+        hx-disabled-elt="find button, find input, find select, find textarea"
+      >
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <input type="hidden" name="action" value="submit">
+
+        <div class="table-shell">
+          <table class="clean-table conjugation-table">
+            <thead>
+              <tr>
+                <th>Pronoun</th>
+                {% for tense in question.selected_tenses %}
+                  <th>{{ tense }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for pronoun in question.pronouns %}
+                {% set pronoun_index = loop.index0 %}
+                <tr>
+                  <td class="pronoun-cell">{{ pronoun }}</td>
+                  {% for tense in question.selected_tenses %}
+                    <td>
+                      {% set expected = question.table[tense][pronoun] %}
+                      {% if expected == '-' %}
+                        <span class="muted">—</span>
+                      {% elif question.prefill[tense][pronoun] %}
+                        <input type="text" value="{{ expected }}" readonly class="prefilled">
+                      {% else %}
+                        <input
+                          type="text"
+                          name="ans__{{ tense }}__{{ pronoun }}"
+                          autocomplete="off"
+                          placeholder="Type form"
+                          {% if loop.first and pronoun_index == 0 %}data-autofocus{% endif %}
+                        >
+                      {% endif %}
+                    </td>
+                  {% endfor %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <button type="submit" class="btn primary">Submit and continue</button>
+      </form>
+    </article>
+  {% endif %}
+</section>
+{% endblock %}

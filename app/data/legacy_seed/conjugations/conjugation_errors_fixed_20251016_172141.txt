@@ -1,0 +1,5 @@
+Fixed Conjugation Generation - 2025-10-16 17:21:42
+============================================================
+
+Verb ID 106: French verb 'se rendre compte' not found
+Verb ID 1129: No Spanish conjugations for 'arreglárselas'

@@ -1,0 +1,187 @@
+{% extends "layout.html" %}
+{% block title %}Inspect {{ target_user.username }} · Admin · LexArena{% endblock %}
+{% block content %}
+<section class="panel">
+  <header class="panel-head">
+    <h1>Inspect: {{ target_user.username }}</h1>
+    <p class="muted">
+      <a href="/admin/users">← All users</a>
+      &nbsp;|&nbsp;
+      <a href="/admin/users/{{ target_user.id }}/inspect">Refresh</a>
+    </p>
+  </header>
+
+  <article class="card">
+    <h2>Profile</h2>
+    <ul>
+      <li><strong>ID:</strong> {{ target_user.id }}</li>
+      <li><strong>Admin:</strong> {{ "yes" if target_user.is_admin else "no" }}</li>
+      <li><strong>Mother tongue:</strong> {{ target_user.mother_tongue }}</li>
+      <li><strong>Learning language:</strong> {{ target_user.learning_language }}</li>
+      <li><strong>Display mode:</strong> {{ target_user.display_mode }}</li>
+      <li><strong>Force-unlock added words:</strong> {{ "on" if target_user.force_unlock else "off" }}</li>
+      <li><strong>Last practice pair:</strong> {{ target_user.last_practice_pair or "—" }}</li>
+      <li><strong>XP / Level:</strong> {{ target_user.xp }} / {{ target_user.level }}</li>
+    </ul>
+  </article>
+
+  {% if pair_means %}
+  <article class="card">
+    <h2>Mean pressure by language pair</h2>
+    <table class="data-table">
+      <thead>
+        <tr><th>Pair</th><th>Items</th><th>Mean probability</th></tr>
+      </thead>
+      <tbody>
+        {% for pair, mean in pair_means.items() %}
+          <tr>
+            <td>{{ pair }}</td>
+            <td>{{ progress | selectattr("language_pair", "equalto", pair) | list | length }}</td>
+            <td>{{ mean }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </article>
+  {% endif %}
+
+  {% if next_up %}
+  <article class="card">
+    <h2>Next in queue (regular sequence, per pair)</h2>
+    {% for pair, items in next_up.items() %}
+      <h3 style="margin: 0.75rem 0 0.4rem; font-size: 0.85rem; opacity: 0.7;">{{ pair }}</h3>
+      {% if items %}
+        <table class="data-table">
+          <thead><tr><th>#</th><th>Word</th></tr></thead>
+          <tbody>
+            {% for item in items %}
+              <tr><td>{{ item.item_id }}</td><td>{{ item.label }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p class="muted">No more items in sequence.</p>
+      {% endif %}
+    {% endfor %}
+  </article>
+  {% endif %}
+
+  <article class="card">
+    <h2>Unlocked items ({{ progress|length }})</h2>
+    {% if progress %}
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Label</th>
+            <th>Pair</th>
+            <th>Probability</th>
+            <th>Seen</th>
+            <th>Correct</th>
+            <th>Streak</th>
+            <th>Last seen</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in progress %}
+            <tr>
+              <td>{{ row.item_type }}</td>
+              <td>{{ row.label }}</td>
+              <td>{{ row.language_pair }}</td>
+              <td>{{ row.probability }}</td>
+              <td>{{ row.times_seen }}</td>
+              <td>{{ row.times_correct }}</td>
+              <td>{{ row.streak }}</td>
+              <td>{{ row.last_seen or "—" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="muted">No unlocked items yet.</p>
+    {% endif %}
+  </article>
+
+  <article class="card">
+    <h2>Priority queue ({{ priority|length }})</h2>
+    {% if priority %}
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Word</th>
+            <th>Pair</th>
+            <th>Context</th>
+            <th>Added</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in priority %}
+            <tr>
+              <td>{{ row.word_text }}</td>
+              <td>{{ row.language_pair }}</td>
+              <td>{{ row.context_hint or "—" }}</td>
+              <td>{{ row.added_at }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="muted">No words awaiting unlock.</p>
+    {% endif %}
+  </article>
+
+  <article class="card">
+    <h2>Reports ({{ reports|length }})</h2>
+    {% if reports %}
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Type</th>
+            <th>Target</th>
+            <th>Reason</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in reports %}
+            <tr>
+              <td>{{ r.id }}</td>
+              <td>{{ r.entry_type }}</td>
+              <td>{{ r.target_text or "(deleted)" }}</td>
+              <td>{{ r.reason or "—" }}</td>
+              <td>{{ r.status }}</td>
+              <td>{{ r.created_at }}</td>
+              <td>
+                {% if r.status == "pending" %}
+                  <form method="post" action="/admin/reports/{{ r.id }}/resolve" style="display:inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="action" value="dismiss">
+                    <button type="submit" class="ghost-button">Dismiss</button>
+                  </form>
+                  <form method="post" action="/admin/reports/{{ r.id }}/resolve" style="display:inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="action" value="regenerate">
+                    <button type="submit" class="secondary-button">Regenerate</button>
+                  </form>
+                  <form method="post" action="/admin/reports/{{ r.id }}/resolve" style="display:inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="action" value="delete_translation">
+                    <button type="submit" class="ghost-button">Delete entry</button>
+                  </form>
+                {% else %}
+                  <em>—</em>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="muted">No reports filed by this user.</p>
+    {% endif %}
+  </article>
+</section>
+{% endblock %}

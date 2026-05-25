@@ -11,7 +11,9 @@
   const links = [
     { path: '/training/words', label: 'Words' },
     { path: '/training/verbs', label: 'Verb Lab' },
+    { path: '/add-word', label: 'Add Word' },
     { path: '/chat', label: 'AI Tutor' },
+    { path: '/settings', label: 'Settings' },
     ...(user.is_admin ? [{ path: '/monitor', label: 'Monitor' }] : []),
   ];
 

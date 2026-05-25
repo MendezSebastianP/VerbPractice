@@ -8,12 +8,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models import (
     ChatMessage,
+    Language,
     ProgressItemType,
     TrainingMode,
     TrainingSession,
     UserProgress,
     Verb,
+    VerbTranslation,
     Word,
+    WordTranslation,
 )
 
 
@@ -53,23 +56,83 @@ async def _label_maps(db: AsyncSession, rows: list[UserProgress]) -> tuple[dict[
     return word_map, verb_map
 
 
+async def _translation_maps(
+    db: AsyncSession,
+    rows: list[UserProgress],
+) -> tuple[dict[tuple[int, str], str], dict[tuple[int, str], str]]:
+    """Return (word_trans_map, verb_trans_map) keyed by (item_id, target_lang_code_lower)."""
+    word_ids = [row.item_id for row in rows if row.item_type == ProgressItemType.WORD]
+    verb_ids = [row.item_id for row in rows if row.item_type in {ProgressItemType.VERB, ProgressItemType.CONJUGATION}]
+
+    target_codes: set[str] = set()
+    for row in rows:
+        parts = row.language_pair.split("_")
+        if len(parts) == 2 and parts[1] != "conj":
+            target_codes.add(parts[1].upper())
+
+    if not target_codes:
+        return {}, {}
+
+    lang_rows = await db.execute(select(Language).where(Language.code.in_(target_codes)))
+    code_to_id = {lang.code: lang.id for lang in lang_rows.scalars().all()}
+    id_to_code = {v: k for k, v in code_to_id.items()}
+
+    word_trans_map: dict[tuple[int, str], str] = {}
+    verb_trans_map: dict[tuple[int, str], str] = {}
+
+    if word_ids and code_to_id:
+        trans_rows = await db.execute(
+            select(WordTranslation).where(
+                WordTranslation.word_id.in_(word_ids),
+                WordTranslation.target_language_id.in_(code_to_id.values()),
+            )
+        )
+        for t in trans_rows.scalars().all():
+            code = id_to_code.get(t.target_language_id, "")
+            key: tuple[int, str] = (t.word_id, code.lower())
+            if key not in word_trans_map:
+                word_trans_map[key] = t.translation
+
+    if verb_ids and code_to_id:
+        trans_rows = await db.execute(
+            select(VerbTranslation).where(
+                VerbTranslation.verb_id.in_(verb_ids),
+                VerbTranslation.target_language_id.in_(code_to_id.values()),
+            )
+        )
+        for t in trans_rows.scalars().all():
+            code = id_to_code.get(t.target_language_id, "")
+            key = (t.verb_id, code.lower())
+            if key not in verb_trans_map:
+                verb_trans_map[key] = t.translation
+
+    return word_trans_map, verb_trans_map
+
+
 async def build_focus_items(
     db: AsyncSession,
     rows: list[UserProgress],
 ) -> list[dict[str, Any]]:
     word_map, verb_map = await _label_maps(db, rows)
+    word_trans_map, verb_trans_map = await _translation_maps(db, rows)
 
     items: list[dict[str, Any]] = []
     for row in rows:
+        parts = row.language_pair.split("_")
+        target_code = parts[1] if len(parts) == 2 and parts[1] != "conj" else ""
+
         if row.item_type == ProgressItemType.WORD:
             label = word_map.get(row.item_id, f"Word #{row.item_id}")
+            translation = word_trans_map.get((row.item_id, target_code)) if target_code else None
         else:
             label = verb_map.get(row.item_id, f"Verb #{row.item_id}")
+            translation = verb_trans_map.get((row.item_id, target_code)) if target_code else None
 
         accuracy = round((row.times_correct / row.times_seen) * 100, 1) if row.times_seen else None
         items.append(
             {
                 "label": label,
+                "translation": translation,
                 "item_type": row.item_type.value,
                 "language_pair": row.language_pair,
                 "probability": round(row.probability),

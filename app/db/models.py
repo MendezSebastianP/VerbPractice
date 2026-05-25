@@ -113,6 +113,16 @@ class UserPreference(Base):
 
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
     sound_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
+    mother_tongue_language_id: Mapped[int | None] = mapped_column(
+        ForeignKey("languages.id", ondelete="SET NULL"), nullable=True
+    )
+    learning_language_id: Mapped[int | None] = mapped_column(
+        ForeignKey("languages.id", ondelete="SET NULL"), nullable=True
+    )
+    translation_display_mode: Mapped[str] = mapped_column(String(32), default="partial")
+    force_unlock_added_words: Mapped[bool] = mapped_column(Boolean, default=False)
+    last_practice_pair: Mapped[str | None] = mapped_column(String(16), nullable=True)
+    last_practice_mode: Mapped[str | None] = mapped_column(String(32), nullable=True)
 
     user: Mapped[User] = relationship("User", back_populates="preferences")
 
@@ -402,3 +412,151 @@ class FriendLink(Base):
     __table_args__ = (
         UniqueConstraint("user_id", "friend_user_id", name="uq_friend_link"),
     )
+
+
+class WordLexicalEntry(Base):
+    __tablename__ = "word_lexical_entries"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    word_id: Mapped[int] = mapped_column(
+        ForeignKey("words.id", ondelete="CASCADE"), unique=True, index=True
+    )
+    definition: Mapped[str] = mapped_column(Text)
+    synonyms: Mapped[list[dict[str, str]]] = mapped_column(JSON, default=list)
+    examples: Mapped[list[str]] = mapped_column(JSON, default=list)
+    extended_content: Mapped[str | None] = mapped_column(Text, nullable=True)
+    source: Mapped[str] = mapped_column(String(64), default="ai")
+    flag_count: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    )
+
+
+class WordNativeTranslation(Base):
+    __tablename__ = "word_native_translations"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    word_id: Mapped[int] = mapped_column(ForeignKey("words.id", ondelete="CASCADE"), index=True)
+    native_language_id: Mapped[int] = mapped_column(
+        ForeignKey("languages.id", ondelete="RESTRICT"), index=True
+    )
+    translation: Mapped[str] = mapped_column(String(256))
+    note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    source: Mapped[str] = mapped_column(String(64), default="ai")
+    flag_count: Mapped[int] = mapped_column(Integer, default=0)
+    priority: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        UniqueConstraint(
+            "word_id", "native_language_id", "translation", name="uq_word_native_translation"
+        ),
+    )
+
+
+class UserAddedWord(Base):
+    __tablename__ = "user_added_words"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    word_id: Mapped[int] = mapped_column(ForeignKey("words.id", ondelete="CASCADE"), index=True)
+    language_pair: Mapped[str] = mapped_column(String(16), index=True)
+    context_hint: Mapped[str | None] = mapped_column(Text, nullable=True)
+    added_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = (
+        UniqueConstraint("user_id", "word_id", "language_pair", name="uq_user_added_word"),
+    )
+
+
+class TranslationReport(Base):
+    __tablename__ = "translation_reports"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    entry_type: Mapped[str] = mapped_column(String(16))  # 'lexical' | 'native'
+    entry_id: Mapped[int] = mapped_column(Integer)
+    reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[str] = mapped_column(String(16), default="pending", index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    resolved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    resolver_id: Mapped[int | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )
+
+
+class Tag(Base):
+    __tablename__ = "tags"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    slug: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    display_name: Mapped[str] = mapped_column(String(128))
+    kind: Mapped[str] = mapped_column(String(32), default="thematic")
+    # thematic | grammatical | verb_semantic | register | difficulty | user
+    applies_to: Mapped[list[str]] = mapped_column(JSON, default=list)
+    # word | verb
+    created_by_user_id: Mapped[int | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class WordTag(Base):
+    __tablename__ = "word_tags"
+
+    word_id: Mapped[int] = mapped_column(
+        ForeignKey("words.id", ondelete="CASCADE"), primary_key=True
+    )
+    tag_id: Mapped[int] = mapped_column(
+        ForeignKey("tags.id", ondelete="CASCADE"), primary_key=True
+    )
+    source: Mapped[str] = mapped_column(String(32), default="user")
+    # ai_suggested | user | system_curated
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class VerbTag(Base):
+    __tablename__ = "verb_tags"
+
+    verb_id: Mapped[int] = mapped_column(
+        ForeignKey("verbs.id", ondelete="CASCADE"), primary_key=True
+    )
+    tag_id: Mapped[int] = mapped_column(
+        ForeignKey("tags.id", ondelete="CASCADE"), primary_key=True
+    )
+    source: Mapped[str] = mapped_column(String(32), default="user")
+    # ai_suggested | user | system_curated
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class WordSet(Base):
+    __tablename__ = "word_sets"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    owner_user_id: Mapped[int | None] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=True
+    )
+    name: Mapped[str] = mapped_column(String(128))
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    icon: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    kind: Mapped[str] = mapped_column(String(16), default="manual")
+    # manual | smart
+    filter_tag_ids: Mapped[list[int]] = mapped_column(JSON, default=list)
+    # For smart sets: words matching ALL of these tag ids are included.
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    )
+
+
+class WordSetMember(Base):
+    __tablename__ = "word_set_members"
+
+    set_id: Mapped[int] = mapped_column(
+        ForeignKey("word_sets.id", ondelete="CASCADE"), primary_key=True
+    )
+    word_id: Mapped[int] = mapped_column(
+        ForeignKey("words.id", ondelete="CASCADE"), primary_key=True
+    )
+    added_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

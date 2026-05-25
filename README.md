@@ -119,6 +119,16 @@ make grant-admin USER=your_username
   - `app/data/legacy_seed/words/es_fr_top1000.csv`
   - `app/data/legacy_seed/verbs/1000verbs.csv`
   - `app/data/legacy_seed/conjugations/conjugations_fixed.csv`
+- The word seed CSV now supports:
+  - `spanish`, `french`, `english`, `russian`
+  - `spanish synonyms`, `french synonyms`, `english synonyms`, `russian synonyms`
+- Any populated word-language columns are imported pairwise, so the seed can bootstrap:
+  - ES ↔ FR
+  - ES ↔ EN
+  - FR ↔ EN
+  - ES ↔ RU
+  - FR ↔ RU
+  - EN ↔ RU
 - Imported records include `source` and `verified` metadata.
 - Curated manual conjugation source lives in:
   - `app/data/curated_conjugations/normalized_verb_inventory.csv`
@@ -138,6 +148,18 @@ make batch-template BATCH=1
 make validate-curated BATCH=1
 make curated-report
 make import-curated BATCH=1
+```
+
+To (re)generate the English columns in the legacy word seed CSV:
+
+```bash
+.venv/bin/python scripts/enrich_word_seed_with_english.py
+```
+
+To add another language column, use the generic enricher. Example for Russian:
+
+```bash
+.venv/bin/python scripts/enrich_word_seed_with_russian.py
 ```
 
 ## Tests

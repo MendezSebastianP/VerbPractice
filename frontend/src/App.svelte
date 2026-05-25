@@ -4,8 +4,11 @@
   import NavBar from './lib/components/NavBar.svelte';
   import AuthPage from './lib/pages/AuthPage.svelte';
   import ChatPage from './lib/pages/ChatPage.svelte';
+  import AddWordPage from './lib/pages/AddWordPage.svelte';
   import DashboardPage from './lib/pages/DashboardPage.svelte';
   import MonitorPage from './lib/pages/MonitorPage.svelte';
+  import SetsPage from './lib/pages/SetsPage.svelte';
+  import SettingsPage from './lib/pages/SettingsPage.svelte';
   import TranslationPage from './lib/pages/TranslationPage.svelte';
   import VerbLabPage from './lib/pages/VerbLabPage.svelte';
   import { api, ApiError } from './lib/api';
@@ -150,13 +153,19 @@
           {:else if !boot?.authenticated}
             <AuthPage mode="login" csrfToken={boot?.csrf_token || ''} on:authenticated={handleAuthenticated} />
           {:else if $route === '/dashboard'}
-            <DashboardPage csrfToken={boot.csrf_token} soundEnabled={soundEnabled} onSoundToggle={setSound} {notify} />
+            <DashboardPage />
           {:else if $route === '/training/words'}
             <TranslationPage mode="words" csrfToken={boot.csrf_token} soundEnabled={soundEnabled} {notify} />
           {:else if $route.startsWith('/training/verbs') || $route === '/training/conjugation'}
             <VerbLabPage routePath={$route} csrfToken={boot.csrf_token} soundEnabled={soundEnabled} {notify} />
           {:else if $route === '/chat'}
             <ChatPage csrfToken={boot.csrf_token} {notify} />
+          {:else if $route === '/add-word'}
+            <AddWordPage csrfToken={boot.csrf_token} {notify} />
+          {:else if $route === '/sets'}
+            <SetsPage csrfToken={boot.csrf_token} {notify} />
+          {:else if $route === '/settings'}
+            <SettingsPage csrfToken={boot.csrf_token} {notify} />
           {:else if $route === '/monitor'}
             <MonitorPage csrfToken={boot.csrf_token} {notify} />
           {:else}

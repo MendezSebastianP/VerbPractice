@@ -1,0 +1,68 @@
+rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text
+751,16,résigner,resignar(se),1,753,resignar(se)
+752,16,hâter,apresurar,1,754,"apresurar, acelerar"
+752,16,hâter,acelerar,2,754,"apresurar, acelerar"
+753,16,contester,impugnar,1,755,"impugnar, cuestionar"
+753,16,contester,cuestionar,2,755,"impugnar, cuestionar"
+754,16,vanter,alabar,1,756,"alabar, presumir"
+754,16,vanter,presumir,2,756,"alabar, presumir"
+755,16,recouvrir,recubrir,1,757,"recubrir, cubrir"
+755,16,recouvrir,cubrir,2,757,"recubrir, cubrir"
+756,16,critiquer,criticar,1,758,criticar
+757,16,croiser,cruzar,1,759,cruzar
+758,16,doubler,doblar,1,760,"doblar, adelantar"
+758,16,doubler,adelantar,2,760,"doblar, adelantar"
+759,16,conférer,conferir,1,761,conferir
+760,16,réciter,recitar,1,762,recitar
+761,16,restaurer,restaurar,1,763,restaurar
+762,16,résulter,resultar,1,764,resultar
+763,16,se dérouler,desarrollarse,1,765,desarrollarse
+764,16,qualifier,calificar,1,766,calificar
+765,16,promouvoir,promover,1,767,promover
+766,16,attarder,retrasar(se),1,768,retrasar(se)
+767,16,gémir,gemir,1,769,gemir
+768,16,bûcher,estudiar mucho,1,770,"estudiar mucho, empollar"
+768,16,bûcher,empollar,2,770,"estudiar mucho, empollar"
+769,16,combiner,combinar,1,771,combinar
+770,16,approfondir,profundizar,1,772,profundizar
+771,16,succéder,suceder,1,773,"suceder, seguir"
+771,16,succéder,seguir,2,773,"suceder, seguir"
+772,16,coordonner,coordinar,1,774,coordinar
+773,16,abaisser,bajar,1,775,"bajar, disminuir"
+773,16,abaisser,disminuir,2,775,"bajar, disminuir"
+774,16,cogner,golpear,1,776,golpear
+775,16,imprimer,imprimir,1,777,imprimir
+776,16,accélérer,acelerar,1,778,acelerar
+777,16,jurer,jurar,1,779,"jurar, maldecir"
+777,16,jurer,maldecir,2,779,"jurar, maldecir"
+778,16,contraindre,obligar,1,780,"obligar, coaccionar"
+778,16,contraindre,coaccionar,2,780,"obligar, coaccionar"
+779,16,mouiller,mojar,1,781,mojar
+780,16,déshabiller,desvestir,1,782,"desvestir, desnudar"
+780,16,déshabiller,desnudar,2,782,"desvestir, desnudar"
+781,16,invoquer,invocar,1,783,invocar
+782,16,ralentir,ralentizar,1,784,"ralentizar, disminuir la velocidad"
+782,16,ralentir,disminuir la velocidad,2,784,"ralentizar, disminuir la velocidad"
+783,16,préoccuper,preocupar,1,785,preocupar
+784,16,dépenser,gastar,1,786,gastar
+785,16,déboucher,destapar,1,787,"destapar, desembocar"
+785,16,déboucher,desembocar,2,787,"destapar, desembocar"
+786,16,siffler,silbar,1,788,silbar
+787,16,accumuler,acumular,1,789,acumular
+788,16,restituer,restituir,1,790,"restituir, devolver"
+788,16,restituer,devolver,2,790,"restituir, devolver"
+789,16,retarder,retrasar,1,791,retrasar
+790,16,décrocher,descolgar,1,792,"descolgar, conseguir (coloquial)"
+790,16,décrocher,conseguir (coloquial),2,792,"descolgar, conseguir (coloquial)"
+791,16,redouter,temer,1,793,temer
+792,16,s'attarder,demorarse,1,794,demorarse
+793,16,influencer,influenciar,1,795,influenciar
+794,16,généraliser,generalizar,1,796,generalizar
+795,16,entamer,empezar,1,797,"empezar, iniciar"
+795,16,entamer,iniciar,2,797,"empezar, iniciar"
+796,16,balayer,barrer,1,798,barrer
+797,16,simplifier,simplificar,1,799,simplificar
+798,16,perfectionner,perfeccionar,1,800,perfeccionar
+799,16,épuiser,agotar,1,801,agotar
+800,16,épanouir,florecer,1,802,"florecer, prosperar"
+800,16,épanouir,prosperar,2,802,"florecer, prosperar"

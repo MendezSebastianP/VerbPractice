@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block title %}Users · Admin · LexArena{% endblock %}
+{% block content %}
+<section class="panel">
+  <header class="panel-head">
+    <h1>Users</h1>
+    <p class="muted">
+      Click a row to inspect unlocked items, priority queue, and reports.
+      &nbsp;·&nbsp;
+      <a href="/admin/reports">All reports</a>
+    </p>
+  </header>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Admin</th>
+        <th>Mother tongue</th>
+        <th>Learning</th>
+        <th>Unlocked items</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+        <tr
+          style="cursor: pointer;"
+          onclick="window.location.href='/admin/users/{{ user.id }}/inspect'"
+          onmouseover="this.style.background='rgba(127,127,127,0.08)'"
+          onmouseout="this.style.background=''"
+        >
+          <td>{{ user.id }}</td>
+          <td>{{ user.username }}</td>
+          <td>{{ "yes" if user.is_admin else "no" }}</td>
+          <td>{{ user.mother_tongue }}</td>
+          <td>{{ user.learning_language }}</td>
+          <td>{{ user.unlocked_count }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

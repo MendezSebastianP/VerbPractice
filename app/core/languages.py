@@ -44,7 +44,43 @@ LANGUAGE_DEFINITIONS: dict[str, dict[str, object]] = {
             "Pretérito pluscuamperfecto": {"mood": "Indicativo"},
         },
     },
+    "EN": {
+        "name": "English",
+        "pronoun_set": ["I", "you", "he (she, it)", "we", "you (pl.)", "they"],
+        "difficulty_tiers": {
+            "easy": ["Present", "Past", "Future"],
+            "medium": [],
+            "hard": [],
+        },
+        "tense_definitions": {
+            "Present": {"mood": "Indicative"},
+            "Past": {"mood": "Indicative"},
+            "Future": {"mood": "Indicative"},
+        },
+    },
+    "RU": {
+        "name": "Russian",
+        "pronoun_set": ["я", "ты", "он (она, оно)", "мы", "вы", "они"],
+        "difficulty_tiers": {"easy": [], "medium": [], "hard": []},
+        "tense_definitions": {},
+    },
 }
+
+
+def language_display_name(code: str) -> str:
+    payload = LANGUAGE_DEFINITIONS.get(code.upper())
+    if payload is None:
+        return code.upper()
+    name = payload.get("name")
+    return str(name) if name else code.upper()
+
+
+def format_direction_label(direction: str) -> str:
+    parts = direction.split("_")
+    if len(parts) != 2:
+        return direction
+    source, target = parts
+    return f"{language_display_name(source)} → {language_display_name(target)}"
 
 
 def tenses_for_level(language: Mapping[str, object], level: str) -> list[str]:

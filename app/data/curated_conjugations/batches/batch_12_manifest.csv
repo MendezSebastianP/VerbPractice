@@ -1,0 +1,77 @@
+rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text
+551,12,déranger,molestar,1,553,"molestar, perturbar"
+551,12,déranger,perturbar,2,553,"molestar, perturbar"
+552,12,déclarer,declarar,1,554,declarar
+553,12,se repentir,arrepentirse,1,555,arrepentirse
+554,12,interrompre,interrumpir,1,556,interrumpir
+555,12,plier,doblar,1,557,doblar
+556,12,inquiéter,inquietar,1,558,"inquietar, preocupar"
+556,12,inquiéter,preocupar,2,558,"inquietar, preocupar"
+557,12,secouer,sacudir,1,559,sacudir
+558,12,bouffer,comer (coloquial),1,560,"comer (coloquial), zampar"
+558,12,bouffer,zampar,2,560,"comer (coloquial), zampar"
+559,12,entrevoir,entrever,1,561,"entrever, vislumbrar"
+559,12,entrevoir,vislumbrar,2,561,"entrever, vislumbrar"
+560,12,souffler,soplar,1,562,soplar
+561,12,souhaiter,desear,1,563,desear
+562,12,discerner,discernir,1,564,discernir
+563,12,confirmer,confirmar,1,565,confirmar
+564,12,allonger,alargar,1,566,alargar
+565,12,grimper,trepar,1,567,"trepar, escalar"
+565,12,grimper,escalar,2,567,"trepar, escalar"
+566,12,pardonner,perdonar,1,568,perdonar
+567,12,repérer,localizar,1,569,"localizar, detectar"
+567,12,repérer,detectar,2,569,"localizar, detectar"
+568,12,estimer,estimar,1,570,"estimar, valorar"
+568,12,estimer,valorar,2,570,"estimar, valorar"
+569,12,presser,presionar,1,571,"presionar, apretar"
+569,12,presser,apretar,2,571,"presionar, apretar"
+570,12,creuser,cavar,1,572,"cavar, excavar"
+570,12,creuser,excavar,2,572,"cavar, excavar"
+571,12,lier,ligar,1,573,"ligar, unir"
+571,12,lier,unir,2,573,"ligar, unir"
+572,12,clocher,estar mal,1,574,"estar mal, no funcionar bien (coloquial)"
+572,12,clocher,no funcionar bien (coloquial),2,574,"estar mal, no funcionar bien (coloquial)"
+573,12,boulanger,hacer pan,1,575,"hacer pan, panificar"
+573,12,boulanger,panificar,2,575,"hacer pan, panificar"
+574,12,verser,verter,1,576,"verter, derramar"
+574,12,verser,derramar,2,576,"verter, derramar"
+575,12,refermer,volver a cerrar,1,577,"volver a cerrar, cerrar de nuevo"
+575,12,refermer,cerrar de nuevo,2,577,"volver a cerrar, cerrar de nuevo"
+576,12,repousser,rechazar,1,578,"rechazar, posponer"
+576,12,repousser,posponer,2,578,"rechazar, posponer"
+577,12,piquer,picar,1,579,"picar, pinchar, robar (coloquial)"
+577,12,piquer,pinchar,2,579,"picar, pinchar, robar (coloquial)"
+577,12,piquer,robar (coloquial),3,579,"picar, pinchar, robar (coloquial)"
+578,12,obliger,obligar,1,580,obligar
+579,12,pencher,inclinar,1,581,inclinar
+580,12,informer,informar,1,582,informar
+581,12,correspondre,corresponder,1,583,corresponder
+582,12,conquérir,conquistar,1,584,conquistar
+583,12,étouffer,asfixiar,1,585,"asfixiar, sofocar"
+583,12,étouffer,sofocar,2,585,"asfixiar, sofocar"
+584,12,déchiffrer,descifrar,1,586,descifrar
+585,12,s'allonger,tumbarse,1,587,tumbarse
+586,12,ressentir,sentir,1,588,sentir
+587,12,sacrifier,sacrificar,1,589,sacrificar
+588,12,mordre,morder,1,590,morder
+589,12,désirer,desear,1,591,desear
+590,12,excuser,excusar,1,592,"excusar, disculpar"
+590,12,excuser,disculpar,2,592,"excusar, disculpar"
+591,12,encourager,animar,1,593,"animar, alentar"
+591,12,encourager,alentar,2,593,"animar, alentar"
+592,12,subsister,subsistir,1,594,subsistir
+593,12,explorer,explorar,1,595,explorar
+594,12,nettoyer,limpiar,1,596,limpiar
+595,12,délivrer,liberar,1,597,"liberar, entregar"
+595,12,délivrer,entregar,2,597,"liberar, entregar"
+596,12,gêner,molestar,1,598,"molestar, incomodar"
+596,12,gêner,incomodar,2,598,"molestar, incomodar"
+597,12,coller,pegar,1,599,"pegar, adherir"
+597,12,coller,adherir,2,599,"pegar, adherir"
+598,12,avertir,advertir,1,600,"advertir, avisar"
+598,12,avertir,avisar,2,600,"advertir, avisar"
+599,12,ôter,quitar,1,601,"quitar, remover"
+599,12,ôter,remover,2,601,"quitar, remover"
+600,12,élargir,ampliar,1,602,"ampliar, ensanchar"
+600,12,élargir,ensanchar,2,602,"ampliar, ensanchar"

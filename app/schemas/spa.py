@@ -28,6 +28,7 @@ class SoundPreferencePayload(CsrfPayload):
 class TranslationStartPayload(CsrfPayload):
     length: int = 10
     direction: str
+    set_id: int | None = None
 
 
 class TranslationAnswerPayload(CsrfPayload):
@@ -52,6 +53,35 @@ class ChatStreamPayload(CsrfPayload):
 
 class CircleFriendPayload(CsrfPayload):
     username: str = Field(min_length=1, max_length=128)
+
+
+class SettingsPatchPayload(CsrfPayload):
+    mother_tongue_code: str | None = None
+    learning_language_code: str | None = None
+    translation_display_mode: str | None = None
+    force_unlock_added_words: bool | None = None
+    last_practice_pair: str | None = None
+    last_practice_mode: str | None = None
+
+
+class AddWordPayload(CsrfPayload):
+    input_text: str = Field(min_length=1, max_length=128)
+    context: str | None = Field(default=None, max_length=512)
+    learning_lang_code: str | None = Field(default=None, max_length=8)
+
+
+class ExpandWordPayload(CsrfPayload):
+    pass
+
+
+class ReportTranslationPayload(CsrfPayload):
+    entry_type: str = Field(pattern=r"^(lexical|native)$")
+    entry_id: int
+    reason: str | None = Field(default=None, max_length=512)
+
+
+class ResolveReportPayload(CsrfPayload):
+    action: str = Field(pattern=r"^(dismiss|delete_translation|regenerate)$")
 
 
 class AdminWordRowPayload(CsrfPayload):

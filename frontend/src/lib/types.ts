@@ -29,6 +29,7 @@ export interface BootPayload {
 
 export interface FocusItem {
   label: string;
+  translation?: string | null;
   item_type: string;
   language_pair: string;
   probability: number;
@@ -381,6 +382,114 @@ export interface AdminConjugationRow {
   conjugated_form: string;
   verified: boolean;
   source: string;
+}
+
+export interface LanguageEntry {
+  id: number;
+  code: string;
+  name: string;
+}
+
+export interface TagEntry {
+  id: number;
+  slug: string;
+  display_name: string;
+  kind: string;
+  applies_to: string[];
+}
+
+export interface WordSetSummary {
+  id: number;
+  name: string;
+  description: string | null;
+  icon: string | null;
+  kind: 'manual' | 'smart';
+  owner_user_id: number | null;
+  filter_tag_slugs: string[];
+  word_count: number;
+}
+
+export interface WordSetDetail extends WordSetSummary {
+  words: Array<{
+    word_id: number;
+    text: string;
+    language_code: string;
+  }>;
+}
+
+export type TranslationDisplayMode = 'mother_full' | 'partial' | 'learning_full';
+
+export interface UserSettings {
+  sound_enabled: boolean;
+  mother_tongue: LanguageEntry | null;
+  learning_language: LanguageEntry | null;
+  translation_display_mode: TranslationDisplayMode;
+  force_unlock_added_words: boolean;
+  last_practice_pair: string | null;
+  last_practice_mode: string | null;
+}
+
+export interface UserSettingsPatch {
+  mother_tongue_code: string;
+  learning_language_code: string;
+  translation_display_mode: TranslationDisplayMode;
+  force_unlock_added_words: boolean;
+  last_practice_pair: string;
+  last_practice_mode: string;
+}
+
+export interface LexicalEntry {
+  id: number;
+  word_id: number;
+  definition: string;
+  synonyms: Array<{ text: string; gloss?: string }>;
+  examples: string[];
+  extended_content: string | null;
+}
+
+export interface NativeTranslation {
+  id: number;
+  word_id: number;
+  native_language_code: string;
+  translation: string;
+  note: string | null;
+}
+
+export type AddWordStatus = 'exact' | 'corrected' | 'ambiguous' | 'not_found';
+
+export interface AddedWordResult {
+  status: AddWordStatus;
+  original_input: string;
+  detected_input_language: string | null;
+  word_id: number;
+  text: string;
+  learning_language_code: string;
+  mother_tongue_code: string;
+  lexical: LexicalEntry;
+  natives: NativeTranslation[];
+  general_note: string | null;
+  suggested_tags: string[];
+  priority_queue_id: number | null;
+  force_unlocked: boolean;
+}
+
+export interface AddedWordNotFound {
+  status: 'not_found';
+  suggestions: string[];
+  original_input: string;
+  learning_language_code: string;
+  mother_tongue_code: string;
+}
+
+export type AddWordResponse = AddedWordResult | AddedWordNotFound;
+
+export interface PriorityQueueEntry {
+  id: number;
+  word_id: number;
+  word_text: string;
+  language_pair: string;
+  context_hint: string | null;
+  added_at: string;
 }
 
 export interface CommunityPayload {

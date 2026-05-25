@@ -5,17 +5,11 @@
   import { navigate } from '../router';
   import type { DashboardPayload } from '../types';
 
-  export let csrfToken = '';
-  export let soundEnabled = false;
-  export let onSoundToggle: (enabled: boolean) => Promise<void> | void;
-  export let notify: (message: string, tone?: 'info' | 'success' | 'error') => void;
-
   type ModeCard = DashboardPayload['mode_cards'][number];
 
   let loading = true;
   let error = '';
   let data: DashboardPayload | null = null;
-  let friendUsername = '';
 
   function mergedFocusItems(cards: ModeCard[]) {
     const byKey = new Map<string, ModeCard['focus_items'][number]>();
@@ -101,49 +95,16 @@
     }
   }
 
-  async function toggleSound(): Promise<void> {
-    const next = !soundEnabled;
-    try {
-      await onSoundToggle(next);
-      if (data) {
-        data = {
-          ...data,
-          preferences: { sound_enabled: next },
-          gamification: { ...data.gamification, sound_enabled: next },
-        };
-      }
-      notify(next ? 'Sound cues enabled.' : 'Sound cues muted.', 'info');
-    } catch (err) {
-      notify(err instanceof ApiError ? err.message : 'Unable to update sound setting', 'error');
-    }
-  }
-
-  async function addFriend(): Promise<void> {
-    if (!friendUsername.trim()) {
-      return;
-    }
-    try {
-      await api.addCircleFriend({ username: friendUsername.trim(), csrf_token: csrfToken });
-      friendUsername = '';
-      await load();
-      notify('Circle updated.', 'success');
-    } catch (err) {
-      notify(err instanceof ApiError ? err.message : 'Unable to add friend', 'error');
-    }
-  }
-
-  async function removeFriend(friendUserId: number): Promise<void> {
-    try {
-      await api.removeCircleFriend(friendUserId, csrfToken);
-      await load();
-      notify('Removed from circle.', 'info');
-    } catch (err) {
-      notify(err instanceof ApiError ? err.message : 'Unable to remove friend', 'error');
-    }
-  }
-
   onMount(load);
 </script>
+
+<style>
+  .dashboard-stack {
+    max-width: 980px;
+    margin-inline: auto;
+    width: 100%;
+  }
+</style>
 
 {#if loading}
   <section class="dashboard-grid loading-grid">
@@ -159,11 +120,9 @@
   <section class="dashboard-stack" in:fade={{ duration: 180 }}>
     <article class="hero-grid glass-panel strong-panel">
       <div class="hero-copy-block">
-        <p class="eyebrow">Daily cockpit</p>
-        <h1>Level {data.user.profile.level} progress for {data.user.username}</h1>
+        <h1>Welcome back, {data.user.username}</h1>
         <p class="hero-copy">
-          The whole flow now runs as one client app. Your queue, verb lab, tutor context, and session history stay
-          connected while you move between drills.
+          Pick a mode below to resume practice. Your progress is tracked per language pair.
         </p>
 
         <div class="hero-actions">
@@ -174,14 +133,6 @@
 
       <div class="hero-stats">
         <div class="stat-card compact-stat">
-          <span>Total XP</span>
-          <strong>{data.user.profile.xp}</strong>
-        </div>
-        <div class="stat-card compact-stat">
-          <span>Current streak</span>
-          <strong>{data.user.profile.streak_days} days</strong>
-        </div>
-        <div class="stat-card compact-stat">
           <span>Tracked items</span>
           <strong>{data.overall.total}</strong>
         </div>
@@ -191,73 +142,6 @@
         </div>
       </div>
     </article>
-
-    <section class="dashboard-grid">
-      <article class="glass-panel">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Weekly challenge</p>
-            <h2>{data.gamification.weekly_challenge.title}</h2>
-          </div>
-          <span class="pill-chip reward-pill">+{data.gamification.weekly_challenge.reward_xp} XP</span>
-        </div>
-        <p class="section-copy">{data.gamification.weekly_challenge.description}</p>
-        <div class="progress-shell">
-          <div class="progress-top">
-            <span>Progress</span>
-            <strong>{data.gamification.weekly_challenge.progress}/{data.gamification.weekly_challenge.target_value}</strong>
-          </div>
-          <div class="progress-track">
-            <span
-              class="progress-bar"
-              style={`width: ${Math.min(100, (data.gamification.weekly_challenge.progress / Math.max(data.gamification.weekly_challenge.target_value, 1)) * 100)}%`}
-            ></span>
-          </div>
-        </div>
-        <div class="tag-row">
-          <span class={`mini-tag ${data.gamification.weekly_challenge.completed ? 'reward-badge' : ''}`}>
-            {data.gamification.weekly_challenge.completed ? 'Completed this week' : 'In progress'}
-          </span>
-          <span class="mini-tag">{data.gamification.weekly_challenge.metric_key.replace('_', ' ')}</span>
-          <span class="mini-tag">Ends {new Date(data.gamification.weekly_challenge.ends_at).toLocaleDateString()}</span>
-        </div>
-      </article>
-
-      <article class="glass-panel">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Arcade controls</p>
-            <h2>Reward layer</h2>
-          </div>
-          <button class="secondary-button" type="button" on:click={toggleSound}>
-            {soundEnabled ? 'Mute cues' : 'Enable cues'}
-          </button>
-        </div>
-        <p class="section-copy">
-          Sound cues are optional. Keep them on for the arcade feel, or mute them and keep the reward layer visual-only.
-        </p>
-        <div class="tag-row">
-          {#each data.gamification.badges.slice(0, 6) as badge}
-            <span class="mini-tag reward-badge">{badge.title}</span>
-          {:else}
-            <span class="mini-tag muted-tag">Badges unlock as you build streaks, perfect runs, and mastery.</span>
-          {/each}
-        </div>
-        <div class="list-stack">
-          {#each data.gamification.recent_xp.slice(0, 4) as event}
-            <div class="list-row">
-              <div>
-                <strong>+{event.amount} XP</strong>
-                <p>{event.reason.replace(/_/g, ' ')}</p>
-              </div>
-              <div class="row-metrics">
-                <span>{event.created_at ? new Date(event.created_at).toLocaleString() : '-'}</span>
-              </div>
-            </div>
-          {/each}
-        </div>
-      </article>
-    </section>
 
     <section class="mode-card-grid">
       {#each cards as card, index}
@@ -293,53 +177,6 @@
           </div>
         </button>
       {/each}
-    </section>
-
-    <section class="dashboard-grid">
-      <article class="glass-panel">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Focus queue</p>
-            <h2>Items asking for another pass</h2>
-          </div>
-        </div>
-        <div class="list-stack">
-          {#each data.overall.focus_items as item}
-            <div class="list-row">
-              <div>
-                <strong>{item.label}</strong>
-                <p>{item.item_type.replace('_', ' ')} · {item.language_pair}</p>
-              </div>
-              <div class="row-metrics">
-                <span>Weight {item.probability}</span>
-                <span>{item.accuracy === null ? 'New item' : `${item.accuracy}% accuracy`}</span>
-              </div>
-            </div>
-          {:else}
-            <p class="empty-copy">Your focus queue will populate once you complete a few runs.</p>
-          {/each}
-        </div>
-      </article>
-
-      <article class="glass-panel">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Tutor memory</p>
-            <h2>Recent AI context</h2>
-          </div>
-          <button class="text-button" type="button" on:click={() => navigate('/chat')}>Open chat</button>
-        </div>
-        <div class="list-stack">
-          {#each data.recent_messages as message}
-            <div class={`message-card ${message.role}`}>
-              <span>{message.role}</span>
-              <p>{message.content}</p>
-            </div>
-          {:else}
-            <p class="empty-copy">No tutor history yet.</p>
-          {/each}
-        </div>
-      </article>
     </section>
 
     <section class="dashboard-grid bottom-grid">
@@ -407,69 +244,5 @@
       </article>
     </section>
 
-    <section class="dashboard-grid bottom-grid">
-      <article class="glass-panel">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Leaderboards</p>
-            <h2>Global and weekly pace</h2>
-          </div>
-        </div>
-        <div class="dashboard-grid compact-dual">
-          <div class="table-scroll">
-            <table class="data-table">
-              <thead><tr><th>Global</th><th>Level</th><th>XP</th><th>Streak</th></tr></thead>
-              <tbody>
-                {#each data.gamification.global_leaderboard as row}
-                  <tr><td>{row.username}</td><td>{row.level}</td><td>{row.xp}</td><td>{row.streak_days}</td></tr>
-                {/each}
-              </tbody>
-            </table>
-          </div>
-          <div class="table-scroll">
-            <table class="data-table">
-              <thead><tr><th>Weekly</th><th>XP</th></tr></thead>
-              <tbody>
-                {#each data.gamification.weekly_leaderboard as row}
-                  <tr><td>{row.username}</td><td>{row.weekly_xp}</td></tr>
-                {/each}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </article>
-
-      <article class="glass-panel">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Circle</p>
-            <h2>Friends and private ranking</h2>
-          </div>
-        </div>
-        <form class="answer-form" on:submit|preventDefault={addFriend}>
-          <div class="answer-row">
-            <input bind:value={friendUsername} class="answer-input" type="text" placeholder="Add user by username" />
-            <button class="secondary-button" type="submit">Add</button>
-          </div>
-        </form>
-        <div class="tag-row">
-          {#each data.gamification.circle.friends as friend}
-            <button class="option-chip" type="button" on:click={() => removeFriend(friend.user_id)}>{friend.username} ×</button>
-          {:else}
-            <span class="mini-tag muted-tag">Build a small study circle for a private leaderboard.</span>
-          {/each}
-        </div>
-        <div class="table-scroll">
-          <table class="data-table">
-            <thead><tr><th>User</th><th>Level</th><th>XP</th></tr></thead>
-            <tbody>
-              {#each data.gamification.circle.leaderboard as row}
-                <tr><td>{row.username}</td><td>{row.level}</td><td>{row.xp}</td></tr>
-              {/each}
-            </tbody>
-          </table>
-        </div>
-      </article>
-    </section>
   </section>
 {/if}

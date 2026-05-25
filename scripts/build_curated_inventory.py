@@ -12,7 +12,7 @@ from app.services.curated_conjugations import (
 
 
 def main() -> None:
-    repo_root = Path(__file__).resolve().parents[2]
+    repo_root = Path(__file__).resolve().parents[1]
     legacy_path = repo_root / "app" / "data" / "legacy_seed" / "verbs" / "1000verbs.csv"
 
     raw_rows = parse_legacy_verb_rows(legacy_path)

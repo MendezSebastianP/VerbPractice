@@ -58,7 +58,8 @@ help:
 	@printf "  make spa-build  Build the SPA bundle served at /app\n"
 	@printf "  make visual-install Install the Chromium browser used by screenshot regression tests\n"
 	@printf "  make setup      Full local bootstrap: env + install + db + schema + seed + spa build\n"
-	@printf "  make run        Run FastAPI locally on http://$(HOST):$(PORT)\n"
+	@printf "  make dev        Run FastAPI + Vite watcher together (auto-rebuild on .svelte changes)\n"
+	@printf "  make run        Run FastAPI only on http://$(HOST):$(PORT)\n"
 	@printf "  make health     Check /healthz and /readyz against the running app\n"
 	@printf "  make profile    Profile the main endpoints (PROFILE_ITERATIONS=$(PROFILE_ITERATIONS))\n"
 	@printf "  make backup-db  Create a PostgreSQL dump in $(BACKUP_DIR)\n"
@@ -216,6 +217,12 @@ visual-install: check-venv
 
 setup: env install db-up seed spa-build
 	@printf "VerbPractice is ready.\n"
+
+dev: check-venv
+	@printf "Dev mode: FastAPI + Svelte auto-builder running — refresh browser after saves (Ctrl+C stops both)\n"
+	@trap 'kill 0' SIGINT SIGTERM EXIT; \
+	$(UVICORN) $(APP_MODULE) --reload --host $(HOST) --port $(PORT) & \
+	node $(FRONTEND_DIR)/watch.mjs
 
 run: check-venv
 	$(UVICORN) $(APP_MODULE) --reload --host $(HOST) --port $(PORT)

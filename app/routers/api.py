@@ -13,6 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.core.csrf import get_or_create_csrf_token, validate_csrf
+from app.core.languages import format_direction_label
 from app.core.rate_limit import limiter
 from app.core.security import (
     SESSION_USER_KEY,
@@ -220,19 +221,21 @@ def _serialize_dashboard_snapshot(snapshot: dict[str, Any]) -> dict[str, Any]:
 
 def _translation_defaults(mode: TrainingMode) -> dict[str, Any]:
     if mode == TrainingMode.WORD_TRANSLATION:
+        direction = "es_fr"
         return {
             "slug": "words",
             "title": "Word Training",
-            "direction": "es_fr",
+            "direction": direction,
             "length": 10,
-            "direction_label": "Spanish → French",
+            "direction_label": format_direction_label(direction),
         }
+    direction = "fr_es"
     return {
         "slug": "verbs",
         "title": "Verb Training",
-        "direction": "fr_es",
+        "direction": direction,
         "length": 10,
-        "direction_label": "French → Spanish",
+        "direction_label": format_direction_label(direction),
     }
 
 
@@ -261,6 +264,11 @@ async def _translation_state(
     elif result is not None:
         direction = str(result.get("direction", direction))
         default_length = int(result.get("length", default_length))
+    else:
+        # No active session: prefer the user's last practiced pair so focus items match their history
+        pref = await ensure_user_preference(db, user_id)
+        if pref.last_practice_pair:
+            direction = pref.last_practice_pair
     overview = await summarize_progress(
         db,
         user_id=user_id,
@@ -281,7 +289,7 @@ async def _translation_state(
                 "length": default_length,
                 "direction": direction,
             },
-            "direction_label": "Spanish → French" if direction == "es_fr" else "French → Spanish",
+            "direction_label": format_direction_label(direction),
             "overview": overview,
             "result": result,
         }
@@ -300,7 +308,7 @@ async def _translation_state(
                 "length": int(config.get("length", default_length)),
                 "direction": direction,
             },
-            "direction_label": "Spanish → French" if direction == "es_fr" else "French → Spanish",
+            "direction_label": format_direction_label(direction),
             "overview": overview,
             "result": result,
         }
@@ -315,7 +323,7 @@ async def _translation_state(
         "setup": False,
         "feedback": feedback,
         "result": result,
-        "direction_label": "Spanish → French" if direction == "es_fr" else "French → Spanish",
+        "direction_label": format_direction_label(direction),
         "overview": overview,
         "session": {
             "id": active.id,
@@ -604,6 +612,7 @@ async def words_start(
         mode=TrainingMode.WORD_TRANSLATION,
         direction=payload.direction,
         length=max(1, min(payload.length, 50)),
+        set_id=payload.set_id,
     )
     await db.commit()
     return JSONResponse(await _translation_state(db, user_id=auth.user.id, mode=TrainingMode.WORD_TRANSLATION))
@@ -624,6 +633,7 @@ async def verbs_start(
         mode=TrainingMode.VERB_TRANSLATION,
         direction=payload.direction,
         length=max(1, min(payload.length, 50)),
+        set_id=payload.set_id,
     )
     await db.commit()
     return JSONResponse(await _translation_state(db, user_id=auth.user.id, mode=TrainingMode.VERB_TRANSLATION))

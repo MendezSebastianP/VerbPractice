@@ -14,6 +14,7 @@ from app.db.models import (
     SessionItem,
     TrainingMode,
     TrainingSession,
+    UserAddedWord,
     UserProfile,
     UserProgress,
     Verb,
@@ -43,11 +44,6 @@ from app.services.training_engine import (
 )
 
 
-TRANSLATION_BASE_LANGUAGE_BY_MODE: dict[TrainingMode, str] = {
-    TrainingMode.WORD_TRANSLATION: "ES",
-    TrainingMode.VERB_TRANSLATION: "FR",
-}
-
 ITEM_TYPE_BY_MODE: dict[TrainingMode, ProgressItemType] = {
     TrainingMode.WORD_TRANSLATION: ProgressItemType.WORD,
     TrainingMode.VERB_TRANSLATION: ProgressItemType.VERB,
@@ -72,6 +68,32 @@ class ConjugationQuestion:
     table: dict[str, dict[str, str]]
     prefill: dict[str, dict[str, bool]]
     pronouns: list[str]
+
+
+async def _resolve_inventory_language(
+    db: AsyncSession, mode: TrainingMode, direction: str
+) -> Language:
+    """Return the Language whose Word/Verb rows back this (mode, direction).
+
+    Direction is "{source}_{target}" lowercase. Whichever side has inventory rows
+    wins; if neither does, returns the source side (caller will see an empty set).
+    """
+    source_code, target_code = direction.upper().split("_")
+    model = await _model_for_mode(mode)
+    source_lang = await get_language_by_code(db, source_code)
+    target_lang = await get_language_by_code(db, target_code)
+
+    source_count = await db.scalar(
+        select(func.count()).select_from(model).where(model.language_id == source_lang.id)
+    )
+    if source_count and source_count > 0:
+        return source_lang
+    target_count = await db.scalar(
+        select(func.count()).select_from(model).where(model.language_id == target_lang.id)
+    )
+    if target_count and target_count > 0:
+        return target_lang
+    return source_lang
 
 
 async def get_language_by_code(db: AsyncSession, code: str) -> Language:
@@ -118,8 +140,7 @@ async def ensure_initial_translation_unlocks(
         return
 
     model = await _model_for_mode(mode)
-    base_code = TRANSLATION_BASE_LANGUAGE_BY_MODE[mode]
-    base_language = await get_language_by_code(db, base_code)
+    base_language = await _resolve_inventory_language(db, mode, language_pair)
     rows = await db.execute(
         select(model.id)
         .where(model.language_id == base_language.id)
@@ -147,22 +168,61 @@ async def _select_weighted_items(
     item_type: ProgressItemType,
     language_pair: str,
     length: int,
+    scoped_item_ids: set[int] | None = None,
 ) -> list[int]:
-    rows = await db.execute(
-        select(UserProgress)
-        .where(
-            UserProgress.user_id == user_id,
-            UserProgress.item_type == item_type,
-            UserProgress.language_pair == language_pair,
-            UserProgress.unlocked.is_(True),
-        )
-        .order_by(UserProgress.item_id.asc())
+    query = select(UserProgress).where(
+        UserProgress.user_id == user_id,
+        UserProgress.item_type == item_type,
+        UserProgress.language_pair == language_pair,
+        UserProgress.unlocked.is_(True),
     )
+    if scoped_item_ids is not None:
+        if not scoped_item_ids:
+            return []
+        query = query.where(UserProgress.item_id.in_(scoped_item_ids))
+    rows = await db.execute(query.order_by(UserProgress.item_id.asc()))
     weighted_rows = [
         WeightedItem(item_id=row.item_id, probability=row.probability, last_seen=row.last_seen)
         for row in rows.scalars().all()
     ]
     return weighted_sample_without_replacement(weighted_rows, length)
+
+
+async def _resolve_set_item_ids(
+    db: AsyncSession, set_id: int, mode: TrainingMode
+) -> set[int] | None:
+    """Return item IDs contained in a set, or None if the set doesn't exist."""
+    from app.db.models import VerbTag, WordSet, WordSetMember, WordTag
+
+    ws = (await db.execute(select(WordSet).where(WordSet.id == set_id))).scalar_one_or_none()
+    if ws is None:
+        return None
+    if ws.kind == "manual":
+        if mode != TrainingMode.WORD_TRANSLATION:
+            return set()
+        rows = await db.execute(
+            select(WordSetMember.word_id).where(WordSetMember.set_id == set_id)
+        )
+        return {r[0] for r in rows.all()}
+    # smart
+    tag_ids = list(ws.filter_tag_ids or [])
+    if not tag_ids:
+        return set()
+    if mode == TrainingMode.WORD_TRANSLATION:
+        item_id_column = WordTag.word_id
+        tag_id_column = WordTag.tag_id
+    elif mode == TrainingMode.VERB_TRANSLATION:
+        item_id_column = VerbTag.verb_id
+        tag_id_column = VerbTag.tag_id
+    else:
+        return set()
+    rows = await db.execute(
+        select(item_id_column, func.count(tag_id_column))
+        .where(tag_id_column.in_(tag_ids))
+        .group_by(item_id_column)
+        .having(func.count(tag_id_column) == len(tag_ids))
+    )
+    return {r[0] for r in rows.all()}
 
 
 async def get_active_session(
@@ -210,8 +270,15 @@ async def start_translation_session(
     mode: TrainingMode,
     direction: str,
     length: int,
+    set_id: int | None = None,
 ) -> TrainingSession:
     language_pair = direction
+    scoped_item_ids: set[int] | None = None
+    if set_id is not None:
+        scoped_item_ids = await _resolve_set_item_ids(db, set_id, mode)
+        if scoped_item_ids is None:
+            scoped_item_ids = set()
+
     await ensure_initial_translation_unlocks(
         db,
         user_id=user_id,
@@ -226,6 +293,7 @@ async def start_translation_session(
         item_type=ITEM_TYPE_BY_MODE[mode],
         language_pair=language_pair,
         length=length,
+        scoped_item_ids=scoped_item_ids,
     )
 
     session = TrainingSession(
@@ -255,12 +323,12 @@ async def _resolve_translation_question(
     item_id: int,
     direction: str,
 ) -> TranslationQuestion:
-    target_code = "FR" if mode == TrainingMode.WORD_TRANSLATION else "ES"
-    base_code = TRANSLATION_BASE_LANGUAGE_BY_MODE[mode]
-    base_language = await get_language_by_code(db, base_code)
-    target_language = await get_language_by_code(db, target_code)
+    base_language = await _resolve_inventory_language(db, mode, direction)
+    source_code, target_code = direction.upper().split("_")
+    other_code = target_code if base_language.code == source_code else source_code
+    target_language = await get_language_by_code(db, other_code)
 
-    base_direction = "es_fr" if mode == TrainingMode.WORD_TRANSLATION else "fr_es"
+    base_direction = f"{base_language.code.lower()}_{other_code.lower()}"
     model = await _model_for_mode(mode)
     translation_model = await _translation_model_for_mode(mode)
 
@@ -381,9 +449,47 @@ async def _unlock_next_items(
     count: int,
 ) -> int:
     model = await _model_for_mode(mode)
-    base_code = TRANSLATION_BASE_LANGUAGE_BY_MODE[mode]
-    base_language = await get_language_by_code(db, base_code)
+    base_language = await _resolve_inventory_language(db, mode, language_pair)
     item_type = ITEM_TYPE_BY_MODE[mode]
+
+    created = 0
+    remaining = count
+
+    if mode == TrainingMode.WORD_TRANSLATION:
+        priority_rows = await db.execute(
+            select(UserAddedWord)
+            .where(
+                UserAddedWord.user_id == user_id,
+                UserAddedWord.language_pair == language_pair,
+            )
+            .order_by(UserAddedWord.added_at.asc())
+        )
+        for added in priority_rows.scalars().all():
+            if remaining <= 0:
+                break
+            existing = await db.execute(
+                select(UserProgress.id).where(
+                    UserProgress.user_id == user_id,
+                    UserProgress.item_type == ProgressItemType.WORD,
+                    UserProgress.item_id == added.word_id,
+                    UserProgress.language_pair == language_pair,
+                )
+            )
+            if existing.scalar_one_or_none() is not None:
+                continue
+            await _get_or_create_progress(
+                db,
+                user_id=user_id,
+                item_type=item_type,
+                item_id=added.word_id,
+                language_pair=language_pair,
+                unlocked=True,
+            )
+            created += 1
+            remaining -= 1
+
+    if remaining <= 0:
+        return created
 
     current_rows = await db.execute(
         select(UserProgress.item_id)
@@ -402,9 +508,8 @@ async def _unlock_next_items(
         select(model.id)
         .where(model.language_id == base_language.id, model.id > max_id)
         .order_by(model.id.asc())
-        .limit(count)
+        .limit(remaining)
     )
-    created = 0
     for (item_id,) in candidates.all():
         await _get_or_create_progress(
             db,
@@ -590,7 +695,7 @@ async def submit_translation_answer(
 
     feedback: str
     if give_up:
-        feedback = f"The answer is: {grade.expected_primary}"
+        feedback = f"{question.prompt} → {grade.expected_primary}"
     elif grade.is_correct:
         feedback = "Correct!"
     else:

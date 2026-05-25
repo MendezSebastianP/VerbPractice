@@ -1,0 +1,65 @@
+rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text
+501,11,détourner,desviar,1,503,desviar
+502,11,rapporter,reportar,1,504,"reportar, devolver"
+502,11,rapporter,devolver,2,504,"reportar, devolver"
+503,11,consoler,consolar,1,505,consolar
+504,11,éveiller,despertar,1,506,despertar
+505,11,regagner,recuperar,1,507,"recuperar, volver a ganar"
+505,11,regagner,volver a ganar,2,507,"recuperar, volver a ganar"
+506,11,calmer,calmar,1,508,calmar
+507,11,survivre,sobrevivir,1,509,sobrevivir
+508,11,renforcer,reforzar,1,510,"reforzar, fortalecer"
+508,11,renforcer,fortalecer,2,510,"reforzar, fortalecer"
+509,11,réclamer,reclamar,1,511,reclamar
+510,11,plonger,sumergir,1,512,"sumergir, bucear"
+510,11,plonger,bucear,2,512,"sumergir, bucear"
+511,11,ressortir,salir de nuevo,1,513,"salir de nuevo, destacar"
+511,11,ressortir,destacar,2,513,"salir de nuevo, destacar"
+512,11,attraper,atrapar,1,514,"atrapar, coger"
+512,11,attraper,coger,2,514,"atrapar, coger"
+513,11,négliger,descuidar,1,515,"descuidar, negligir"
+513,11,négliger,negligir,2,515,"descuidar, negligir"
+514,11,figurer,figurar,1,516,"figurar, aparecer"
+514,11,figurer,aparecer,2,516,"figurar, aparecer"
+515,11,corriger,corregir,1,517,corregir
+516,11,chier,cagar,1,518,cagar
+517,11,hurler,gritar,1,519,"gritar, aullar"
+517,11,hurler,aullar,2,519,"gritar, aullar"
+518,11,craquer,crujir,1,520,crujir
+519,11,préserver,preservar,1,521,preservar
+520,11,récupérer,recuperar,1,522,recuperar
+521,11,accrocher,colgar,1,523,"colgar, enganchar"
+521,11,accrocher,enganchar,2,523,"colgar, enganchar"
+522,11,grandir,crecer,1,524,crecer
+523,11,reprocher,reprochar,1,525,reprochar
+524,11,habiller,vestir,1,526,vestir
+525,11,tarder,tardar,1,527,tardar
+526,11,déposer,depositar,1,528,"depositar, dejar"
+526,11,déposer,dejar,2,528,"depositar, dejar"
+527,11,assumer,asumir,1,529,asumir
+528,11,évaluer,evaluar,1,530,evaluar
+529,11,susciter,suscitar,1,531,suscitar
+530,11,noyer,ahogar,1,532,ahogar
+531,11,regretter,lamentar,1,533,lamentar
+532,11,exploiter,explotar,1,534,explotar
+533,11,remuer,mover,1,535,"mover, revolver"
+533,11,remuer,revolver,2,535,"mover, revolver"
+534,11,remercier,agradecer,1,536,agradecer
+535,11,inviter,invitar,1,537,invitar
+536,11,se craquer,romperse,1,538,romperse
+537,11,rejeter,rechazar,1,539,rechazar
+538,11,déduire,deducir,1,540,deducir
+539,11,charger,cargar,1,541,cargar
+540,11,échanger,intercambiar,1,542,intercambiar
+541,11,appartenir,pertenecer,1,543,pertenecer
+542,11,persuader,persuadir,1,544,persuadir
+543,11,planter,plantar,1,545,plantar
+544,11,s'habiller,vestirse,1,546,vestirse
+545,11,distraire,distraer,1,547,distraer
+546,11,percer,perforar,1,548,perforar
+547,11,tracer,trazar,1,549,trazar
+548,11,guider,guiar,1,550,guiar
+549,11,bâtir,construir,1,551,"construir, edificar"
+549,11,bâtir,edificar,2,551,"construir, edificar"
+550,11,combler,colmar,1,552,"colmar, llenar"
+550,11,combler,llenar,2,552,"colmar, llenar"

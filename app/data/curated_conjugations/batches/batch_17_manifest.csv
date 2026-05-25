@@ -1,0 +1,73 @@
+rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text
+801,17,débarquer,desembarcar,1,803,"desembarcar, llegar"
+801,17,débarquer,llegar,2,803,"desembarcar, llegar"
+802,17,redevenir,volver a ser,1,804,volver a ser
+803,17,éclaircir,aclarar,1,805,"aclarar, iluminar"
+803,17,éclaircir,iluminar,2,805,"aclarar, iluminar"
+804,17,consommer,consumir,1,806,consumir
+805,17,fendre,hender,1,807,"hender, partir"
+805,17,fendre,partir,2,807,"hender, partir"
+806,17,soulager,aliviar,1,808,aliviar
+807,17,décourager,desalentar,1,809,"desalentar, desanimar"
+807,17,décourager,desanimar,2,809,"desalentar, desanimar"
+808,17,engendrer,engendrar,1,810,engendrar
+809,17,fêter,celebrar,1,811,"celebrar, festejar"
+809,17,fêter,festejar,2,811,"celebrar, festejar"
+810,17,renaître,renacer,1,812,renacer
+811,17,affranchir,liberar,1,813,"liberar, franquear"
+811,17,affranchir,franquear,2,813,"liberar, franquear"
+812,17,freiner,frenar,1,814,frenar
+813,17,racheter,recomprar,1,815,"recomprar, redimir"
+813,17,racheter,redimir,2,815,"recomprar, redimir"
+814,17,initier,iniciar,1,816,iniciar
+815,17,dater,fechar,1,817,fechar
+816,17,raser,afeitar,1,818,"afeitar, derribar"
+816,17,raser,derribar,2,818,"afeitar, derribar"
+817,17,solliciter,solicitar,1,819,solicitar
+818,17,errer,errar,1,820,"errar, vagar"
+818,17,errer,vagar,2,820,"errar, vagar"
+819,17,honorer,honrar,1,821,honrar
+820,17,féliciter,felicitar,1,822,felicitar
+821,17,entourer,rodear,1,823,rodear
+822,17,dépouiller,despojar,1,824,despojar
+823,17,exciter,excitar,1,825,"excitar, entusiasmar"
+823,17,exciter,entusiasmar,2,825,"excitar, entusiasmar"
+824,17,tâcher,intentar,1,826,"intentar, manchar"
+824,17,tâcher,manchar,2,826,"intentar, manchar"
+825,17,pleuvoir,llover,1,827,llover
+826,17,insérer,insertar,1,828,insertar
+827,17,accommoder,acomodar,1,829,acomodar
+828,17,énumérer,enumerar,1,830,enumerar
+829,17,incliner,inclinar,1,831,inclinar
+830,17,convertir,convertir,1,832,convertir
+831,17,exploser,explotar,1,833,explotar
+832,17,redire,repetir,1,834,"repetir, volver a decir"
+832,17,redire,volver a decir,2,834,"repetir, volver a decir"
+833,17,méconnaître,desconocer,1,835,"desconocer, ignorar"
+833,17,méconnaître,ignorar,2,835,"desconocer, ignorar"
+834,17,rallier,reunir,1,836,reunir
+835,17,nouer,anudar,1,837,"anudar, establecer"
+835,17,nouer,establecer,2,837,"anudar, establecer"
+836,17,aménager,acondicionar,1,838,"acondicionar, arreglar"
+836,17,aménager,arreglar,2,838,"acondicionar, arreglar"
+837,17,viser,apuntar,1,839,"apuntar, aspirar"
+837,17,viser,aspirar,2,839,"apuntar, aspirar"
+838,17,débrouiller,desenredar,1,840,"desenredar, arreglárselas"
+838,17,débrouiller,arreglárselas,2,840,"desenredar, arreglárselas"
+839,17,sombrer,hundirse,1,841,hundirse
+840,17,masquer,enmascarar,1,842,"enmascarar, ocultar"
+840,17,masquer,ocultar,2,842,"enmascarar, ocultar"
+841,17,ressusciter,resucitar,1,843,resucitar
+842,17,buter,tropezar,1,844,tropezar
+843,17,mépriser,despreciar,1,845,despreciar
+844,17,découper,recortar,1,846,"recortar, cortar"
+844,17,découper,cortar,2,846,"recortar, cortar"
+845,17,proclamer,proclamar,1,847,proclamar
+846,17,menacer,amenazar,1,848,amenazar
+847,17,mater,mirar,1,849,"mirar, dominar (coloquial)"
+847,17,mater,dominar (coloquial),2,849,"mirar, dominar (coloquial)"
+848,17,contrarier,contrariar,1,850,"contrariar, frustrar"
+848,17,contrarier,frustrar,2,850,"contrariar, frustrar"
+849,17,réjouir,alegrar(se),1,851,alegrar(se)
+850,17,cerner,rodear,1,852,"rodear, delimitar"
+850,17,cerner,delimitar,2,852,"rodear, delimitar"

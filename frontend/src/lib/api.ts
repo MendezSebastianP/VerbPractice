@@ -1,4 +1,9 @@
 import type {
+  AddWordResponse,
+  AddedWordResult,
+  TagEntry,
+  WordSetDetail,
+  WordSetSummary,
   AdminConjugationRow,
   AdminContentSummaryPayload,
   AdminVerbRow,
@@ -8,9 +13,13 @@ import type {
   CommunityPayload,
   ConjugationState,
   DashboardPayload,
+  LanguageEntry,
   MonitorPayload,
+  PriorityQueueEntry,
   ThemeName,
   TranslationState,
+  UserSettings,
+  UserSettingsPatch,
 } from './types';
 
 export class ApiError extends Error {
@@ -71,9 +80,9 @@ export const api = {
   dashboard: () => request<DashboardPayload>('/api/dashboard'),
   wordsState: () => request<TranslationState>('/api/training/words'),
   verbsState: () => request<TranslationState>('/api/training/verbs'),
-  startWords: (payload: { length: number; direction: string; csrf_token: string }) =>
+  startWords: (payload: { length: number; direction: string; set_id?: number; csrf_token: string }) =>
     request<TranslationState>('/api/training/words/start', { method: 'POST', body: JSON.stringify(payload) }),
-  startVerbs: (payload: { length: number; direction: string; csrf_token: string }) =>
+  startVerbs: (payload: { length: number; direction: string; set_id?: number; csrf_token: string }) =>
     request<TranslationState>('/api/training/verbs/start', { method: 'POST', body: JSON.stringify(payload) }),
   hintWords: (csrf_token: string) =>
     request<TranslationState>('/api/training/words/hint', { method: 'POST', body: JSON.stringify({ csrf_token }) }),
@@ -116,6 +125,66 @@ export const api = {
       method: 'DELETE',
       body: JSON.stringify({ csrf_token }),
     }),
+  getSettings: () => request<UserSettings>('/api/settings'),
+  patchSettings: (payload: Partial<UserSettingsPatch> & { csrf_token: string }) =>
+    request<UserSettings>('/api/settings', { method: 'PATCH', body: JSON.stringify(payload) }),
+  listLanguages: () => request<{ languages: LanguageEntry[] }>('/api/languages'),
+  addWord: (payload: { input_text: string; context?: string; learning_lang_code?: string; csrf_token: string }) =>
+    request<AddWordResponse>('/api/words/add', { method: 'POST', body: JSON.stringify(payload) }),
+  listTags: () => request<{ tags: TagEntry[] }>('/api/tags'),
+  listWordSets: () => request<{ sets: WordSetSummary[] }>('/api/word-sets'),
+  getWordSet: (id: number) => request<WordSetDetail>(`/api/word-sets/${id}`),
+  createWordSet: (payload: {
+    name: string;
+    description?: string;
+    icon?: string;
+    kind: 'manual' | 'smart';
+    filter_tag_slugs: string[];
+    csrf_token: string;
+  }) => request<WordSetSummary>('/api/word-sets', { method: 'POST', body: JSON.stringify(payload) }),
+  updateWordSet: (
+    id: number,
+    payload: {
+      name?: string;
+      description?: string;
+      icon?: string;
+      filter_tag_slugs?: string[];
+      csrf_token: string;
+    },
+  ) =>
+    request<WordSetSummary>(`/api/word-sets/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+    }),
+  deleteWordSet: (id: number, csrf_token: string) =>
+    request<{ ok: boolean }>(`/api/word-sets/${id}`, {
+      method: 'DELETE',
+      body: JSON.stringify({ csrf_token }),
+    }),
+  addWordToSet: (set_id: number, word_id: number, csrf_token: string) =>
+    request<{ ok: boolean }>(`/api/word-sets/${set_id}/words`, {
+      method: 'POST',
+      body: JSON.stringify({ word_id, csrf_token }),
+    }),
+  removeWordFromSet: (set_id: number, word_id: number, csrf_token: string) =>
+    request<{ ok: boolean }>(`/api/word-sets/${set_id}/words/${word_id}`, {
+      method: 'DELETE',
+      body: JSON.stringify({ csrf_token }),
+    }),
+  expandWord: (word_id: number, csrf_token: string) =>
+    request<{ extended_content: string }>(`/api/words/${word_id}/expand`, {
+      method: 'POST',
+      body: JSON.stringify({ csrf_token }),
+    }),
+  reportTranslation: (
+    word_id: number,
+    payload: { entry_type: 'lexical' | 'native'; entry_id: number; reason?: string; csrf_token: string },
+  ) =>
+    request<{ ok: boolean }>(`/api/words/${word_id}/report`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+  priorityQueue: () => request<{ entries: PriorityQueueEntry[] }>('/api/words/priority-queue'),
   adminMonitor: () => request<MonitorPayload>('/api/admin/monitor'),
   adminContentSummary: () => request<AdminContentSummaryPayload>('/api/admin/content/summary'),
   adminWords: (params: { search?: string; verified?: string; limit?: number } = {}) =>

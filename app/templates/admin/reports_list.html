@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+{% block title %}Reports · Admin · LexArena{% endblock %}
+{% block content %}
+<section class="panel">
+  <header class="panel-head">
+    <h1>Translation reports</h1>
+    <p class="muted">
+      <a href="/admin/users">← Users</a>
+      &nbsp;·&nbsp;
+      pending {{ counts.get("pending", 0) }} ·
+      dismissed {{ counts.get("dismissed", 0) }} ·
+      resolved {{ counts.get("resolved", 0) }}
+    </p>
+    <p>
+      Filter:
+      <a href="/admin/reports?status=pending" {% if current_filter == "pending" %}style="font-weight:bold;"{% endif %}>pending</a> |
+      <a href="/admin/reports?status=dismissed" {% if current_filter == "dismissed" %}style="font-weight:bold;"{% endif %}>dismissed</a> |
+      <a href="/admin/reports?status=resolved" {% if current_filter == "resolved" %}style="font-weight:bold;"{% endif %}>resolved</a> |
+      <a href="/admin/reports?status=all" {% if current_filter == "all" %}style="font-weight:bold;"{% endif %}>all</a>
+    </p>
+  </header>
+
+  {% if reports %}
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Reporter</th>
+          <th>Type</th>
+          <th>Target</th>
+          <th>Reason</th>
+          <th>Status</th>
+          <th>Created</th>
+          <th>Resolved</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in reports %}
+          <tr>
+            <td>{{ r.id }}</td>
+            <td>
+              <a href="/admin/users/{{ r.reporter_id }}/inspect">{{ r.reporter_username }}</a>
+            </td>
+            <td>{{ r.entry_type }}</td>
+            <td>{{ r.target_text }}</td>
+            <td>{{ r.reason or "—" }}</td>
+            <td>{{ r.status }}</td>
+            <td>{{ r.created_at }}</td>
+            <td>{{ r.resolved_at or "—" }}</td>
+            <td>
+              {% if r.status == "pending" %}
+                <form method="post" action="/admin/reports/{{ r.id }}/resolve" style="display:inline;">
+                  <input type="hidden" name="action" value="dismiss">
+                  <input type="hidden" name="return_to" value="/admin/reports?status={{ current_filter }}">
+                  <button type="submit" class="ghost-button">Dismiss</button>
+                </form>
+                <form method="post" action="/admin/reports/{{ r.id }}/resolve" style="display:inline;">
+                  <input type="hidden" name="action" value="regenerate">
+                  <input type="hidden" name="return_to" value="/admin/reports?status={{ current_filter }}">
+                  <button type="submit" class="secondary-button">Regenerate</button>
+                </form>
+                <form method="post" action="/admin/reports/{{ r.id }}/resolve" style="display:inline;">
+                  <input type="hidden" name="action" value="delete_translation">
+                  <input type="hidden" name="return_to" value="/admin/reports?status={{ current_filter }}">
+                  <button type="submit" class="ghost-button">Delete entry</button>
+                </form>
+              {% else %}
+                <em>—</em>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="muted">No reports{% if current_filter != "all" %} with status "{{ current_filter }}"{% endif %}.</p>
+  {% endif %}
+</section>
+{% endblock %}

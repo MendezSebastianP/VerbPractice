@@ -1,0 +1,66 @@
+rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text
+401,9,contenter,contentar,1,403,"contentar, satisfacer"
+401,9,contenter,satisfacer,2,403,"contentar, satisfacer"
+402,9,mêler,mezclar,1,404,mezclar
+403,9,nommer,nombrar,1,405,nombrar
+404,9,exposer,exponer,1,406,exponer
+405,9,écraser,aplastar,1,407,aplastar
+406,9,marier,casar,1,408,casar
+407,9,achever,completar,1,409,"completar, terminar"
+407,9,achever,terminar,2,409,"completar, terminar"
+408,9,jouir,disfrutar,1,410,"disfrutar, gozar"
+408,9,jouir,gozar,2,410,"disfrutar, gozar"
+409,9,surprendre,sorprender,1,411,sorprender
+410,9,soulever,levantar,1,412,levantar
+411,9,fondre,fundir,1,413,fundir
+412,9,dissimuler,disimular,1,414,disimular
+413,9,allumer,encender,1,415,"encender, prender"
+413,9,allumer,prender,2,415,"encender, prender"
+414,9,consulter,consultar,1,416,consultar
+415,9,briser,romper,1,417,"romper, quebrar"
+415,9,briser,quebrar,2,417,"romper, quebrar"
+416,9,obéir,obedecer,1,418,obedecer
+417,9,reconstituer,reconstituir,1,419,reconstituir
+418,9,enfoncer,hundir,1,420,"hundir, clavar"
+418,9,enfoncer,clavar,2,420,"hundir, clavar"
+419,9,analyser,analizar,1,421,analizar
+420,9,éliminer,eliminar,1,422,eliminar
+421,9,étonner,asombrar,1,423,"asombrar, sorprender"
+421,9,étonner,sorprender,2,423,"asombrar, sorprender"
+422,9,terminer,terminar,1,424,terminar
+423,9,procurer,procurar,1,425,procurar
+424,9,contempler,contemplar,1,426,contemplar
+425,9,peser,pesar,1,427,pesar
+426,9,transporter,transportar,1,428,transportar
+427,9,ressembler,parecerse,1,429,parecerse
+428,9,se fondre,derretirse,1,430,derretirse
+429,9,classer,clasificar,1,431,clasificar
+430,9,éteindre,apagar,1,432,apagar
+431,9,inscrire,inscribir,1,433,inscribir
+432,9,déplacer,desplazar,1,434,"desplazar, mover"
+432,9,déplacer,mover,2,434,"desplazar, mover"
+433,9,habiter,habitar,1,435,"habitar, vivir"
+433,9,habiter,vivir,2,435,"habitar, vivir"
+434,9,ramasser,recoger,1,436,recoger
+435,9,attacher,atar,1,437,atar
+436,9,accueillir,acoger,1,438,"acoger, recibir"
+436,9,accueillir,recibir,2,438,"acoger, recibir"
+437,9,sonner,sonar,1,439,"sonar, tocar"
+437,9,sonner,tocar,2,439,"sonar, tocar"
+438,9,substituer,sustituir,1,440,sustituir
+439,9,déceler,detectar,1,441,detectar
+440,9,soigner,cuidar,1,442,cuidar
+441,9,fumer,fumar,1,443,fumar
+442,9,arranger,arreglar,1,444,"arreglar, ordenar"
+442,9,arranger,ordenar,2,444,"arreglar, ordenar"
+443,9,parcourir,recorrer,1,445,recorrer
+444,9,reculer,retroceder,1,446,retroceder
+445,9,claquer,chasquear,1,447,chasquear
+446,9,veiller,velar,1,448,"velar, vigilar"
+446,9,veiller,vigilar,2,448,"velar, vigilar"
+447,9,compléter,completar,1,449,completar
+448,9,publier,publicar,1,450,publicar
+449,9,hésiter,dudar,1,451,"dudar, vacilar"
+449,9,hésiter,vacilar,2,451,"dudar, vacilar"
+450,9,téléphoner,telefonear,1,452,"telefonear, llamar"
+450,9,téléphoner,llamar,2,452,"telefonear, llamar"

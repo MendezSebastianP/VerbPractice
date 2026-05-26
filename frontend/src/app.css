@@ -176,7 +176,25 @@ html[data-theme='arcade'] {
   }
 
   .topbar-inner {
-    @apply mx-auto flex w-full max-w-[1320px] flex-col gap-4 px-4 py-4 md:px-6;
+    @apply mx-auto w-full max-w-[1320px] gap-3 px-4 py-3 md:px-6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    min-width: 0;
+  }
+
+  .logout-button {
+    flex-shrink: 0;
+  }
+
+  .narrow-stack {
+    max-width: 560px;
+    margin-inline: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
   }
 
   .brand-cluster {
@@ -191,7 +209,7 @@ html[data-theme='arcade'] {
   }
 
   .home-button {
-    @apply inline-flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border transition duration-200;
+    @apply inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border transition duration-200;
     border-color: var(--line);
     color: var(--muted);
     background: color-mix(in srgb, var(--surface-strong) 84%, transparent);
@@ -1023,23 +1041,6 @@ html[data-theme='arcade'] {
 }
 
 @media (max-width: 900px) {
-  .topbar-inner {
-    @apply items-start;
-  }
-
-  .brand-cluster {
-    @apply w-full;
-  }
-
-  .nav-rail {
-    @apply w-full;
-  }
-
-  .nav-meta {
-    @apply w-full justify-between;
-    flex-wrap: wrap;
-  }
-
   .hero-grid,
   .auth-layout {
     @apply grid-cols-1;
@@ -1057,19 +1058,7 @@ html[data-theme='arcade'] {
 }
 
 @media (min-width: 901px) {
-  .topbar-inner {
-    display: grid;
-    grid-template-columns: minmax(220px, 260px) minmax(0, 1fr) auto;
-    align-items: center;
-  }
-
   .nav-rail {
-    justify-self: center;
-    width: min(100%, 42rem);
-  }
-
-  .nav-meta {
-    flex-wrap: nowrap;
-    justify-self: end;
+    max-width: 42rem;
   }
 }

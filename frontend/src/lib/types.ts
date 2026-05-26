@@ -483,6 +483,29 @@ export interface AddedWordNotFound {
 
 export type AddWordResponse = AddedWordResult | AddedWordNotFound;
 
+export interface UserWordEntry {
+  word_id: number;
+  text: string;
+  translation: string | null;
+  in_progress: boolean;
+  unlocked: boolean;
+  probability: number | null;
+  added_at: string | null;
+}
+
+export interface WordHistoryEntry {
+  added_id: number;
+  word_id: number;
+  text: string;
+  language_pair: string;
+  learning_language_code: string;
+  mother_tongue_code: string;
+  added_at: string | null;
+  lexical: LexicalEntry;
+  natives: NativeTranslation[];
+  tags: string[];
+}
+
 export interface PriorityQueueEntry {
   id: number;
   word_id: number;

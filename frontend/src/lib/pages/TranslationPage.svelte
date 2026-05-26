@@ -394,10 +394,12 @@
   function handleKeydown(event: KeyboardEvent): void {
     if (loading) return;
 
-    // Enter on setup screen: launch when no interactive element has focus
+    // Enter on setup screen: launch unless the user is typing in a real text field
     if (event.key === 'Enter' && state?.setup && !state?.session && !justFinished && !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
-      const active = document.activeElement;
-      if (!active || active === document.body || active.tagName === 'BODY') {
+      const active = document.activeElement as HTMLElement | null;
+      const tag = active?.tagName;
+      const isTyping = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || active?.isContentEditable;
+      if (!isTyping) {
         event.preventDefault();
         popEl(launchButton);
         void startSession();

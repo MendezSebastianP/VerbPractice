@@ -136,7 +136,55 @@ async def ensure_initial_translation_unlocks(
             UserProgress.language_pair == language_pair,
         )
     )
-    if existing.scalar_one() > 0:
+    existing_count = existing.scalar_one()
+
+    seeded_ids: set[int] = set()
+
+    # Always drain user-added priority words for word_translation, even if
+    # progress rows already exist (so a freshly added word appears next session).
+    if mode == TrainingMode.WORD_TRANSLATION:
+        priority_rows = await db.execute(
+            select(UserAddedWord)
+            .where(
+                UserAddedWord.user_id == user_id,
+                UserAddedWord.language_pair == language_pair,
+            )
+            .order_by(UserAddedWord.added_at.asc())
+        )
+        for added in priority_rows.scalars().all():
+            already = await db.execute(
+                select(UserProgress.id).where(
+                    UserProgress.user_id == user_id,
+                    UserProgress.item_type == ProgressItemType.WORD,
+                    UserProgress.item_id == added.word_id,
+                    UserProgress.language_pair == language_pair,
+                )
+            )
+            if already.scalar_one_or_none() is not None:
+                continue
+            db.add(
+                UserProgress(
+                    user_id=user_id,
+                    item_type=item_type,
+                    item_id=added.word_id,
+                    language_pair=language_pair,
+                    probability=1000.0,
+                    unlocked=True,
+                    extra_data={"source": "user_added"},
+                )
+            )
+            seeded_ids.add(added.word_id)
+
+    if existing_count > 0 or seeded_ids:
+        # User already has progress (or we just seeded priority words);
+        # don't auto-seed inventory items on top.
+        if existing_count == 0 and seeded_ids:
+            await db.flush()
+        else:
+            return
+
+    remaining = initial_count - len(seeded_ids)
+    if remaining <= 0:
         return
 
     model = await _model_for_mode(mode)
@@ -145,9 +193,11 @@ async def ensure_initial_translation_unlocks(
         select(model.id)
         .where(model.language_id == base_language.id)
         .order_by(model.id.asc())
-        .limit(initial_count)
+        .limit(remaining)
     )
     for (item_id,) in rows.all():
+        if item_id in seeded_ids:
+            continue
         db.add(
             UserProgress(
                 user_id=user_id,

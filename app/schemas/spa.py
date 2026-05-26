@@ -70,6 +70,18 @@ class AddWordPayload(CsrfPayload):
     learning_lang_code: str | None = Field(default=None, max_length=8)
 
 
+class AddWordOfflinePayload(CsrfPayload):
+    learning_text: str = Field(min_length=1, max_length=128)
+    native_text: str = Field(min_length=1, max_length=256)
+    learning_lang_code: str = Field(min_length=2, max_length=8)
+    mother_lang_code: str = Field(min_length=2, max_length=8)
+    note: str | None = Field(default=None, max_length=256)
+
+
+class DeleteUserWordPayload(CsrfPayload):
+    language_pair: str = Field(min_length=4, max_length=16)
+
+
 class ExpandWordPayload(CsrfPayload):
     pass
 

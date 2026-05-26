@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.csrf import validate_csrf
@@ -9,6 +9,7 @@ from app.core.security import AuthContext, require_auth_context
 from app.db.models import (
     Language,
     ProgressItemType,
+    Tag,
     TranslationReport,
     UserAddedWord,
     UserPreference,
@@ -16,10 +17,13 @@ from app.db.models import (
     Word,
     WordLexicalEntry,
     WordNativeTranslation,
+    WordTag,
 )
 from app.db.session import get_db
 from app.schemas.spa import (
+    AddWordOfflinePayload,
     AddWordPayload,
+    DeleteUserWordPayload,
     ExpandWordPayload,
     ReportTranslationPayload,
 )
@@ -200,6 +204,342 @@ async def add_word(
     }
 
 
+@router.get("/history")
+async def word_history(
+    limit: int = 20,
+    auth: AuthContext = Depends(require_auth_context),
+    db: AsyncSession = Depends(get_db),
+):
+    limit = max(1, min(limit, 100))
+    added_rows = await db.execute(
+        select(UserAddedWord)
+        .where(UserAddedWord.user_id == auth.user.id)
+        .order_by(UserAddedWord.added_at.desc())
+        .limit(limit)
+    )
+    added_list = list(added_rows.scalars().all())
+    if not added_list:
+        return {"entries": []}
+
+    word_ids = [a.word_id for a in added_list]
+    words_lookup = await db.execute(select(Word).where(Word.id.in_(word_ids)))
+    words_by_id = {w.id: w for w in words_lookup.scalars().all()}
+
+    lang_ids = {w.language_id for w in words_by_id.values()}
+    lang_lookup = await db.execute(select(Language).where(Language.id.in_(lang_ids)))
+    lang_by_id = {l.id: l for l in lang_lookup.scalars().all()}
+
+    lex_lookup = await db.execute(
+        select(WordLexicalEntry).where(WordLexicalEntry.word_id.in_(word_ids))
+    )
+    lex_by_word: dict[int, WordLexicalEntry] = {
+        l.word_id: l for l in lex_lookup.scalars().all()
+    }
+
+    native_lookup = await db.execute(
+        select(WordNativeTranslation)
+        .where(WordNativeTranslation.word_id.in_(word_ids))
+        .order_by(WordNativeTranslation.priority.asc(), WordNativeTranslation.id.asc())
+    )
+    natives_by_pair: dict[tuple[int, int], list[WordNativeTranslation]] = {}
+    for n in native_lookup.scalars().all():
+        natives_by_pair.setdefault((n.word_id, n.native_language_id), []).append(n)
+
+    tag_lookup = await db.execute(
+        select(WordTag.word_id, Tag.slug)
+        .join(Tag, Tag.id == WordTag.tag_id)
+        .where(WordTag.word_id.in_(word_ids))
+    )
+    tags_by_word: dict[int, list[str]] = {}
+    for word_id, slug in tag_lookup.all():
+        tags_by_word.setdefault(word_id, []).append(slug)
+
+    entries = []
+    for added in added_list:
+        word = words_by_id.get(added.word_id)
+        if word is None:
+            continue
+        lex = lex_by_word.get(word.id)
+        if lex is None:
+            continue
+        learning_code, _, mother_code = added.language_pair.partition("_")
+        mother_lang = next(
+            (l for l in lang_by_id.values() if l.code.lower() == mother_code.lower()),
+            None,
+        )
+        natives = (
+            natives_by_pair.get((word.id, mother_lang.id), []) if mother_lang else []
+        )
+        entries.append(
+            {
+                "added_id": added.id,
+                "word_id": word.id,
+                "text": word.text,
+                "language_pair": added.language_pair,
+                "learning_language_code": learning_code.upper(),
+                "mother_tongue_code": mother_code.upper(),
+                "added_at": added.added_at.isoformat() if added.added_at else None,
+                "lexical": _serialize_lexical(lex),
+                "natives": [
+                    _serialize_native(n, mother_code.upper()) for n in natives
+                ],
+                "tags": tags_by_word.get(word.id, []),
+            }
+        )
+    return {"entries": entries}
+
+
+async def _resolve_language_pair(
+    db: AsyncSession, language_pair: str
+) -> tuple[Language, Language]:
+    learning_code, _, mother_code = language_pair.lower().partition("_")
+    if not learning_code or not mother_code:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid language_pair (expected e.g. 'en_es')",
+        )
+    rows = await db.execute(
+        select(Language).where(Language.code.in_([learning_code.upper(), mother_code.upper()]))
+    )
+    by_code = {l.code.upper(): l for l in rows.scalars().all()}
+    learning = by_code.get(learning_code.upper())
+    mother = by_code.get(mother_code.upper())
+    if learning is None or mother is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Unknown language in pair: {language_pair}",
+        )
+    if learning.id == mother.id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Learning and mother tongue must differ",
+        )
+    return learning, mother
+
+
+@router.get("/manage")
+async def list_user_words(
+    language_pair: str,
+    auth: AuthContext = Depends(require_auth_context),
+    db: AsyncSession = Depends(get_db),
+):
+    learning, mother = await _resolve_language_pair(db, language_pair)
+    pair_key = f"{learning.code.lower()}_{mother.code.lower()}"
+
+    added_rows = await db.execute(
+        select(UserAddedWord)
+        .where(
+            UserAddedWord.user_id == auth.user.id,
+            UserAddedWord.language_pair == pair_key,
+        )
+        .order_by(UserAddedWord.added_at.desc())
+    )
+    added_list = list(added_rows.scalars().all())
+
+    progress_rows = await db.execute(
+        select(UserProgress).where(
+            UserProgress.user_id == auth.user.id,
+            UserProgress.item_type == ProgressItemType.WORD,
+            UserProgress.language_pair == pair_key,
+        )
+    )
+    progress_by_word: dict[int, UserProgress] = {
+        p.item_id: p for p in progress_rows.scalars().all()
+    }
+
+    word_ids = sorted({a.word_id for a in added_list} | set(progress_by_word.keys()))
+    if not word_ids:
+        return {"entries": []}
+
+    words_lookup = await db.execute(
+        select(Word).where(Word.id.in_(word_ids), Word.language_id == learning.id)
+    )
+    words_by_id = {w.id: w for w in words_lookup.scalars().all()}
+
+    native_lookup = await db.execute(
+        select(WordNativeTranslation)
+        .where(
+            WordNativeTranslation.word_id.in_(word_ids),
+            WordNativeTranslation.native_language_id == mother.id,
+        )
+        .order_by(WordNativeTranslation.priority.asc(), WordNativeTranslation.id.asc())
+    )
+    natives_by_word: dict[int, list[WordNativeTranslation]] = {}
+    for n in native_lookup.scalars().all():
+        natives_by_word.setdefault(n.word_id, []).append(n)
+
+    added_by_word = {a.word_id: a for a in added_list}
+
+    entries = []
+    for word_id in word_ids:
+        word = words_by_id.get(word_id)
+        if word is None:
+            continue
+        added = added_by_word.get(word_id)
+        progress = progress_by_word.get(word_id)
+        natives = natives_by_word.get(word_id, [])
+        entries.append(
+            {
+                "word_id": word.id,
+                "text": word.text,
+                "translation": natives[0].translation if natives else None,
+                "in_progress": progress is not None,
+                "unlocked": bool(progress.unlocked) if progress else False,
+                "probability": float(progress.probability) if progress else None,
+                "added_at": added.added_at.isoformat() if added and added.added_at else None,
+            }
+        )
+    entries.sort(key=lambda e: (not e["in_progress"], e["text"]))
+    return {"entries": entries}
+
+
+@router.post("/manage/{word_id}/delete")
+async def delete_user_word(
+    word_id: int,
+    request: Request,
+    payload: DeleteUserWordPayload,
+    auth: AuthContext = Depends(require_auth_context),
+    db: AsyncSession = Depends(get_db),
+):
+    validate_csrf(request, payload.csrf_token)
+    pair_key = payload.language_pair.lower()
+
+    await db.execute(
+        delete(UserAddedWord).where(
+            UserAddedWord.user_id == auth.user.id,
+            UserAddedWord.word_id == word_id,
+            UserAddedWord.language_pair == pair_key,
+        )
+    )
+    await db.execute(
+        delete(UserProgress).where(
+            UserProgress.user_id == auth.user.id,
+            UserProgress.item_type == ProgressItemType.WORD,
+            UserProgress.item_id == word_id,
+            UserProgress.language_pair == pair_key,
+        )
+    )
+    await db.commit()
+    return {"ok": True}
+
+
+@router.post("/add-offline")
+async def add_word_offline(
+    request: Request,
+    payload: AddWordOfflinePayload,
+    auth: AuthContext = Depends(require_auth_context),
+    db: AsyncSession = Depends(get_db),
+):
+    validate_csrf(request, payload.csrf_token)
+    pair_key = f"{payload.learning_lang_code.lower()}_{payload.mother_lang_code.lower()}"
+    learning, mother = await _resolve_language_pair(db, pair_key)
+
+    learning_text = payload.learning_text.strip().lower()
+    native_text = payload.native_text.strip()
+    if not learning_text or not native_text:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Both words are required",
+        )
+
+    word_lookup = await db.execute(
+        select(Word).where(Word.text == learning_text, Word.language_id == learning.id)
+    )
+    word = word_lookup.scalar_one_or_none()
+    if word is None:
+        word = Word(text=learning_text, language_id=learning.id)
+        db.add(word)
+        await db.flush()
+
+    lex_lookup = await db.execute(
+        select(WordLexicalEntry).where(WordLexicalEntry.word_id == word.id)
+    )
+    lex = lex_lookup.scalar_one_or_none()
+    if lex is None:
+        lex = WordLexicalEntry(
+            word_id=word.id,
+            definition=native_text,
+            synonyms=[],
+            examples=[],
+            source="manual",
+        )
+        db.add(lex)
+        await db.flush()
+
+    native_lookup = await db.execute(
+        select(WordNativeTranslation).where(
+            WordNativeTranslation.word_id == word.id,
+            WordNativeTranslation.native_language_id == mother.id,
+            WordNativeTranslation.translation == native_text,
+        )
+    )
+    if native_lookup.scalar_one_or_none() is None:
+        db.add(
+            WordNativeTranslation(
+                word_id=word.id,
+                native_language_id=mother.id,
+                translation=native_text,
+                note=payload.note,
+                source="manual",
+                priority=0,
+            )
+        )
+        await db.flush()
+
+    existing_added = await db.execute(
+        select(UserAddedWord).where(
+            UserAddedWord.user_id == auth.user.id,
+            UserAddedWord.word_id == word.id,
+            UserAddedWord.language_pair == pair_key,
+        )
+    )
+    added = existing_added.scalar_one_or_none()
+    if added is None:
+        added = UserAddedWord(
+            user_id=auth.user.id,
+            word_id=word.id,
+            language_pair=pair_key,
+            context_hint=payload.note,
+        )
+        db.add(added)
+        await db.flush()
+
+    preference = await ensure_user_preference(db, auth.user.id)
+    force_unlocked = False
+    if preference.force_unlock_added_words:
+        existing_progress = await db.execute(
+            select(UserProgress).where(
+                UserProgress.user_id == auth.user.id,
+                UserProgress.item_type == ProgressItemType.WORD,
+                UserProgress.item_id == word.id,
+                UserProgress.language_pair == pair_key,
+            )
+        )
+        if existing_progress.scalar_one_or_none() is None:
+            db.add(
+                UserProgress(
+                    user_id=auth.user.id,
+                    item_type=ProgressItemType.WORD,
+                    item_id=word.id,
+                    language_pair=pair_key,
+                    probability=1000.0,
+                    unlocked=True,
+                    extra_data={"source": "user_added_manual"},
+                )
+            )
+            force_unlocked = True
+
+    await db.commit()
+    return {
+        "ok": True,
+        "word_id": word.id,
+        "text": word.text,
+        "translation": native_text,
+        "language_pair": pair_key,
+        "force_unlocked": force_unlocked,
+    }
+
+
 @router.get("/priority-queue")
 async def priority_queue(
     auth: AuthContext = Depends(require_auth_context),
@@ -253,6 +593,15 @@ async def expand_word_endpoint(
     learning = lang_lookup.scalar_one_or_none()
     if learning is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Word language unknown")
+    existing_lex = await db.execute(
+        select(WordLexicalEntry).where(WordLexicalEntry.word_id == word.id)
+    )
+    existing = existing_lex.scalar_one_or_none()
+    if existing is not None and existing.extended_content:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Extended content already exists for this word.",
+        )
     try:
         lexical = await expand_word(db, word=word, learning_lang=learning)
     except WordAIError as exc:

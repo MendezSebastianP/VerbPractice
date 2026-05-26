@@ -218,11 +218,12 @@ visual-install: check-venv
 setup: env install db-up seed spa-build
 	@printf "VerbPractice is ready.\n"
 
-dev: check-venv
+dev: check-venv db-up db-wait migrate
 	@printf "Dev mode: FastAPI + Svelte auto-builder running — refresh browser after saves (Ctrl+C stops both)\n"
-	@trap 'kill 0' SIGINT SIGTERM EXIT; \
-	$(UVICORN) $(APP_MODULE) --reload --host $(HOST) --port $(PORT) & \
-	node $(FRONTEND_DIR)/watch.mjs
+	@$(UVICORN) $(APP_MODULE) --reload --host $(HOST) --port $(PORT) & \
+	UVICORN_PID=$$!; \
+	node $(FRONTEND_DIR)/watch.mjs; \
+	kill $$UVICORN_PID 2>/dev/null; wait $$UVICORN_PID 2>/dev/null; true
 
 run: check-venv
 	$(UVICORN) $(APP_MODULE) --reload --host $(HOST) --port $(PORT)

@@ -20,6 +20,8 @@ import type {
   TranslationState,
   UserSettings,
   UserSettingsPatch,
+  UserWordEntry,
+  WordHistoryEntry,
 } from './types';
 
 export class ApiError extends Error {
@@ -185,6 +187,33 @@ export const api = {
       body: JSON.stringify(payload),
     }),
   priorityQueue: () => request<{ entries: PriorityQueueEntry[] }>('/api/words/priority-queue'),
+  wordHistory: (limit = 20) =>
+    request<{ entries: WordHistoryEntry[] }>(`/api/words/history?limit=${limit}`),
+  listUserWords: (language_pair: string) =>
+    request<{ entries: UserWordEntry[] }>(
+      `/api/words/manage?language_pair=${encodeURIComponent(language_pair)}`,
+    ),
+  deleteUserWord: (word_id: number, language_pair: string, csrf_token: string) =>
+    request<{ ok: boolean }>(`/api/words/manage/${word_id}/delete`, {
+      method: 'POST',
+      body: JSON.stringify({ language_pair, csrf_token }),
+    }),
+  addWordOffline: (payload: {
+    learning_text: string;
+    native_text: string;
+    learning_lang_code: string;
+    mother_lang_code: string;
+    note?: string;
+    csrf_token: string;
+  }) =>
+    request<{
+      ok: boolean;
+      word_id: number;
+      text: string;
+      translation: string;
+      language_pair: string;
+      force_unlocked: boolean;
+    }>('/api/words/add-offline', { method: 'POST', body: JSON.stringify(payload) }),
   adminMonitor: () => request<MonitorPayload>('/api/admin/monitor'),
   adminContentSummary: () => request<AdminContentSummaryPayload>('/api/admin/content/summary'),
   adminWords: (params: { search?: string; verified?: string; limit?: number } = {}) =>

@@ -3,6 +3,7 @@
   import { fade } from 'svelte/transition';
   import { api, ApiError } from '../api';
   import type {
+    AdminAiUsagePayload,
     AdminConjugationRow,
     AdminContentSummaryPayload,
     AdminVerbRow,
@@ -15,9 +16,10 @@
 
   let loading = true;
   let error = '';
-  let tab: 'runtime' | 'words' | 'verbs' | 'conjugations' = 'runtime';
+  let tab: 'runtime' | 'financials' | 'words' | 'verbs' | 'conjugations' = 'runtime';
   let data: MonitorPayload | null = null;
   let summary: AdminContentSummaryPayload | null = null;
+  let aiUsage: AdminAiUsagePayload | null = null;
   let timer: number | undefined;
 
   let wordRows: AdminWordRow[] = [];
@@ -66,6 +68,10 @@
     summary = await api.adminContentSummary();
   }
 
+  async function loadFinancials(): Promise<void> {
+    aiUsage = await api.adminAiUsage(80);
+  }
+
   async function loadWords(): Promise<void> {
     wordRows = (await api.adminWords({ search: wordSearch, verified: verifiedFilter === 'all' ? '' : verifiedFilter })).rows;
   }
@@ -85,12 +91,17 @@
       await loadRuntime();
       return;
     }
+    if (activeTab === 'financials') {
+      await loadSummary();
+      await loadFinancials();
+      return;
+    }
     await loadSummary();
     if (activeTab === 'words') {
       await loadWords();
     } else if (activeTab === 'verbs') {
       await loadVerbs();
-    } else {
+    } else if (activeTab === 'conjugations') {
       await loadConjugations();
     }
   }
@@ -111,6 +122,14 @@
   function setTab(nextTab: typeof tab): void {
     tab = nextTab;
     void load();
+  }
+
+  function money(value: number, digits = 4): string {
+    return `$${value.toFixed(digits)}`;
+  }
+
+  function formatNumber(value: number): string {
+    return value.toLocaleString();
   }
 
   async function createWord(): Promise<void> {
@@ -273,6 +292,7 @@
         </div>
         <div class="pill-row">
           <button class:option-on={tab === 'runtime'} class="option-chip" type="button" role="tab" aria-selected={tab === 'runtime'} on:click={() => setTab('runtime')}>Runtime</button>
+          <button class:option-on={tab === 'financials'} class="option-chip" type="button" role="tab" aria-selected={tab === 'financials'} on:click={() => setTab('financials')}>Financials</button>
           <button class:option-on={tab === 'words'} class="option-chip" type="button" role="tab" aria-selected={tab === 'words'} on:click={() => setTab('words')}>Words</button>
           <button class:option-on={tab === 'verbs'} class="option-chip" type="button" role="tab" aria-selected={tab === 'verbs'} on:click={() => setTab('verbs')}>Verbs</button>
           <button class:option-on={tab === 'conjugations'} class="option-chip" type="button" role="tab" aria-selected={tab === 'conjugations'} on:click={() => setTab('conjugations')}>Conjugations</button>
@@ -372,6 +392,141 @@
             </article>
           {/if}
         </section>
+      {:else if tab === 'financials'}
+        {#if aiUsage}
+          <section class="monitor-stack">
+            <section class="metric-grid monitor-cards">
+              <article class="stat-card compact-stat"><span>Total AI cost</span><strong>{money(aiUsage.financials.total_cost_usd, 2)}</strong></article>
+              <article class="stat-card compact-stat"><span>Translation cost</span><strong>{money(aiUsage.financials.translation_cost_usd, 2)}</strong></article>
+              <article class="stat-card compact-stat"><span>Avg/translation</span><strong>{money(aiUsage.financials.average_translation_cost_usd, 5)}</strong></article>
+              <article class="stat-card compact-stat"><span>AI calls</span><strong>{formatNumber(aiUsage.financials.total_calls)}</strong></article>
+              <article class="stat-card compact-stat"><span>Tokens</span><strong>{formatNumber(aiUsage.financials.total_tokens)}</strong></article>
+              <article class="stat-card compact-stat"><span>Translations</span><strong>{formatNumber(aiUsage.financials.translation_calls)}</strong></article>
+            </section>
+
+            <section class="dashboard-grid">
+              <article class="glass-panel">
+                <div class="section-head">
+                  <div>
+                    <p class="eyebrow">AI spend</p>
+                    <h2>Usage by feature</h2>
+                  </div>
+                  <button class="secondary-button" type="button" on:click={loadFinancials}>Refresh</button>
+                </div>
+                <div class="table-scroll" style="margin-top: 1rem;">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Feature</th>
+                        <th>Calls</th>
+                        <th>Cost</th>
+                        <th>Avg cost</th>
+                        <th>Input</th>
+                        <th>Output</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {#each aiUsage.by_feature as row}
+                        <tr>
+                          <td>{row.label}</td>
+                          <td>{formatNumber(row.calls)}</td>
+                          <td>{money(row.cost_usd, 5)}</td>
+                          <td>{money(row.average_cost_usd, 5)}</td>
+                          <td>{formatNumber(row.prompt_tokens)}</td>
+                          <td>{formatNumber(row.completion_tokens)}</td>
+                        </tr>
+                      {:else}
+                        <tr><td colspan="6">No AI usage recorded yet</td></tr>
+                      {/each}
+                    </tbody>
+                  </table>
+                </div>
+              </article>
+
+              <article class="glass-panel">
+                <div class="section-head">
+                  <div>
+                    <p class="eyebrow">Pricing</p>
+                    <h2>Model rates and users</h2>
+                  </div>
+                </div>
+                <div class="table-scroll" style="margin-top: 1rem;">
+                  <table class="data-table">
+                    <thead><tr><th>Model</th><th>Calls</th><th>Cost</th><th>Tokens</th><th>Input / 1M</th><th>Output / 1M</th></tr></thead>
+                    <tbody>
+                      {#each aiUsage.by_model as row}
+                        <tr>
+                          <td>{row.model}</td>
+                          <td>{formatNumber(row.calls)}</td>
+                          <td>{money(row.cost_usd, 5)}</td>
+                          <td>{formatNumber(row.total_tokens)}</td>
+                          <td>{money(row.input_cost_per_million, 2)}</td>
+                          <td>{money(row.output_cost_per_million, 2)}</td>
+                        </tr>
+                      {:else}
+                        <tr><td colspan="6">No model usage yet</td></tr>
+                      {/each}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div class="table-scroll" style="margin-top: 1rem;">
+                  <table class="data-table">
+                    <thead><tr><th>User</th><th>Calls</th><th>Total cost</th></tr></thead>
+                    <tbody>
+                      {#each aiUsage.top_users as user}
+                        <tr><td>{user.username}</td><td>{formatNumber(user.calls)}</td><td>{money(user.total_cost_usd, 5)}</td></tr>
+                      {:else}
+                        <tr><td colspan="3">No user usage yet</td></tr>
+                      {/each}
+                    </tbody>
+                  </table>
+                </div>
+              </article>
+            </section>
+
+            <article class="glass-panel">
+              <div class="section-head">
+                <div>
+                  <p class="eyebrow">Recent calls</p>
+                  <h2>Per-translation AI costs</h2>
+                </div>
+              </div>
+              <div class="table-scroll" style="margin-top: 1rem;">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>When</th>
+                      <th>User</th>
+                      <th>Feature</th>
+                      <th>Request</th>
+                      <th>Model</th>
+                      <th>Tokens</th>
+                      <th>Cost</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {#each aiUsage.recent as row}
+                      <tr>
+                        <td>{row.created_at ? new Date(row.created_at).toLocaleString() : '-'}</td>
+                        <td>{row.user ?? '-'}</td>
+                        <td>{row.label}</td>
+                        <td>{row.request_label ?? '-'}</td>
+                        <td>{row.model}</td>
+                        <td>{formatNumber(row.total_tokens)}</td>
+                        <td>{money(row.cost_usd, 6)}</td>
+                      </tr>
+                    {:else}
+                      <tr><td colspan="7">No AI calls yet</td></tr>
+                    {/each}
+                  </tbody>
+                </table>
+              </div>
+            </article>
+          </section>
+        {:else}
+          <div class="glass-panel skeleton-card"></div>
+        {/if}
       {:else if tab === 'words'}
         <article class="glass-panel admin-workbench">
           <div class="section-head">

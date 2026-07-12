@@ -68,6 +68,7 @@ class AddWordPayload(CsrfPayload):
     input_text: str = Field(min_length=1, max_length=128)
     context: str | None = Field(default=None, max_length=512)
     learning_lang_code: str | None = Field(default=None, max_length=8)
+    mother_lang_code: str | None = Field(default=None, max_length=8)
 
 
 class AddWordOfflinePayload(CsrfPayload):
@@ -76,6 +77,13 @@ class AddWordOfflinePayload(CsrfPayload):
     learning_lang_code: str = Field(min_length=2, max_length=8)
     mother_lang_code: str = Field(min_length=2, max_length=8)
     note: str | None = Field(default=None, max_length=256)
+
+
+class OcrExtractResponse(BaseModel):
+    text: str
+    lines: list[str]
+    mean_confidence: float | None = None
+    ocr_lang: str
 
 
 class DeleteUserWordPayload(CsrfPayload):

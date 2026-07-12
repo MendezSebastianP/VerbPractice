@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-.DEFAULT_GOAL := help
+.DEFAULT_GOAL := up
 
 VENV_DIR ?= .venv
 VENV_BIN := $(VENV_DIR)/bin
@@ -12,7 +12,10 @@ ALEMBIC := $(VENV_BIN)/alembic
 DOCKER := docker
 
 APP_MODULE ?= app.main:app
-HOST ?= 127.0.0.1
+# Bind to all interfaces by default so the app is reachable from other devices
+# on the LAN (e.g. testing on your phone). Override with HOST=127.0.0.1 to
+# restrict to loopback only.
+HOST ?= 0.0.0.0
 PORT ?= 8000
 SPA_PORT ?= 5173
 NODE_IMAGE ?= node:20
@@ -30,10 +33,12 @@ POSTGRES_PASSWORD ?= postgres
 POSTGRES_DB ?= verbpractice
 POSTGRES_PORT ?= 5432
 
-.PHONY: help venv install check-venv env db-up db-wait db-down db-logs init-db migrate migrate-adopt migrate-stamp migration seed inventory batch-template import-curated validate-curated curated-report grant-admin spa-install spa-check spa-build visual-install e2e visual-check setup run health profile backup-db test validate smoke clean
+.PHONY: help up venv install check-venv env db-up db-wait db-down db-logs init-db migrate migrate-adopt migrate-stamp migration seed inventory batch-template import-curated validate-curated curated-report grant-admin spa-install spa-check spa-build visual-install e2e visual-check setup run health profile backup-db test validate smoke clean
 
 help:
 	@printf "Important targets:\n"
+	@printf "  make            Bootstrap everything, then start the app (default: 'up')\n"
+	@printf "  make up         Full build (env + install + db + migrate + seed + SPA) then run\n"
 	@printf "  make venv       Create the local virtual environment\n"
 	@printf "  make install    Install app + dev dependencies into .venv\n"
 	@printf "  make env        Create .env from .env.example if missing\n"
@@ -218,6 +223,14 @@ visual-install: check-venv
 setup: env install db-up seed spa-build
 	@printf "VerbPractice is ready.\n"
 
+# Default target: bring the whole app up from a clean checkout in one command.
+# `setup` builds everything (env, deps, database, migrations, seed data, SPA
+# bundle); then we hand off to `run` to start the server. Both `setup` and the
+# seed step are idempotent, so re-running `make` is safe.
+up: setup
+	@printf "\nStarting VerbPractice on http://$(HOST):$(PORT) (Ctrl+C to stop)...\n"
+	@$(MAKE) run
+
 dev: check-venv db-up db-wait migrate
 	@printf "Dev mode: FastAPI + Svelte auto-builder running — refresh browser after saves (Ctrl+C stops both)\n"
 	@$(UVICORN) $(APP_MODULE) --reload --host $(HOST) --port $(PORT) & \
@@ -228,9 +241,11 @@ dev: check-venv db-up db-wait migrate
 run: check-venv
 	$(UVICORN) $(APP_MODULE) --reload --host $(HOST) --port $(PORT)
 
+HEALTH_HOST ?= 127.0.0.1
+
 health:
-	curl -fsS http://$(HOST):$(PORT)/healthz && printf "\n"
-	curl -fsS http://$(HOST):$(PORT)/readyz && printf "\n"
+	curl -fsS http://$(HEALTH_HOST):$(PORT)/healthz && printf "\n"
+	curl -fsS http://$(HEALTH_HOST):$(PORT)/readyz && printf "\n"
 
 profile: check-venv
 	$(PYTHON) scripts/profile_endpoints.py --iterations $(PROFILE_ITERATIONS)

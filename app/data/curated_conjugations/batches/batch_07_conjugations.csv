@@ -875,12 +875,12 @@ FR,entretenir,Indicatif,Futur,"il (elle, on)",entretiendra,7,reviewed,repo-local
 FR,entretenir,Indicatif,Futur,nous,entretiendrons,7,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
 FR,entretenir,Indicatif,Futur,vous,entretiendrez,7,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
 FR,entretenir,Indicatif,Futur,ils (elles),entretiendront,7,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
-FR,entretenir,Indicatif,Passé composé,je,ai entreteni,7,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
-FR,entretenir,Indicatif,Passé composé,tu,as entreteni,7,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
-FR,entretenir,Indicatif,Passé composé,"il (elle, on)",a entreteni,7,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
-FR,entretenir,Indicatif,Passé composé,nous,avons entreteni,7,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
-FR,entretenir,Indicatif,Passé composé,vous,avez entreteni,7,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
-FR,entretenir,Indicatif,Passé composé,ils (elles),ont entreteni,7,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
+FR,entretenir,Indicatif,Passé composé,je,ai entretenu,7,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
+FR,entretenir,Indicatif,Passé composé,tu,as entretenu,7,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
+FR,entretenir,Indicatif,Passé composé,"il (elle, on)",a entretenu,7,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
+FR,entretenir,Indicatif,Passé composé,nous,avons entretenu,7,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
+FR,entretenir,Indicatif,Passé composé,vous,avez entretenu,7,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
+FR,entretenir,Indicatif,Passé composé,ils (elles),ont entretenu,7,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
 FR,entretenir,Indicatif,Imparfait,je,entretenais,7,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
 FR,entretenir,Indicatif,Imparfait,tu,entretenais,7,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
 FR,entretenir,Indicatif,Imparfait,"il (elle, on)",entretenait,7,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
@@ -1199,12 +1199,12 @@ FR,s'approcher,Indicatif,Futur,"il (elle, on)",s'approchera,7,reviewed,pronomina
 FR,s'approcher,Indicatif,Futur,nous,nous approcherons,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,s'approcher,Indicatif,Futur,vous,vous approcherez,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,s'approcher,Indicatif,Futur,ils (elles),s'approcheront,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
-FR,s'approcher,Indicatif,Passé composé,je,me suis approché,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
-FR,s'approcher,Indicatif,Passé composé,tu,t'es approché,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
-FR,s'approcher,Indicatif,Passé composé,"il (elle, on)",s'est approché,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
-FR,s'approcher,Indicatif,Passé composé,nous,nous sommes approchés,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
-FR,s'approcher,Indicatif,Passé composé,vous,vous êtes approchés,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
-FR,s'approcher,Indicatif,Passé composé,ils (elles),se sont approchés,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
+FR,s'approcher,Indicatif,Passé composé,je,me suis approché(e),7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
+FR,s'approcher,Indicatif,Passé composé,tu,t'es approché(e),7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
+FR,s'approcher,Indicatif,Passé composé,"il (elle, on)",s'est approché(e),7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
+FR,s'approcher,Indicatif,Passé composé,nous,nous sommes approché(e)s,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
+FR,s'approcher,Indicatif,Passé composé,vous,vous êtes approché(e)(s),7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
+FR,s'approcher,Indicatif,Passé composé,ils (elles),se sont approché(e)s,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,s'approcher,Indicatif,Imparfait,je,m'approchais,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,s'approcher,Indicatif,Imparfait,tu,t'approchais,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,s'approcher,Indicatif,Imparfait,"il (elle, on)",s'approchait,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
@@ -1241,8 +1241,8 @@ FR,s'approcher,Subjonctif,Subjonctif imparfait,"il (elle, on)",s'approchât,7,re
 FR,s'approcher,Subjonctif,Subjonctif imparfait,nous,nous approchassions,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,s'approcher,Subjonctif,Subjonctif imparfait,vous,vous approchassiez,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,s'approcher,Subjonctif,Subjonctif imparfait,ils (elles),s'approchassent,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
-FR,accroître,Indicatif,Présent,je,accroîs,7,reviewed,irregular/compound paradigm patched manually; QA recommended
-FR,accroître,Indicatif,Présent,tu,accroîs,7,reviewed,irregular/compound paradigm patched manually; QA recommended
+FR,accroître,Indicatif,Présent,je,accrois,7,reviewed,irregular/compound paradigm patched manually; QA recommended
+FR,accroître,Indicatif,Présent,tu,accrois,7,reviewed,irregular/compound paradigm patched manually; QA recommended
 FR,accroître,Indicatif,Présent,"il (elle, on)",accroît,7,reviewed,irregular/compound paradigm patched manually; QA recommended
 FR,accroître,Indicatif,Présent,nous,accroissons,7,reviewed,irregular/compound paradigm patched manually; QA recommended
 FR,accroître,Indicatif,Présent,vous,accroissez,7,reviewed,irregular/compound paradigm patched manually; QA recommended
@@ -1272,7 +1272,7 @@ FR,accroître,Conditionnel,Conditionnel présent,nous,accroîtrions,7,reviewed,i
 FR,accroître,Conditionnel,Conditionnel présent,vous,accroîtriez,7,reviewed,irregular/compound paradigm patched manually; QA recommended
 FR,accroître,Conditionnel,Conditionnel présent,ils (elles),accroîtraient,7,reviewed,irregular/compound paradigm patched manually; QA recommended
 FR,accroître,Impératif,Impératif,je,-,7,reviewed,irregular/compound paradigm patched manually; QA recommended; French imperative only uses tu / nous / vous; placeholder - used for unsupported slot
-FR,accroître,Impératif,Impératif,tu,accroîs,7,reviewed,irregular/compound paradigm patched manually; QA recommended
+FR,accroître,Impératif,Impératif,tu,accrois,7,reviewed,irregular/compound paradigm patched manually; QA recommended
 FR,accroître,Impératif,Impératif,"il (elle, on)",-,7,reviewed,irregular/compound paradigm patched manually; QA recommended; French imperative only uses tu / nous / vous; placeholder - used for unsupported slot
 FR,accroître,Impératif,Impératif,nous,accroissons,7,reviewed,irregular/compound paradigm patched manually; QA recommended
 FR,accroître,Impératif,Impératif,vous,accroissez,7,reviewed,irregular/compound paradigm patched manually; QA recommended
@@ -1523,12 +1523,12 @@ FR,se débarrasser,Indicatif,Futur,"il (elle, on)",se débarrassera,7,reviewed,p
 FR,se débarrasser,Indicatif,Futur,nous,nous débarrasserons,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,se débarrasser,Indicatif,Futur,vous,vous débarrasserez,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,se débarrasser,Indicatif,Futur,ils (elles),se débarrasseront,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
-FR,se débarrasser,Indicatif,Passé composé,je,me suis débarrassé,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
-FR,se débarrasser,Indicatif,Passé composé,tu,t'es débarrassé,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
-FR,se débarrasser,Indicatif,Passé composé,"il (elle, on)",s'est débarrassé,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
-FR,se débarrasser,Indicatif,Passé composé,nous,nous sommes débarrassés,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
-FR,se débarrasser,Indicatif,Passé composé,vous,vous êtes débarrassés,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
-FR,se débarrasser,Indicatif,Passé composé,ils (elles),se sont débarrassés,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
+FR,se débarrasser,Indicatif,Passé composé,je,me suis débarrassé(e),7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
+FR,se débarrasser,Indicatif,Passé composé,tu,t'es débarrassé(e),7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
+FR,se débarrasser,Indicatif,Passé composé,"il (elle, on)",s'est débarrassé(e),7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
+FR,se débarrasser,Indicatif,Passé composé,nous,nous sommes débarrassé(e)s,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
+FR,se débarrasser,Indicatif,Passé composé,vous,vous êtes débarrassé(e)(s),7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
+FR,se débarrasser,Indicatif,Passé composé,ils (elles),se sont débarrassé(e)s,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,se débarrasser,Indicatif,Imparfait,je,me débarrassais,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,se débarrasser,Indicatif,Imparfait,tu,te débarrassais,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,se débarrasser,Indicatif,Imparfait,"il (elle, on)",se débarrassait,7,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
@@ -4379,66 +4379,66 @@ ES,luchar,Indicativo,Pretérito pluscuamperfecto,él,había luchado,7,reviewed,
 ES,luchar,Indicativo,Pretérito pluscuamperfecto,nosotros,habíamos luchado,7,reviewed,
 ES,luchar,Indicativo,Pretérito pluscuamperfecto,vosotros,habíais luchado,7,reviewed,
 ES,luchar,Indicativo,Pretérito pluscuamperfecto,ellos,habían luchado,7,reviewed,
-ES,acercarse à,Indicativo,Presente,yo,me acerco à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Presente,tú,te acercas à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Presente,él,se acerca à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Presente,nosotros,nos acercamos à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Presente,vosotros,os acercáis à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Presente,ellos,se acercan à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Futuro,yo,me acercaré à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Futuro,tú,te acercarás à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Futuro,él,se acercará à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Futuro,nosotros,nos acercaremos à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Futuro,vosotros,os acercaréis à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Futuro,ellos,se acercarán à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Pretérito perfecto compuesto,yo,me he acercado à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Pretérito perfecto compuesto,tú,te has acercado à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Pretérito perfecto compuesto,él,se ha acercado à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Pretérito perfecto compuesto,nosotros,nos hemos acercado à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Pretérito perfecto compuesto,vosotros,os habéis acercado à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Pretérito perfecto compuesto,ellos,se han acercado à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Pretérito imperfecto,yo,me acercaba à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Pretérito imperfecto,tú,te acercabas à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Pretérito imperfecto,él,se acercaba à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Pretérito imperfecto,nosotros,nos acercábamos à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Pretérito imperfecto,vosotros,os acercabais à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Pretérito imperfecto,ellos,se acercaban à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Condicional,Condicional,yo,me acercaría à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Condicional,Condicional,tú,te acercarías à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Condicional,Condicional,él,se acercaría à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Condicional,Condicional,nosotros,nos acercaríamos à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Condicional,Condicional,vosotros,os acercaríais à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Condicional,Condicional,ellos,se acercarían à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Imperativo,Imperativo,yo,-,7,reviewed,pronominal locution; inventory preposition preserved as à; yo imperative placeholder -
-ES,acercarse à,Imperativo,Imperativo,tú,acércate à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Imperativo,Imperativo,él,acérquese à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Imperativo,Imperativo,nosotros,acerquémonos à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Imperativo,Imperativo,vosotros,acercaos à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Imperativo,Imperativo,ellos,acérquense à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Futuro perfecto,yo,me habré acercado à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Futuro perfecto,tú,te habrás acercado à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Futuro perfecto,él,se habrá acercado à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Futuro perfecto,nosotros,nos habremos acercado à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Futuro perfecto,vosotros,os habréis acercado à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Futuro perfecto,ellos,se habrán acercado à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Subjuntivo,Subjuntivo presente,yo,me acerque à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Subjuntivo,Subjuntivo presente,tú,te acerques à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Subjuntivo,Subjuntivo presente,él,se acerque à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Subjuntivo,Subjuntivo presente,nosotros,nos acerquemos à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Subjuntivo,Subjuntivo presente,vosotros,os acerquéis à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Subjuntivo,Subjuntivo presente,ellos,se acerquen à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Pretérito perfecto simple,yo,me acerqué à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Pretérito perfecto simple,tú,te acercaste à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Pretérito perfecto simple,él,se acercó à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Pretérito perfecto simple,nosotros,nos acercamos à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Pretérito perfecto simple,vosotros,os acercasteis à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Pretérito perfecto simple,ellos,se acercaron à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Pretérito pluscuamperfecto,yo,me había acercado à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Pretérito pluscuamperfecto,tú,te habías acercado à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Pretérito pluscuamperfecto,él,se había acercado à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Pretérito pluscuamperfecto,nosotros,nos habíamos acercado à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Pretérito pluscuamperfecto,vosotros,os habíais acercado à,7,reviewed,pronominal locution; inventory preposition preserved as à
-ES,acercarse à,Indicativo,Pretérito pluscuamperfecto,ellos,se habían acercado à,7,reviewed,pronominal locution; inventory preposition preserved as à
+ES,acercarse a,Indicativo,Presente,yo,me acerco a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Presente,tú,te acercas a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Presente,él,se acerca a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Presente,nosotros,nos acercamos a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Presente,vosotros,os acercáis a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Presente,ellos,se acercan a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Futuro,yo,me acercaré a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Futuro,tú,te acercarás a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Futuro,él,se acercará a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Futuro,nosotros,nos acercaremos a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Futuro,vosotros,os acercaréis a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Futuro,ellos,se acercarán a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Pretérito perfecto compuesto,yo,me he acercado a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Pretérito perfecto compuesto,tú,te has acercado a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Pretérito perfecto compuesto,él,se ha acercado a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Pretérito perfecto compuesto,nosotros,nos hemos acercado a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Pretérito perfecto compuesto,vosotros,os habéis acercado a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Pretérito perfecto compuesto,ellos,se han acercado a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Pretérito imperfecto,yo,me acercaba a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Pretérito imperfecto,tú,te acercabas a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Pretérito imperfecto,él,se acercaba a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Pretérito imperfecto,nosotros,nos acercábamos a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Pretérito imperfecto,vosotros,os acercabais a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Pretérito imperfecto,ellos,se acercaban a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Condicional,Condicional,yo,me acercaría a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Condicional,Condicional,tú,te acercarías a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Condicional,Condicional,él,se acercaría a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Condicional,Condicional,nosotros,nos acercaríamos a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Condicional,Condicional,vosotros,os acercaríais a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Condicional,Condicional,ellos,se acercarían a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Imperativo,Imperativo,yo,-,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA; yo imperative placeholder -
+ES,acercarse a,Imperativo,Imperativo,tú,acércate a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Imperativo,Imperativo,él,acérquese a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Imperativo,Imperativo,nosotros,acerquémonos a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Imperativo,Imperativo,vosotros,acercaos a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Imperativo,Imperativo,ellos,acérquense a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Futuro perfecto,yo,me habré acercado a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Futuro perfecto,tú,te habrás acercado a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Futuro perfecto,él,se habrá acercado a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Futuro perfecto,nosotros,nos habremos acercado a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Futuro perfecto,vosotros,os habréis acercado a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Futuro perfecto,ellos,se habrán acercado a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Subjuntivo,Subjuntivo presente,yo,me acerque a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Subjuntivo,Subjuntivo presente,tú,te acerques a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Subjuntivo,Subjuntivo presente,él,se acerque a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Subjuntivo,Subjuntivo presente,nosotros,nos acerquemos a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Subjuntivo,Subjuntivo presente,vosotros,os acerquéis a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Subjuntivo,Subjuntivo presente,ellos,se acerquen a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Pretérito perfecto simple,yo,me acerqué a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Pretérito perfecto simple,tú,te acercaste a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Pretérito perfecto simple,él,se acercó a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Pretérito perfecto simple,nosotros,nos acercamos a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Pretérito perfecto simple,vosotros,os acercasteis a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Pretérito perfecto simple,ellos,se acercaron a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Pretérito pluscuamperfecto,yo,me había acercado a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Pretérito pluscuamperfecto,tú,te habías acercado a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Pretérito pluscuamperfecto,él,se había acercado a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Pretérito pluscuamperfecto,nosotros,nos habíamos acercado a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Pretérito pluscuamperfecto,vosotros,os habíais acercado a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
+ES,acercarse a,Indicativo,Pretérito pluscuamperfecto,ellos,se habían acercado a,7,reviewed,pronominal locution; Spanish preposition normalized to a during QA
 ES,incrementar,Indicativo,Presente,yo,incremento,7,reviewed,
 ES,incrementar,Indicativo,Presente,tú,incrementas,7,reviewed,
 ES,incrementar,Indicativo,Presente,él,incrementa,7,reviewed,

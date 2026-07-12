@@ -5,6 +5,8 @@
 - Keep PostgreSQL outside the app process and enable daily backups.
 - Build the SPA bundle before deploys with `make spa-build`.
 - Point health checks to `/healthz` and readiness checks to `/readyz`.
+- Install Tesseract for the photo OCR feature:
+  `apt install tesseract-ocr tesseract-ocr-eng tesseract-ocr-fra tesseract-ocr-spa tesseract-ocr-rus`.
 
 ## Environment
 - `APP_ENV=production`
@@ -32,6 +34,9 @@ If you are adopting Alembic on an already-running database that came from the ea
 - Cache `/static/*` aggressively.
 - Do not cache `/api/*`.
 - Keep HTTPS termination at the proxy.
+- Nginx only: raise the body limit for photo OCR uploads (`/api/words/ocr` accepts
+  up to 8 MB, but Nginx defaults `client_max_body_size` to 1 MB — set it to `10m`).
+  Caddy needs no change.
 
 ## Backup Strategy
 - Run a nightly logical backup:

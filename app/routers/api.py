@@ -58,6 +58,7 @@ from app.services.admin_content import (
     update_verb_row,
     update_word_row,
 )
+from app.services.ai_usage import ai_usage_report
 from app.services.chat_service import stream_chat_response
 from app.services.dashboard_service import dashboard_snapshot, recent_chat_messages, summarize_progress
 from app.services.gamification import (
@@ -1039,6 +1040,20 @@ async def admin_content_summary(
     auth=Depends(require_admin_context),
 ):
     return JSONResponse({"viewer": auth.user.username, "summary": await content_summary(db)})
+
+
+@router.get("/admin/ai/usage")
+async def admin_ai_usage(
+    limit: int = 50,
+    db: AsyncSession = Depends(get_db),
+    auth=Depends(require_admin_context),
+):
+    return JSONResponse(
+        {
+            "viewer": auth.user.username,
+            **await ai_usage_report(db, limit=max(1, min(limit, 200))),
+        }
+    )
 
 
 @router.get("/admin/content/words")

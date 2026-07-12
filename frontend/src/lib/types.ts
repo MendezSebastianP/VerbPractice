@@ -342,6 +342,64 @@ export interface AdminContentSummaryPayload {
   };
 }
 
+export interface AdminAiUsagePayload {
+  viewer: string;
+  financials: {
+    total_cost_usd: number;
+    translation_cost_usd: number;
+    average_translation_cost_usd: number;
+    total_calls: number;
+    translation_calls: number;
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+    translation_tokens: number;
+  };
+  by_feature: Array<{
+    feature: string;
+    label: string;
+    calls: number;
+    cost_usd: number;
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+    average_cost_usd: number;
+  }>;
+  by_model: Array<{
+    model: string;
+    calls: number;
+    cost_usd: number;
+    total_tokens: number;
+    input_cost_per_million: number;
+    output_cost_per_million: number;
+  }>;
+  top_users: Array<{
+    username: string;
+    calls: number;
+    total_cost_usd: number;
+  }>;
+  recent: Array<{
+    id: number;
+    user: string | null;
+    feature: string;
+    label: string;
+    model: string;
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+    cost_usd: number;
+    request_label: string | null;
+    status: string;
+    created_at: string | null;
+    extra_data: Record<string, unknown>;
+  }>;
+  pricing: Array<{
+    model: string;
+    input_cost_per_million: number;
+    output_cost_per_million: number;
+  }>;
+}
+
 export interface AdminWordRow {
   id: number;
   word_id: number;
@@ -482,6 +540,13 @@ export interface AddedWordNotFound {
 }
 
 export type AddWordResponse = AddedWordResult | AddedWordNotFound;
+
+export interface OcrResponse {
+  text: string;
+  lines: string[];
+  mean_confidence: number | null;
+  ocr_lang: string;
+}
 
 export interface UserWordEntry {
   word_id: number;

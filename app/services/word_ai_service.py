@@ -16,6 +16,7 @@ from app.db.models import (
     WordLexicalEntry,
     WordNativeTranslation,
 )
+from app.services.ai_usage import record_ai_usage
 
 WORD_AI_MODEL = "gpt-4o"
 WORD_AI_SOURCE = "openai_gpt4o"
@@ -119,13 +120,24 @@ def _expand_prompt(learning_lang: Language) -> str:
     return (
         f"You are an expert in {language_display_name(learning_lang.code)}. Given a word and its "
         "existing definition, append additional learning content in the target language: "
-        "etymology (if interesting), register (formal/informal/slang), regional variants, "
-        "common collocations, and 1-2 advanced example sentences. Plain text, no JSON, "
-        "no headings, max 250 words."
+        "start with etymology when you can identify a credible origin; skip etymology rather "
+        "than guessing if you cannot. Then include register (formal/informal/slang), regional "
+        "variants, common collocations, and 1-2 advanced example sentences. Plain text, no JSON, "
+        "max 250 words."
     )
 
 
-async def _call_openai_json(client: AsyncOpenAI, system: str, user: str) -> dict:
+async def _call_openai_json(
+    client: AsyncOpenAI,
+    system: str,
+    user: str,
+    *,
+    db: AsyncSession | None = None,
+    user_id: int | None = None,
+    feature: str | None = None,
+    request_label: str | None = None,
+    extra_data: dict[str, object] | None = None,
+) -> dict:
     response = await client.chat.completions.create(
         model=WORD_AI_MODEL,
         response_format={"type": "json_object"},
@@ -134,6 +146,16 @@ async def _call_openai_json(client: AsyncOpenAI, system: str, user: str) -> dict
             {"role": "user", "content": user},
         ],
     )
+    if db is not None and feature is not None:
+        await record_ai_usage(
+            db,
+            user_id=user_id,
+            feature=feature,
+            model=WORD_AI_MODEL,
+            usage=response.usage,
+            request_label=request_label,
+            extra_data=extra_data,
+        )
     if not response.choices:
         raise WordAIError("AI returned no choices")
     content = response.choices[0].message.content or "{}"
@@ -143,7 +165,17 @@ async def _call_openai_json(client: AsyncOpenAI, system: str, user: str) -> dict
         raise WordAIError(f"AI returned invalid JSON: {exc}") from exc
 
 
-async def _call_openai_text(client: AsyncOpenAI, system: str, user: str) -> str:
+async def _call_openai_text(
+    client: AsyncOpenAI,
+    system: str,
+    user: str,
+    *,
+    db: AsyncSession | None = None,
+    user_id: int | None = None,
+    feature: str | None = None,
+    request_label: str | None = None,
+    extra_data: dict[str, object] | None = None,
+) -> str:
     response = await client.chat.completions.create(
         model=WORD_AI_MODEL,
         messages=[
@@ -151,6 +183,16 @@ async def _call_openai_text(client: AsyncOpenAI, system: str, user: str) -> str:
             {"role": "user", "content": user},
         ],
     )
+    if db is not None and feature is not None:
+        await record_ai_usage(
+            db,
+            user_id=user_id,
+            feature=feature,
+            model=WORD_AI_MODEL,
+            usage=response.usage,
+            request_label=request_label,
+            extra_data=extra_data,
+        )
     if not response.choices:
         raise WordAIError("AI returned no choices")
     return response.choices[0].message.content or ""
@@ -195,6 +237,7 @@ async def translate_word(
     mother_tongue: Language,
     context: str | None = None,
     force: bool = False,
+    user_id: int | None = None,
 ) -> TranslatedWord:
     if not settings.openai_api_key:
         raise WordAIError("OPENAI_API_KEY is not configured")
@@ -227,6 +270,17 @@ async def translate_word(
             client,
             _system_prompt(learning_lang, mother_tongue),
             _user_message(cleaned_input, context),
+            db=db,
+            user_id=user_id,
+            feature="word_translate",
+            request_label=f"{cleaned_input} {learning_lang.code}->{mother_tongue.code}",
+            extra_data={
+                "input_text": cleaned_input,
+                "learning_language_code": learning_lang.code,
+                "mother_tongue_code": mother_tongue.code,
+                "context": context or "",
+                "force": force,
+            },
         )
         status = str(payload.get("status") or "exact").lower()
 
@@ -341,6 +395,17 @@ async def translate_word(
         client,
         _native_only_prompt(learning_lang, mother_tongue),
         _user_message(cleaned_input, context),
+        db=db,
+        user_id=user_id,
+        feature="word_native_translate",
+        request_label=f"{cleaned_input} {learning_lang.code}->{mother_tongue.code}",
+        extra_data={
+            "input_text": cleaned_input,
+            "word_id": word_row.id,
+            "learning_language_code": learning_lang.code,
+            "mother_tongue_code": mother_tongue.code,
+            "context": context or "",
+        },
     )
     natives_raw = _normalise_native_entries(native_payload.get("native_translations"))
     general_note = str(native_payload.get("general_note") or "").strip() or None
@@ -451,6 +516,7 @@ async def expand_word(
     *,
     word: Word,
     learning_lang: Language,
+    user_id: int | None = None,
 ) -> WordLexicalEntry:
     if not settings.openai_api_key:
         raise WordAIError("OPENAI_API_KEY is not configured")
@@ -466,6 +532,14 @@ async def expand_word(
         client,
         _expand_prompt(learning_lang),
         f"Word: {word.text}\nExisting definition: {lexical.definition}",
+        db=db,
+        user_id=user_id,
+        feature="word_expand",
+        request_label=f"{word.text} {learning_lang.code}",
+        extra_data={
+            "word_id": word.id,
+            "learning_language_code": learning_lang.code,
+        },
     )
     addition = addition.strip()
     if not addition:

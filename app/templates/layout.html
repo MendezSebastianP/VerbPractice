@@ -18,31 +18,24 @@
     <div class="container nav-wrap">
       <a
         class="brand-lockup"
-        href="/"
-        hx-get="/"
-        hx-target="#page-content"
-        hx-select="#page-content"
-        hx-swap="outerHTML transition:true show:none"
-        hx-push-url="true"
+        href="/app/dashboard"
       >
         <span class="brand-mark">LexArena</span>
         <span class="brand-sub">Adaptive language training</span>
       </a>
 
-      <nav
-        class="menu"
-        aria-label="Primary"
-        hx-boost="true"
-        hx-target="#page-content"
-        hx-select="#page-content"
-        hx-swap="outerHTML transition:true show:none"
-        hx-push-url="true"
-      >
-        <a href="/" class="{% if active_path == '/' %}is-active{% endif %}">Dashboard</a>
-        <a href="/training/words" class="{% if active_path.startswith('/training/words') %}is-active{% endif %}">Words</a>
-        <a href="/training/verbs" class="{% if active_path.startswith('/training/verbs') %}is-active{% endif %}">Verbs</a>
-        <a href="/training/conjugation" class="{% if active_path.startswith('/training/conjugation') %}is-active{% endif %}">Conjugation</a>
-        <a href="/chat" class="{% if active_path.startswith('/chat') %}is-active{% endif %}">AI Tutor</a>
+      <nav class="menu" aria-label="Primary">
+        <a href="/app/dashboard">Dashboard</a>
+        <a href="/app/training/words">Words</a>
+        <a href="/app/training/verbs">Verb Lab</a>
+        <a href="/app/add-word">Add Word</a>
+        <a href="/app/chat">AI Tutor</a>
+        {% if (current_user and current_user.is_admin) or active_path.startswith('/admin') %}
+          <a
+            href="{% if active_path.startswith('/admin') %}/admin/users{% else %}/app/monitor{% endif %}"
+            class="{% if active_path.startswith('/admin') %}is-active{% endif %}"
+          >Admin</a>
+        {% endif %}
       </nav>
 
       <div class="nav-actions" x-data="themeSwitcher()" x-init="init()">
@@ -59,10 +52,6 @@
               <p class="profile-meta">Lv.{{ profile.level if profile else 1 }} · {{ profile.streak_days if profile else 0 }} day streak</p>
             </div>
           </div>
-          <form method="post" action="/auth/logout" class="inline-form">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-            <button class="btn ghost" type="submit">Logout</button>
-          </form>
         {% endif %}
       </div>
     </div>

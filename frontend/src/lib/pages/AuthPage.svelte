@@ -15,12 +15,6 @@
   let loading = false;
   let error = '';
 
-  const features = [
-    'A database-backed training queue that survives reloads and device changes.',
-    'Smooth single-page transitions between words, verbs, conjugation, chat, and monitor.',
-    'A green-glass visual system with light, dark, and arcade personalities.',
-  ];
-
   async function submit(): Promise<void> {
     loading = true;
     error = '';
@@ -44,25 +38,7 @@
   }
 </script>
 
-<section class="auth-layout">
-  <article class="auth-story glass-panel">
-    <p class="eyebrow">LexArena SPA</p>
-    <h1>{mode === 'login' ? 'Return to your training flow.' : 'Build a fresh learning profile.'}</h1>
-    <p class="story-copy">
-      The report called for a full single page application. This client keeps the training loop uninterrupted, with
-      database-backed progress, live monitor visibility, and theme-aware polish.
-    </p>
-
-    <div class="story-grid">
-      {#each features as feature}
-        <div class="story-item">
-          <span class="story-dot"></span>
-          <p>{feature}</p>
-        </div>
-      {/each}
-    </div>
-  </article>
-
+<section class="auth-center-shell">
   <article class="auth-card glass-panel strong-panel">
     <p class="eyebrow">{mode === 'login' ? 'Sign in' : 'Create account'}</p>
     <h2>{mode === 'login' ? 'Keep your momentum.' : 'Start your first streak.'}</h2>
@@ -94,7 +70,7 @@
         {#if loading}
           Working...
         {:else if mode === 'login'}
-          Enter LexArena
+          Enter VerbPractice
         {:else}
           Create profile
         {/if}

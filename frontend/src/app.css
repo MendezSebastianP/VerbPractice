@@ -1,63 +1,77 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #edf4ed;
-  --bg-soft: #f7fbf7;
-  --surface: rgba(255, 255, 255, 0.68);
-  --surface-strong: rgba(255, 255, 255, 0.86);
-  --surface-dark: rgba(20, 31, 24, 0.78);
-  --line: rgba(39, 122, 74, 0.14);
-  --line-strong: rgba(39, 122, 74, 0.28);
-  --text: #173221;
-  --muted: #68816f;
-  --accent: #1f8a52;
-  --accent-strong: #0f6b3d;
-  --accent-soft: rgba(31, 138, 82, 0.12);
-  --accent-2: #73d389;
-  --success: #15a34a;
-  --danger: #d9485f;
-  --shadow: 0 28px 60px rgba(21, 38, 27, 0.14);
+  --bg: #e2f1fb;
+  --bg-mid: #d8ecfa;
+  --bg-soft: #f4fafe;
+  --surface: rgba(255, 255, 255, 0.6);
+  --surface-strong: rgba(255, 255, 255, 0.82);
+  --surface-dark: rgba(20, 32, 51, 0.82);
+  --line: rgba(20, 32, 51, 0.1);
+  --line-strong: rgba(20, 32, 51, 0.18);
+  --text: #142033;
+  --muted: #5c7387;
+  --accent: #0ea5e9;
+  --accent-strong: #0284c7;
+  --accent-soft: rgba(14, 165, 233, 0.12);
+  --accent-2: #38bdf8;
+  --success: #16a34a;
+  --danger: #e11d48;
+  --xp: #d97706;
+  --shadow: 0 18px 40px -24px rgba(12, 105, 160, 0.45);
+  --button-shadow: 0 10px 22px -12px rgba(12, 105, 160, 0.6);
   --mono: "IBM Plex Mono", monospace;
-  --ui: "Space Grotesk", sans-serif;
-  --pixel: "Press Start 2P", monospace;
+  --ui: "Figtree", sans-serif;
+  --display: "Schibsted Grotesk", sans-serif;
 }
 
 html[data-theme='dark'] {
-  --bg: #0d1511;
-  --bg-soft: #132019;
-  --surface: rgba(18, 31, 23, 0.78);
-  --surface-strong: rgba(18, 31, 23, 0.92);
-  --surface-dark: rgba(10, 18, 13, 0.92);
-  --line: rgba(115, 211, 137, 0.14);
-  --line-strong: rgba(115, 211, 137, 0.28);
-  --text: #edf5ef;
-  --muted: #9db2a3;
-  --accent: #73d389;
-  --accent-strong: #8be7a3;
-  --accent-soft: rgba(115, 211, 137, 0.12);
-  --accent-2: #d7ff84;
-  --success: #4ade80;
-  --danger: #fb7185;
-  --shadow: 0 28px 60px rgba(0, 0, 0, 0.34);
+  --bg: #0f172a;
+  --bg-mid: #0b1220;
+  --bg-soft: #111a2c;
+  --surface: rgba(30, 41, 59, 0.75);
+  --surface-strong: rgba(30, 41, 59, 0.9);
+  --surface-dark: rgba(15, 23, 42, 0.92);
+  --line: rgba(148, 163, 184, 0.16);
+  --line-strong: rgba(148, 163, 184, 0.3);
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --accent: #3b82f6;
+  --accent-strong: #60a5fa;
+  --accent-soft: rgba(59, 130, 246, 0.14);
+  --accent-2: #facc15;
+  --success: #22c55e;
+  --danger: #ef4444;
+  --xp: #facc15;
+  --shadow: 0 28px 60px rgba(0, 0, 0, 0.45);
+  --button-shadow: 0 10px 24px -14px rgba(59, 130, 246, 0.55);
+  --ui: "Space Grotesk", sans-serif;
+  --display: "Space Grotesk", sans-serif;
 }
 
 html[data-theme='arcade'] {
-  --bg: #12061b;
-  --bg-soft: #1b0d2b;
-  --surface: rgba(24, 11, 39, 0.84);
-  --surface-strong: rgba(31, 15, 49, 0.94);
+  --bg: #0a0118;
+  --bg-mid: #241245;
+  --bg-soft: #120826;
+  --surface: rgba(24, 11, 39, 0.82);
+  --surface-strong: rgba(31, 15, 49, 0.92);
   --surface-dark: rgba(12, 5, 22, 0.94);
-  --line: rgba(85, 255, 160, 0.16);
-  --line-strong: rgba(40, 230, 189, 0.34);
-  --text: #f4f5ff;
-  --muted: #b1b6d8;
-  --accent: #4ade80;
-  --accent-strong: #22d3ee;
-  --accent-soft: rgba(74, 222, 128, 0.14);
+  --line: rgba(167, 139, 250, 0.3);
+  --line-strong: rgba(167, 139, 250, 0.5);
+  --text: #f0eaff;
+  --muted: #9d8ec7;
+  --accent: #a78bfa;
+  --accent-strong: #cdbcff;
+  --accent-soft: rgba(124, 58, 237, 0.18);
   --accent-2: #ffda57;
   --success: #6aff9b;
-  --danger: #ff7b8f;
-  --shadow: 0 0 20px rgba(74, 222, 128, 0.16), 0 28px 60px rgba(0, 0, 0, 0.44);
+  --danger: #ff2e63;
+  --xp: #ffda57;
+  --shadow: 0 0 20px rgba(167, 139, 250, 0.18), 0 28px 60px rgba(0, 0, 0, 0.5);
+  --button-shadow: 0 0 18px rgba(205, 188, 255, 0.55);
+  --ui: "Space Grotesk", sans-serif;
+  --display: "Press Start 2P", monospace;
+  --mono: "VT323", monospace;
 }
 
 @layer base {
@@ -69,6 +83,7 @@ html[data-theme='arcade'] {
 
   html {
     color-scheme: light;
+    background: var(--bg);
   }
 
   html[data-theme='dark'],
@@ -81,10 +96,11 @@ html[data-theme='arcade'] {
     font-family: var(--ui);
     color: var(--text);
     background:
-      radial-gradient(circle at 12% 16%, rgba(115, 211, 137, 0.18), transparent 20%),
-      radial-gradient(circle at 84% 8%, rgba(255, 219, 121, 0.16), transparent 20%),
-      radial-gradient(circle at 72% 86%, rgba(0, 182, 148, 0.12), transparent 22%),
-      linear-gradient(180deg, var(--bg-soft), var(--bg));
+      radial-gradient(circle at 12% 16%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 20%),
+      radial-gradient(circle at 84% 8%, color-mix(in srgb, var(--xp) 16%, transparent), transparent 20%),
+      radial-gradient(circle at 72% 86%, color-mix(in srgb, var(--accent-strong) 14%, transparent), transparent 22%),
+      linear-gradient(155deg, var(--bg-mid) 0%, var(--bg-soft) 48%, var(--bg) 100%);
+    background-attachment: fixed;
     transition: background-color 220ms ease, color 220ms ease;
   }
 
@@ -131,6 +147,56 @@ html[data-theme='arcade'] {
     @apply min-h-screen;
   }
 
+  .app-shell {
+    @apply flex flex-col;
+  }
+
+  .app-shell .workspace-shell {
+    flex: 1;
+  }
+
+  /* Themed page footer: clean "water line" strip; arcade animated grid floor */
+  .page-floor {
+    position: relative;
+    height: 52px;
+    overflow: hidden;
+    border-top: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
+    background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--accent) 13%, transparent));
+  }
+
+  .page-floor-grid {
+    display: none;
+  }
+
+  html[data-theme='arcade'] .page-floor {
+    height: 56px;
+    border-top-color: color-mix(in srgb, var(--accent) 40%, transparent);
+    background: none;
+  }
+
+  html[data-theme='arcade'] .page-floor-grid {
+    display: block;
+    position: absolute;
+    inset: -40px -80px;
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.3) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(167, 139, 250, 0.3) 1px, transparent 1px);
+    background-size: 32px 32px;
+    transform: perspective(260px) rotateX(62deg);
+    animation: gridmove 1.4s linear infinite;
+  }
+
+  @keyframes gridmove {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 32px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html[data-theme='arcade'] .page-floor-grid {
+      animation: none;
+    }
+  }
+
   .skip-link {
     @apply fixed left-4 top-3 z-40 rounded-full border px-4 py-2 text-sm font-medium;
     border-color: var(--line);
@@ -158,7 +224,7 @@ html[data-theme='arcade'] {
   }
 
   .glass-panel {
-    @apply rounded-[28px] border px-5 py-5 backdrop-blur-2xl md:px-6 md:py-6;
+    @apply rounded-[18px] border px-5 py-5 backdrop-blur-2xl md:px-6 md:py-6;
     background: var(--surface);
     border-color: var(--line);
     box-shadow: var(--shadow);
@@ -179,13 +245,20 @@ html[data-theme='arcade'] {
     @apply mx-auto w-full max-w-[1320px] gap-3 px-4 py-3 md:px-6;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     flex-wrap: nowrap;
     min-width: 0;
   }
 
-  .logout-button {
+  .topbar-inner .nav-rail {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .brand-button {
+    @apply border-0 bg-transparent p-0;
     flex-shrink: 0;
+    cursor: pointer;
   }
 
   .narrow-stack {
@@ -222,18 +295,78 @@ html[data-theme='arcade'] {
     height: 1.15rem;
   }
 
-  .brand-mark {
-    @apply text-xl font-bold tracking-[-0.04em];
-    background: linear-gradient(135deg, var(--accent-strong), var(--accent), var(--accent-2));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+  /* VP monogram brand (chosen in /playground): badge with a progress notch
+     that fills on hover, small-caps wordmark beside it */
+  .brand-button {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
   }
 
-  html[data-theme='arcade'] .brand-mark {
-    font-family: var(--pixel);
-    font-size: 0.9rem;
-    line-height: 1.7;
+  .vp-badge {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    border-radius: 11px;
+    border: 2px solid color-mix(in srgb, var(--accent) 60%, transparent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    font-family: var(--display);
+    font-size: 0.95rem;
+    font-weight: 800;
+    overflow: hidden;
+    flex-shrink: 0;
+    transition: box-shadow 0.3s;
+  }
+
+  .brand-button:hover .vp-badge {
+    box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+
+  .vp-v {
+    color: var(--text);
+  }
+
+  .vp-p {
+    color: var(--accent);
+  }
+
+  .vp-notch {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 4px;
+    width: 34%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    transition: width 0.45s cubic-bezier(0.25, 0.8, 0.3, 1);
+  }
+
+  .brand-button:hover .vp-notch {
+    width: 100%;
+  }
+
+  .brand-word {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  html[data-theme='arcade'] .vp-badge {
+    font-size: 0.7rem;
+    border-radius: 8px;
+  }
+
+  @media (max-width: 480px) {
+    .brand-word {
+      display: none;
+    }
   }
 
   .brand-copy,
@@ -264,6 +397,7 @@ html[data-theme='arcade'] {
 
   .nav-rail {
     @apply rounded-full border p-1;
+    position: relative;
     background: color-mix(in srgb, var(--surface-strong) 70%, transparent);
     border-color: var(--line);
     flex-wrap: nowrap;
@@ -276,6 +410,23 @@ html[data-theme='arcade'] {
     display: none;
   }
 
+  .nav-pill-indicator {
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    left: 0;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    box-shadow: 0 0 0 transparent;
+    pointer-events: none;
+    transition: transform 280ms cubic-bezier(0.3, 0.9, 0.3, 1), width 280ms cubic-bezier(0.3, 0.9, 0.3, 1), opacity 200ms ease;
+  }
+
+  html[data-theme='arcade'] .nav-pill-indicator {
+    box-shadow: 0 0 16px rgba(124, 58, 237, 0.5);
+  }
+
   .nav-link,
   .ghost-button,
   .text-button,
@@ -286,6 +437,8 @@ html[data-theme='arcade'] {
   }
 
   .nav-link {
+    position: relative;
+    z-index: 1;
     white-space: nowrap;
     flex-shrink: 0;
   }
@@ -313,6 +466,84 @@ html[data-theme='arcade'] {
   .nav-meta {
     @apply flex flex-wrap items-center gap-3;
     min-width: fit-content;
+  }
+
+  .profile-cluster {
+    @apply flex items-center gap-2 rounded-full border py-1.5 pl-3 pr-3;
+    border-color: var(--line);
+    background: color-mix(in srgb, var(--surface-strong) 72%, transparent);
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .streak-flame {
+    @apply inline-flex items-center gap-1 text-sm font-semibold;
+    color: var(--text);
+    font-family: var(--mono);
+  }
+
+  .streak-flame .flame-icon {
+    display: inline-block;
+    font-size: 0.85rem;
+    transition: transform 220ms ease, filter 220ms ease;
+  }
+
+  .streak-flame.flame-0 {
+    color: var(--muted);
+  }
+
+  .streak-flame.flame-0 .flame-icon {
+    filter: grayscale(1) opacity(0.55);
+  }
+
+  .streak-flame.flame-2 .flame-icon {
+    font-size: 1.05rem;
+    filter: drop-shadow(0 0 4px rgba(251, 146, 60, 0.55));
+  }
+
+  .streak-flame.flame-3 .flame-icon {
+    font-size: 1.2rem;
+    filter: drop-shadow(0 0 7px rgba(251, 146, 60, 0.8));
+  }
+
+  @keyframes flame-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.18); }
+  }
+
+  html[data-theme='arcade'] .streak-flame.flame-2 .flame-icon,
+  html[data-theme='arcade'] .streak-flame.flame-3 .flame-icon {
+    animation: flame-pulse 1.4s ease-in-out infinite;
+  }
+
+  .level-chip {
+    @apply inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-bold;
+    font-family: var(--display);
+    color: var(--accent-strong);
+    border-color: color-mix(in srgb, var(--accent) 38%, transparent);
+    background: var(--accent-soft);
+  }
+
+  html[data-theme='arcade'] .level-chip {
+    font-size: 0.55rem;
+    line-height: 1.6;
+  }
+
+  .xp-chip {
+    @apply text-sm font-bold;
+    font-family: var(--mono);
+    color: var(--xp);
+    animation: xp-tick 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  html[data-theme='arcade'] .xp-chip {
+    text-shadow: 0 0 10px color-mix(in srgb, var(--xp) 55%, transparent);
+  }
+
+  @keyframes xp-tick {
+    0% { transform: scale(1); }
+    35% { transform: scale(1.22); }
+    100% { transform: scale(1); }
   }
 
   .theme-switcher {
@@ -350,7 +581,6 @@ html[data-theme='arcade'] {
   }
 
   .user-name,
-  .question-word,
   .hero-grid h1,
   .trainer-head h1,
   .auth-card h2,
@@ -359,6 +589,12 @@ html[data-theme='arcade'] {
   .mode-card h2,
   .section-head h2 {
     @apply font-semibold tracking-[-0.04em];
+    font-family: var(--display);
+  }
+
+  .question-word {
+    @apply font-semibold tracking-[-0.04em];
+    font-family: var(--ui);
   }
 
   .user-meta {
@@ -378,14 +614,29 @@ html[data-theme='arcade'] {
   .primary-button,
   .secondary-button {
     @apply inline-flex items-center justify-center border px-5 py-3 font-semibold;
-    border-radius: 20px;
+    border-radius: 999px;
+    font-family: var(--display);
     flex-shrink: 0;
+    transition: transform 200ms cubic-bezier(0.25, 0.8, 0.3, 1), box-shadow 200ms ease;
   }
 
   .primary-button {
     color: white;
     border-color: transparent;
     background: linear-gradient(135deg, var(--accent-strong), var(--accent), var(--accent-2));
+    box-shadow: var(--button-shadow);
+  }
+
+  .primary-button:hover {
+    transform: scale(1.02);
+  }
+
+  .primary-button:active {
+    transform: scale(0.98);
+  }
+
+  html[data-theme='arcade'] .primary-button {
+    color: var(--bg);
   }
 
   .secondary-button {
@@ -457,7 +708,7 @@ html[data-theme='arcade'] {
   }
 
   .stat-card {
-    @apply flex flex-col gap-2 rounded-[22px] border px-4 py-4;
+    @apply flex flex-col gap-2 rounded-[14px] border px-4 py-4;
     background: color-mix(in srgb, var(--surface-strong) 84%, transparent);
     border-color: var(--line);
   }
@@ -493,6 +744,12 @@ html[data-theme='arcade'] {
     @apply inline-flex items-center rounded-full border px-3 py-2;
     border-color: var(--line);
     background: color-mix(in srgb, var(--surface-strong) 84%, transparent);
+  }
+
+  .hint-chip {
+    @apply rounded-md px-2 py-0.5;
+    border-bottom-width: 3px;
+    font-weight: 600;
   }
 
   .muted-tag,
@@ -550,7 +807,7 @@ html[data-theme='arcade'] {
   .list-row,
   .story-item,
   .resume-card {
-    @apply flex items-center justify-between gap-4 rounded-[22px] border px-4 py-4 text-left;
+    @apply flex items-center justify-between gap-4 rounded-[14px] border px-4 py-4 text-left;
     background: color-mix(in srgb, var(--surface-strong) 78%, transparent);
     border-color: var(--line);
   }
@@ -580,7 +837,7 @@ html[data-theme='arcade'] {
 
   .message-card,
   .bubble {
-    @apply flex flex-col gap-2 rounded-[22px] border px-4 py-4;
+    @apply flex flex-col gap-2 rounded-[16px] border px-4 py-4;
     border-color: var(--line);
   }
 
@@ -598,6 +855,19 @@ html[data-theme='arcade'] {
     @apply mx-auto grid min-h-screen w-full max-w-[1280px] items-center gap-6 px-4 py-8 md:grid-cols-[1.1fr_0.9fr] md:px-6;
   }
 
+  .auth-center-shell {
+    width: 100%;
+    max-width: 560px;
+    margin-inline: auto;
+    min-height: calc(100vh - 8rem);
+    display: flex;
+    align-items: center;
+  }
+
+  .auth-center-shell .auth-card {
+    width: 100%;
+  }
+
   .auth-form,
   .answer-form,
   .chat-form {
@@ -613,7 +883,7 @@ html[data-theme='arcade'] {
   .answer-input,
   .chat-form textarea,
   .conj-input {
-    @apply w-full rounded-[20px] border px-4 py-3;
+    @apply w-full rounded-[14px] border px-4 py-3;
     border-color: var(--line);
     background: color-mix(in srgb, var(--surface-strong) 90%, transparent);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
@@ -638,6 +908,11 @@ html[data-theme='arcade'] {
 
   .trainer-shell {
     @apply flex flex-col gap-6;
+    /* The whole app reads as a tall column (phone-friendly); wide tables
+       scroll inside their own containers. */
+    max-width: 720px;
+    margin-inline: auto;
+    width: 100%;
   }
 
   .verb-lab-shell {
@@ -725,9 +1000,54 @@ html[data-theme='arcade'] {
     border-radius: 18px;
   }
 
+  /* Key-cap chip from the design files: 1px border with a 3px bottom edge */
+  .kbd-chip {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--muted);
+    border: 1px solid var(--line-strong);
+    border-bottom-width: 3px;
+    border-radius: 6px;
+    padding: 0 7px;
+    background: color-mix(in srgb, var(--surface-strong) 88%, transparent);
+    white-space: nowrap;
+    vertical-align: middle;
+    line-height: 1.5;
+  }
+
+  html[data-theme='arcade'] .kbd-chip {
+    color: var(--accent-strong);
+    border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+    background: rgba(13, 5, 32, 0.8);
+  }
+
+  .length-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+  }
+
+  .length-tier {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+
+  .length-count {
+    font-size: 1rem;
+    font-family: var(--display);
+  }
+
   .table-scroll,
   .chat-log {
-    @apply overflow-auto rounded-[22px] border;
+    @apply overflow-auto rounded-[16px] border;
     border-color: var(--line);
     background: color-mix(in srgb, var(--surface-strong) 72%, transparent);
   }
@@ -962,7 +1282,7 @@ html[data-theme='arcade'] {
 
   .feedback-banner,
   .toast-card {
-    @apply rounded-[20px] border px-4 py-3 text-sm font-medium;
+    @apply rounded-[14px] border px-4 py-3 text-sm font-medium;
   }
 
   .info-banner {
@@ -1021,7 +1341,7 @@ html[data-theme='arcade'] {
   }
 
   .admin-check {
-    @apply inline-flex items-center gap-3 rounded-[18px] border px-4 py-3 text-sm font-medium;
+    @apply inline-flex items-center gap-3 rounded-[14px] border px-4 py-3 text-sm font-medium;
     border-color: var(--line);
     background: color-mix(in srgb, var(--surface-strong) 78%, transparent);
     color: var(--text);
@@ -1044,6 +1364,28 @@ html[data-theme='arcade'] {
   .hero-grid,
   .auth-layout {
     @apply grid-cols-1;
+  }
+
+  /* Two-row topbar on narrow screens: brand + profile up top, the nav rail
+     gets the full width below (scrollable) instead of fighting for space. */
+  .topbar-inner {
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
+  }
+
+  .topbar-inner .nav-rail {
+    order: 3;
+    flex-basis: 100%;
+    justify-content: flex-start;
+  }
+
+  /* Keep the topbar usable on phones: flame + level stay, raw XP hides */
+  .xp-chip {
+    display: none;
+  }
+
+  .profile-cluster {
+    @apply gap-1.5 pl-2 pr-2;
   }
 
   .workspace-shell {

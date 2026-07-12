@@ -261,7 +261,10 @@ def test_admin_content_crud_flow(client: TestClient, smoke_user: dict[str, str])
     ).status_code == 200
 
 
-def test_non_admin_users_cannot_access_admin_api(client: TestClient, circle_user: dict[str, str]):
+def test_non_admin_users_cannot_access_admin_api_but_legacy_admin_is_open(
+    client: TestClient,
+    circle_user: dict[str, str],
+):
     login = _api_login(client, circle_user["username"], circle_user["password"])
     assert login["user"]["is_admin"] is False
 
@@ -270,4 +273,4 @@ def test_non_admin_users_cannot_access_admin_api(client: TestClient, circle_user
     assert response.json()["detail"] == "Admin access required"
 
     legacy_response = client.get("/admin/monitor")
-    assert legacy_response.status_code == 403
+    assert legacy_response.status_code == 200

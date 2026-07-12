@@ -2,10 +2,12 @@
   import { navigate } from '../router';
   import ConjugationPage from './ConjugationPage.svelte';
   import TranslationPage from './TranslationPage.svelte';
+  import type { ThemeName } from '../types';
 
   export let routePath = '/training/verbs';
   export let csrfToken = '';
   export let soundEnabled = false;
+  export let theme: ThemeName = 'light';
   export let notify: (message: string, tone?: 'info' | 'success' | 'error') => void;
 
   function currentView(): 'translation' | 'conjugation' {
@@ -65,7 +67,7 @@
   </header>
 
   {#if currentView() === 'translation'}
-    <TranslationPage mode="verbs" {csrfToken} {soundEnabled} {notify} />
+    <TranslationPage mode="verbs" {csrfToken} {soundEnabled} {theme} {notify} />
   {:else}
     <ConjugationPage {csrfToken} {soundEnabled} {notify} />
   {/if}

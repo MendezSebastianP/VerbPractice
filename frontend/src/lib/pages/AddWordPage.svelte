@@ -2,18 +2,27 @@
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { api, ApiError } from '../api';
+  import HelpTip from '../components/HelpTip.svelte';
+  import { navigate } from '../router';
+  import PlayGrid from '../components/PlayGrid.svelte';
+  import PlayMist from '../components/PlayMist.svelte';
   import type {
     AddWordResponse,
     AddedWordNotFound,
     AddedWordResult,
     LanguageEntry,
+    ThemeName,
     UserSettings,
     UserWordEntry,
     WordHistoryEntry,
   } from '../types';
 
   export let csrfToken = '';
+  export let theme: ThemeName = 'light';
   export let notify: (message: string, tone?: 'info' | 'success' | 'error') => void;
+
+  let translateMistRef: PlayMist | null = null;
+  let translateGridRef: PlayGrid | null = null;
 
   let loading = true;
   let error = '';
@@ -22,8 +31,19 @@
 
   let inputText = '';
   let contextHint = '';
-  let learningLangCode = '';
   let adding = false;
+
+  // Source → target language pair (any combination). Source = the language you
+  // type the word in; target = the language you want the translation in.
+  let sourceCode = '';
+  let targetCode = '';
+  let sourceTileOpen = false;
+  let targetTileOpen = false;
+
+  // Keyboard shortcuts mirror the Words trainer (no on-screen badges here).
+  const LANG_KEY: Record<string, string> = { e: 'EN', s: 'ES', r: 'RU', f: 'FR' };
+  // One concept ("house") per language powers a clear, pair-specific example line.
+  const EXAMPLE_WORD: Record<string, string> = { EN: 'house', ES: 'casa', FR: 'maison', RU: 'дом' };
 
   let result: AddedWordResult | null = null;
   let notFound: AddedWordNotFound | null = null;
@@ -58,16 +78,74 @@
     void loadManage();
   }
 
-  $: motherTongueName = settings?.mother_tongue?.name ?? '—';
-  $: motherTongueCode = settings?.mother_tongue?.code ?? '';
+  $: exampleLine =
+    sourceCode && targetCode && EXAMPLE_WORD[sourceCode] && EXAMPLE_WORD[targetCode]
+      ? `Type “${EXAMPLE_WORD[sourceCode]}” and you’ll get “${EXAMPLE_WORD[targetCode]}”.`
+      : '';
   $: detectedMismatch =
     !!result &&
     !!result.detected_input_language &&
     result.detected_input_language.toUpperCase() !== result.learning_language_code.toUpperCase() &&
-    result.detected_input_language.toUpperCase() !== motherTongueCode.toUpperCase();
+    result.detected_input_language.toUpperCase() !== result.mother_tongue_code.toUpperCase();
 
   function isFoundResult(payload: AddWordResponse): payload is AddedWordResult {
     return payload.status !== 'not_found';
+  }
+
+  function escapeHtml(value: string): string {
+    return value
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function renderInlineMarkdown(value: string): string {
+    return escapeHtml(value.trim())
+      .replace(/\*\*([^*]+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/__([^_]+?)__/g, '<strong>$1</strong>');
+  }
+
+  function renderMoreInfoMarkdown(value: string): string {
+    const blocks: string[] = [];
+    let paragraph: string[] = [];
+    let listItems: string[] = [];
+
+    const flushParagraph = () => {
+      if (!paragraph.length) return;
+      blocks.push(`<p>${paragraph.join(' ')}</p>`);
+      paragraph = [];
+    };
+
+    const flushList = () => {
+      if (!listItems.length) return;
+      blocks.push(`<ul>${listItems.join('')}</ul>`);
+      listItems = [];
+    };
+
+    for (const rawLine of value.replace(/\r\n/g, '\n').split('\n')) {
+      const line = rawLine.trim();
+      if (!line) {
+        flushParagraph();
+        flushList();
+        continue;
+      }
+
+      const bullet = line.match(/^[-*]\s+(.+)$/);
+      if (bullet) {
+        flushParagraph();
+        listItems.push(`<li>${renderInlineMarkdown(bullet[1])}</li>`);
+        continue;
+      }
+
+      flushList();
+      paragraph.push(renderInlineMarkdown(line));
+    }
+
+    flushParagraph();
+    flushList();
+    return blocks.join('');
   }
 
   async function load(): Promise<void> {
@@ -81,7 +159,10 @@
       ]);
       languages = langs.languages;
       settings = s;
-      learningLangCode = s.learning_language?.code ?? '';
+      // Default: from learning language → native (mother tongue), with a graceful
+      // fallback to the first two available languages if prefs are unset.
+      sourceCode = s.learning_language?.code ?? languages[0]?.code ?? '';
+      targetCode = s.mother_tongue?.code ?? languages.find((l) => l.code !== sourceCode)?.code ?? '';
       history = hist.entries;
       manageLearning = s.learning_language?.code ?? '';
       manageMother = s.mother_tongue?.code ?? '';
@@ -94,6 +175,19 @@
     }
   }
 
+  // Route Enter/submit through the themed control so its fire visuals play;
+  // the control dispatches `fire` back into addWord().
+  function fireTranslate(): void {
+    if (adding || !inputText.trim()) {
+      return;
+    }
+    if (theme === 'arcade') {
+      translateGridRef?.fire();
+    } else {
+      translateMistRef?.fire();
+    }
+  }
+
   async function addWord(textOverride?: string): Promise<void> {
     const text = (textOverride ?? inputText).trim();
     if (!text) {
@@ -103,8 +197,12 @@
       notify('Set your mother tongue in Settings first.', 'error');
       return;
     }
-    if (!learningLangCode) {
-      notify('Pick a target language.', 'error');
+    if (!sourceCode || !targetCode) {
+      notify('Pick both languages.', 'error');
+      return;
+    }
+    if (sourceCode === targetCode) {
+      notify('Source and target languages must differ.', 'error');
       return;
     }
     adding = true;
@@ -114,7 +212,8 @@
       const response = await api.addWord({
         input_text: text,
         context: contextHint.trim() || undefined,
-        learning_lang_code: learningLangCode,
+        learning_lang_code: sourceCode,
+        mother_lang_code: targetCode,
         csrf_token: csrfToken,
       });
       if (isFoundResult(response)) {
@@ -187,11 +286,14 @@
     contextHint = '';
   }
 
-  function reportDefinition(): void {
+  function reportResult(): void {
     if (!result) {
       return;
     }
-    reportTarget = { entry_type: 'lexical', entry_id: result.lexical.id };
+    const primaryNative = result.natives[0];
+    reportTarget = primaryNative
+      ? { entry_type: 'native', entry_id: primaryNative.id }
+      : { entry_type: 'lexical', entry_id: result.lexical.id };
   }
 
   async function loadManage(): Promise<void> {
@@ -276,17 +378,62 @@
     if (!result || !result.detected_input_language) {
       return;
     }
-    const newTarget = result.detected_input_language.toUpperCase();
-    if (newTarget === motherTongueCode.toUpperCase()) {
-      notify('Detected mother tongue — pick a different target.', 'error');
+    const newSource = result.detected_input_language.toUpperCase();
+    if (newSource === targetCode.toUpperCase()) {
+      notify('That matches your target language — pick a different one.', 'error');
       return;
     }
-    learningLangCode = newTarget;
+    sourceCode = newSource;
     void addWord(result.original_input || result.text);
+  }
+
+  function swapLangs(): void {
+    const t = sourceCode;
+    sourceCode = targetCode;
+    targetCode = t;
+  }
+
+  function handleKeydown(event: KeyboardEvent): void {
+    if (loading || adding) {
+      return;
+    }
+
+    // Ctrl+Space swaps source/target — works even while typing, like the trainer.
+    if (event.code === 'Space' && event.ctrlKey && !event.altKey && !event.metaKey) {
+      event.preventDefault();
+      swapLangs();
+      return;
+    }
+
+    // Letter shortcuts only when not typing in a field.
+    const active = document.activeElement as HTMLElement | null;
+    const isTyping =
+      active?.tagName === 'INPUT' ||
+      active?.tagName === 'TEXTAREA' ||
+      active?.tagName === 'SELECT' ||
+      active?.isContentEditable;
+    if (isTyping || event.ctrlKey || event.metaKey || event.altKey) {
+      return;
+    }
+
+    // E/S/R/F set the source language; add Shift for the target (auto-swap on clash).
+    const code = LANG_KEY[event.key.toLowerCase()];
+    if (code) {
+      event.preventDefault();
+      if (event.shiftKey) {
+        if (code === sourceCode) sourceCode = targetCode;
+        targetCode = code;
+      } else {
+        if (code === targetCode) targetCode = sourceCode;
+        sourceCode = code;
+      }
+    }
   }
 
   onMount(load);
 </script>
+
+<svelte:window on:keydown={handleKeydown} />
 
 {#if loading}
   <section class="dashboard-grid loading-grid">
@@ -299,16 +446,36 @@
 {:else}
   <section class="narrow-stack" in:fade={{ duration: 180 }}>
     <article class="glass-panel strong-panel trainer-card">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">Vocabulary</p>
-          <h1>Add a word</h1>
-        </div>
+      <div class="card-help-row">
+        <HelpTip label="How Add Word works">
+          <h4>Add a word to your pool</h4>
+          <p>
+            Pick a <strong>direction</strong>, type a word in the source language, and the AI finds its
+            canonical form, writes a definition, and generates 1–3 translations.
+          </p>
+          <p>
+            The word is saved to your <strong>pool of words</strong>. By default it lands in your
+            <strong>priority queue</strong> and unlocks gradually as you practice. In <strong>Settings</strong>
+            you can switch this — turn on <em>“Force-add new words directly to the active pool”</em> to make new
+            words available for practice right away.
+          </p>
+          <p>
+            You can translate <strong>any combination</strong> of your languages. Use the <strong>⇄</strong>
+            button to flip the direction. You may type in either language; if the AI detects you typed in the
+            target language it offers to switch.
+          </p>
+          <p>Keyboard shortcuts:</p>
+          <ul>
+            <li><kbd>E</kbd>/<kbd>S</kbd>/<kbd>R</kbd>/<kbd>F</kbd> — source language</li>
+            <li><kbd>Shift</kbd> + those — target language</li>
+            <li><kbd>Ctrl</kbd>+<kbd>Space</kbd> — swap direction</li>
+          </ul>
+          <p>
+            <strong>Optional context</strong> sharpens ambiguous words. Use the drawers below to review history,
+            manage saved words, or add a pair manually without the AI.
+          </p>
+        </HelpTip>
       </div>
-      <p class="section-copy">
-        Type a word — in your target language or your mother tongue. The AI figures out the right canonical form,
-        generates a definition + 1–3 translations, and drops the word into your priority queue.
-      </p>
 
       {#if !settings?.mother_tongue}
         <div class="feedback-banner info-banner" style="margin-top: 0.75rem;">
@@ -316,28 +483,73 @@
         </div>
       {/if}
 
-      <form class="answer-form" on:submit|preventDefault={() => addWord()} style="margin-top: 1rem;">
-        <div class="toggle-cluster">
-          <div class="toggle-group">
-            <span class="toggle-label">Target language</span>
-            <div class="option-row">
-              {#each languages as lang}
-                <button
-                  type="button"
-                  class:option-on={learningLangCode === lang.code}
-                  class="option-chip"
-                  on:click={() => (learningLangCode = lang.code)}
-                  disabled={settings?.mother_tongue?.code === lang.code}
-                  title={settings?.mother_tongue?.code === lang.code ? 'This is your mother tongue' : ''}
-                >
-                  {lang.name}
-                </button>
-              {/each}
+      <form class="answer-form" on:submit|preventDefault={fireTranslate} style="margin-top: 0.5rem;">
+        <div class="toggle-group">
+          <span class="toggle-label">Direction</span>
+          <div class="lang-direction">
+            <div class="tile-wrap">
+              <button
+                type="button"
+                class="option-chip option-on lang-tile"
+                on:click={() => { sourceTileOpen = !sourceTileOpen; targetTileOpen = false; }}
+              >
+                {languageName(sourceCode) || '—'}
+                <small>you type</small>
+              </button>
+              {#if sourceTileOpen}
+                <div class="glass-panel lang-menu">
+                  {#each languages as lang}
+                    <button
+                      class="option-chip"
+                      type="button"
+                      on:click={() => { sourceCode = lang.code; sourceTileOpen = false; }}
+                      disabled={lang.code === targetCode}
+                    >
+                      {lang.name}
+                    </button>
+                  {/each}
+                </div>
+              {/if}
             </div>
-            <p class="section-copy" style="margin-top: 0.4rem; font-size: 0.85rem; opacity: 0.7;">
-              The word will be stored in this language; translations go into <strong>{motherTongueName}</strong>.
-            </p>
+
+            <button
+              type="button"
+              class="ghost-button swap-btn"
+              aria-label="Swap languages"
+              title="Swap"
+              on:click={swapLangs}
+            >
+              ⇄
+            </button>
+
+            <div class="tile-wrap">
+              <button
+                type="button"
+                class="option-chip option-on lang-tile"
+                on:click={() => { targetTileOpen = !targetTileOpen; sourceTileOpen = false; }}
+              >
+                {languageName(targetCode) || '—'}
+                <small>you get</small>
+              </button>
+              {#if targetTileOpen}
+                <div class="glass-panel lang-menu">
+                  {#each languages as lang}
+                    <button
+                      class="option-chip"
+                      type="button"
+                      on:click={() => { targetCode = lang.code; targetTileOpen = false; }}
+                      disabled={lang.code === sourceCode}
+                    >
+                      {lang.name}
+                    </button>
+                  {/each}
+                </div>
+              {/if}
+            </div>
           </div>
+          {#if exampleLine}
+            <p class="example-line">{exampleLine}</p>
+          {/if}
         </div>
 
         <div class="question-stage" style="margin-top: 1.25rem;">
@@ -363,12 +575,46 @@
           />
         </div>
 
-        <div class="hero-actions" style="margin-top: 1rem;">
-          <button class="primary-button" type="submit" disabled={adding || !inputText.trim() || !learningLangCode}>
-            {adding ? 'Generating…' : 'Add to my queue'}
-          </button>
+        <div class="translate-play" style="margin-top: 1.25rem;">
+          {#if theme === 'arcade'}
+            <PlayGrid
+              bind:this={translateGridRef}
+              label="TRANSLATE"
+              rows={3}
+              cell={18}
+              gap={5}
+              fontSize={11}
+              resetAfterFire
+              disabled={adding || !inputText.trim() || !sourceCode || !targetCode || sourceCode === targetCode}
+              on:fire={() => void addWord()}
+            />
+          {:else}
+            <PlayMist
+              bind:this={translateMistRef}
+              {theme}
+              label="⌕ TRANSLATE"
+              width={300}
+              height={64}
+              fontSize={14}
+              resetAfterFire
+              disabled={adding || !inputText.trim() || !sourceCode || !targetCode || sourceCode === targetCode}
+              on:fire={() => void addWord()}
+            />
+          {/if}
         </div>
+        <p class="translate-note" class:translating={adding}>
+          {adding ? 'Translating…' : 'AI looks it up, translates, and queues it for practice'}
+        </p>
       </form>
+
+      <button
+        class="ghost-button"
+        type="button"
+        style="margin-top: 0.75rem;"
+        on:click={() => navigate('/photo-word')}
+      >
+        📷 From a photo of subtitles
+      </button>
     </article>
 
     {#if notFound}
@@ -437,33 +683,32 @@
         {/if}
 
         <div class="list-stack" style="margin-top: 0.5rem;">
+          {#if result.natives.length}
+            <div class="closest-translation">
+              <p class="eyebrow">(Closest) Translation</p>
+              <strong>{result.natives[0].translation}</strong>
+              {#if result.natives[0].note}
+                <p>{result.natives[0].note}</p>
+              {/if}
+            </div>
+          {/if}
+
           <div>
             <p class="eyebrow">Definition</p>
             <p>{result.lexical.definition}</p>
           </div>
 
-          {#if result.natives.length}
+          {#if result.natives.length > 1}
             <div>
-              <p class="eyebrow">Translation{result.natives.length > 1 ? 's' : ''}</p>
+              <p class="eyebrow">Other senses</p>
               <div class="list-stack">
-                {#each result.natives as native}
+                {#each result.natives.slice(1) as native}
                   <div class="list-row">
                     <div>
                       <strong>{native.translation}</strong>
                       {#if native.note}
                         <p style="opacity: 0.75; margin: 0.15rem 0 0;"><em>{native.note}</em></p>
                       {/if}
-                    </div>
-                    <div class="row-metrics">
-                      <button
-                        class="ghost-button"
-                        type="button"
-                        on:click={() => (reportTarget = { entry_type: 'native', entry_id: native.id })}
-                        title="Report this translation"
-                        style="font-size: 0.8rem;"
-                      >
-                        report
-                      </button>
                     </div>
                   </div>
                 {/each}
@@ -514,7 +759,9 @@
           {#if result.lexical.extended_content}
             <div>
               <p class="eyebrow">More info</p>
-              <p style="white-space: pre-wrap;">{result.lexical.extended_content}</p>
+              <div class="more-info-content">
+                {@html renderMoreInfoMarkdown(result.lexical.extended_content)}
+              </div>
             </div>
           {/if}
         </div>
@@ -532,9 +779,9 @@
           <button
             class="ghost-button"
             type="button"
-            on:click={reportDefinition}
+            on:click={reportResult}
           >
-            Report definition
+            Report
           </button>
           <button class="ghost-button" type="button" on:click={resetForAnother}>
             Add another
@@ -578,6 +825,7 @@
             <span class="drawer-title">Recent searches</span>
           </div>
           <span class="pill-chip">{history.length}</span>
+          <span class="drawer-caret" aria-hidden="true">{historyOpen ? '▾' : '▸'}</span>
         </summary>
         {#if history.length === 0}
           <p class="empty-copy" style="margin: 0.75rem 0 0;">Your recent searches will appear here.</p>
@@ -637,7 +885,9 @@
                   {#if entry.lexical.extended_content}
                     <div>
                       <p class="eyebrow">More info</p>
-                      <p style="white-space: pre-wrap; margin: 0;">{entry.lexical.extended_content}</p>
+                      <div class="more-info-content compact">
+                        {@html renderMoreInfoMarkdown(entry.lexical.extended_content)}
+                      </div>
                     </div>
                   {/if}
                   {#if entry.tags?.length}
@@ -662,6 +912,7 @@
             <span class="drawer-title">My words</span>
           </div>
           <span class="pill-chip muted-tag">{manageLearning || '—'}→{manageMother || '—'}</span>
+          <span class="drawer-caret" aria-hidden="true">{manageOpen ? '▾' : '▸'}</span>
         </summary>
         <div style="margin-top: 0.75rem;">
           <div class="lang-pair-row">
@@ -731,6 +982,7 @@
             <span class="drawer-title">Add word offline</span>
           </div>
           <span class="pill-chip muted-tag">no AI</span>
+          <span class="drawer-caret" aria-hidden="true">{offlineOpen ? '▾' : '▸'}</span>
         </summary>
         <form class="offline-form" on:submit|preventDefault={submitOfflineAdd} style="margin-top: 0.75rem;">
           <div class="lang-pair-row">
@@ -776,6 +1028,140 @@
 {/if}
 
 <style>
+  .card-help-row {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .translate-play {
+    display: flex;
+    justify-content: center;
+  }
+
+  .translate-note {
+    text-align: center;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--muted);
+    margin: 0.6rem 0 0;
+    min-height: 1.1rem;
+  }
+
+  .translate-note.translating {
+    color: var(--accent-strong);
+    animation: translate-pulse 1.2s ease-in-out infinite;
+  }
+
+  @keyframes translate-pulse {
+    0%, 100% { opacity: 0.55; }
+    50% { opacity: 1; }
+  }
+
+  .lang-direction {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.4rem;
+  }
+
+  .tile-wrap {
+    position: relative;
+    flex: 1;
+  }
+
+  .lang-tile {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    font-size: 1.1rem;
+  }
+
+  .lang-tile small {
+    display: block;
+    opacity: 0.6;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 0.15rem;
+  }
+
+  .swap-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+  }
+
+  .lang-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    padding: 0.5rem;
+    margin-top: 0.25rem;
+  }
+
+  .lang-menu .option-chip {
+    display: block;
+    width: 100%;
+    margin: 0.15rem 0;
+    text-align: left;
+  }
+
+  .example-line {
+    margin: 0.6rem 0 0;
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+
+  .closest-translation {
+    border: 1px solid color-mix(in srgb, var(--accent) 36%, transparent);
+    border-radius: 1.25rem;
+    padding: 1.15rem;
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--accent-soft) 210%, transparent),
+      color-mix(in srgb, var(--accent-2) 12%, transparent)
+    );
+  }
+
+  .closest-translation strong {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: clamp(1.55rem, 6vw, 2.35rem);
+    line-height: 1.08;
+    color: var(--text);
+  }
+
+  .closest-translation p:last-child {
+    margin: 0.65rem 0 0;
+    color: var(--muted);
+  }
+
+  .more-info-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    line-height: 1.65;
+  }
+  .more-info-content.compact {
+    gap: 0.45rem;
+    line-height: 1.55;
+  }
+  .more-info-content :global(p) {
+    margin: 0;
+  }
+  .more-info-content :global(ul) {
+    margin: 0;
+    padding-left: 1.2rem;
+  }
+  .more-info-content :global(li) {
+    margin: 0.2rem 0;
+  }
+  .more-info-content :global(strong) {
+    color: var(--text);
+    font-weight: 700;
+  }
+
   .history-list {
     display: flex;
     flex-direction: column;
@@ -848,6 +1234,11 @@
   }
   .drawer-summary p.eyebrow {
     margin: 0 0 0.1rem;
+  }
+
+  .drawer-caret {
+    color: var(--muted);
+    flex-shrink: 0;
   }
 
   .lang-pair-row {

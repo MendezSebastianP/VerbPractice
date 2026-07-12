@@ -1,6 +1,7 @@
 import type {
   AddWordResponse,
   AddedWordResult,
+  AdminAiUsagePayload,
   TagEntry,
   WordSetDetail,
   WordSetSummary,
@@ -15,6 +16,7 @@ import type {
   DashboardPayload,
   LanguageEntry,
   MonitorPayload,
+  OcrResponse,
   PriorityQueueEntry,
   ThemeName,
   TranslationState,
@@ -48,7 +50,8 @@ async function parseResponse<T>(response: Response): Promise<T> {
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const headers = new Headers(options.headers || {});
-  if (options.body && !headers.has('Content-Type')) {
+  // FormData bodies must let the browser set the multipart boundary itself.
+  if (options.body && !(options.body instanceof FormData) && !headers.has('Content-Type')) {
     headers.set('Content-Type', 'application/json');
   }
 
@@ -131,8 +134,20 @@ export const api = {
   patchSettings: (payload: Partial<UserSettingsPatch> & { csrf_token: string }) =>
     request<UserSettings>('/api/settings', { method: 'PATCH', body: JSON.stringify(payload) }),
   listLanguages: () => request<{ languages: LanguageEntry[] }>('/api/languages'),
-  addWord: (payload: { input_text: string; context?: string; learning_lang_code?: string; csrf_token: string }) =>
-    request<AddWordResponse>('/api/words/add', { method: 'POST', body: JSON.stringify(payload) }),
+  addWord: (payload: {
+    input_text: string;
+    context?: string;
+    learning_lang_code?: string;
+    mother_lang_code?: string;
+    csrf_token: string;
+  }) => request<AddWordResponse>('/api/words/add', { method: 'POST', body: JSON.stringify(payload) }),
+  ocrExtract: (image: Blob, lang_code: string, csrf_token: string) => {
+    const form = new FormData();
+    form.append('image', image, 'subtitle.jpg');
+    form.append('lang_code', lang_code);
+    form.append('csrf_token', csrf_token);
+    return request<OcrResponse>('/api/words/ocr', { method: 'POST', body: form });
+  },
   listTags: () => request<{ tags: TagEntry[] }>('/api/tags'),
   listWordSets: () => request<{ sets: WordSetSummary[] }>('/api/word-sets'),
   getWordSet: (id: number) => request<WordSetDetail>(`/api/word-sets/${id}`),
@@ -215,6 +230,7 @@ export const api = {
       force_unlocked: boolean;
     }>('/api/words/add-offline', { method: 'POST', body: JSON.stringify(payload) }),
   adminMonitor: () => request<MonitorPayload>('/api/admin/monitor'),
+  adminAiUsage: (limit = 50) => request<AdminAiUsagePayload>(`/api/admin/ai/usage?limit=${limit}`),
   adminContentSummary: () => request<AdminContentSummaryPayload>('/api/admin/content/summary'),
   adminWords: (params: { search?: string; verified?: string; limit?: number } = {}) =>
     request<{ rows: AdminWordRow[] }>(

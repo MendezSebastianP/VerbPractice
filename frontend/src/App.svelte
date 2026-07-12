@@ -5,13 +5,18 @@
   import AuthPage from './lib/pages/AuthPage.svelte';
   import ChatPage from './lib/pages/ChatPage.svelte';
   import AddWordPage from './lib/pages/AddWordPage.svelte';
+  import CommunityPage from './lib/pages/CommunityPage.svelte';
   import DashboardPage from './lib/pages/DashboardPage.svelte';
+  import GameFx from './lib/components/GameFx.svelte';
   import MonitorPage from './lib/pages/MonitorPage.svelte';
+  import PhotoWordPage from './lib/pages/PhotoWordPage.svelte';
+  import PlaygroundPage from './lib/pages/PlaygroundPage.svelte';
   import SetsPage from './lib/pages/SetsPage.svelte';
   import TranslationPage from './lib/pages/TranslationPage.svelte';
   import VerbLabPage from './lib/pages/VerbLabPage.svelte';
   import { api, ApiError } from './lib/api';
   import { navigate, route } from './lib/router';
+  import { setProfile } from './lib/profile';
   import type { BootPayload, ThemeName } from './lib/types';
 
   type ToastTone = 'info' | 'success' | 'error';
@@ -46,6 +51,7 @@
       boot = await api.bootstrap();
       theme = boot.theme;
       soundEnabled = boot.preferences.sound_enabled;
+      setProfile(boot.user?.profile);
       const savedTheme = window.localStorage.getItem('lexarena-theme') as ThemeName | null;
       if (!boot.authenticated && savedTheme) {
         theme = savedTheme;
@@ -70,7 +76,7 @@
     if (boot.authenticated && $route === '/settings') {
       navigate('/dashboard', { replace: true });
     }
-    if (!boot.authenticated && !isAuthRoute($route)) {
+    if (!boot.authenticated && !isAuthRoute($route) && $route !== '/playground') {
       navigate('/login', { replace: true });
     }
     if (boot.authenticated && (isAuthRoute($route) || $route === '/')) {
@@ -97,6 +103,7 @@
     try {
       boot = await api.logout(boot.csrf_token);
       soundEnabled = false;
+      setProfile(null);
       navigate('/login', { replace: true });
       notify('Session closed.', 'info');
     } catch (err) {
@@ -121,24 +128,26 @@
     boot = event.detail;
     theme = boot.theme;
     soundEnabled = boot.preferences.sound_enabled;
+    setProfile(boot.user?.profile);
     window.localStorage.setItem('lexarena-theme', theme);
     navigate('/dashboard', { replace: true });
-    notify('Welcome to the new SPA flow.', 'success');
+    notify('Welcome to VerbPractice!', 'success');
   }
 </script>
 
 {#if booting}
   <main class="boot-shell">
     <div class="boot-card glass-panel strong-panel" in:fade={{ duration: 120 }}>
-      <p class="eyebrow">LexArena</p>
+      <p class="eyebrow">VerbPractice</p>
       <h1>Loading your training cockpit...</h1>
     </div>
   </main>
 {:else}
   <div class="app-shell">
     <a class="skip-link" href="#main-content">Skip to content</a>
+    <GameFx />
     {#if boot?.authenticated && boot.user && !isAuthRoute($route)}
-      <NavBar routePath={$route} user={boot.user} onLogout={handleLogout} />
+      <NavBar routePath={$route} user={boot.user} />
     {/if}
 
     <main class="workspace-shell" id="main-content">
@@ -150,22 +159,29 @@
 
       {#key $route + String(boot?.authenticated)}
         <div class="page-shell" in:fade={{ duration: 140 }}>
-          {#if !boot?.authenticated && $route === '/register'}
+          {#if $route === '/playground'}
+            <!-- Public experiment bench — reachable with or without a session -->
+            <PlaygroundPage />
+          {:else if !boot?.authenticated && $route === '/register'}
             <AuthPage mode="register" csrfToken={boot?.csrf_token || ''} on:authenticated={handleAuthenticated} />
           {:else if !boot?.authenticated}
             <AuthPage mode="login" csrfToken={boot?.csrf_token || ''} on:authenticated={handleAuthenticated} />
           {:else if $route === '/dashboard'}
-            <DashboardPage csrfToken={boot.csrf_token} {theme} onTheme={setTheme} {notify} />
+            <DashboardPage csrfToken={boot.csrf_token} {theme} onTheme={setTheme} onLogout={handleLogout} {notify} />
           {:else if $route === '/training/words'}
-            <TranslationPage mode="words" csrfToken={boot.csrf_token} soundEnabled={soundEnabled} {notify} />
+            <TranslationPage mode="words" csrfToken={boot.csrf_token} soundEnabled={soundEnabled} {theme} {notify} />
           {:else if $route.startsWith('/training/verbs') || $route === '/training/conjugation'}
-            <VerbLabPage routePath={$route} csrfToken={boot.csrf_token} soundEnabled={soundEnabled} {notify} />
+            <VerbLabPage routePath={$route} csrfToken={boot.csrf_token} soundEnabled={soundEnabled} {theme} {notify} />
           {:else if $route === '/chat'}
             <ChatPage csrfToken={boot.csrf_token} {notify} />
           {:else if $route === '/add-word'}
-            <AddWordPage csrfToken={boot.csrf_token} {notify} />
+            <AddWordPage csrfToken={boot.csrf_token} {theme} {notify} />
+          {:else if $route === '/photo-word'}
+            <PhotoWordPage csrfToken={boot.csrf_token} {notify} />
           {:else if $route === '/sets'}
             <SetsPage csrfToken={boot.csrf_token} {notify} />
+          {:else if $route === '/community'}
+            <CommunityPage csrfToken={boot.csrf_token} username={boot.user?.username || ''} {notify} />
           {:else if $route === '/monitor'}
             <MonitorPage csrfToken={boot.csrf_token} {notify} />
           {:else}
@@ -178,5 +194,7 @@
         </div>
       {/key}
     </main>
+
+    <div class="page-floor" aria-hidden="true"><div class="page-floor-grid"></div></div>
   </div>
 {/if}

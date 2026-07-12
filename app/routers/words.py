@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile, status
 from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.csrf import validate_csrf
+from app.core.rate_limit import limiter
 from app.core.security import AuthContext, require_auth_context
 from app.db.models import (
     Language,
@@ -25,9 +26,17 @@ from app.schemas.spa import (
     AddWordPayload,
     DeleteUserWordPayload,
     ExpandWordPayload,
+    OcrExtractResponse,
     ReportTranslationPayload,
 )
 from app.services.gamification import ensure_user_preference
+from app.services.ocr_service import (
+    MAX_UPLOAD_BYTES,
+    TESSERACT_LANG_BY_CODE,
+    OcrError,
+    OcrUnavailableError,
+    extract_subtitle_text,
+)
 from app.services.word_ai_service import WordAIError, expand_word, translate_word
 
 router = APIRouter(prefix="/api/words", tags=["words"])
@@ -52,6 +61,17 @@ def _serialize_native(entry: WordNativeTranslation, lang_code: str) -> dict:
         "translation": entry.translation,
         "note": entry.note,
     }
+
+
+async def _lang_by_code(db: AsyncSession, code: str) -> Language:
+    lookup = await db.execute(select(Language).where(Language.code == code.upper()))
+    lang = lookup.scalar_one_or_none()
+    if lang is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Unknown language: {code}",
+        )
+    return lang
 
 
 async def _require_lang_prefs(
@@ -97,21 +117,14 @@ async def add_word(
     learning, mother = await _require_lang_prefs(db, preference)
 
     if payload.learning_lang_code:
-        override_lookup = await db.execute(
-            select(Language).where(Language.code == payload.learning_lang_code.upper())
+        learning = await _lang_by_code(db, payload.learning_lang_code)
+    if payload.mother_lang_code:
+        mother = await _lang_by_code(db, payload.mother_lang_code)
+    if learning.id == mother.id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Source and target languages must differ",
         )
-        override = override_lookup.scalar_one_or_none()
-        if override is None:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Unknown learning language: {payload.learning_lang_code}",
-            )
-        if override.id == mother.id:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Learning language must differ from mother tongue",
-            )
-        learning = override
 
     try:
         result = await translate_word(
@@ -120,12 +133,13 @@ async def add_word(
             learning_lang=learning,
             mother_tongue=mother,
             context=payload.context,
+            user_id=auth.user.id,
         )
     except WordAIError as exc:
         raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail=str(exc)) from exc
 
     if result.status == "not_found":
-        await db.rollback()
+        await db.commit()
         return {
             "status": "not_found",
             "suggestions": result.suggestions or [],
@@ -202,6 +216,54 @@ async def add_word(
         "priority_queue_id": added.id,
         "force_unlocked": force_unlocked,
     }
+
+
+@router.post("/ocr", response_model=OcrExtractResponse)
+@limiter.limit("10/minute")
+async def ocr_extract(
+    request: Request,
+    image: UploadFile = File(...),
+    csrf_token: str = Form(...),
+    lang_code: str = Form(...),
+    auth: AuthContext = Depends(require_auth_context),
+):
+    validate_csrf(request, csrf_token)
+
+    tesseract_lang = TESSERACT_LANG_BY_CODE.get(lang_code.lower())
+    if tesseract_lang is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Unsupported OCR language: {lang_code}",
+        )
+    if not (image.content_type or "").startswith("image/"):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Upload must be an image.",
+        )
+    data = await image.read(MAX_UPLOAD_BYTES + 1)
+    if len(data) > MAX_UPLOAD_BYTES:
+        raise HTTPException(
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            detail="Image too large (max 8 MB).",
+        )
+
+    try:
+        result = await extract_subtitle_text(data, tesseract_lang)
+    except OcrUnavailableError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(exc)
+        ) from exc
+    except OcrError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(exc)
+        ) from exc
+
+    return OcrExtractResponse(
+        text=result.text,
+        lines=result.lines,
+        mean_confidence=result.mean_confidence,
+        ocr_lang=tesseract_lang,
+    )
 
 
 @router.get("/history")
@@ -603,7 +665,7 @@ async def expand_word_endpoint(
             detail="Extended content already exists for this word.",
         )
     try:
-        lexical = await expand_word(db, word=word, learning_lang=learning)
+        lexical = await expand_word(db, word=word, learning_lang=learning, user_id=auth.user.id)
     except WordAIError as exc:
         raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail=str(exc)) from exc
     await db.commit()

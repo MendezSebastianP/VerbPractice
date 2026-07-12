@@ -1,5 +1,8 @@
 # Deployment And Backup
 
+> The mini PC production setup (systemd units, auto-deploy timer, Cloudflare
+> tunnel at vp.sebmendez.dev) is documented in [deploy/README.md](deploy/README.md).
+
 ## Baseline Production Shape
 - Run FastAPI behind a reverse proxy such as Nginx or Caddy.
 - Keep PostgreSQL outside the app process and enable daily backups.

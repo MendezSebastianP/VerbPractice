@@ -24,6 +24,10 @@ shell reads them from the manifest, so browsers/Cloudflare can never serve a
 stale bundle after a deploy (hashed assets are `immutable`, the shell is
 `no-cache`).
 
+When curated conjugation data or its importer changes, deployment also runs a
+filtered, idempotent sync of the manually reviewed English and Russian table
+rows before restarting the app.
+
 ## One-time install (already done)
 
 ```bash

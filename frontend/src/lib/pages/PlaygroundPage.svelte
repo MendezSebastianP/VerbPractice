@@ -2,6 +2,7 @@
   import LaunchControlConcept from '../components/playground/LaunchControlConcept.svelte';
   import SideProgressConcept from '../components/playground/SideProgressConcept.svelte';
   import TableGameConcept from '../components/playground/TableGameConcept.svelte';
+  import TableTransitionConcept from '../components/playground/TableTransitionConcept.svelte';
   import VerbSetupConcept from '../components/playground/VerbSetupConcept.svelte';
   import { navigate } from '../router';
 
@@ -17,8 +18,8 @@
   <header class="glass-panel strong-panel pg-header">
     <div>
       <p class="eyebrow">Playground · Verb tables design bench</p>
-      <h1>G1 is locked. Two decisions remain.</h1>
-      <p class="section-copy">The selected active-column game remains final. Compare three mirrored side-progress systems and three replacement launch controls before either direction enters production.</p>
+      <h1>A1 and G1 are live. Three decisions remain.</h1>
+      <p class="section-copy">Compare mirrored side progress, replacement launch controls, and three table-specific transitions. Every study stays isolated until you choose a production direction.</p>
     </div>
     <div class="pg-header-actions">
       <div class="pg-theme-row" role="group" aria-label="Preview theme">
@@ -35,6 +36,7 @@
     <a href="#game-study"><span>02</span><strong>Chosen game</strong><small>G1-B · final behavior</small></a>
     <a href="#progress-study"><span>03</span><strong>Side progress</strong><small>Three mirrored options</small></a>
     <a href="#launch-study"><span>04</span><strong>Launch control</strong><small>Three button options</small></a>
+    <a href="#transition-study"><span>05</span><strong>Table transition</strong><small>Three animation options</small></a>
   </nav>
 
   <section class="study-section" id="setup-study">
@@ -167,9 +169,41 @@
     </div>
   </section>
 
+  <section class="study-section decision-study" id="transition-study">
+    <header class="study-heading">
+      <span class="study-index">05 / TABLE TRANSITION</span>
+      <h2>The table should assemble, not dissolve.</h2>
+      <p>Each sequence turns the choices made in A1 into the structure used by G1, giving table practice its own identity instead of borrowing Words’ pixel transition.</p>
+    </header>
+
+    <div class="concept-stack transition-stack">
+      <TableTransitionConcept
+        variant="blueprint"
+        index="T1"
+        kicker="Architectural reveal"
+        title="Draft the table into existence"
+        description="The setup contracts into construction lines; rails and cells draw themselves before the finished active column receives a physical approval stamp. Precise, calm, and unmistakably table-specific."
+      />
+      <TableTransitionConcept
+        variant="deal"
+        index="T2"
+        kicker="Tactile column motion"
+        title="Deal the selected tenses"
+        description="Every selected tense becomes a card, fans across the stage, then stacks into the first playable column. This makes the cumulative A1 selection feel like material entering the game."
+      />
+      <TableTransitionConcept
+        variant="thread"
+        index="T3"
+        kicker="Answer-path transfer"
+        title="Thread the route downward"
+        description="A luminous route connects the chosen tenses and travels into G1’s top-to-bottom answer rail. It communicates the keyboard flow before the first input receives focus."
+      />
+    </div>
+  </section>
+
   <footer class="pg-footer glass-panel">
     <span>DESIGN BENCH</span>
-    <p>G1 is production-ready. P1–P3 and L1–L3 are isolated visual decisions and do not alter real training progress.</p>
+    <p>A1 and G1 are in production. P1–P3, L1–L3, and T1–T3 remain isolated visual decisions.</p>
     <a href="#setup-study">Back to setup concepts ↑</a>
   </footer>
 </section>
@@ -222,7 +256,7 @@
 
   .study-nav {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 0.6rem;
   }
 
@@ -328,6 +362,10 @@
 
   .launch-stack {
     gap: 2.6rem;
+  }
+
+  .transition-stack {
+    gap: 3.2rem;
   }
 
   .pointer-law {

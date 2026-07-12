@@ -52,6 +52,15 @@ fi
 
 make migrate
 
+if changed '^(app/data/curated_conjugations/|app/services/curated_conjugations\.py|scripts/import_curated_conjugations\.py)'; then
+    echo "Syncing reviewed English and Russian verb tables..."
+    .venv/bin/python scripts/import_curated_conjugations.py \
+        --allow-reviewed \
+        --skip-inventory \
+        --language EN \
+        --language RU
+fi
+
 systemctl --user restart verbpractice
 
 echo "Waiting for health..."

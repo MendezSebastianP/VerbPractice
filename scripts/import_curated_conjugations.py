@@ -4,6 +4,7 @@ import argparse
 import asyncio
 from pathlib import Path
 
+from app.core.languages import LANGUAGE_DEFINITIONS
 from app.db.session import AsyncSessionLocal
 from app.services.curated_conjugations import (
     batch_conjugations_path,
@@ -30,6 +31,17 @@ def parse_args() -> argparse.Namespace:
         "--allow-reviewed",
         action="store_true",
         help="Permit reviewed rows in addition to approved rows during import.",
+    )
+    parser.add_argument(
+        "--language",
+        action="append",
+        choices=sorted(LANGUAGE_DEFINITIONS),
+        help="Import conjugations for one language only. Repeat to select multiple languages.",
+    )
+    parser.add_argument(
+        "--skip-inventory",
+        action="store_true",
+        help="Skip translation inventory import when only table conjugations are needed.",
     )
     return parser.parse_args()
 
@@ -71,11 +83,16 @@ async def main() -> None:
         raise SystemExit("\n".join(errors))
 
     async with AsyncSessionLocal() as session:
-        inventory_counts = await import_inventory_rows(session, inventory_rows, batch=args.batch)
+        inventory_counts = (
+            {"verbs_created": 0, "translations_created": 0}
+            if args.skip_inventory
+            else await import_inventory_rows(session, inventory_rows, batch=args.batch)
+        )
         conjugation_counts = await import_curated_conjugation_rows(
             session,
             batch_rows,
             batch=args.batch,
+            language_codes=set(args.language) if args.language else None,
             skip_drafts=True,
             fail_on_drafts=False,
             minimum_review_status=minimum_review_status,
@@ -83,6 +100,8 @@ async def main() -> None:
         await session.commit()
 
     print("Curated import complete.")
+    if args.language:
+        print({"languages": sorted(set(args.language))})
     print(inventory_counts)
     print(conjugation_counts)
 

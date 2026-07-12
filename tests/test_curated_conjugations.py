@@ -285,6 +285,58 @@ async def test_import_curated_conjugation_rows_can_require_approved(sqlite_sessi
     assert rows[0].pronoun == "tu"
 
 
+@pytest.mark.asyncio
+async def test_import_curated_conjugations_can_target_table_languages(sqlite_session):
+    rows = [
+        CuratedConjugationRow(
+            language_code="FR",
+            infinitive="prendre",
+            mood="Indicatif",
+            tense="Présent",
+            pronoun="je",
+            conjugated_form="prends",
+            batch=1,
+            review_status="reviewed",
+            source_note="manual",
+        ),
+        CuratedConjugationRow(
+            language_code="EN",
+            infinitive="take",
+            mood="Indicative",
+            tense="Present",
+            pronoun="I",
+            conjugated_form="take",
+            batch=1,
+            review_status="reviewed",
+            source_note="manual",
+        ),
+        CuratedConjugationRow(
+            language_code="EN",
+            infinitive="take",
+            mood="Indicative",
+            tense="Present",
+            pronoun="I",
+            conjugated_form="take",
+            batch=2,
+            review_status="reviewed",
+            source_note="later duplicate mapping",
+        ),
+    ]
+
+    first_counts = await import_curated_conjugation_rows(sqlite_session, rows, language_codes={"EN"})
+    second_counts = await import_curated_conjugation_rows(sqlite_session, rows, language_codes={"EN"})
+    await sqlite_session.commit()
+
+    conjugations = (await sqlite_session.execute(select(VerbConjugation))).scalars().all()
+    verbs = (await sqlite_session.execute(select(Verb))).scalars().all()
+
+    assert first_counts["conjugations_created"] == 1
+    assert second_counts["conjugations_skipped"] == 1
+    assert [row.conjugated_form for row in conjugations] == ["take"]
+    assert conjugations[0].source == "curated_manual_batch_02"
+    assert [verb.infinitive for verb in verbs] == ["take"]
+
+
 def test_summarize_curated_batches_tracks_review_depth():
     inventory_rows = _sample_inventory()
     template_rows = build_batch_template_rows(inventory_rows, 1)

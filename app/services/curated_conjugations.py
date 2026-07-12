@@ -684,12 +684,20 @@ async def import_curated_conjugation_rows(
     rows: list[CuratedConjugationRow],
     *,
     batch: int | None = None,
+    language_codes: set[str] | None = None,
     skip_drafts: bool = True,
     fail_on_drafts: bool = False,
     minimum_review_status: str = "reviewed",
 ) -> dict[str, int]:
     languages = await _language_map(session)
     selected_rows = [row for row in rows if batch is None or row.batch == batch]
+
+    if language_codes:
+        selected_languages = {code.upper() for code in language_codes}
+        unknown_languages = selected_languages - set(languages)
+        if unknown_languages:
+            raise ValueError(f"Unsupported language codes: {', '.join(sorted(unknown_languages))}")
+        selected_rows = [row for row in selected_rows if row.language_code in selected_languages]
 
     if minimum_review_status not in ALLOWED_REVIEW_STATUSES:
         raise ValueError(f"Unsupported minimum review status: {minimum_review_status}")
@@ -704,46 +712,83 @@ async def import_curated_conjugation_rows(
             row for row in selected_rows if review_status_at_least(row.review_status, minimum_review_status)
         ]
 
+    # The inventory can map the same translated infinitive from more than one
+    # French rank. Keep the latest curated occurrence for each database slot so
+    # source labels and forms do not churn on every idempotent full import.
+    rows_by_slot: dict[tuple[str, str, str, str, str], CuratedConjugationRow] = {}
+    for row in selected_rows:
+        rows_by_slot[(row.language_code, row.infinitive, row.mood, row.tense, row.pronoun)] = row
+    selected_rows = list(rows_by_slot.values())
+
     counts = {
         "conjugations_created": 0,
         "conjugations_updated": 0,
         "conjugations_skipped": 0,
     }
-    verb_cache: dict[tuple[str, str], Verb] = {}
+
+    if not selected_rows:
+        return counts
+
+    selected_codes = {row.language_code for row in selected_rows}
+    selected_language_ids = {languages[code].id for code in selected_codes}
+    selected_infinitives = {row.infinitive for row in selected_rows}
+    existing_verbs = (
+        await session.execute(
+            select(Verb).where(
+                Verb.language_id.in_(selected_language_ids),
+                Verb.infinitive.in_(selected_infinitives),
+            )
+        )
+    ).scalars().all()
+    code_by_language_id = {language.id: code for code, language in languages.items()}
+    verb_cache = {
+        (code_by_language_id[verb.language_id], verb.infinitive): verb
+        for verb in existing_verbs
+    }
+
+    for language_code, infinitive in sorted({(row.language_code, row.infinitive) for row in selected_rows}):
+        key = (language_code, infinitive)
+        if key in verb_cache:
+            continue
+        verb = Verb(infinitive=infinitive, language_id=languages[language_code].id)
+        session.add(verb)
+        verb_cache[key] = verb
+
+    await session.flush()
+
+    selected_verb_ids = {verb.id for verb in verb_cache.values() if verb.id is not None}
+    existing_conjugations = (
+        await session.execute(
+            select(VerbConjugation).where(
+                VerbConjugation.language_id.in_(selected_language_ids),
+                VerbConjugation.verb_id.in_(selected_verb_ids),
+            )
+        )
+    ).scalars().all()
+    conjugation_cache = {
+        (row.verb_id, row.language_id, row.mood, row.tense, row.pronoun): row
+        for row in existing_conjugations
+    }
 
     for row in selected_rows:
-        verb, _ = await _get_or_create_verb(
-            session,
-            cache=verb_cache,
-            languages=languages,
-            language_code=row.language_code,
-            infinitive=row.infinitive,
-        )
+        verb = verb_cache[(row.language_code, row.infinitive)]
         language = languages[row.language_code]
-        result = await session.execute(
-            select(VerbConjugation).where(
-                VerbConjugation.verb_id == verb.id,
-                VerbConjugation.language_id == language.id,
-                VerbConjugation.mood == row.mood,
-                VerbConjugation.tense == row.tense,
-                VerbConjugation.pronoun == row.pronoun,
-            )
-        )
-        existing = result.scalar_one_or_none()
+        slot_key = (verb.id, language.id, row.mood, row.tense, row.pronoun)
+        existing = conjugation_cache.get(slot_key)
         source_value = f"curated_manual_batch_{row.batch:02d}"
         if existing is None:
-            session.add(
-                VerbConjugation(
-                    verb_id=verb.id,
-                    language_id=language.id,
-                    mood=row.mood,
-                    tense=row.tense,
-                    pronoun=row.pronoun,
-                    conjugated_form=row.conjugated_form,
-                    verified=True,
-                    source=source_value,
-                )
+            existing = VerbConjugation(
+                verb_id=verb.id,
+                language_id=language.id,
+                mood=row.mood,
+                tense=row.tense,
+                pronoun=row.pronoun,
+                conjugated_form=row.conjugated_form,
+                verified=True,
+                source=source_value,
             )
+            session.add(existing)
+            conjugation_cache[slot_key] = existing
             counts["conjugations_created"] += 1
             continue
 

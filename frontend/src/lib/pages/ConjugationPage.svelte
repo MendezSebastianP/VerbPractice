@@ -36,10 +36,9 @@
   let escTimer: ReturnType<typeof setTimeout> | null = null;
 
   const LEVELS = [
-    { value: 'easy', label: 'Level 1', note: 'Core tense' },
-    { value: 'medium', label: 'Level 2', note: 'Core + intermediate' },
-    { value: 'hard', label: 'Level 3', note: 'All tenses' },
-    { value: 'custom', label: 'Custom', note: 'Pick your tenses' },
+    { value: 'easy', label: 'Core', note: 'Start with the essential forms' },
+    { value: 'medium', label: 'Expand', note: 'Add everyday range' },
+    { value: 'hard', label: 'Master', note: 'Open the complete corpus' },
   ];
   const LENGTH_OPTIONS = [3, 5, 8];
 
@@ -56,6 +55,7 @@
   let sessionActive = false;
   let sessionDone = false;
   let menuView = false;
+  let activeLanguage: LanguageConfig | undefined;
 
   function currentLanguage(): LanguageConfig | undefined {
     return state?.languages.find((entry) => entry.code === language);
@@ -85,6 +85,27 @@
 
   function visibleTenses(): string[] {
     return tensesForLevel(currentLanguage(), level);
+  }
+
+  function tensesForTier(config: LanguageConfig | undefined, tierIndex: number): string[] {
+    if (!config) {
+      return [];
+    }
+    const available = new Set(config.available_tenses || []);
+    const tier = LEVELS[tierIndex]?.value;
+    return tier ? (config.difficulty_tiers[tier] || []).filter((tense) => available.has(tense)) : [];
+  }
+
+  function tierIsOn(
+    tierIndex: number,
+    config: LanguageConfig | undefined,
+    currentLevel: string,
+    currentSelection: string[],
+  ): boolean {
+    if (currentLevel === 'custom') {
+      return tensesForTier(config, tierIndex).some((tense) => currentSelection.includes(tense));
+    }
+    return LEVELS.findIndex((item) => item.value === currentLevel) >= tierIndex;
   }
 
   function levelAvailable(targetLevel: string): boolean {
@@ -166,6 +187,7 @@
   }
 
   $: activeTense = state?.question?.selected_tenses[activeTenseIndex] || '';
+  $: activeLanguage = state?.languages.find((entry) => entry.code === language);
   $: currentInputCells = buildInputCells(state?.question, activeTense);
   $: currentActiveCell = currentInputCells.find((cell) => cell.key === activeCellKey) || currentInputCells[0] || null;
   $: currentActiveLabel = currentActiveCell ? `${currentActiveCell.pronoun} -> ${currentActiveCell.tense}` : 'Nothing left to fill';
@@ -271,6 +293,10 @@
     }
     error = '';
     language = code;
+    if (level === 'custom') {
+      selectedTenses = tensesForLevel(next, 'easy');
+      return;
+    }
     if (level !== 'custom' && !levelAvailable(level)) {
       level = 'easy';
     }
@@ -496,6 +522,12 @@
       return;
     }
 
+    if (menuView && event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey && ['1', '2', '3', '4'].includes(event.key)) {
+      event.preventDefault();
+      chooseLevel(event.key === '4' ? 'custom' : LEVELS[Number(event.key) - 1].value);
+      return;
+    }
+
     const plainKey = !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey;
     if (!plainKey) {
       return;
@@ -661,34 +693,35 @@
           <div class="setup-step">
             <div class="setup-step-head">
               <span class="step-number">02</span>
-              <div><strong>Tense level</strong><small>Levels add tenses cumulatively.</small></div>
+              <div><strong>Climb from core to mastery</strong><small>Each level adds a new tier of tenses.</small></div>
             </div>
-            <div class="level-card-grid">
-              {#each LEVELS as item}
-                <button
-                  class:level-card-on={level === item.value}
-                  class="level-card"
-                  type="button"
-                  disabled={item.value !== 'custom' && !levelAvailable(item.value)}
-                  aria-pressed={level === item.value}
-                  on:click={() => chooseLevel(item.value)}
-                >
-                  <span>{item.label}</span>
-                  <small>{item.value === 'custom' ? item.note : `${tensesForLevel(currentLanguage(), item.value).length} ${tensesForLevel(currentLanguage(), item.value).length === 1 ? 'tense' : 'tenses'}`}</small>
-                </button>
+            <div class="tense-staircase" aria-label="Cumulative tense levels">
+              {#each LEVELS as item, tierIndex}
+                {@const tierTenses = tensesForTier(activeLanguage, tierIndex)}
+                <div class:stair-on={tierIsOn(tierIndex, activeLanguage, level, selectedTenses)} class:stair-disabled={!tierTenses.length} class="stair-step">
+                  <button
+                    class="stair-level"
+                    type="button"
+                    disabled={!tierTenses.length || !levelAvailable(item.value)}
+                    aria-label={`Choose level ${tierIndex + 1}: ${item.label}`}
+                    aria-pressed={level === item.value}
+                    on:click={() => chooseLevel(item.value)}
+                  >
+                    <strong>L{tierIndex + 1}</strong><span>Alt+{tierIndex + 1}</span>
+                  </button>
+                  <div class="stair-copy"><strong>{item.label}</strong><small>{item.note}</small></div>
+                  <div class="stair-tense-row">
+                    {#each tierTenses as tense}
+                      <button class:tense-on={selectedTenses.includes(tense)} type="button" on:click={() => toggleTense(tense)}>{tense}</button>
+                    {/each}
+                  </div>
+                </div>
               {/each}
-            </div>
-
-            <div class="tense-picker-shell" class:tense-picker-custom={level === 'custom'}>
-              <div class="tense-picker-head">
-                <span>{level === 'custom' ? 'Pick tenses' : 'Included tenses'}</span>
-                <small>{selectedTenses.length} selected · clicking a tense switches to Custom</small>
-              </div>
-              <div class="tense-wall">
-                {#each currentLanguage()?.available_tenses || [] as tense}
-                  <button class:option-on={selectedTenses.includes(tense)} class="tense-chip" type="button" on:click={() => toggleTense(tense)}>{tense}</button>
-                {/each}
-              </div>
+              <button class:custom-on={level === 'custom'} class="custom-route" type="button" on:click={() => chooseLevel('custom')}>
+                <span class="custom-spark" aria-hidden="true">✦</span>
+                <span><strong>Custom route</strong><small>Touch any tense to rewrite the staircase</small></span>
+                <span class="custom-key">Alt+4</span>
+              </button>
             </div>
           </div>
 
@@ -722,7 +755,7 @@
 
           <div class="setup-launch-row">
             <div class="launch-summary">
-              <span>{currentLanguage()?.name || language}</span>
+              <span>{activeLanguage?.name || language}</span>
               <strong>{selectedTenses.length} {selectedTenses.length === 1 ? 'tense' : 'tenses'} × {length} verbs</strong>
             </div>
             <button class="primary-button table-launch-button" type="button" on:click={startSession} disabled={loading || !canStart()}>
@@ -906,8 +939,7 @@
   }
 
   .setup-step-head small,
-  .language-card small,
-  .level-card small {
+  .language-card small {
     color: var(--muted);
   }
 
@@ -924,8 +956,7 @@
     font: 700 0.68rem/1 var(--mono);
   }
 
-  .language-card-grid,
-  .level-card-grid {
+  .language-card-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 0.55rem;
@@ -996,76 +1027,152 @@
     font-weight: 800;
   }
 
-  .level-card {
-    display: flex;
-    min-height: 4.25rem;
-    flex-direction: column;
-    justify-content: center;
-    gap: 0.2rem;
-    padding: 0.7rem;
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    color: var(--text);
-    background: transparent;
+  .tense-staircase {
+    position: relative;
+    display: grid;
+    gap: 0.48rem;
+    padding-left: 0.2rem;
   }
 
-  .level-card:disabled {
-    cursor: not-allowed;
+  .tense-staircase::before {
+    position: absolute;
+    top: 1.55rem;
+    bottom: 3.15rem;
+    left: 1.7rem;
+    width: 1px;
+    content: '';
+    background: linear-gradient(var(--accent), color-mix(in srgb, var(--accent) 12%, var(--line)));
+  }
+
+  .stair-step {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(7.5rem, 0.8fr) minmax(0, 2fr);
+    gap: 0.75rem;
+    align-items: center;
+    min-height: 4rem;
+    padding: 0.62rem;
+    border: 1px solid var(--line);
+    border-radius: 15px;
+    background: color-mix(in srgb, var(--surface-strong) 64%, transparent);
+    transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+  }
+
+  .stair-step.stair-on {
+    border-color: color-mix(in srgb, var(--accent) 62%, var(--line));
+    background: color-mix(in srgb, var(--accent-soft) 64%, transparent);
+  }
+
+  .stair-step.stair-disabled {
     opacity: 0.4;
   }
 
-  .level-card-on {
-    border-color: color-mix(in srgb, var(--accent) 58%, var(--line));
-    color: var(--accent-strong);
-    background: var(--accent-soft);
-    box-shadow: inset 0 -3px 0 color-mix(in srgb, var(--accent) 42%, transparent);
-  }
-
-  .level-card span {
-    font-weight: 750;
-  }
-
-  .level-card small {
-    font-size: 0.68rem;
-  }
-
-  .tense-picker-shell {
-    padding: 0.85rem;
-    border: 1px dashed var(--line-strong);
-    border-radius: 16px;
-    background:
-      radial-gradient(circle at 90% 0%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 42%),
-      color-mix(in srgb, var(--surface-strong) 68%, transparent);
-  }
-
-  .tense-picker-custom {
-    border-style: solid;
-    border-color: color-mix(in srgb, var(--accent) 48%, var(--line));
-  }
-
-  .tense-picker-head {
-    display: flex;
-    justify-content: space-between;
-    gap: 0.75rem;
-    margin-bottom: 0.65rem;
-    color: var(--text);
-    font-size: 0.75rem;
-    font-weight: 700;
-  }
-
-  .tense-picker-head small {
+  .stair-level {
+    z-index: 1;
+    display: grid;
+    width: 2.45rem;
+    min-height: 2.65rem;
+    gap: 0.22rem;
+    place-items: center;
+    padding: 0.3rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 11px;
     color: var(--muted);
-    font-weight: 500;
+    background: var(--surface-strong);
   }
 
-  .tense-wall {
-    gap: 0.45rem;
+  .stair-on .stair-level {
+    border-color: var(--accent);
+    color: var(--accent-strong);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 10%, transparent);
   }
 
-  .tense-chip {
-    padding: 0.55rem 0.7rem;
-    border-radius: 10px;
-    font-size: 0.72rem;
+  .stair-level strong {
+    font: 800 0.66rem/1 var(--mono);
+  }
+
+  .stair-level span,
+  .custom-key {
+    color: var(--muted);
+    font: 700 0.4rem/1 var(--mono);
+    white-space: nowrap;
+  }
+
+  .stair-copy {
+    display: grid;
+    align-content: center;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+
+  .stair-copy strong {
+    font-size: 0.84rem;
+  }
+
+  .stair-copy small {
+    color: var(--muted);
+    font-size: 0.58rem;
+  }
+
+  .stair-tense-row {
+    display: flex;
+    min-width: 0;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-content: center;
+  }
+
+  .stair-tense-row button {
+    padding: 0.46rem 0.58rem;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--muted);
+    background: color-mix(in srgb, var(--surface-strong) 74%, transparent);
+    font-size: 0.62rem;
+  }
+
+  .stair-tense-row button.tense-on {
+    border-color: color-mix(in srgb, var(--accent) 68%, var(--line));
+    color: var(--text);
+    background: var(--accent-soft);
+  }
+
+  .custom-route {
+    display: flex;
+    gap: 0.7rem;
+    align-items: center;
+    margin-left: 0.8rem;
+    padding: 0.72rem 0.85rem;
+    border: 1px dashed var(--line-strong);
+    border-radius: 14px;
+    color: var(--muted);
+    text-align: left;
+    background: transparent;
+  }
+
+  .custom-route.custom-on {
+    border-style: solid;
+    border-color: var(--accent);
+    color: var(--text);
+    background: var(--accent-soft);
+  }
+
+  .custom-route > span:nth-child(2) {
+    display: grid;
+    flex: 1;
+    gap: 0.1rem;
+  }
+
+  .custom-route strong {
+    font-size: 0.76rem;
+  }
+
+  .custom-route small {
+    font-size: 0.56rem;
+  }
+
+  .custom-spark {
+    color: var(--accent-strong);
   }
 
   .setup-grid-two {
@@ -1378,6 +1485,7 @@
   .g1-verb-prompt > div {
     display: grid;
     gap: 0.16rem;
+    min-width: 0;
   }
 
   .g1-verb-prompt > div:nth-child(2) {
@@ -1402,8 +1510,15 @@
   }
 
   .g1-verb-prompt > div:nth-child(2) > strong {
-    font: 780 clamp(1.25rem, 3.5vw, 1.85rem)/1 var(--display);
+    font: 780 clamp(1.08rem, 3.1vw, 1.85rem)/1.08 var(--display);
     letter-spacing: -0.035em;
+  }
+
+  .g1-verb-prompt > div:first-child > strong,
+  .g1-verb-prompt > div:nth-child(2) > strong {
+    max-width: 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 
   .g1-verb-prompt em {
@@ -1627,10 +1742,11 @@
 
   .g1-locked-guide strong,
   .g1-inline-feedback strong {
-    overflow: hidden;
+    min-width: 0;
     color: white;
     font-size: clamp(0.92rem, 2.2vw, 1.08rem);
-    text-overflow: ellipsis;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
   }
 
   .g1-locked-guide small,
@@ -1667,12 +1783,12 @@
   }
 
   .g1-feedback-wrong del {
-    overflow: hidden;
+    min-width: 0;
     color: rgba(255, 255, 255, 0.5);
     font-size: 0.84rem;
     text-decoration-color: #ff7188;
     text-decoration-thickness: 2px;
-    text-overflow: ellipsis;
+    overflow-wrap: anywhere;
   }
 
   .g1-feedback-wrong strong::before {
@@ -1718,13 +1834,20 @@
   }
 
   @media (max-width: 760px) {
-    .language-card-grid,
-    .level-card-grid {
+    .language-card-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .setup-grid-two {
       grid-template-columns: 1fr;
+    }
+
+    .stair-step {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .stair-tense-row {
+      grid-column: 2;
     }
   }
 
@@ -1746,10 +1869,6 @@
 
     .language-check {
       display: none;
-    }
-
-    .tense-picker-head {
-      flex-direction: column;
     }
 
     .table-launch-button {

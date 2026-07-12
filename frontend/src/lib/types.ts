@@ -225,6 +225,26 @@ export interface LanguageConfig {
   pronoun_set: string[];
   difficulty_tiers: Record<string, string[]>;
   tense_definitions: Record<string, { mood: string }>;
+  available: boolean;
+  available_tenses: string[];
+  tense_verb_counts: Record<string, number>;
+  verb_count: number;
+}
+
+export interface ConjugationTenseReview {
+  verb_id: number;
+  verb: string;
+  tense: string;
+  correct: number;
+  total: number;
+  accuracy: number;
+  cells: Array<{
+    pronoun: string;
+    kind: 'missing' | 'prefilled' | 'answer';
+    answer: string;
+    expected: string;
+    correct: boolean | null;
+  }>;
 }
 
 export interface ConjugationState {
@@ -254,6 +274,7 @@ export interface ConjugationState {
     progress_total: number;
     combo: number;
     best_combo: number;
+    checked_tenses?: string[];
   };
   question?: {
     verb_id: number;
@@ -275,6 +296,21 @@ export interface ConjugationState {
     accuracy?: number;
     correct?: number;
     total?: number;
+    review?: {
+      verb_id: number;
+      verb: string;
+      selected_tenses: string[];
+      rows: Array<{
+        pronoun: string;
+        cells: Array<{
+          tense: string;
+          kind: 'missing' | 'prefilled' | 'answer';
+          answer: string;
+          expected: string;
+          correct: boolean | null;
+        }>;
+      }>;
+    };
     gamification?: RewardState;
   } | null;
 }

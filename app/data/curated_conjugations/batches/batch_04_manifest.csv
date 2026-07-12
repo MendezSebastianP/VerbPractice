@@ -1,69 +1,69 @@
-rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text
-151,4,pousser,empujar,1,153,empujar
-152,4,rencontrer,encontrar,1,154,"encontrar, conocer"
-152,4,rencontrer,conocer,2,154,"encontrar, conocer"
-153,4,fixer,fijar,1,155,fijar
-154,4,construire,construir,1,156,construir
-155,4,constater,constatar,1,157,"constatar, notar"
-155,4,constater,notar,2,157,"constatar, notar"
-156,4,remarquer,notar,1,158,notar
-157,4,cacher,esconder,1,159,"esconder, ocultar"
-157,4,cacher,ocultar,2,159,"esconder, ocultar"
-158,4,développer,desarrollar,1,160,desarrollar
-159,4,prévoir,prever,1,161,"prever, planear"
-159,4,prévoir,planear,2,161,"prever, planear"
-160,4,préciser,precisar,1,162,precisar
-161,4,réduire,reducir,1,163,reducir
-162,4,constituer,constituir,1,164,constituir
-163,4,résoudre,resolver,1,165,"resolver, solucionar"
-163,4,résoudre,solucionar,2,165,"resolver, solucionar"
-164,4,crier,gritar,1,166,gritar
-165,4,sauver,salvar,1,167,"salvar, rescatar"
-165,4,sauver,rescatar,2,167,"salvar, rescatar"
-166,4,remonter,subir de nuevo,1,168,"subir de nuevo, remontar"
-166,4,remonter,remontar,2,168,"subir de nuevo, remontar"
-167,4,imposer,imponer,1,169,imponer
-168,4,naître,nacer,1,170,nacer
-169,4,envoyer,enviar,1,171,"enviar, mandar"
-169,4,envoyer,mandar,2,171,"enviar, mandar"
-170,4,souffrir,sufrir,1,172,"sufrir, padecer"
-170,4,souffrir,padecer,2,172,"sufrir, padecer"
-171,4,tenter,intentar,1,173,"intentar, tentar"
-171,4,tenter,tentar,2,173,"intentar, tentar"
-172,4,juger,juzgar,1,174,juzgar
-173,4,bouger,mover,1,175,mover
-174,4,exercer,ejercer,1,176,ejercer
-175,4,intervenir,intervenir,1,177,intervenir
-176,4,supporter,soportar,1,178,"soportar, apoyar"
-176,4,supporter,apoyar,2,178,"soportar, apoyar"
-177,4,mesurer,medir,1,179,medir
-178,4,sauter,saltar,1,180,saltar
-179,4,apercevoir,percibir,1,181,"percibir, notar"
-179,4,apercevoir,notar,2,181,"percibir, notar"
-180,4,conserver,conservar,1,182,conservar
-181,4,représenter,representar,1,183,representar
-182,4,placer,colocar,1,184,colocar
-183,4,se bouger,moverse,1,185,moverse
-184,4,traiter,tratar,1,186,tratar
-185,4,appliquer,aplicar,1,187,aplicar
-186,4,remplacer,reemplazar,1,188,"reemplazar, sustituir"
-186,4,remplacer,sustituir,2,188,"reemplazar, sustituir"
-187,4,baiser,besar,1,189,besar
-188,4,étendre,extender,1,190,extender
-189,4,mener,llevar,1,191,"llevar, dirigir"
-189,4,mener,dirigir,2,191,"llevar, dirigir"
-190,4,affirmer,afirmar,1,192,afirmar
-191,4,satisfaire,satisfacer,1,193,satisfacer
-192,4,réfléchir,reflexionar,1,194,"reflexionar, pensar"
-192,4,réfléchir,pensar,2,194,"reflexionar, pensar"
-193,4,chanter,cantar,1,195,cantar
-194,4,vendre,vender,1,196,vender
-195,4,traverser,cruzar,1,197,"cruzar, atravesar"
-195,4,traverser,atravesar,2,197,"cruzar, atravesar"
-196,4,fier,confiar,1,198,confiar
-197,4,décider,decidir,1,199,decidir
-198,4,entraîner,entrenar,1,200,"entrenar, acarrear"
-198,4,entraîner,acarrear,2,200,"entrenar, acarrear"
-199,4,avancer,avanzar,1,201,avanzar
-200,4,refuser,rechazar,1,202,"rechazar, rehusar"
-200,4,refuser,rehusar,2,202,"rechazar, rehusar"
+rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive
+151,4,pousser,empujar,1,153,empujar,push,толкать
+152,4,rencontrer,encontrar,1,154,"encontrar, conocer",meet,встречать
+152,4,rencontrer,conocer,2,154,"encontrar, conocer",meet,встречать
+153,4,fixer,fijar,1,155,fijar,fix,закреплять
+154,4,construire,construir,1,156,construir,build,строить
+155,4,constater,constatar,1,157,"constatar, notar",ascertain,констатировать
+155,4,constater,notar,2,157,"constatar, notar",ascertain,констатировать
+156,4,remarquer,notar,1,158,notar,notice,замечать
+157,4,cacher,esconder,1,159,"esconder, ocultar",hide,скрывать
+157,4,cacher,ocultar,2,159,"esconder, ocultar",hide,скрывать
+158,4,développer,desarrollar,1,160,desarrollar,develop,развивать
+159,4,prévoir,prever,1,161,"prever, planear",foresee,предвидеть
+159,4,prévoir,planear,2,161,"prever, planear",foresee,предвидеть
+160,4,préciser,precisar,1,162,precisar,specify,уточнять
+161,4,réduire,reducir,1,163,reducir,reduce,сокращать
+162,4,constituer,constituir,1,164,constituir,constitute,составлять
+163,4,résoudre,resolver,1,165,"resolver, solucionar",solve,решать
+163,4,résoudre,solucionar,2,165,"resolver, solucionar",solve,решать
+164,4,crier,gritar,1,166,gritar,shout,кричать
+165,4,sauver,salvar,1,167,"salvar, rescatar",save,спасать
+165,4,sauver,rescatar,2,167,"salvar, rescatar",save,спасать
+166,4,remonter,subir de nuevo,1,168,"subir de nuevo, remontar",go back up,подниматься обратно
+166,4,remonter,remontar,2,168,"subir de nuevo, remontar",go back up,подниматься обратно
+167,4,imposer,imponer,1,169,imponer,impose,навязывать
+168,4,naître,nacer,1,170,nacer,be born,рождаться
+169,4,envoyer,enviar,1,171,"enviar, mandar",send,отправлять
+169,4,envoyer,mandar,2,171,"enviar, mandar",send,отправлять
+170,4,souffrir,sufrir,1,172,"sufrir, padecer",suffer,страдать
+170,4,souffrir,padecer,2,172,"sufrir, padecer",suffer,страдать
+171,4,tenter,intentar,1,173,"intentar, tentar",attempt,пробовать
+171,4,tenter,tentar,2,173,"intentar, tentar",attempt,пробовать
+172,4,juger,juzgar,1,174,juzgar,judge,оценивать
+173,4,bouger,mover,1,175,mover,move,двигаться
+174,4,exercer,ejercer,1,176,ejercer,exercise,практиковать
+175,4,intervenir,intervenir,1,177,intervenir,intervene,вмешиваться
+176,4,supporter,soportar,1,178,"soportar, apoyar",endure,переносить
+176,4,supporter,apoyar,2,178,"soportar, apoyar",endure,переносить
+177,4,mesurer,medir,1,179,medir,measure,измерять
+178,4,sauter,saltar,1,180,saltar,jump,прыгать
+179,4,apercevoir,percibir,1,181,"percibir, notar",glimpse,примечать
+179,4,apercevoir,notar,2,181,"percibir, notar",glimpse,примечать
+180,4,conserver,conservar,1,182,conservar,preserve,сохранять
+181,4,représenter,representar,1,183,representar,represent,изображать
+182,4,placer,colocar,1,184,colocar,place,размещать
+183,4,se bouger,moverse,1,185,moverse,get moving,двигаться
+184,4,traiter,tratar,1,186,tratar,treat,обрабатывать
+185,4,appliquer,aplicar,1,187,aplicar,apply,применять
+186,4,remplacer,reemplazar,1,188,"reemplazar, sustituir",replace,заменять
+186,4,remplacer,sustituir,2,188,"reemplazar, sustituir",replace,заменять
+187,4,baiser,besar,1,189,besar,have sex,совокупляться
+188,4,étendre,extender,1,190,extender,extend,растягивать
+189,4,mener,llevar,1,191,"llevar, dirigir",lead,возглавлять
+189,4,mener,dirigir,2,191,"llevar, dirigir",lead,возглавлять
+190,4,affirmer,afirmar,1,192,afirmar,affirm,утверждать
+191,4,satisfaire,satisfacer,1,193,satisfacer,satisfy,удовлетворять
+192,4,réfléchir,reflexionar,1,194,"reflexionar, pensar",reflect,размышлять
+192,4,réfléchir,pensar,2,194,"reflexionar, pensar",reflect,размышлять
+193,4,chanter,cantar,1,195,cantar,sing,петь
+194,4,vendre,vender,1,196,vender,sell,продавать
+195,4,traverser,cruzar,1,197,"cruzar, atravesar",cross,пересекать
+195,4,traverser,atravesar,2,197,"cruzar, atravesar",cross,пересекать
+196,4,fier,confiar,1,198,confiar,trust,доверять
+197,4,décider,decidir,1,199,decidir,decide,решать
+198,4,entraîner,entrenar,1,200,"entrenar, acarrear",train,тренировать
+198,4,entraîner,acarrear,2,200,"entrenar, acarrear",train,тренировать
+199,4,avancer,avanzar,1,201,avanzar,advance,продвигаться
+200,4,refuser,rechazar,1,202,"rechazar, rehusar",refuse,отказываться
+200,4,refuser,rehusar,2,202,"rechazar, rehusar",refuse,отказываться

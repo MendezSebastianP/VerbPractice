@@ -1,58 +1,58 @@
-rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text
-951,20,se dépêcher,apresurarse,1,953,apresurarse
-952,20,flatter,halagar,1,954,halagar
-953,20,ranimer,reanimar,1,955,reanimar
-954,20,confronter,confrontar,1,956,confrontar
-955,20,confesser,confesar,1,957,confesar
-956,20,retentir,resonar,1,958,resonar
-957,20,sursauter,sobresaltarse,1,959,sobresaltarse
-958,20,incarner,encarnar,1,960,encarnar
-959,20,anéantir,aniquilar,1,961,aniquilar
-960,20,détester,detestar,1,962,detestar
-961,20,tremper,mojar,1,963,"mojar, empapar"
-961,20,tremper,empapar,2,963,"mojar, empapar"
-962,20,feindre,fingir,1,964,fingir
-963,20,regrouper,reagrupar,1,965,reagrupar
-964,20,doter,dotar,1,966,dotar
-965,20,économiser,economizar,1,967,"economizar, ahorrar"
-965,20,économiser,ahorrar,2,967,"economizar, ahorrar"
-966,20,égarer,extraviar,1,968,"extraviar, perder"
-966,20,égarer,perder,2,968,"extraviar, perder"
-967,20,articuler,articular,1,969,articular
-968,20,refroidir,enfriar,1,970,enfriar
-969,20,brouiller,enturbiar,1,971,"enturbiar, confundir"
-969,20,brouiller,confundir,2,971,"enturbiar, confundir"
-970,20,adhérer,adherir,1,972,adherir
-971,20,recruter,reclutar,1,973,reclutar
-972,20,attendrir,enternecer,1,974,enternecer
-973,20,trier,clasificar,1,975,clasificar
-974,20,tordre,torcer,1,976,torcer
-975,20,ramper,arrastrarse,1,977,arrastrarse
-976,20,aventurer,aventurar(se),1,978,aventurar(se)
-977,20,détailler,detallar,1,979,detallar
-978,20,assassiner,asesinar,1,980,asesinar
-979,20,restreindre,restringir,1,981,restringir
-980,20,apprivoiser,domesticar,1,982,domesticar
-981,20,défier,desafiar,1,983,desafiar
-982,20,impressionner,impresionar,1,984,impresionar
-983,20,pointer,apuntar,1,985,apuntar
-984,20,engloutir,engullir,1,986,engullir
-985,20,envelopper,envolver,1,987,envolver
-986,20,ruiner,arruinar,1,988,arruinar
-987,20,réconcilier,reconciliar,1,989,reconciliar
-988,20,abolir,abolir,1,990,abolir
-989,20,corner,doblar (una página),1,991,"doblar (una página), tocar la bocina"
-989,20,corner,tocar la bocina,2,991,"doblar (una página), tocar la bocina"
-990,20,manipuler,manipular,1,992,manipular
-991,20,esquisser,esbozar,1,993,esbozar
-992,20,amorcer,iniciar,1,994,"iniciar, cebar"
-992,20,amorcer,cebar,2,994,"iniciar, cebar"
-993,20,dériver,derivar,1,995,derivar
-994,20,incorporer,incorporar,1,996,incorporar
-995,20,ronfler,roncar,1,997,roncar
-996,20,disperser,dispersar,1,998,dispersar
-997,20,replacer,reemplazar,1,999,"reemplazar, volver a colocar"
-997,20,replacer,volver a colocar,2,999,"reemplazar, volver a colocar"
-998,20,roder,merodear,1,1000,merodear
-999,20,échouer,fracasar,1,1001,fracasar
-1000,20,mélanger,mezclar,1,1002,mezclar
+rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive
+951,20,se dépêcher,apresurarse,1,953,apresurarse,hurry,торопиться
+952,20,flatter,halagar,1,954,halagar,flatter,льстить
+953,20,ranimer,reanimar,1,955,reanimar,revive,оживлять
+954,20,confronter,confrontar,1,956,confrontar,confront,противопоставлять
+955,20,confesser,confesar,1,957,confesar,confess,признаваться
+956,20,retentir,resonar,1,958,resonar,resound,звучать
+957,20,sursauter,sobresaltarse,1,959,sobresaltarse,jump,вздрагивать
+958,20,incarner,encarnar,1,960,encarnar,embody,воплощать
+959,20,anéantir,aniquilar,1,961,aniquilar,annihilate,уничтожать
+960,20,détester,detestar,1,962,detestar,detest,ненавидеть
+961,20,tremper,mojar,1,963,"mojar, empapar",soak,замачивать
+961,20,tremper,empapar,2,963,"mojar, empapar",soak,замачивать
+962,20,feindre,fingir,1,964,fingir,feign,притворяться
+963,20,regrouper,reagrupar,1,965,reagrupar,regroup,объединять
+964,20,doter,dotar,1,966,dotar,endow,наделять
+965,20,économiser,economizar,1,967,"economizar, ahorrar",save money,сберегать
+965,20,économiser,ahorrar,2,967,"economizar, ahorrar",save money,сберегать
+966,20,égarer,extraviar,1,968,"extraviar, perder",misplace,терять
+966,20,égarer,perder,2,968,"extraviar, perder",misplace,терять
+967,20,articuler,articular,1,969,articular,articulate,формулировать
+968,20,refroidir,enfriar,1,970,enfriar,cool,охлаждать
+969,20,brouiller,enturbiar,1,971,"enturbiar, confundir",muddle,запутывать
+969,20,brouiller,confundir,2,971,"enturbiar, confundir",muddle,запутывать
+970,20,adhérer,adherir,1,972,adherir,adhere,присоединяться
+971,20,recruter,reclutar,1,973,reclutar,recruit,нанимать
+972,20,attendrir,enternecer,1,974,enternecer,soften,смягчать
+973,20,trier,clasificar,1,975,clasificar,sort,сортировать
+974,20,tordre,torcer,1,976,torcer,twist,скручивать
+975,20,ramper,arrastrarse,1,977,arrastrarse,crawl,ползать
+976,20,aventurer,aventurar(se),1,978,aventurar(se),venture,рисковать
+977,20,détailler,detallar,1,979,detallar,detail,детализировать
+978,20,assassiner,asesinar,1,980,asesinar,assassinate,убивать
+979,20,restreindre,restringir,1,981,restringir,restrict,ограничивать
+980,20,apprivoiser,domesticar,1,982,domesticar,tame,приручать
+981,20,défier,desafiar,1,983,desafiar,defy,бросать вызов
+982,20,impressionner,impresionar,1,984,impresionar,impress,впечатлять
+983,20,pointer,apuntar,1,985,apuntar,point,указывать
+984,20,engloutir,engullir,1,986,engullir,swallow up,поглощать
+985,20,envelopper,envolver,1,987,envolver,wrap,заворачивать
+986,20,ruiner,arruinar,1,988,arruinar,ruin,разорять
+987,20,réconcilier,reconciliar,1,989,reconciliar,reconcile,примирять
+988,20,abolir,abolir,1,990,abolir,abolish,отменять
+989,20,corner,doblar (una página),1,991,"doblar (una página), tocar la bocina",fold a corner,загибать угол
+989,20,corner,tocar la bocina,2,991,"doblar (una página), tocar la bocina",fold a corner,загибать угол
+990,20,manipuler,manipular,1,992,manipular,manipulate,манипулировать
+991,20,esquisser,esbozar,1,993,esbozar,sketch,набрасывать
+992,20,amorcer,iniciar,1,994,"iniciar, cebar",initiate,начинать
+992,20,amorcer,cebar,2,994,"iniciar, cebar",initiate,начинать
+993,20,dériver,derivar,1,995,derivar,derive,вытекать
+994,20,incorporer,incorporar,1,996,incorporar,incorporate,включать
+995,20,ronfler,roncar,1,997,roncar,snore,храпеть
+996,20,disperser,dispersar,1,998,dispersar,scatter,рассеивать
+997,20,replacer,reemplazar,1,999,"reemplazar, volver a colocar",replace,заменять
+997,20,replacer,volver a colocar,2,999,"reemplazar, volver a colocar",replace,заменять
+998,20,roder,merodear,1,1000,merodear,roam,слоняться
+999,20,échouer,fracasar,1,1001,fracasar,fail,терпеть неудачу
+1000,20,mélanger,mezclar,1,1002,mezclar,mix,смешивать

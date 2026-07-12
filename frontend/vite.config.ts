@@ -11,15 +11,19 @@ export default defineConfig({
   build: {
     outDir: spaOutDir,
     emptyOutDir: true,
+    // Content-hashed filenames + manifest: every deploy gets fresh URLs, so
+    // browser/Cloudflare caches can never serve a stale bundle. The FastAPI
+    // shell (app/routers/spa.py) reads the hashed names from the manifest.
+    manifest: true,
     rollupOptions: {
       output: {
-        entryFileNames: 'app.js',
-        chunkFileNames: 'chunks/[name].js',
+        entryFileNames: 'app-[hash].js',
+        chunkFileNames: 'chunks/[name]-[hash].js',
         assetFileNames: (assetInfo) => {
           if (assetInfo.name?.endsWith('.css')) {
-            return 'app.css';
+            return 'app-[hash].css';
           }
-          return 'assets/[name][extname]';
+          return 'assets/[name]-[hash][extname]';
         }
       }
     }

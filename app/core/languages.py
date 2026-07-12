@@ -48,9 +48,9 @@ LANGUAGE_DEFINITIONS: dict[str, dict[str, object]] = {
         "name": "English",
         "pronoun_set": ["I", "you", "he (she, it)", "we", "you (pl.)", "they"],
         "difficulty_tiers": {
-            "easy": ["Present", "Past", "Future"],
-            "medium": [],
-            "hard": [],
+            "easy": ["Present"],
+            "medium": ["Past"],
+            "hard": ["Future"],
         },
         "tense_definitions": {
             "Present": {"mood": "Indicative"},
@@ -61,8 +61,16 @@ LANGUAGE_DEFINITIONS: dict[str, dict[str, object]] = {
     "RU": {
         "name": "Russian",
         "pronoun_set": ["я", "ты", "он (она, оно)", "мы", "вы", "они"],
-        "difficulty_tiers": {"easy": [], "medium": [], "hard": []},
-        "tense_definitions": {},
+        "difficulty_tiers": {
+            "easy": ["Настоящее время"],
+            "medium": ["Прошедшее время"],
+            "hard": ["Будущее время"],
+        },
+        "tense_definitions": {
+            "Настоящее время": {"mood": "Изъявительное наклонение"},
+            "Прошедшее время": {"mood": "Изъявительное наклонение"},
+            "Будущее время": {"mood": "Изъявительное наклонение"},
+        },
     },
 }
 

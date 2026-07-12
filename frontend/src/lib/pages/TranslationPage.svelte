@@ -111,6 +111,8 @@
 
   $: isArcade = theme === 'arcade';
   $: diffIdx = Math.max(0, LENGTH_OPTS.indexOf(length)) ;
+  $: itemSingular = mode === 'words' ? 'word' : 'verb';
+  $: itemPlural = mode === 'words' ? 'words' : 'verbs';
 
   // Wrong-attempt tracking for the two-strike flow
   let wrongAttempts = 0;
@@ -802,7 +804,7 @@
             <HelpTip label="How sessions work">
               <h4>How a practice session works</h4>
               <p>
-                Each session pulls words from your queue using <strong>weighted selection</strong>: weak
+                Each session pulls {itemPlural} from your queue using <strong>weighted selection</strong>: weak
                 translations come up far more often, while ones you've mastered fade into the background. The loop
                 keeps you in the same screen with no page reloads.
               </p>
@@ -813,7 +815,7 @@
               </ul>
               <p>While answering:</p>
               <ul>
-                <li>You get <strong>two tries</strong> per word. After the first wrong answer a hint appears automatically.</li>
+                <li>You get <strong>two tries</strong> per {itemSingular}. After the first wrong answer a hint appears automatically.</li>
                 <li><strong>Hint</strong> reveals a clue; <strong>Skip and show</strong> reveals the answer.</li>
                 <li>Correct answers build your <strong>combo</strong> and earn XP.</li>
                 <li><strong>Finish session</strong> ends the round early.</li>
@@ -848,7 +850,7 @@
                   <span class="diff-tile-tier">{LENGTH_TIERS[i]}</span>
                   <span class="kbd-chip">{i + 1}</span>
                 </span>
-                <span class="diff-tile-count">{option} words</span>
+                <span class="diff-tile-count">{option} {itemPlural}</span>
               </button>
             {/each}
           </div>
@@ -881,7 +883,7 @@
 
         {#if weakItems.length || (mode === 'words' && !setScope)}
           <article class="glass-panel aux-card">
-            <p class="eyebrow" style="margin-bottom: 0.5rem;">Top weak words</p>
+            <p class="eyebrow" style="margin-bottom: 0.5rem;">Top weak {itemPlural}</p>
             <div class="weak-words-area">
               <div class="metric-grid tight-grid">
                 {#each weakItems as item}
@@ -1042,13 +1044,13 @@
           <h2 class="clear-title">{isArcade ? 'STAGE CLEAR ★' : 'Stage clear'}</h2>
           <p class="clear-score">
             {#if clearTotal}
-              Score {clearScore}% · {okRun}/{clearTotal} words · Best combo ×{prevSession?.best_combo ?? 0}
+              Score {clearScore}% · {okRun}/{clearTotal} {itemPlural} · Best combo ×{prevSession?.best_combo ?? 0}
             {:else}
               Session complete — jump back in!
             {/if}
           </p>
           {#if isArcade}
-            <p class="clear-gg">GG, WORDSMITH</p>
+            <p class="clear-gg">GG, {mode === 'words' ? 'WORDSMITH' : 'VERBSMITH'}</p>
           {/if}
           {#if clearTotal}
             <div class="clear-dots" aria-label={`${okRun} of ${clearTotal} correct`}>

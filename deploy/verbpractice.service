@@ -4,13 +4,16 @@
 [Unit]
 Description=VerbPractice language app
 After=network-online.target
+# Never give up: without this, repeated crashes within the default burst
+# window would leave the service permanently dead until a manual start.
+StartLimitIntervalSec=0
 
 [Service]
 WorkingDirectory=%h/VerbPractice
-ExecStartPre=/bin/sh -c "docker start verbpractice-pg >/dev/null 2>&1 || true; sleep 2"
+ExecStartPre=/bin/bash %h/VerbPractice/deploy/wait_for_pg.sh
 ExecStart=%h/VerbPractice/.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 --proxy-headers --forwarded-allow-ips=127.0.0.1
-Restart=on-failure
-RestartSec=5
+Restart=always
+RestartSec=3
 
 [Install]
 WantedBy=default.target

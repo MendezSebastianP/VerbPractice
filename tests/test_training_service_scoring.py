@@ -24,6 +24,11 @@ from app.db.models import (
 )
 from app.routers.api import _conjugation_state, _translation_state
 from app.services.training_service import (
+    check_conjugation_tense,
+    conjugation_tenses_for_level,
+    eligible_conjugation_verb_ids,
+    eligible_translation_item_ids,
+    get_conjugation_question,
     start_conjugation_session,
     start_translation_session,
     submit_conjugation_answers,
@@ -227,6 +232,137 @@ async def test_word_first_correct_still_scores_normally(seeded_training_context)
 
 
 @pytest.mark.asyncio
+async def test_translation_eligibility_excludes_items_without_the_target_language(seeded_training_context):
+    db = seeded_training_context["db"]
+    es = (await db.execute(select(Language).where(Language.code == "ES"))).scalar_one()
+    orphan = Word(text="sin-traduccion", language_id=es.id)
+    db.add(orphan)
+    await db.flush()
+
+    eligible_ids = await eligible_translation_item_ids(
+        db,
+        mode=TrainingMode.WORD_TRANSLATION,
+        direction="es_fr",
+    )
+
+    assert seeded_training_context["word"].id in eligible_ids
+    assert orphan.id not in eligible_ids
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(("fill_level", "expected_guides"), [("medium", 1), ("easy", 4), ("hard", 0)])
+async def test_conjugation_fill_levels_use_safe_guide_counts(
+    seeded_training_context,
+    fill_level,
+    expected_guides,
+):
+    db = seeded_training_context["db"]
+    user = seeded_training_context["user"]
+    session = await start_conjugation_session(
+        db,
+        user_id=user.id,
+        language_code="FR",
+        level="easy",
+        selected_tenses=["Présent"],
+        fill_level=fill_level,
+        length=1,
+    )
+
+    question = await get_conjugation_question(db, session)
+
+    assert question is not None
+    assert sum(question.prefill["Présent"].values()) == expected_guides
+    assert sum(not is_guide for is_guide in question.prefill["Présent"].values()) >= 1
+
+
+@pytest.mark.asyncio
+async def test_conjugation_uniform_tense_never_prefills_a_giveaway(seeded_training_context):
+    db = seeded_training_context["db"]
+    user = seeded_training_context["user"]
+    conjugations = (await db.execute(select(VerbConjugation))).scalars().all()
+    for conjugation in conjugations:
+        conjugation.conjugated_form = "same form"
+    await db.flush()
+
+    session = await start_conjugation_session(
+        db,
+        user_id=user.id,
+        language_code="FR",
+        level="easy",
+        selected_tenses=["Présent"],
+        fill_level="easy",
+        length=1,
+    )
+    question = await get_conjugation_question(db, session)
+
+    assert question is not None
+    assert not any(question.prefill["Présent"].values())
+
+
+@pytest.mark.asyncio
+async def test_conjugation_tense_review_freezes_answers_until_final_submit(seeded_training_context):
+    db = seeded_training_context["db"]
+    user = seeded_training_context["user"]
+    profile = seeded_training_context["profile"]
+
+    session = await start_conjugation_session(
+        db,
+        user_id=user.id,
+        language_code="FR",
+        level="easy",
+        selected_tenses=["Présent"],
+        fill_level="hard",
+        length=1,
+    )
+    frozen_answers = {
+        "je": "wrong",
+        "tu": "vas",
+        "il": "va",
+        "nous": "allons",
+        "vous": "allez",
+        "ils": "vont",
+    }
+
+    review = await check_conjugation_tense(
+        db,
+        session=session,
+        tense="Présent",
+        answers=frozen_answers,
+    )
+    repeated = await check_conjugation_tense(
+        db,
+        session=session,
+        tense="Présent",
+        answers={**frozen_answers, "je": "vais"},
+    )
+
+    assert review == repeated
+    assert review["correct"] == 5
+    assert review["total"] == 6
+    assert review["cells"][0] == {
+        "pronoun": "je",
+        "kind": "answer",
+        "answer": "wrong",
+        "expected": "vais",
+        "correct": False,
+    }
+    assert session.config["checked_conjugation_tenses"] == ["Présent"]
+    assert session.config["pending_conjugation_answers"]["Présent"]["je"] == "wrong"
+
+    result = await submit_conjugation_answers(
+        db,
+        session=session,
+        profile=profile,
+        answers={"Présent": {**frozen_answers, "je": "vais"}},
+    )
+
+    assert result["correct"] == 5
+    assert result["review"]["rows"][0]["cells"][0]["answer"] == "wrong"
+    assert "pending_conjugation_answers" not in session.config
+    assert "checked_conjugation_tenses" not in session.config
+
+
+@pytest.mark.asyncio
 async def test_conjugation_multiple_wrong_pronouns_all_change_tense_score(seeded_training_context):
     db = seeded_training_context["db"]
     user = seeded_training_context["user"]
@@ -278,6 +414,16 @@ async def test_conjugation_multiple_wrong_pronouns_all_change_tense_score(seeded
     assert item.multiplier_applied == pytest.approx(0.9666666667)
     assert item.meta["score_applied"] is True
     assert sum(1 for check in item.meta["checks"] if check["score_applied"]) == 6
+    review = result["review"]
+    assert review["verb"] == "aller"
+    je_cell = next(row for row in review["rows"] if row["pronoun"] == "je")["cells"][0]
+    assert je_cell == {
+        "tense": "Présent",
+        "kind": "answer",
+        "answer": "faux-1",
+        "expected": "vais",
+        "correct": False,
+    }
 
 
 @pytest.mark.asyncio
@@ -333,6 +479,50 @@ async def test_conjugation_same_slot_does_not_score_twice_in_same_session(seeded
     assert [item.multiplier_applied for item in items] == pytest.approx([1.5, 1.0])
     assert items[1].meta["score_applied"] is False
     assert all(check["score_applied"] is False for check in items[1].meta["checks"])
+
+
+@pytest.mark.asyncio
+async def test_conjugation_eligibility_requires_every_requested_slot(seeded_training_context):
+    db = seeded_training_context["db"]
+    language = (
+        await db.execute(select(Language).where(Language.code == "FR"))
+    ).scalar_one()
+    language.tense_definitions = {
+        "Présent": {"mood": "Indicatif"},
+        "Futur": {"mood": "Indicatif"},
+    }
+    language.difficulty_tiers = {"easy": ["Présent"], "medium": ["Futur"], "hard": []}
+    await db.flush()
+
+    present_ids = await eligible_conjugation_verb_ids(
+        db,
+        language=language,
+        selected_tenses=["Présent"],
+    )
+    combined_ids = await eligible_conjugation_verb_ids(
+        db,
+        language=language,
+        selected_tenses=["Présent", "Futur"],
+    )
+
+    assert present_ids == [seeded_training_context["verb"].id]
+    assert combined_ids == []
+
+
+def test_custom_conjugation_level_requires_valid_tenses():
+    language = Language(
+        code="EN",
+        name="English",
+        pronoun_set=["I", "you", "he", "we", "you (pl.)", "they"],
+        tense_definitions={"Present": {"mood": "Indicative"}},
+        difficulty_tiers={"easy": ["Present"], "medium": [], "hard": []},
+    )
+
+    assert conjugation_tenses_for_level(language, "custom", ["Present", "Present"]) == ["Present"]
+    with pytest.raises(ValueError, match="Choose at least one tense"):
+        conjugation_tenses_for_level(language, "custom", [])
+    with pytest.raises(ValueError, match="Unsupported tense"):
+        conjugation_tenses_for_level(language, "custom", ["Future"])
 
 
 @pytest.mark.asyncio

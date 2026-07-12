@@ -13,6 +13,7 @@ import type {
   ChatPayload,
   CommunityPayload,
   ConjugationState,
+  ConjugationTenseReview,
   DashboardPayload,
   LanguageEntry,
   MonitorPayload,
@@ -118,6 +119,8 @@ export const api = {
     request<ConjugationState>('/api/training/conjugation/finish', { method: 'POST', body: JSON.stringify({ csrf_token }) }),
   submitConjugation: (payload: { answers: Record<string, Record<string, string>>; csrf_token: string }) =>
     request<ConjugationState>('/api/training/conjugation/submit', { method: 'POST', body: JSON.stringify(payload) }),
+  checkConjugationTense: (payload: { tense: string; answers: Record<string, string>; csrf_token: string }) =>
+    request<ConjugationTenseReview>('/api/training/conjugation/check-tense', { method: 'POST', body: JSON.stringify(payload) }),
   chatState: () => request<ChatPayload>('/api/chat'),
   community: () => request<CommunityPayload>('/api/community'),
   addCircleFriend: (payload: { username: string; csrf_token: string }) =>

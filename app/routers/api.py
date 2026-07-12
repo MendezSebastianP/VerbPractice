@@ -8,12 +8,12 @@ from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import JSONResponse, StreamingResponse
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.core.csrf import get_or_create_csrf_token, validate_csrf
-from app.core.languages import format_direction_label
+from app.core.languages import LANGUAGE_DEFINITIONS, format_direction_label
 from app.core.rate_limit import limiter
 from app.core.security import (
     SESSION_USER_KEY,
@@ -24,7 +24,7 @@ from app.core.security import (
     require_auth_context,
     verify_password,
 )
-from app.db.models import ChatMessage, ChatRole, Language, TrainingMode, User, UserProfile
+from app.db.models import ChatMessage, ChatRole, Language, TrainingMode, User, UserProfile, VerbConjugation
 from app.db.session import get_db
 from app.routers.admin import _monitor_snapshot
 from app.schemas.spa import (
@@ -35,6 +35,7 @@ from app.schemas.spa import (
     CircleFriendPayload,
     ConjugationStartPayload,
     ConjugationSubmitPayload,
+    ConjugationTenseSubmitPayload,
     CredentialsPayload,
     CsrfPayload,
     RegisterPayload,
@@ -72,7 +73,10 @@ from app.services.gamification import (
 from app.services.training_service import (
     ITEM_TYPE_BY_MODE,
     close_active_sessions,
+    check_conjugation_tense,
     conjugation_tenses_for_level,
+    eligible_conjugation_verb_ids,
+    eligible_translation_item_ids,
     get_active_session,
     get_conjugation_question,
     get_language_by_code,
@@ -334,6 +338,7 @@ async def _translation_state(
             "progress_total": len(queue),
             "combo": int(config.get("combo", 0)),
             "best_combo": int(config.get("best_combo", 0)),
+            "checked_tenses": list(config.get("checked_conjugation_tenses", [])),
         },
         "question": {
             "item_id": question.item_id,
@@ -343,9 +348,59 @@ async def _translation_state(
     }
 
 
-async def _conjugation_languages(db: AsyncSession) -> list[Language]:
-    rows = await db.execute(select(Language).order_by(Language.code.asc()))
-    return rows.scalars().all()
+async def _conjugation_languages(db: AsyncSession) -> list[dict[str, Any]]:
+    rows = await db.execute(
+        select(Language)
+        .where(Language.code.in_(LANGUAGE_DEFINITIONS))
+        .order_by(Language.code.asc())
+    )
+    payloads: list[dict[str, Any]] = []
+    for language in rows.scalars().all():
+        pronouns = list(language.pronoun_set or [])
+        definitions = dict(language.tense_definitions or {})
+        tense_counts = {tense: 0 for tense in definitions}
+
+        if pronouns and definitions:
+            coverage_rows = await db.execute(
+                select(
+                    VerbConjugation.tense,
+                    VerbConjugation.mood,
+                    VerbConjugation.verb_id,
+                    func.count(VerbConjugation.id),
+                )
+                .where(
+                    VerbConjugation.language_id == language.id,
+                    VerbConjugation.tense.in_(definitions),
+                    VerbConjugation.pronoun.in_(pronouns),
+                )
+                .group_by(
+                    VerbConjugation.tense,
+                    VerbConjugation.mood,
+                    VerbConjugation.verb_id,
+                )
+            )
+            for tense, mood, _verb_id, slot_count in coverage_rows.all():
+                expected_mood = str(definitions.get(tense, {}).get("mood", "Indicatif"))
+                if mood == expected_mood and slot_count == len(pronouns):
+                    tense_counts[tense] += 1
+
+        available_tenses = [tense for tense in definitions if tense_counts.get(tense, 0) > 0]
+        available_set = set(available_tenses)
+        serialized = _serialize_language(language)
+        serialized["difficulty_tiers"] = {
+            tier: [tense for tense in tenses if tense in available_set]
+            for tier, tenses in (language.difficulty_tiers or {}).items()
+        }
+        serialized.update(
+            {
+                "available": bool(available_tenses),
+                "available_tenses": available_tenses,
+                "tense_verb_counts": tense_counts,
+                "verb_count": max(tense_counts.values(), default=0),
+            }
+        )
+        payloads.append(serialized)
+    return payloads
 
 
 async def _conjugation_state(
@@ -367,7 +422,7 @@ async def _conjugation_state(
         focus_limit=4,
     )
 
-    serialized_languages = [_serialize_language(language) for language in languages]
+    serialized_languages = languages
     if active is None:
         return {
             "mode": TrainingMode.CONJUGATION.value,
@@ -606,15 +661,24 @@ async def words_start(
     auth=Depends(require_auth_context),
 ):
     validate_csrf(request, payload.csrf_token)
-    await close_active_sessions(db, user_id=auth.user.id, mode=TrainingMode.WORD_TRANSLATION)
-    await start_translation_session(
-        db,
-        user_id=auth.user.id,
-        mode=TrainingMode.WORD_TRANSLATION,
-        direction=payload.direction,
-        length=max(1, min(payload.length, 50)),
-        set_id=payload.set_id,
-    )
+    try:
+        if not await eligible_translation_item_ids(
+            db,
+            mode=TrainingMode.WORD_TRANSLATION,
+            direction=payload.direction,
+        ):
+            raise ValueError("No translations are available for that language pair.")
+        await close_active_sessions(db, user_id=auth.user.id, mode=TrainingMode.WORD_TRANSLATION)
+        await start_translation_session(
+            db,
+            user_id=auth.user.id,
+            mode=TrainingMode.WORD_TRANSLATION,
+            direction=payload.direction,
+            length=max(1, min(payload.length, 50)),
+            set_id=payload.set_id,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(exc)) from exc
     await db.commit()
     return JSONResponse(await _translation_state(db, user_id=auth.user.id, mode=TrainingMode.WORD_TRANSLATION))
 
@@ -627,15 +691,24 @@ async def verbs_start(
     auth=Depends(require_auth_context),
 ):
     validate_csrf(request, payload.csrf_token)
-    await close_active_sessions(db, user_id=auth.user.id, mode=TrainingMode.VERB_TRANSLATION)
-    await start_translation_session(
-        db,
-        user_id=auth.user.id,
-        mode=TrainingMode.VERB_TRANSLATION,
-        direction=payload.direction,
-        length=max(1, min(payload.length, 50)),
-        set_id=payload.set_id,
-    )
+    try:
+        if not await eligible_translation_item_ids(
+            db,
+            mode=TrainingMode.VERB_TRANSLATION,
+            direction=payload.direction,
+        ):
+            raise ValueError("No translations are available for that language pair.")
+        await close_active_sessions(db, user_id=auth.user.id, mode=TrainingMode.VERB_TRANSLATION)
+        await start_translation_session(
+            db,
+            user_id=auth.user.id,
+            mode=TrainingMode.VERB_TRANSLATION,
+            direction=payload.direction,
+            length=max(1, min(payload.length, 50)),
+            set_id=payload.set_id,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(exc)) from exc
     await db.commit()
     return JSONResponse(await _translation_state(db, user_id=auth.user.id, mode=TrainingMode.VERB_TRANSLATION))
 
@@ -878,18 +951,28 @@ async def conjugation_start(
     auth=Depends(require_auth_context),
 ):
     validate_csrf(request, payload.csrf_token)
-    await close_active_sessions(db, user_id=auth.user.id, mode=TrainingMode.CONJUGATION)
-    language = await get_language_by_code(db, payload.language)
-    selected_tenses = conjugation_tenses_for_level(language, payload.level, payload.selected_tenses)
-    await start_conjugation_session(
-        db,
-        user_id=auth.user.id,
-        language_code=payload.language,
-        level=payload.level,
-        selected_tenses=selected_tenses,
-        fill_level=payload.fill_level,
-        length=max(1, min(payload.length, 20)),
-    )
+    try:
+        language = await get_language_by_code(db, payload.language)
+        selected_tenses = conjugation_tenses_for_level(language, payload.level, payload.selected_tenses)
+        eligible_ids = await eligible_conjugation_verb_ids(
+            db,
+            language=language,
+            selected_tenses=selected_tenses,
+        )
+        if not eligible_ids:
+            raise ValueError("No complete conjugation tables are available for those tenses.")
+        await close_active_sessions(db, user_id=auth.user.id, mode=TrainingMode.CONJUGATION)
+        await start_conjugation_session(
+            db,
+            user_id=auth.user.id,
+            language_code=payload.language,
+            level=payload.level,
+            selected_tenses=selected_tenses,
+            fill_level=payload.fill_level,
+            length=max(1, min(payload.length, 20)),
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(exc)) from exc
     await db.commit()
     return JSONResponse(await _conjugation_state(db, user_id=auth.user.id))
 
@@ -922,6 +1005,30 @@ async def conjugation_submit(
             result=result,
         )
     )
+
+
+@router.post("/training/conjugation/check-tense")
+async def conjugation_check_tense(
+    request: Request,
+    payload: ConjugationTenseSubmitPayload,
+    db: AsyncSession = Depends(get_db),
+    auth=Depends(require_auth_context),
+):
+    validate_csrf(request, payload.csrf_token)
+    session = await get_active_session(db, user_id=auth.user.id, mode=TrainingMode.CONJUGATION)
+    if session is None:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="No active session")
+    try:
+        review = await check_conjugation_tense(
+            db,
+            session=session,
+            tense=payload.tense,
+            answers=payload.answers,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(exc)) from exc
+    await db.commit()
+    return JSONResponse(review)
 
 
 @router.post("/training/conjugation/finish")

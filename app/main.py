@@ -49,6 +49,19 @@ app.add_middleware(SessionMiddleware, secret_key=settings.secret_key, same_site=
 app.add_middleware(SlowAPIMiddleware)
 app.add_middleware(RequestLogMiddleware)
 
+
+@app.middleware("http")
+async def static_cache_headers(request: Request, call_next):
+    # SPA assets carry content hashes in their filenames (vite manifest), so
+    # they can be cached forever — a deploy changes the URL, never the content
+    # behind it. Without this, Cloudflare applied its default 4h TTL to
+    # .js/.css and served stale bundles after deploys.
+    response = await call_next(request)
+    path = request.url.path
+    if path.startswith("/static/spa/") and not path.endswith(".html"):
+        response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+    return response
+
 if SPA_STATIC_DIR.exists():
     app.mount("/static/spa", StaticFiles(directory=str(SPA_STATIC_DIR)), name="spa-static")
 app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
@@ -70,10 +83,24 @@ app.include_router(spa.router)
 @app.on_event("startup")
 async def _ensure_language_rows() -> None:
     async with AsyncSessionLocal() as db:
-        existing = {row[0] for row in (await db.execute(select(Language.code))).all()}
-        added = False
+        existing = {
+            language.code: language
+            for language in (await db.execute(select(Language))).scalars().all()
+        }
+        changed = False
         for code, payload in LANGUAGE_DEFINITIONS.items():
-            if code in existing:
+            language = existing.get(code)
+            if language is not None:
+                # Tense tiers are application behavior, so keep long-lived
+                # production databases aligned when those definitions evolve.
+                tense_definitions = dict(payload["tense_definitions"])
+                difficulty_tiers = dict(payload["difficulty_tiers"])
+                if language.tense_definitions != tense_definitions:
+                    language.tense_definitions = tense_definitions
+                    changed = True
+                if language.difficulty_tiers != difficulty_tiers:
+                    language.difficulty_tiers = difficulty_tiers
+                    changed = True
                 continue
             db.add(
                 Language(
@@ -84,6 +111,6 @@ async def _ensure_language_rows() -> None:
                     difficulty_tiers=dict(payload["difficulty_tiers"]),
                 )
             )
-            added = True
-        if added:
+            changed = True
+        if changed:
             await db.commit()

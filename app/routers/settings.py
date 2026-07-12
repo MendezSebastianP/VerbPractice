@@ -15,7 +15,7 @@ router = APIRouter(prefix="/api", tags=["settings"])
 
 
 VALID_DISPLAY_MODES = {"mother_full", "partial", "learning_full"}
-VALID_PRACTICE_MODES = {"word_translation", "verb_translation"}
+VALID_PRACTICE_MODES = {"word_translation", "verb_translation", "conjugation"}
 
 
 def _serialize_preference(pref: UserPreference, languages: dict[int, Language]) -> dict:

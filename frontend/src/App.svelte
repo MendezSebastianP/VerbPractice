@@ -66,8 +66,11 @@
 
   $: document.documentElement.setAttribute('data-theme', theme);
   $: if (!booting && boot) {
-    if (boot.authenticated && $route === '/training/conjugation') {
-      navigate('/training/verbs/conjugation', { replace: true });
+    if (
+      boot.authenticated
+      && ($route === '/training/conjugation' || $route.startsWith('/training/verbs/conjugation'))
+    ) {
+      navigate('/training/verbs?mode=tables', { replace: true });
     }
     if (boot.authenticated && $route === '/monitor' && !boot.user?.is_admin) {
       navigate('/dashboard', { replace: true });

@@ -199,7 +199,7 @@ def mode_route(mode: TrainingMode) -> str:
         return "/training/words"
     if mode == TrainingMode.VERB_TRANSLATION:
         return "/training/verbs"
-    return "/training/verbs/conjugation"
+    return "/training/verbs?mode=tables"
 
 
 def mode_label(mode: TrainingMode) -> str:

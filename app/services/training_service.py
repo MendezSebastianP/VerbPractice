@@ -4,7 +4,7 @@ from dataclasses import asdict, dataclass
 from datetime import date, datetime, timezone
 from typing import Any
 
-from sqlalchemy import func, select
+from sqlalchemy import and_, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.languages import tenses_for_level
@@ -23,7 +23,7 @@ from app.db.models import (
     Word,
     WordTranslation,
 )
-from app.services.conjugation_engine import PronounCheck, update_tense_score
+from app.services.conjugation_engine import PronounCheck, conjugation_answer_is_correct, update_tense_score
 from app.services.gamification import (
     RewardSummary,
     grant_xp,
@@ -33,7 +33,6 @@ from app.services.gamification import (
     unlock_badges,
     update_streak,
 )
-from app.services.normalization import normalize_for_comparison
 from app.services.training_engine import (
     GradeResult,
     WeightedItem,
@@ -120,6 +119,34 @@ async def _translation_model_for_mode(mode: TrainingMode):
     raise ValueError(f"Unsupported translation mode: {mode}")
 
 
+async def eligible_translation_item_ids(
+    db: AsyncSession,
+    *,
+    mode: TrainingMode,
+    direction: str,
+) -> list[int]:
+    """Return inventory items that have a translation for this exact pair."""
+    base_language = await _resolve_inventory_language(db, mode, direction)
+    source_code, target_code = direction.upper().split("_")
+    other_code = target_code if base_language.code == source_code else source_code
+    other_language = await get_language_by_code(db, other_code)
+    model = await _model_for_mode(mode)
+    translation_model = await _translation_model_for_mode(mode)
+    fk_column = translation_model.word_id if mode == TrainingMode.WORD_TRANSLATION else translation_model.verb_id
+
+    rows = await db.execute(
+        select(model.id)
+        .join(translation_model, fk_column == model.id)
+        .where(
+            model.language_id == base_language.id,
+            translation_model.target_language_id == other_language.id,
+        )
+        .distinct()
+        .order_by(model.id.asc())
+    )
+    return [item_id for (item_id,) in rows.all()]
+
+
 async def ensure_initial_translation_unlocks(
     db: AsyncSession,
     *,
@@ -129,16 +156,21 @@ async def ensure_initial_translation_unlocks(
     initial_count: int = 10,
 ) -> None:
     item_type = ITEM_TYPE_BY_MODE[mode]
-    existing = await db.execute(
-        select(func.count(UserProgress.id)).where(
+    existing_rows = await db.execute(
+        select(UserProgress).where(
             UserProgress.user_id == user_id,
             UserProgress.item_type == item_type,
             UserProgress.language_pair == language_pair,
         )
     )
-    existing_count = existing.scalar_one()
-
-    seeded_ids: set[int] = set()
+    existing_by_id = {row.item_id: row for row in existing_rows.scalars().all()}
+    existing_ids = set(existing_by_id)
+    unlocked_ids = {item_id for item_id, row in existing_by_id.items() if row.unlocked}
+    eligible_ids = await eligible_translation_item_ids(
+        db,
+        mode=mode,
+        direction=language_pair,
+    )
 
     # Always drain user-added priority words for word_translation, even if
     # progress rows already exist (so a freshly added word appears next session).
@@ -152,15 +184,7 @@ async def ensure_initial_translation_unlocks(
             .order_by(UserAddedWord.added_at.asc())
         )
         for added in priority_rows.scalars().all():
-            already = await db.execute(
-                select(UserProgress.id).where(
-                    UserProgress.user_id == user_id,
-                    UserProgress.item_type == ProgressItemType.WORD,
-                    UserProgress.item_id == added.word_id,
-                    UserProgress.language_pair == language_pair,
-                )
-            )
-            if already.scalar_one_or_none() is not None:
+            if added.word_id in existing_ids:
                 continue
             db.add(
                 UserProgress(
@@ -173,33 +197,23 @@ async def ensure_initial_translation_unlocks(
                     extra_data={"source": "user_added"},
                 )
             )
-            seeded_ids.add(added.word_id)
+            existing_ids.add(added.word_id)
+            unlocked_ids.add(added.word_id)
 
-    if existing_count > 0 or seeded_ids:
-        # User already has progress (or we just seeded priority words);
-        # don't auto-seed inventory items on top.
-        if existing_count == 0 and seeded_ids:
-            await db.flush()
-        else:
-            return
-
-    remaining = initial_count - len(seeded_ids)
+    eligible_existing = unlocked_ids.intersection(eligible_ids)
+    remaining = initial_count - len(eligible_existing)
     if remaining <= 0:
         return
 
-    model = await _model_for_mode(mode)
-    base_language = await _resolve_inventory_language(db, mode, language_pair)
-    rows = await db.execute(
-        select(model.id)
-        .where(model.language_id == base_language.id)
-        .order_by(model.id.asc())
-        .limit(remaining)
-    )
-    for (item_id,) in rows.all():
-        if item_id in seeded_ids:
+    created = 0
+    for item_id in eligible_ids:
+        if item_id in unlocked_ids:
             continue
-        db.add(
-            UserProgress(
+        existing = existing_by_id.get(item_id)
+        if existing is not None:
+            existing.unlocked = True
+        else:
+            row = UserProgress(
                 user_id=user_id,
                 item_type=item_type,
                 item_id=item_id,
@@ -208,7 +222,13 @@ async def ensure_initial_translation_unlocks(
                 unlocked=True,
                 extra_data={},
             )
-        )
+            db.add(row)
+            existing_by_id[item_id] = row
+        existing_ids.add(item_id)
+        unlocked_ids.add(item_id)
+        created += 1
+        if created >= remaining:
+            break
 
 
 async def _select_weighted_items(
@@ -219,6 +239,7 @@ async def _select_weighted_items(
     language_pair: str,
     length: int,
     scoped_item_ids: set[int] | None = None,
+    eligible_item_ids: set[int] | None = None,
 ) -> list[int]:
     query = select(UserProgress).where(
         UserProgress.user_id == user_id,
@@ -230,6 +251,10 @@ async def _select_weighted_items(
         if not scoped_item_ids:
             return []
         query = query.where(UserProgress.item_id.in_(scoped_item_ids))
+    if eligible_item_ids is not None:
+        if not eligible_item_ids:
+            return []
+        query = query.where(UserProgress.item_id.in_(eligible_item_ids))
     rows = await db.execute(query.order_by(UserProgress.item_id.asc()))
     weighted_rows = [
         WeightedItem(item_id=row.item_id, probability=row.probability, last_seen=row.last_seen)
@@ -337,6 +362,16 @@ async def start_translation_session(
         initial_count=10,
     )
 
+    eligible_item_ids = set(
+        await eligible_translation_item_ids(
+            db,
+            mode=mode,
+            direction=language_pair,
+        )
+    )
+    if not eligible_item_ids:
+        raise ValueError("No translations are available for that language pair.")
+
     item_ids = await _select_weighted_items(
         db,
         user_id=user_id,
@@ -344,7 +379,12 @@ async def start_translation_session(
         language_pair=language_pair,
         length=length,
         scoped_item_ids=scoped_item_ids,
+        eligible_item_ids=eligible_item_ids,
     )
+    if not item_ids:
+        if set_id is not None:
+            raise ValueError("This set has no items available for that language pair.")
+        raise ValueError("No unlocked translations are available for that language pair.")
 
     session = TrainingSession(
         user_id=user_id,
@@ -474,6 +514,8 @@ async def _get_or_create_progress(
     )
     row = result.scalar_one_or_none()
     if row:
+        if unlocked and not row.unlocked:
+            row.unlocked = True
         return row
 
     row = UserProgress(
@@ -498,8 +540,6 @@ async def _unlock_next_items(
     language_pair: str,
     count: int,
 ) -> int:
-    model = await _model_for_mode(mode)
-    base_language = await _resolve_inventory_language(db, mode, language_pair)
     item_type = ITEM_TYPE_BY_MODE[mode]
 
     created = 0
@@ -542,25 +582,22 @@ async def _unlock_next_items(
         return created
 
     current_rows = await db.execute(
-        select(UserProgress.item_id)
+        select(UserProgress)
         .where(
             UserProgress.user_id == user_id,
             UserProgress.item_type == item_type,
             UserProgress.language_pair == language_pair,
-            UserProgress.unlocked.is_(True),
         )
-        .order_by(UserProgress.item_id.asc())
     )
-    unlocked_ids = [row[0] for row in current_rows.all()]
-    max_id = max(unlocked_ids) if unlocked_ids else 0
-
-    candidates = await db.execute(
-        select(model.id)
-        .where(model.language_id == base_language.id, model.id > max_id)
-        .order_by(model.id.asc())
-        .limit(remaining)
+    unlocked_ids = {row.item_id for row in current_rows.scalars().all() if row.unlocked}
+    eligible_ids = await eligible_translation_item_ids(
+        db,
+        mode=mode,
+        direction=language_pair,
     )
-    for (item_id,) in candidates.all():
+    for item_id in (candidate for candidate in eligible_ids if candidate not in unlocked_ids):
+        if remaining <= 0:
+            break
         await _get_or_create_progress(
             db,
             user_id=user_id,
@@ -570,6 +607,7 @@ async def _unlock_next_items(
             unlocked=True,
         )
         created += 1
+        remaining -= 1
     return created
 
 
@@ -818,36 +856,84 @@ async def translation_hint_for_session(db: AsyncSession, session: TrainingSessio
     return hint_text(question.expected_primary, hint_level)
 
 
+async def eligible_conjugation_verb_ids(
+    db: AsyncSession,
+    *,
+    language: Language,
+    selected_tenses: list[str],
+) -> list[int]:
+    """Return verbs with a complete row for every requested table slot."""
+    pronouns = list(language.pronoun_set or [])
+    if not selected_tenses or not pronouns:
+        return []
+
+    tense_definitions = language.tense_definitions or {}
+    slot_filters = []
+    for tense in selected_tenses:
+        definition = tense_definitions.get(tense)
+        if not definition:
+            return []
+        slot_filters.append(
+            and_(
+                VerbConjugation.tense == tense,
+                VerbConjugation.mood == str(definition.get("mood", "Indicatif")),
+            )
+        )
+
+    required_slots = len(selected_tenses) * len(pronouns)
+    rows = await db.execute(
+        select(VerbConjugation.verb_id)
+        .where(
+            VerbConjugation.language_id == language.id,
+            VerbConjugation.pronoun.in_(pronouns),
+            or_(*slot_filters),
+        )
+        .group_by(VerbConjugation.verb_id)
+        .having(func.count(VerbConjugation.id) == required_slots)
+        .order_by(VerbConjugation.verb_id.asc())
+    )
+    return [verb_id for (verb_id,) in rows.all()]
+
+
 async def ensure_initial_conjugation_unlocks(
     db: AsyncSession,
     *,
     user_id: int,
     language_code: str,
     language_pair: str,
+    selected_tenses: list[str],
     initial_count: int = 10,
-) -> None:
-    existing = await db.execute(
-        select(func.count(UserProgress.id)).where(
+) -> int:
+    language = await get_language_by_code(db, language_code)
+    eligible_ids = await eligible_conjugation_verb_ids(
+        db,
+        language=language,
+        selected_tenses=selected_tenses,
+    )
+    if not eligible_ids:
+        return 0
+
+    existing_rows = await db.execute(
+        select(UserProgress).where(
             UserProgress.user_id == user_id,
             UserProgress.item_type == ProgressItemType.CONJUGATION,
             UserProgress.language_pair == language_pair,
         )
     )
-    if existing.scalar_one() > 0:
-        return
-
-    language = await get_language_by_code(db, language_code)
-    rows = await db.execute(
-        select(Verb.id)
-        .join(VerbConjugation, VerbConjugation.verb_id == Verb.id)
-        .where(VerbConjugation.language_id == language.id)
-        .distinct()
-        .order_by(Verb.id.asc())
-        .limit(initial_count)
-    )
-    for (verb_id,) in rows.all():
-        db.add(
-            UserProgress(
+    existing_progress = existing_rows.scalars().all()
+    existing_by_id = {row.item_id: row for row in existing_progress}
+    unlocked_ids = {row.item_id for row in existing_progress if row.unlocked}
+    eligible_existing = unlocked_ids.intersection(eligible_ids)
+    needed = max(0, initial_count - len(eligible_existing))
+    created = 0
+    for verb_id in (item_id for item_id in eligible_ids if item_id not in unlocked_ids):
+        if created >= needed:
+            break
+        existing = existing_by_id.get(verb_id)
+        if existing is not None:
+            existing.unlocked = True
+        else:
+            row = UserProgress(
                 user_id=user_id,
                 item_type=ProgressItemType.CONJUGATION,
                 item_id=verb_id,
@@ -856,7 +942,11 @@ async def ensure_initial_conjugation_unlocks(
                 unlocked=True,
                 extra_data={"tense_scores": {}},
             )
-        )
+            db.add(row)
+            existing_by_id[verb_id] = row
+        unlocked_ids.add(verb_id)
+        created += 1
+    return created
 
 
 async def start_conjugation_session(
@@ -870,11 +960,21 @@ async def start_conjugation_session(
     length: int = 5,
 ) -> TrainingSession:
     language_pair = f"{language_code.lower()}_conj"
+    language = await get_language_by_code(db, language_code)
+    eligible_ids = await eligible_conjugation_verb_ids(
+        db,
+        language=language,
+        selected_tenses=selected_tenses,
+    )
+    if not eligible_ids:
+        raise ValueError("No complete conjugation tables are available for those tenses.")
+
     await ensure_initial_conjugation_unlocks(
         db,
         user_id=user_id,
         language_code=language_code,
         language_pair=language_pair,
+        selected_tenses=selected_tenses,
         initial_count=10,
     )
 
@@ -885,6 +985,7 @@ async def start_conjugation_session(
             UserProgress.item_type == ProgressItemType.CONJUGATION,
             UserProgress.language_pair == language_pair,
             UserProgress.unlocked.is_(True),
+            UserProgress.item_id.in_(eligible_ids),
         )
         .order_by(UserProgress.item_id.asc())
     )
@@ -900,6 +1001,8 @@ async def start_conjugation_session(
         weighted.append(WeightedItem(item_id=row.item_id, probability=probability, last_seen=row.last_seen))
 
     queue = weighted_sample_without_replacement(weighted, length)
+    if not queue:
+        raise ValueError("No unlocked conjugation tables are available for those tenses.")
 
     session = TrainingSession(
         user_id=user_id,
@@ -916,6 +1019,9 @@ async def start_conjugation_session(
             "combo": 0,
             "best_combo": 0,
             "scored_conjugation_slots": [],
+            "checked_conjugation_tenses": [],
+            "pending_conjugation_answers": {},
+            "conjugation_tense_reviews": {},
         },
     )
     db.add(session)
@@ -977,15 +1083,37 @@ async def get_conjugation_question(
     )
 
     fill_level = str(config.get("fill_level", "easy"))
-    ratio = 0.8 if fill_level == "easy" else 0.2 if fill_level == "medium" else 0.0
-
     prefill: dict[str, dict[str, bool]] = {}
     for tense in selected_tenses:
-        prefill[tense] = {}
-        for idx, pronoun in enumerate(language.pronoun_set or []):
-            # Stable pseudo-random pattern based on verb + tense + pronoun index.
-            slot_seed = (verb_id * 31 + len(tense) * 13 + idx * 17) % 100
-            prefill[tense][pronoun] = slot_seed < int(ratio * 100)
+        pronouns = list(language.pronoun_set or [])
+        valid_pronouns = [pronoun for pronoun in pronouns if table[tense].get(pronoun, "-") != "-"]
+        unique_forms = {
+            table[tense][pronoun].strip().casefold()
+            for pronoun in valid_pronouns
+        }
+        giveaway_tense = len(valid_pronouns) <= 1 or len(unique_forms) <= 1
+
+        guide_count = 0
+        if not giveaway_tense and fill_level == "medium":
+            guide_count = 1
+        elif not giveaway_tense and fill_level == "easy":
+            guide_count = min(len(valid_pronouns) - 1, int(len(valid_pronouns) * 0.7))
+
+        indexed_pronouns = {pronoun: index for index, pronoun in enumerate(pronouns)}
+        guide_order = sorted(
+            valid_pronouns,
+            key=lambda pronoun: (
+                verb_id * 31
+                + len(tense) * 13
+                + indexed_pronouns[pronoun] * 17
+            )
+            % 101,
+        )
+        guides = set(guide_order[:guide_count])
+        prefill[tense] = {
+            pronoun: pronoun in guides
+            for pronoun in pronouns
+        }
 
     return ConjugationQuestion(
         verb_id=verb_id,
@@ -1003,32 +1131,30 @@ async def _unlock_next_conjugation_verbs(
     user_id: int,
     language_pair: str,
     language_code: str,
+    selected_tenses: list[str],
     count: int = 3,
 ) -> int:
     current_rows = await db.execute(
-        select(UserProgress.item_id)
+        select(UserProgress)
         .where(
             UserProgress.user_id == user_id,
             UserProgress.item_type == ProgressItemType.CONJUGATION,
             UserProgress.language_pair == language_pair,
-            UserProgress.unlocked.is_(True),
         )
     )
-    unlocked_ids = [row[0] for row in current_rows.all()]
-    max_id = max(unlocked_ids) if unlocked_ids else 0
+    unlocked_ids = {row.item_id for row in current_rows.scalars().all() if row.unlocked}
 
     language = await get_language_by_code(db, language_code)
-    candidates = await db.execute(
-        select(Verb.id)
-        .join(VerbConjugation, VerbConjugation.verb_id == Verb.id)
-        .where(Verb.id > max_id, VerbConjugation.language_id == language.id)
-        .distinct()
-        .order_by(Verb.id.asc())
-        .limit(count)
+    eligible_ids = await eligible_conjugation_verb_ids(
+        db,
+        language=language,
+        selected_tenses=selected_tenses,
     )
 
     created = 0
-    for (verb_id,) in candidates.all():
+    for verb_id in (item_id for item_id in eligible_ids if item_id not in unlocked_ids):
+        if created >= count:
+            break
         await _get_or_create_progress(
             db,
             user_id=user_id,
@@ -1047,6 +1173,7 @@ async def maybe_unlock_conjugation_verbs(
     user_id: int,
     language_pair: str,
     language_code: str,
+    selected_tenses: list[str],
 ) -> int:
     rows = await db.execute(
         select(UserProgress)
@@ -1072,7 +1199,124 @@ async def maybe_unlock_conjugation_verbs(
         user_id=user_id,
         language_pair=language_pair,
         language_code=language_code,
+        selected_tenses=selected_tenses,
     )
+
+
+def _conjugation_tense_review(
+    *,
+    question: ConjugationQuestion,
+    language_code: str,
+    tense: str,
+    answers: dict[str, str],
+) -> dict[str, Any]:
+    cells: list[dict[str, Any]] = []
+    correct_count = 0
+    answer_count = 0
+
+    for pronoun in question.pronouns:
+        user_answer = (answers.get(pronoun) or "").strip()
+        correct_answer = question.table[tense].get(pronoun, "-")
+        if correct_answer == "-":
+            cells.append(
+                {
+                    "pronoun": pronoun,
+                    "kind": "missing",
+                    "answer": "",
+                    "expected": "-",
+                    "correct": None,
+                }
+            )
+            continue
+        if question.prefill[tense].get(pronoun, False):
+            cells.append(
+                {
+                    "pronoun": pronoun,
+                    "kind": "prefilled",
+                    "answer": correct_answer,
+                    "expected": correct_answer,
+                    "correct": True,
+                }
+            )
+            continue
+
+        is_correct = conjugation_answer_is_correct(user_answer, correct_answer, language_code)
+        answer_count += 1
+        correct_count += int(is_correct)
+        cells.append(
+            {
+                "pronoun": pronoun,
+                "kind": "answer",
+                "answer": user_answer,
+                "expected": correct_answer,
+                "correct": is_correct,
+            }
+        )
+
+    accuracy = (correct_count / answer_count * 100.0) if answer_count else 0.0
+    return {
+        "verb_id": question.verb_id,
+        "verb": question.verb,
+        "tense": tense,
+        "correct": correct_count,
+        "total": answer_count,
+        "accuracy": round(accuracy, 1),
+        "cells": cells,
+    }
+
+
+async def check_conjugation_tense(
+    db: AsyncSession,
+    *,
+    session: TrainingSession,
+    tense: str,
+    answers: dict[str, str],
+) -> dict[str, Any]:
+    question = await get_conjugation_question(db, session)
+    if question is None:
+        raise ValueError("Conjugation session is complete.")
+    if tense not in question.selected_tenses:
+        raise ValueError(f"Tense is not part of this table: {tense}")
+
+    config = dict(session.config or {})
+    stored_reviews = dict(config.get("conjugation_tense_reviews", {}))
+    existing_review = stored_reviews.get(tense)
+    if isinstance(existing_review, dict):
+        return dict(existing_review)
+
+    checked_tenses = [
+        item
+        for item in config.get("checked_conjugation_tenses", [])
+        if item in question.selected_tenses
+    ]
+    next_tense = next(
+        (item for item in question.selected_tenses if item not in checked_tenses),
+        None,
+    )
+    if next_tense != tense:
+        raise ValueError("Complete the conjugation tenses in order.")
+
+    language_code = str(config.get("language", "FR"))
+    frozen_answers = {
+        pronoun: (answers.get(pronoun) or "").strip()
+        for pronoun in question.pronouns
+    }
+    review = _conjugation_tense_review(
+        question=question,
+        language_code=language_code,
+        tense=tense,
+        answers=frozen_answers,
+    )
+
+    pending_answers = dict(config.get("pending_conjugation_answers", {}))
+    pending_answers[tense] = frozen_answers
+    checked_tenses.append(tense)
+    stored_reviews[tense] = review
+    config["pending_conjugation_answers"] = pending_answers
+    config["checked_conjugation_tenses"] = checked_tenses
+    config["conjugation_tense_reviews"] = stored_reviews
+    session.config = config
+    return review
 
 
 async def submit_conjugation_answers(
@@ -1090,6 +1334,18 @@ async def submit_conjugation_answers(
     language_code = str(config.get("language", "FR"))
     language_pair = session.language_pair
     scored_conjugation_slots = _str_set_from_config(config, "scored_conjugation_slots")
+    effective_answers = {
+        tense: dict(tense_answers)
+        for tense, tense_answers in answers.items()
+        if isinstance(tense_answers, dict)
+    }
+    for tense, tense_answers in dict(config.get("pending_conjugation_answers", {})).items():
+        if isinstance(tense_answers, dict):
+            effective_answers[str(tense)] = {
+                str(pronoun): str(answer)
+                for pronoun, answer in tense_answers.items()
+            }
+    answers = effective_answers
 
     progress = await _get_or_create_progress(
         db,
@@ -1105,6 +1361,7 @@ async def submit_conjugation_answers(
 
     total_correct = 0
     total_answered = 0
+    review_by_slot: dict[tuple[str, str], dict[str, Any]] = {}
 
     for tense in question.selected_tenses:
         tense_answers = answers.get(tense, {})
@@ -1115,12 +1372,30 @@ async def submit_conjugation_answers(
         for pronoun in question.pronouns:
             user_answer = (tense_answers.get(pronoun) or "").strip()
             correct_answer = question.table[tense].get(pronoun, "-")
-            if correct_answer == "-" or question.prefill[tense].get(pronoun, False):
+            if correct_answer == "-":
+                review_by_slot[(tense, pronoun)] = {
+                    "kind": "missing",
+                    "answer": "",
+                    "expected": "-",
+                    "correct": None,
+                }
+                continue
+            if question.prefill[tense].get(pronoun, False):
+                review_by_slot[(tense, pronoun)] = {
+                    "kind": "prefilled",
+                    "answer": correct_answer,
+                    "expected": correct_answer,
+                    "correct": True,
+                }
                 continue
 
-            is_correct = bool(user_answer) and (
-                normalize_for_comparison(user_answer) == normalize_for_comparison(correct_answer)
-            )
+            is_correct = conjugation_answer_is_correct(user_answer, correct_answer, language_code)
+            review_by_slot[(tense, pronoun)] = {
+                "kind": "answer",
+                "answer": user_answer,
+                "expected": correct_answer,
+                "correct": is_correct,
+            }
             checks.append(
                 PronounCheck(
                     pronoun=pronoun,
@@ -1225,6 +1500,9 @@ async def submit_conjugation_answers(
         )
 
     _store_config_str_set(config, "scored_conjugation_slots", scored_conjugation_slots)
+    config.pop("checked_conjugation_tenses", None)
+    config.pop("pending_conjugation_answers", None)
+    config.pop("conjugation_tense_reviews", None)
     config["index"] = int(config.get("index", 0)) + 1
     session.config = config
 
@@ -1266,9 +1544,26 @@ async def submit_conjugation_answers(
             user_id=session.user_id,
             language_pair=language_pair,
             language_code=language_code,
+            selected_tenses=question.selected_tenses,
         )
 
     accuracy = (total_correct / total_answered * 100.0) if total_answered else 0.0
+    review_rows = [
+        {
+            "pronoun": pronoun,
+            "cells": [
+                {
+                    "tense": tense,
+                    **review_by_slot.get(
+                        (tense, pronoun),
+                        {"kind": "missing", "answer": "", "expected": "-", "correct": None},
+                    ),
+                }
+                for tense in question.selected_tenses
+            ],
+        }
+        for pronoun in question.pronouns
+    ]
     reward.unlocked_badges.extend(await unlock_badges(db, user_id=session.user_id, profile=profile))
     return {
         "finished": finished,
@@ -1276,6 +1571,12 @@ async def submit_conjugation_answers(
         "correct": total_correct,
         "total": total_answered,
         "language_pair": language_pair,
+        "review": {
+            "verb_id": question.verb_id,
+            "verb": question.verb,
+            "selected_tenses": question.selected_tenses,
+            "rows": review_rows,
+        },
         "gamification": reward_summary_payload(reward),
     }
 
@@ -1291,6 +1592,20 @@ def build_conjugation_answers_from_form(form_data: dict[str, str]) -> dict[str, 
 
 
 def conjugation_tenses_for_level(language: Language, level: str, selected_tenses: list[str] | None) -> list[str]:
+    available = list((language.tense_definitions or {}).keys())
     if level == "custom":
-        return selected_tenses or []
-    return tenses_for_level(language.__dict__, level)
+        requested = list(dict.fromkeys(selected_tenses or []))
+        invalid = [tense for tense in requested if tense not in available]
+        if invalid:
+            raise ValueError(f"Unsupported tense for {language.name}: {invalid[0]}")
+        chosen = [tense for tense in available if tense in requested]
+        if not chosen:
+            raise ValueError("Choose at least one tense for a custom session.")
+        return chosen
+
+    if level not in {"easy", "medium", "hard"}:
+        raise ValueError(f"Unsupported conjugation level: {level}")
+    chosen = [tense for tense in tenses_for_level(language.__dict__, level) if tense in available]
+    if not chosen:
+        raise ValueError(f"No tenses are configured for {language.name} at this level.")
+    return chosen

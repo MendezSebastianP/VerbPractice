@@ -7,8 +7,8 @@
   <title>LexArena</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Press+Start+2P&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/spa/app.css">
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Press+Start+2P&family=Schibsted+Grotesk:wght@400;500;700;800&family=Space+Grotesk:wght@400;500;700&family=VT323&display=swap" rel="stylesheet">
+  {% if spa_css %}<link rel="stylesheet" href="/static/spa/{{ spa_css }}">{% endif %}
 </head>
 <body>
   <div id="app"></div>
@@ -19,6 +19,6 @@
       spaPath: {{ spa_path|tojson }}
     };
   </script>
-  <script type="module" src="/static/spa/app.js"></script>
+  <script type="module" src="/static/spa/{{ spa_js }}"></script>
 </body>
 </html>

@@ -1,61 +1,61 @@
-rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text
-451,10,contenir,contener,1,453,contener
-452,10,dominer,dominar,1,454,dominar
-453,10,transmettre,transmitir,1,455,transmitir
-454,10,causer,causar,1,456,causar
-455,10,situer,situar,1,457,"situar, ubicar"
-455,10,situer,ubicar,2,457,"situar, ubicar"
-456,10,détacher,desprender,1,458,"desprender, separar"
-456,10,détacher,separar,2,458,"desprender, separar"
-457,10,fonctionner,funcionar,1,459,funcionar
-458,10,rassurer,tranquilizar,1,460,tranquilizar
-459,10,avaler,tragar,1,461,tragar
-460,10,associer,asociar,1,462,asociar
-461,10,rassembler,reunir,1,463,"reunir, juntar"
-461,10,rassembler,juntar,2,463,"reunir, juntar"
-462,10,saluer,saludar,1,464,saludar
-463,10,briller,brillar,1,465,brillar
-464,10,commander,comandar,1,466,"comandar, ordenar"
-464,10,commander,ordenar,2,466,"comandar, ordenar"
-465,10,valoir,valer,1,467,valer
-466,10,reproduire,reproducir,1,468,reproducir
-467,10,recueillir,recoger,1,469,recoger
-468,10,taper,teclear,1,470,"teclear, golpear"
-468,10,taper,golpear,2,470,"teclear, golpear"
-469,10,isoler,aislar,1,471,aislar
-470,10,mentir,mentir,1,472,mentir
-471,10,rattraper,alcanzar,1,473,"alcanzar, atrapar"
-471,10,rattraper,atrapar,2,473,"alcanzar, atrapar"
-472,10,multiplier,multiplicar,1,474,multiplicar
-473,10,orienter,orientar,1,475,orientar
-474,10,user,usar,1,476,"usar, desgastar"
-474,10,user,desgastar,2,476,"usar, desgastar"
-475,10,affronter,afrontar,1,477,"afrontar, enfrentar"
-475,10,affronter,enfrentar,2,477,"afrontar, enfrentar"
-476,10,enseigner,enseñar,1,478,enseñar
-477,10,falloir,hacer falta,1,479,"hacer falta, necesitar"
-477,10,falloir,necesitar,2,479,"hacer falta, necesitar"
-478,10,enfermer,encerrar,1,480,encerrar
-479,10,dessiner,dibujar,1,481,dibujar
-480,10,favoriser,favorecer,1,482,favorecer
-481,10,retomber,recaer,1,483,recaer
-482,10,recourir,recurrir,1,484,recurrir
-483,10,pratiquer,practicar,1,485,practicar
-484,10,abattre,abatir,1,486,"abatir, derribar"
-484,10,abattre,derribar,2,486,"abatir, derribar"
-485,10,baisser,bajar,1,487,bajar
-486,10,bénéficier,beneficiar,1,488,beneficiar
-487,10,fonder,fundar,1,489,fundar
-488,10,exiger,exigir,1,490,exigir
-489,10,réparer,reparar,1,491,reparar
-490,10,risquer,arriesgar,1,492,arriesgar
-491,10,percevoir,percibir,1,493,percibir
-492,10,comporter,comportar,1,494,comportar
-493,10,vider,vaciar,1,495,vaciar
-494,10,accéder,acceder,1,496,acceder
-495,10,composer,componer,1,497,componer
-496,10,formuler,formular,1,498,formular
-497,10,caresser,acariciar,1,499,acariciar
-498,10,signer,firmar,1,500,firmar
-499,10,prolonger,prolongar,1,501,prolongar
-500,10,varier,variar,1,502,variar
+rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive
+451,10,contenir,contener,1,453,contener,contain,вмещать
+452,10,dominer,dominar,1,454,dominar,dominate,преобладать
+453,10,transmettre,transmitir,1,455,transmitir,transmit,пересылать
+454,10,causer,causar,1,456,causar,cause,вызывать
+455,10,situer,situar,1,457,"situar, ubicar",locate,размещать
+455,10,situer,ubicar,2,457,"situar, ubicar",locate,размещать
+456,10,détacher,desprender,1,458,"desprender, separar",detach,отсоединять
+456,10,détacher,separar,2,458,"desprender, separar",detach,отсоединять
+457,10,fonctionner,funcionar,1,459,funcionar,function,работать
+458,10,rassurer,tranquilizar,1,460,tranquilizar,reassure,успокаивать
+459,10,avaler,tragar,1,461,tragar,swallow,глотать
+460,10,associer,asociar,1,462,asociar,associate,связывать
+461,10,rassembler,reunir,1,463,"reunir, juntar",gather together,собирать
+461,10,rassembler,juntar,2,463,"reunir, juntar",gather together,собирать
+462,10,saluer,saludar,1,464,saludar,greet,приветствовать
+463,10,briller,brillar,1,465,brillar,shine,сиять
+464,10,commander,comandar,1,466,"comandar, ordenar",command,приказывать
+464,10,commander,ordenar,2,466,"comandar, ordenar",command,приказывать
+465,10,valoir,valer,1,467,valer,be worth,стоить
+466,10,reproduire,reproducir,1,468,reproducir,reproduce,воспроизводить
+467,10,recueillir,recoger,1,469,recoger,collect,собирать
+468,10,taper,teclear,1,470,"teclear, golpear",type,печатать
+468,10,taper,golpear,2,470,"teclear, golpear",type,печатать
+469,10,isoler,aislar,1,471,aislar,isolate,изолировать
+470,10,mentir,mentir,1,472,mentir,lie,обманывать
+471,10,rattraper,alcanzar,1,473,"alcanzar, atrapar",catch up,догонять
+471,10,rattraper,atrapar,2,473,"alcanzar, atrapar",catch up,догонять
+472,10,multiplier,multiplicar,1,474,multiplicar,multiply,умножать
+473,10,orienter,orientar,1,475,orientar,orient,направлять
+474,10,user,usar,1,476,"usar, desgastar",wear out,изнашивать
+474,10,user,desgastar,2,476,"usar, desgastar",wear out,изнашивать
+475,10,affronter,afrontar,1,477,"afrontar, enfrentar",confront,сталкиваться
+475,10,affronter,enfrentar,2,477,"afrontar, enfrentar",confront,сталкиваться
+476,10,enseigner,enseñar,1,478,enseñar,teach,обучать
+477,10,falloir,hacer falta,1,479,"hacer falta, necesitar",need,нуждаться
+477,10,falloir,necesitar,2,479,"hacer falta, necesitar",need,нуждаться
+478,10,enfermer,encerrar,1,480,encerrar,lock up,запирать
+479,10,dessiner,dibujar,1,481,dibujar,draw,рисовать
+480,10,favoriser,favorecer,1,482,favorecer,favor,поддерживать
+481,10,retomber,recaer,1,483,recaer,fall back,падать обратно
+482,10,recourir,recurrir,1,484,recurrir,resort to,прибегать к
+483,10,pratiquer,practicar,1,485,practicar,practice,заниматься
+484,10,abattre,abatir,1,486,"abatir, derribar",knock down,сбивать
+484,10,abattre,derribar,2,486,"abatir, derribar",knock down,сбивать
+485,10,baisser,bajar,1,487,bajar,lower,понижать
+486,10,bénéficier,beneficiar,1,488,beneficiar,benefit,извлекать пользу
+487,10,fonder,fundar,1,489,fundar,found,основывать
+488,10,exiger,exigir,1,490,exigir,demand,требовать
+489,10,réparer,reparar,1,491,reparar,repair,ремонтировать
+490,10,risquer,arriesgar,1,492,arriesgar,risk,рисковать
+491,10,percevoir,percibir,1,493,percibir,perceive,воспринимать
+492,10,comporter,comportar,1,494,comportar,include,включать
+493,10,vider,vaciar,1,495,vaciar,empty,опустошать
+494,10,accéder,acceder,1,496,acceder,access,получать доступ
+495,10,composer,componer,1,497,componer,compose,сочинять
+496,10,formuler,formular,1,498,formular,formulate,формулировать
+497,10,caresser,acariciar,1,499,acariciar,caress,ласкать
+498,10,signer,firmar,1,500,firmar,sign,подписывать
+499,10,prolonger,prolongar,1,501,prolongar,prolong,продлевать
+500,10,varier,variar,1,502,variar,vary,изменяться

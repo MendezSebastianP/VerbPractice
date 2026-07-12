@@ -31,3 +31,4 @@ frontend/node_modules/
 
 # Media files (if you don't want to track uploaded files)
 # media/
+.deployed-rev

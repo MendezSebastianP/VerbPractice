@@ -357,10 +357,58 @@ def test_training_finish_endpoints(client: TestClient, smoke_user: dict[str, str
         },
     )
     assert conjugation_start.status_code == 200
+    conjugation_review = client.post(
+        "/api/training/conjugation/check-tense",
+        json={
+            "tense": "Présent",
+            "answers": {
+                "je": "vais",
+                "tu": "wrong",
+                "il": "va",
+                "nous": "allons",
+                "vous": "allez",
+                "ils": "vont",
+            },
+            "csrf_token": csrf_token,
+        },
+    )
+    assert conjugation_review.status_code == 200
+    assert conjugation_review.json()["tense"] == "Présent"
+    assert conjugation_review.json()["total"] == 6
+    assert len(conjugation_review.json()["cells"]) == 6
+    assert conjugation_review.json()["cells"][1]["answer"] == "wrong"
+    assert conjugation_review.json()["cells"][1]["expected"]
     conjugation_finish = client.post("/api/training/conjugation/finish", json={"csrf_token": csrf_token})
     assert conjugation_finish.status_code == 200
     assert conjugation_finish.json()["setup"] is True
     assert conjugation_finish.json()["feedback"] == "Session ended."
+
+    conjugation_state = client.get("/api/training/conjugation")
+    assert conjugation_state.status_code == 200
+    languages = conjugation_state.json()["languages"]
+    assert {language["code"] for language in languages} == {"EN", "ES", "FR", "RU"}
+    assert all("available_tenses" in language and "verb_count" in language for language in languages)
+
+    empty_custom = client.post(
+        "/api/training/conjugation/start",
+        json={
+            "language": "FR",
+            "level": "custom",
+            "fill_level": "hard",
+            "selected_tenses": [],
+            "length": 3,
+            "csrf_token": csrf_token,
+        },
+    )
+    assert empty_custom.status_code == 422
+    assert "Choose at least one tense" in empty_custom.json()["detail"]
+
+    conjugation_preference = client.patch(
+        "/api/settings",
+        json={"last_practice_mode": "conjugation", "csrf_token": csrf_token},
+    )
+    assert conjugation_preference.status_code == 200
+    assert conjugation_preference.json()["last_practice_mode"] == "conjugation"
 
 
 def test_training_and_chat_flows(client: TestClient, smoke_user: dict[str, str]):

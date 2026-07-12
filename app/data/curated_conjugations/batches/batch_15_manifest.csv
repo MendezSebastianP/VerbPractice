@@ -1,62 +1,62 @@
-rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text
-701,15,sembler,parecer,1,703,parecer
-702,15,bondir,saltar,1,704,"saltar, brincar"
-702,15,bondir,brincar,2,704,"saltar, brincar"
-703,15,vibrer,vibrar,1,705,vibrar
-704,15,dissiper,disipar,1,706,disipar
-705,15,s'enfiler,ponerse (ropa),1,707,ponerse (ropa)
-706,15,pendre,colgar,1,708,colgar
-707,15,rattacher,volver a atar,1,709,"volver a atar, vincular"
-707,15,rattacher,vincular,2,709,"volver a atar, vincular"
-708,15,moquer,burlarse,1,710,burlarse
-709,15,trancher,cortar,1,711,"cortar, decidir"
-709,15,trancher,decidir,2,711,"cortar, decidir"
-710,15,atténuer,atenuar,1,712,atenuar
-711,15,déchirer,romper,1,713,"romper, desgarrar"
-711,15,déchirer,desgarrar,2,713,"romper, desgarrar"
-712,15,priver,privar,1,714,privar
-713,15,voter,votar,1,715,votar
-714,15,triompher,triunfar,1,716,triunfar
-715,15,murmurer,murmurar,1,717,murmurar
-716,15,repentir,arrepentirse,1,718,arrepentirse
-717,15,pourvoir,proveer,1,719,proveer
-718,15,édifier,edificar,1,720,edificar
-719,15,exclure,excluir,1,721,excluir
-720,15,renseigner,informar,1,722,informar
-721,15,enterrer,enterrar,1,723,enterrar
-722,15,parer,adornar,1,724,"adornar, proteger"
-722,15,parer,proteger,2,724,"adornar, proteger"
-723,15,ordonner,ordenar,1,725,ordenar
-724,15,gratter,rascar,1,726,rascar
-725,15,diviser,dividir,1,727,dividir
-726,15,frotter,frotar,1,728,frotar
-727,15,déployer,desplegar,1,729,desplegar
-728,15,rigoler,reírse (coloquial),1,730,reírse (coloquial)
-729,15,raisonner,razonar,1,731,razonar
-730,15,tailler,tallar,1,732,"tallar, recortar"
-730,15,tailler,recortar,2,732,"tallar, recortar"
-731,15,bavarder,charlar,1,733,"charlar, chatear"
-731,15,bavarder,chatear,2,733,"charlar, chatear"
-732,15,illustrer,ilustrar,1,734,ilustrar
-733,15,capter,captar,1,735,captar
-734,15,relire,releer,1,736,releer
-735,15,mériter,merecer,1,737,merecer
-736,15,émouvoir,emocionar,1,738,emocionar
-737,15,revêtir,revestir,1,739,"revestir, vestir"
-737,15,revêtir,vestir,2,739,"revestir, vestir"
-738,15,dérouler,desenrollar,1,740,desenrollar
-739,15,étaler,extender,1,741,extender
-740,15,dérober,robar,1,742,robar
-741,15,fréquenter,frecuentar,1,743,frecuentar
-742,15,abriter,albergar,1,744,"albergar, refugiar"
-742,15,abriter,refugiar,2,744,"albergar, refugiar"
-743,15,promettre,prometer,1,745,prometer
-744,15,blesser,herir,1,746,"herir, lastimar"
-744,15,blesser,lastimar,2,746,"herir, lastimar"
-745,15,approuver,aprobar,1,747,aprobar
-746,15,animer,animar,1,748,animar
-747,15,cultiver,cultivar,1,749,cultivar
-748,15,relier,enlazar,1,750,"enlazar, conectar"
-748,15,relier,conectar,2,750,"enlazar, conectar"
-749,15,célébrer,celebrar,1,751,celebrar
-750,15,dévorer,devorar,1,752,devorar
+rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive
+701,15,sembler,parecer,1,703,parecer,seem,казаться
+702,15,bondir,saltar,1,704,"saltar, brincar",leap,прыгать
+702,15,bondir,brincar,2,704,"saltar, brincar",leap,прыгать
+703,15,vibrer,vibrar,1,705,vibrar,vibrate,вибрировать
+704,15,dissiper,disipar,1,706,disipar,dissipate,рассеивать
+705,15,s'enfiler,ponerse (ropa),1,707,ponerse (ropa),put on,надевать
+706,15,pendre,colgar,1,708,colgar,hang,вешать
+707,15,rattacher,volver a atar,1,709,"volver a atar, vincular",reattach,прикреплять
+707,15,rattacher,vincular,2,709,"volver a atar, vincular",reattach,прикреплять
+708,15,moquer,burlarse,1,710,burlarse,mock,высмеивать
+709,15,trancher,cortar,1,711,"cortar, decidir",slice,нарезать
+709,15,trancher,decidir,2,711,"cortar, decidir",slice,нарезать
+710,15,atténuer,atenuar,1,712,atenuar,attenuate,ослаблять
+711,15,déchirer,romper,1,713,"romper, desgarrar",tear,разрывать
+711,15,déchirer,desgarrar,2,713,"romper, desgarrar",tear,разрывать
+712,15,priver,privar,1,714,privar,deprive,лишать
+713,15,voter,votar,1,715,votar,vote,голосовать
+714,15,triompher,triunfar,1,716,triunfar,triumph,торжествовать
+715,15,murmurer,murmurar,1,717,murmurar,murmur,шептать
+716,15,repentir,arrepentirse,1,718,arrepentirse,repent,раскаиваться
+717,15,pourvoir,proveer,1,719,proveer,provide,снабжать
+718,15,édifier,edificar,1,720,edificar,build,строить
+719,15,exclure,excluir,1,721,excluir,exclude,исключать
+720,15,renseigner,informar,1,722,informar,inform,информировать
+721,15,enterrer,enterrar,1,723,enterrar,bury,хоронить
+722,15,parer,adornar,1,724,"adornar, proteger",adorn,украшать
+722,15,parer,proteger,2,724,"adornar, proteger",adorn,украшать
+723,15,ordonner,ordenar,1,725,ordenar,order,приказывать
+724,15,gratter,rascar,1,726,rascar,scratch,царапать
+725,15,diviser,dividir,1,727,dividir,divide,разделять
+726,15,frotter,frotar,1,728,frotar,rub,натирать
+727,15,déployer,desplegar,1,729,desplegar,deploy,развёртывать
+728,15,rigoler,reírse (coloquial),1,730,reírse (coloquial),laugh,смеяться
+729,15,raisonner,razonar,1,731,razonar,reason,рассуждать
+730,15,tailler,tallar,1,732,"tallar, recortar",trim,подрезать
+730,15,tailler,recortar,2,732,"tallar, recortar",trim,подрезать
+731,15,bavarder,charlar,1,733,"charlar, chatear",chat,болтать
+731,15,bavarder,chatear,2,733,"charlar, chatear",chat,болтать
+732,15,illustrer,ilustrar,1,734,ilustrar,illustrate,иллюстрировать
+733,15,capter,captar,1,735,captar,capture,захватывать
+734,15,relire,releer,1,736,releer,reread,перечитывать
+735,15,mériter,merecer,1,737,merecer,deserve,заслуживать
+736,15,émouvoir,emocionar,1,738,emocionar,move emotionally,волновать
+737,15,revêtir,revestir,1,739,"revestir, vestir",clothe,одевать
+737,15,revêtir,vestir,2,739,"revestir, vestir",clothe,одевать
+738,15,dérouler,desenrollar,1,740,desenrollar,unroll,разворачивать
+739,15,étaler,extender,1,741,extender,spread out,раскладывать
+740,15,dérober,robar,1,742,robar,steal,похищать
+741,15,fréquenter,frecuentar,1,743,frecuentar,frequent,посещать
+742,15,abriter,albergar,1,744,"albergar, refugiar",shelter,укрывать
+742,15,abriter,refugiar,2,744,"albergar, refugiar",shelter,укрывать
+743,15,promettre,prometer,1,745,prometer,promise,обещать
+744,15,blesser,herir,1,746,"herir, lastimar",wound,ранить
+744,15,blesser,lastimar,2,746,"herir, lastimar",wound,ранить
+745,15,approuver,aprobar,1,747,aprobar,approve,одобрять
+746,15,animer,animar,1,748,animar,animate,оживлять
+747,15,cultiver,cultivar,1,749,cultivar,cultivate,выращивать
+748,15,relier,enlazar,1,750,"enlazar, conectar",connect,соединять
+748,15,relier,conectar,2,750,"enlazar, conectar",connect,соединять
+749,15,célébrer,celebrar,1,751,celebrar,celebrate,праздновать
+750,15,dévorer,devorar,1,752,devorar,devour,пожирать

@@ -1,6 +1,10 @@
 from __future__ import annotations
 
-from pydantic import BaseModel, Field
+from typing import Literal
+
+from pydantic import BaseModel, Field, model_validator
+
+from app.core.languages import LANGUAGE_DEFINITIONS
 
 
 class CredentialsPayload(BaseModel):
@@ -27,8 +31,18 @@ class SoundPreferencePayload(CsrfPayload):
 
 class TranslationStartPayload(CsrfPayload):
     length: int = 10
-    direction: str
+    direction: str = Field(pattern=r"^[a-z]{2}_[a-z]{2}$")
     set_id: int | None = None
+
+    @model_validator(mode="after")
+    def validate_direction(self):
+        source, target = self.direction.split("_")
+        if source == target:
+            raise ValueError("Source and target languages must differ")
+        unknown = [code.upper() for code in (source, target) if code.upper() not in LANGUAGE_DEFINITIONS]
+        if unknown:
+            raise ValueError(f"Unknown language code: {unknown[0]}")
+        return self
 
 
 class TranslationAnswerPayload(CsrfPayload):
@@ -36,15 +50,26 @@ class TranslationAnswerPayload(CsrfPayload):
 
 
 class ConjugationStartPayload(CsrfPayload):
-    language: str
-    level: str
-    fill_level: str
+    language: str = Field(pattern=r"^[A-Z]{2}$")
+    level: Literal["easy", "medium", "hard", "custom"]
+    fill_level: Literal["easy", "medium", "hard"]
     selected_tenses: list[str] = Field(default_factory=list)
     length: int = 5
+
+    @model_validator(mode="after")
+    def validate_language(self):
+        if self.language not in LANGUAGE_DEFINITIONS:
+            raise ValueError(f"Unknown language code: {self.language}")
+        return self
 
 
 class ConjugationSubmitPayload(CsrfPayload):
     answers: dict[str, dict[str, str]] = Field(default_factory=dict)
+
+
+class ConjugationTenseSubmitPayload(CsrfPayload):
+    tense: str = Field(min_length=1, max_length=100)
+    answers: dict[str, str] = Field(default_factory=dict)
 
 
 class ChatStreamPayload(CsrfPayload):

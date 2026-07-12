@@ -20,6 +20,8 @@ INVENTORY_FIELDNAMES = [
     "link_order",
     "legacy_ids",
     "source_es_text",
+    "en_infinitive",
+    "ru_infinitive",
 ]
 CONJUGATION_FIELDNAMES = [
     "language_code",
@@ -49,6 +51,8 @@ class InventoryLinkRow:
     link_order: int
     legacy_ids: tuple[int, ...]
     source_es_text: str
+    en_infinitive: str = ""
+    ru_infinitive: str = ""
 
     def to_csv_row(self) -> dict[str, str]:
         return {
@@ -59,6 +63,8 @@ class InventoryLinkRow:
             "link_order": str(self.link_order),
             "legacy_ids": ",".join(str(item) for item in self.legacy_ids),
             "source_es_text": self.source_es_text,
+            "en_infinitive": self.en_infinitive,
+            "ru_infinitive": self.ru_infinitive,
         }
 
 
@@ -205,7 +211,7 @@ def normalize_legacy_inventory_rows(
 def write_inventory_rows(path: Path, rows: list[InventoryLinkRow]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=INVENTORY_FIELDNAMES)
+        writer = csv.DictWriter(handle, fieldnames=INVENTORY_FIELDNAMES, lineterminator="\n")
         writer.writeheader()
         for row in rows:
             writer.writerow(row.to_csv_row())
@@ -227,6 +233,8 @@ def load_inventory_rows(path: Path) -> list[InventoryLinkRow]:
                     if clean_cell(chunk).isdigit()
                 ),
                 source_es_text=clean_cell(row.get("source_es_text")),
+                en_infinitive=clean_cell(row.get("en_infinitive")),
+                ru_infinitive=clean_cell(row.get("ru_infinitive")),
             )
             for row in reader
         ]
@@ -279,12 +287,20 @@ def ordered_verbs_for_batch(rows: list[InventoryLinkRow], batch: int) -> dict[st
     batch_rows = inventory_rows_for_batch(rows, batch)
     fr_seen = OrderedDict()
     es_seen = OrderedDict()
+    en_seen = OrderedDict()
+    ru_seen = OrderedDict()
     for row in batch_rows:
         fr_seen.setdefault(row.fr_infinitive, None)
         es_seen.setdefault(row.es_infinitive, None)
+        if row.en_infinitive:
+            en_seen.setdefault(row.en_infinitive, None)
+        if row.ru_infinitive:
+            ru_seen.setdefault(row.ru_infinitive, None)
     return {
         "FR": list(fr_seen.keys()),
         "ES": list(es_seen.keys()),
+        **({"EN": list(en_seen.keys())} if en_seen else {}),
+        **({"RU": list(ru_seen.keys())} if ru_seen else {}),
     }
 
 
@@ -363,7 +379,7 @@ def validate_curated_batch_rows(
 ) -> list[str]:
     errors: list[str] = []
     expected_verbs = ordered_verbs_for_batch(inventory_rows, batch)
-    if not expected_verbs["FR"] and not expected_verbs["ES"]:
+    if not any(expected_verbs.values()):
         return [f"Batch {batch:02d} does not exist in the normalized inventory."]
 
     filtered_rows = [row for row in conjugation_rows if row.batch == batch]
@@ -390,7 +406,12 @@ def validate_curated_batch_rows(
         tense_definitions = language_payload["tense_definitions"]
         pronouns = language_payload["pronoun_set"]
 
-        if row.infinitive not in expected_verbs[row.language_code]:
+        expected_language_verbs = expected_verbs.get(row.language_code)
+        if expected_language_verbs is None:
+            errors.append(
+                f"Batch {batch:02d} references {row.language_code} rows, but that language is not in the inventory batch."
+            )
+        elif row.infinitive not in expected_language_verbs:
             errors.append(
                 f"Batch {batch:02d} references {row.language_code} verb '{row.infinitive}' which is not in the inventory batch."
             )
@@ -525,6 +546,7 @@ async def import_inventory_rows(
 
     selected_rows = [row for row in rows if batch is None or row.batch == batch]
     for row in selected_rows:
+        en_verb: Verb | None = None
         fr_verb, fr_created = await _get_or_create_verb(
             session,
             cache=verb_cache,
@@ -554,6 +576,105 @@ async def import_inventory_rows(
             translation=row.fr_infinitive,
         )
         counts["translations_created"] += int(created_fr_to_es) + int(created_es_to_fr)
+
+        if row.en_infinitive and "EN" in languages:
+            en_verb, en_created = await _get_or_create_verb(
+                session,
+                cache=verb_cache,
+                languages=languages,
+                language_code="EN",
+                infinitive=row.en_infinitive,
+            )
+            counts["verbs_created"] += int(en_created)
+
+            _, created_fr_to_en = await _ensure_translation(
+                session,
+                verb=fr_verb,
+                target_language=languages["EN"],
+                translation=row.en_infinitive,
+            )
+            _, created_en_to_fr = await _ensure_translation(
+                session,
+                verb=en_verb,
+                target_language=languages["FR"],
+                translation=row.fr_infinitive,
+            )
+            _, created_es_to_en = await _ensure_translation(
+                session,
+                verb=es_verb,
+                target_language=languages["EN"],
+                translation=row.en_infinitive,
+            )
+            _, created_en_to_es = await _ensure_translation(
+                session,
+                verb=en_verb,
+                target_language=languages["ES"],
+                translation=row.es_infinitive,
+            )
+            counts["translations_created"] += (
+                int(created_fr_to_en)
+                + int(created_en_to_fr)
+                + int(created_es_to_en)
+                + int(created_en_to_es)
+            )
+
+        if row.ru_infinitive and "RU" in languages:
+            ru_verb, ru_created = await _get_or_create_verb(
+                session,
+                cache=verb_cache,
+                languages=languages,
+                language_code="RU",
+                infinitive=row.ru_infinitive,
+            )
+            counts["verbs_created"] += int(ru_created)
+
+            _, created_fr_to_ru = await _ensure_translation(
+                session,
+                verb=fr_verb,
+                target_language=languages["RU"],
+                translation=row.ru_infinitive,
+            )
+            _, created_ru_to_fr = await _ensure_translation(
+                session,
+                verb=ru_verb,
+                target_language=languages["FR"],
+                translation=row.fr_infinitive,
+            )
+            _, created_es_to_ru = await _ensure_translation(
+                session,
+                verb=es_verb,
+                target_language=languages["RU"],
+                translation=row.ru_infinitive,
+            )
+            _, created_ru_to_es = await _ensure_translation(
+                session,
+                verb=ru_verb,
+                target_language=languages["ES"],
+                translation=row.es_infinitive,
+            )
+            created_en_to_ru = False
+            created_ru_to_en = False
+            if en_verb is not None:
+                _, created_en_to_ru = await _ensure_translation(
+                    session,
+                    verb=en_verb,
+                    target_language=languages["RU"],
+                    translation=row.ru_infinitive,
+                )
+                _, created_ru_to_en = await _ensure_translation(
+                    session,
+                    verb=ru_verb,
+                    target_language=languages["EN"],
+                    translation=row.en_infinitive,
+                )
+            counts["translations_created"] += (
+                int(created_fr_to_ru)
+                + int(created_ru_to_fr)
+                + int(created_es_to_ru)
+                + int(created_ru_to_es)
+                + int(created_en_to_ru)
+                + int(created_ru_to_en)
+            )
 
     return counts
 

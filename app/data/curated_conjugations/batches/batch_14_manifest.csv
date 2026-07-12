@@ -1,64 +1,64 @@
-rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text
-651,14,régner,reinar,1,653,reinar
-652,14,distribuer,distribuir,1,654,distribuir
-653,14,sécher,secar,1,655,secar
-654,14,enrichir,enriquecer,1,656,enriquecer
-655,14,soupçonner,sospechar,1,657,sospechar
-656,14,essuyer,secar,1,658,"secar, limpiar"
-656,14,essuyer,limpiar,2,658,"secar, limpiar"
-657,14,dissoudre,disolver,1,659,disolver
-658,14,compenser,compensar,1,660,compensar
-659,14,grouper,agrupar,1,661,agrupar
-660,14,cueillir,recoger,1,662,"recoger, cosechar"
-660,14,cueillir,cosechar,2,662,"recoger, cosechar"
-661,14,manier,manejar,1,663,manejar
-662,14,caractériser,caracterizar,1,664,caracterizar
-663,14,progresser,progresar,1,665,progresar
-664,14,absorber,absorber,1,666,absorber
-665,14,maîtriser,dominar,1,667,"dominar, controlar"
-665,14,maîtriser,controlar,2,667,"dominar, controlar"
-666,14,basculer,volcar,1,668,"volcar, bascular"
-666,14,basculer,bascular,2,668,"volcar, bascular"
-667,14,compromettre,comprometer,1,669,comprometer
-668,14,circuler,circular,1,670,circular
-669,14,pécher,pecar,1,671,pecar
-670,14,pêcher,pescar,1,672,pescar
-671,14,déclencher,desencadenar,1,673,desencadenar
-672,14,se loger,hospedarse,1,674,hospedarse
-673,14,alimenter,alimentar,1,675,alimentar
-674,14,épargner,ahorrar,1,676,"ahorrar, perdonar"
-674,14,épargner,perdonar,2,676,"ahorrar, perdonar"
-675,14,instruire,instruir,1,677,instruir
-676,14,apaiser,apaciguar,1,678,"apaciguar, calmar"
-676,14,apaiser,calmar,2,678,"apaciguar, calmar"
-677,14,remédier,remediar,1,679,remediar
-678,14,accuser,acusar,1,680,acusar
-679,14,cracher,escupir,1,681,escupir
-680,14,heurter,chocar,1,682,"chocar, golpear"
-680,14,heurter,golpear,2,682,"chocar, golpear"
-681,14,enfiler,ensartar,1,683,ensartar
-682,14,souper,cenar,1,684,cenar
-683,14,redresser,enderezar,1,685,enderezar
-684,14,nager,nadar,1,686,nadar
-685,14,coudre,coser,1,687,coser
-686,14,envahir,invadir,1,688,invadir
-687,14,ennuyer,aburrir,1,689,"aburrir, molestar"
-687,14,ennuyer,molestar,2,689,"aburrir, molestar"
-688,14,louer,alquilar,1,690,"alquilar, elogiar"
-688,14,louer,elogiar,2,690,"alquilar, elogiar"
-689,14,évoluer,evolucionar,1,691,evolucionar
-690,14,préférer,preferir,1,692,preferir
-691,14,habituer,habituar,1,693,"habituar, acostumbrar"
-691,14,habituer,acostumbrar,2,693,"habituar, acostumbrar"
-692,14,repasser,planchar,1,694,"planchar, volver a pasar"
-692,14,repasser,volver a pasar,2,694,"planchar, volver a pasar"
-693,14,soustraire,sustraer,1,695,sustraer
-694,14,baigner,bañar,1,696,bañar
-695,14,consentir,consentir,1,697,consentir
-696,14,condamner,condenar,1,698,condenar
-697,14,négocier,negociar,1,699,negociar
-698,14,guetter,acechar,1,700,"acechar, vigilar"
-698,14,guetter,vigilar,2,700,"acechar, vigilar"
-699,14,protester,protestar,1,701,protestar
-700,14,reporter,aplazar,1,702,"aplazar, posponer"
-700,14,reporter,posponer,2,702,"aplazar, posponer"
+rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive
+651,14,régner,reinar,1,653,reinar,reign,царствовать
+652,14,distribuer,distribuir,1,654,distribuir,distribute,распределять
+653,14,sécher,secar,1,655,secar,dry,высушивать
+654,14,enrichir,enriquecer,1,656,enriquecer,enrich,обогащать
+655,14,soupçonner,sospechar,1,657,sospechar,suspect,подозревать
+656,14,essuyer,secar,1,658,"secar, limpiar",wipe,вытирать
+656,14,essuyer,limpiar,2,658,"secar, limpiar",wipe,вытирать
+657,14,dissoudre,disolver,1,659,disolver,dissolve,растворять
+658,14,compenser,compensar,1,660,compensar,compensate,компенсировать
+659,14,grouper,agrupar,1,661,agrupar,group,группировать
+660,14,cueillir,recoger,1,662,"recoger, cosechar",pick,собирать
+660,14,cueillir,cosechar,2,662,"recoger, cosechar",pick,собирать
+661,14,manier,manejar,1,663,manejar,handle,управлять
+662,14,caractériser,caracterizar,1,664,caracterizar,characterize,характеризовать
+663,14,progresser,progresar,1,665,progresar,progress,развиваться
+664,14,absorber,absorber,1,666,absorber,absorb,поглощать
+665,14,maîtriser,dominar,1,667,"dominar, controlar",master,осваивать
+665,14,maîtriser,controlar,2,667,"dominar, controlar",master,осваивать
+666,14,basculer,volcar,1,668,"volcar, bascular",tip over,опрокидываться
+666,14,basculer,bascular,2,668,"volcar, bascular",tip over,опрокидываться
+667,14,compromettre,comprometer,1,669,comprometer,compromise,ставить под угрозу
+668,14,circuler,circular,1,670,circular,circulate,циркулировать
+669,14,pécher,pecar,1,671,pecar,sin,грешить
+670,14,pêcher,pescar,1,672,pescar,fish,рыбачить
+671,14,déclencher,desencadenar,1,673,desencadenar,trigger,запускать
+672,14,se loger,hospedarse,1,674,hospedarse,stay over,останавливаться
+673,14,alimenter,alimentar,1,675,alimentar,feed,питать
+674,14,épargner,ahorrar,1,676,"ahorrar, perdonar",spare,щадить
+674,14,épargner,perdonar,2,676,"ahorrar, perdonar",spare,щадить
+675,14,instruire,instruir,1,677,instruir,instruct,обучать
+676,14,apaiser,apaciguar,1,678,"apaciguar, calmar",soothe,успокаивать
+676,14,apaiser,calmar,2,678,"apaciguar, calmar",soothe,успокаивать
+677,14,remédier,remediar,1,679,remediar,remedy,исправлять
+678,14,accuser,acusar,1,680,acusar,accuse,обвинять
+679,14,cracher,escupir,1,681,escupir,spit,плевать
+680,14,heurter,chocar,1,682,"chocar, golpear",collide,сталкиваться
+680,14,heurter,golpear,2,682,"chocar, golpear",collide,сталкиваться
+681,14,enfiler,ensartar,1,683,ensartar,thread,продевать
+682,14,souper,cenar,1,684,cenar,dine,ужинать
+683,14,redresser,enderezar,1,685,enderezar,straighten,выпрямлять
+684,14,nager,nadar,1,686,nadar,swim,плавать
+685,14,coudre,coser,1,687,coser,sew,шить
+686,14,envahir,invadir,1,688,invadir,invade,захватывать
+687,14,ennuyer,aburrir,1,689,"aburrir, molestar",annoy,раздражать
+687,14,ennuyer,molestar,2,689,"aburrir, molestar",annoy,раздражать
+688,14,louer,alquilar,1,690,"alquilar, elogiar",rent,арендовать
+688,14,louer,elogiar,2,690,"alquilar, elogiar",rent,арендовать
+689,14,évoluer,evolucionar,1,691,evolucionar,evolve,развиваться
+690,14,préférer,preferir,1,692,preferir,prefer,предпочитать
+691,14,habituer,habituar,1,693,"habituar, acostumbrar",accustom,приучать
+691,14,habituer,acostumbrar,2,693,"habituar, acostumbrar",accustom,приучать
+692,14,repasser,planchar,1,694,"planchar, volver a pasar",iron,разглаживать
+692,14,repasser,volver a pasar,2,694,"planchar, volver a pasar",iron,разглаживать
+693,14,soustraire,sustraer,1,695,sustraer,subtract,вычитать
+694,14,baigner,bañar,1,696,bañar,bathe,купать
+695,14,consentir,consentir,1,697,consentir,consent,соглашаться
+696,14,condamner,condenar,1,698,condenar,condemn,осуждать
+697,14,négocier,negociar,1,699,negociar,negotiate,договариваться
+698,14,guetter,acechar,1,700,"acechar, vigilar",watch for,выслеживать
+698,14,guetter,vigilar,2,700,"acechar, vigilar",watch for,выслеживать
+699,14,protester,protestar,1,701,protestar,protest,протестовать
+700,14,reporter,aplazar,1,702,"aplazar, posponer",postpone,откладывать
+700,14,reporter,posponer,2,702,"aplazar, posponer",postpone,откладывать

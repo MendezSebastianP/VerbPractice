@@ -6,7 +6,7 @@ from uuid import uuid4
 from fastapi.testclient import TestClient
 from sqlalchemy import select
 
-from app.db.models import Verb, VerbTranslation, Word, WordTranslation
+from app.db.models import Language, Verb, VerbTranslation, Word, WordTranslation
 from app.db.session import AsyncSessionLocal
 
 TEST_PASSWORD = "smoke-pass-123"
@@ -28,13 +28,14 @@ def _api_login(client: TestClient, username: str, password: str) -> dict:
     return response.json()
 
 
-async def _lookup_word_translation(prompt: str) -> str:
+async def _lookup_word_translation(prompt: str, target_code: str = "FR") -> str:
     async with AsyncSessionLocal() as session:
         row = (
             await session.execute(
                 select(WordTranslation.translation)
                 .join(Word, Word.id == WordTranslation.word_id)
-                .where(Word.text == prompt)
+                .join(Language, Language.id == WordTranslation.target_language_id)
+                .where(Word.text == prompt, Language.code == target_code)
                 .order_by(WordTranslation.verified.desc(), WordTranslation.id.asc())
             )
         ).first()
@@ -42,13 +43,14 @@ async def _lookup_word_translation(prompt: str) -> str:
     return row[0]
 
 
-async def _lookup_verb_translation(prompt: str) -> str:
+async def _lookup_verb_translation(prompt: str, target_code: str = "ES") -> str:
     async with AsyncSessionLocal() as session:
         row = (
             await session.execute(
                 select(VerbTranslation.translation)
                 .join(Verb, Verb.id == VerbTranslation.verb_id)
-                .where(Verb.infinitive == prompt)
+                .join(Language, Language.id == VerbTranslation.target_language_id)
+                .where(Verb.infinitive == prompt, Language.code == target_code)
                 .order_by(VerbTranslation.verified.desc(), VerbTranslation.id.asc())
             )
         ).first()

@@ -8,7 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 
-from app.core.languages import LANGUAGE_DEFINITIONS
+from app.core.languages import LANGUAGE_DEFINITIONS, tenses_for_level
 from app.db.base import Base
 from app.db.models import Language, Verb, VerbConjugation, VerbTranslation
 from app.services.curated_conjugations import (
@@ -51,6 +51,14 @@ async def sqlite_session():
         yield session
 
     await engine.dispose()
+
+
+def test_short_tense_inventories_still_have_three_cumulative_levels():
+    for code in ("EN", "RU"):
+        definition = LANGUAGE_DEFINITIONS[code]
+        assert len(tenses_for_level(definition, "easy")) == 1
+        assert len(tenses_for_level(definition, "medium")) == 2
+        assert len(tenses_for_level(definition, "hard")) == 3
 
 
 def _sample_inventory() -> list[InventoryLinkRow]:
@@ -129,6 +137,17 @@ def test_build_batch_template_rows_uses_current_training_scope():
     assert all(row.tense in LANGUAGE_DEFINITIONS[row.language_code]["tense_definitions"] for row in template_rows)
 
 
+def test_build_batch_template_rows_includes_russian_inventory_rows():
+    inventory_rows = [replace(_sample_inventory()[0], ru_infinitive="быть")]
+
+    template_rows = build_batch_template_rows(inventory_rows, 1)
+    russian_rows = [row for row in template_rows if row.language_code == "RU"]
+
+    assert len(russian_rows) == 18
+    assert {row.tense for row in russian_rows} == set(LANGUAGE_DEFINITIONS["RU"]["tense_definitions"])
+    assert {row.pronoun for row in russian_rows} == set(LANGUAGE_DEFINITIONS["RU"]["pronoun_set"])
+
+
 def test_validate_curated_batch_rows_rejects_missing_and_duplicate_slots():
     inventory_rows = _sample_inventory()
     full_rows = _filled_template_rows(build_batch_template_rows(inventory_rows, 1))
@@ -152,6 +171,21 @@ async def test_import_inventory_rows_creates_separate_spanish_verbs(sqlite_sessi
     assert {(verb.infinitive, verb.language_id) for verb in verbs}
     assert len(translations) == 4
     assert sum(1 for verb in verbs if verb.infinitive in {"ser", "estar"}) == 2
+
+
+@pytest.mark.asyncio
+async def test_import_inventory_rows_creates_russian_translations_without_english(sqlite_session):
+    inventory_rows = [replace(_sample_inventory()[0], ru_infinitive="быть")]
+
+    counts = await import_inventory_rows(sqlite_session, inventory_rows)
+    await sqlite_session.commit()
+
+    verbs = (await sqlite_session.execute(select(Verb))).scalars().all()
+    translations = (await sqlite_session.execute(select(VerbTranslation))).scalars().all()
+
+    assert counts["verbs_created"] == 3
+    assert any(verb.infinitive == "быть" for verb in verbs)
+    assert len(translations) == 6
 
 
 @pytest.mark.asyncio

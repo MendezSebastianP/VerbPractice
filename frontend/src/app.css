@@ -926,6 +926,8 @@ html[data-theme='arcade'] {
 
   .verb-lab-header {
     @apply flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between;
+    width: min(100%, 720px);
+    margin-inline: auto;
   }
 
   .verb-lab-copy {
@@ -937,13 +939,39 @@ html[data-theme='arcade'] {
   }
 
   .verb-mode-switch {
-    @apply inline-flex flex-wrap items-center gap-2 rounded-full border p-1;
+    @apply inline-grid items-stretch gap-2 border p-1;
+    grid-template-columns: 1fr 1fr;
     border-color: var(--line);
+    border-radius: 18px;
     background: color-mix(in srgb, var(--surface-strong) 80%, transparent);
   }
 
   .verb-mode-button {
-    @apply inline-flex items-center gap-2 rounded-full border border-transparent px-4 py-2 text-sm font-medium transition duration-200;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+    column-gap: 0.55rem;
+    align-items: center;
+    min-width: 8.5rem;
+    padding: 0.65rem 0.8rem;
+    border: 1px solid transparent;
+    border-radius: 14px;
+    text-align: left;
+    transition: 180ms ease;
+    color: var(--muted);
+  }
+
+  .verb-mode-button svg {
+    grid-row: 1 / 3;
+  }
+
+  .verb-mode-button span {
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  .verb-mode-button small {
+    font-size: 0.62rem;
     color: var(--muted);
   }
 

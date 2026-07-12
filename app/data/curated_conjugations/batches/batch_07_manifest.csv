@@ -1,67 +1,67 @@
-rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text
-301,7,tromper,engañar,1,303,engañar
-302,7,dresser,erigir,1,304,"erigir, levantar"
-302,7,dresser,levantar,2,304,"erigir, levantar"
-303,7,céder,ceder,1,305,ceder
-304,7,craindre,temer,1,306,temer
-305,7,prêter,prestar,1,307,prestar
-306,7,couvrir,cubrir,1,308,cubrir
-307,7,ménager,manejar,1,309,"manejar, tratar con cuidado"
-307,7,ménager,tratar con cuidado,2,309,"manejar, tratar con cuidado"
-308,7,traîner,arrastrar,1,310,"arrastrar, deambular"
-308,7,traîner,deambular,2,310,"arrastrar, deambular"
-309,7,cesser,cesar,1,311,"cesar, parar"
-309,7,cesser,parar,2,311,"cesar, parar"
-310,7,traduire,traducir,1,312,traducir
-311,7,aborder,abordar,1,313,abordar
-312,7,confondre,confundir,1,314,confundir
-313,7,peindre,pintar,1,315,pintar
-314,7,entreprendre,emprender,1,316,emprender
-315,7,débarrasser,quitar,1,317,quitar
-316,7,comparer,comparar,1,318,comparar
-317,7,entretenir,mantener,1,319,mantener
-318,7,amuser,divertir,1,320,divertir
-319,7,plaindre,compadecer,1,321,"compadecer, lamentar"
-319,7,plaindre,lamentar,2,321,"compadecer, lamentar"
-320,7,fabriquer,fabricar,1,322,fabricar
-321,7,attaquer,atacar,1,323,atacar
-322,7,combattre,combatir,1,324,"combatir, luchar"
-322,7,combattre,luchar,2,324,"combatir, luchar"
-323,7,s'approcher,acercarse a,1,325,acercarse a
-324,7,accroître,incrementar,1,326,"incrementar, aumentar"
-324,7,accroître,aumentar,2,326,"incrementar, aumentar"
-325,7,ignorer,ignorar,1,327,"ignorar, desconocer"
-325,7,ignorer,desconocer,2,327,"ignorar, desconocer"
-326,7,reposer,descansar,1,328,descansar
-327,7,attirer,atraer,1,329,atraer
-328,7,songer,pensar,1,330,"pensar, soñar"
-328,7,songer,soñar,2,330,"pensar, soñar"
-329,7,se débarrasser,deshacerse de,1,331,deshacerse de
-330,7,emmener,llevar,1,332,llevar
-331,7,opposer,oponer,1,333,oponer
-332,7,visiter,visitar,1,334,visitar
-333,7,améliorer,mejorar,1,335,mejorar
-334,7,annoncer,anunciar,1,336,anunciar
-335,7,éprouver,experimentar,1,337,"experimentar, sentir"
-335,7,éprouver,sentir,2,337,"experimentar, sentir"
-336,7,accompagner,acompañar,1,338,acompañar
-337,7,recommencer,recomenzar,1,339,"recomenzar, empezar de nuevo"
-337,7,recommencer,empezar de nuevo,2,339,"recomenzar, empezar de nuevo"
-338,7,conseiller,aconsejar,1,340,aconsejar
-339,7,brûler,quemar,1,341,quemar
-340,7,adresser,dirigir,1,342,"dirigir, enviar"
-340,7,adresser,enviar,2,342,"dirigir, enviar"
-341,7,adapter,adaptar,1,343,adaptar
-342,7,prétendre,pretender,1,344,"pretender, afirmar"
-342,7,prétendre,afirmar,2,344,"pretender, afirmar"
-343,7,rapprocher,acercar,1,345,acercar
-344,7,confier,confiar,1,346,"confiar, encomendar"
-344,7,confier,encomendar,2,346,"confiar, encomendar"
-345,7,indiquer,indicar,1,347,indicar
-346,7,nier,negar,1,348,negar
-347,7,signaler,señalar,1,349,señalar
-348,7,serrer,apretar,1,350,"apretar, estrechar"
-348,7,serrer,estrechar,2,350,"apretar, estrechar"
-349,7,démontrer,demostrar,1,351,demostrar
-350,7,réussir,lograr,1,352,"lograr, tener éxito"
-350,7,réussir,tener éxito,2,352,"lograr, tener éxito"
+rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive
+301,7,tromper,engañar,1,303,engañar,deceive,обманывать
+302,7,dresser,erigir,1,304,"erigir, levantar",erect,воздвигать
+302,7,dresser,levantar,2,304,"erigir, levantar",erect,воздвигать
+303,7,céder,ceder,1,305,ceder,yield,уступать
+304,7,craindre,temer,1,306,temer,fear,опасаться
+305,7,prêter,prestar,1,307,prestar,lend,одалживать
+306,7,couvrir,cubrir,1,308,cubrir,cover,покрывать
+307,7,ménager,manejar,1,309,"manejar, tratar con cuidado",handle carefully,щадить
+307,7,ménager,tratar con cuidado,2,309,"manejar, tratar con cuidado",handle carefully,щадить
+308,7,traîner,arrastrar,1,310,"arrastrar, deambular",drag,перетаскивать
+308,7,traîner,deambular,2,310,"arrastrar, deambular",drag,перетаскивать
+309,7,cesser,cesar,1,311,"cesar, parar",cease,прекращать
+309,7,cesser,parar,2,311,"cesar, parar",cease,прекращать
+310,7,traduire,traducir,1,312,traducir,translate,переводить
+311,7,aborder,abordar,1,313,abordar,approach,подходить
+312,7,confondre,confundir,1,314,confundir,confuse,путать
+313,7,peindre,pintar,1,315,pintar,paint,рисовать
+314,7,entreprendre,emprender,1,316,emprender,undertake,предпринимать
+315,7,débarrasser,quitar,1,317,quitar,clear away,убирать
+316,7,comparer,comparar,1,318,comparar,compare,сравнивать
+317,7,entretenir,mantener,1,319,mantener,maintain,поддерживать
+318,7,amuser,divertir,1,320,divertir,amuse,развлекать
+319,7,plaindre,compadecer,1,321,"compadecer, lamentar",pity,жалеть
+319,7,plaindre,lamentar,2,321,"compadecer, lamentar",pity,жалеть
+320,7,fabriquer,fabricar,1,322,fabricar,manufacture,изготавливать
+321,7,attaquer,atacar,1,323,atacar,attack,нападать
+322,7,combattre,combatir,1,324,"combatir, luchar",combat,сражаться
+322,7,combattre,luchar,2,324,"combatir, luchar",combat,сражаться
+323,7,s'approcher,acercarse a,1,325,acercarse a,draw near,приближаться
+324,7,accroître,incrementar,1,326,"incrementar, aumentar",increase,увеличивать
+324,7,accroître,aumentar,2,326,"incrementar, aumentar",increase,увеличивать
+325,7,ignorer,ignorar,1,327,"ignorar, desconocer",ignore,игнорировать
+325,7,ignorer,desconocer,2,327,"ignorar, desconocer",ignore,игнорировать
+326,7,reposer,descansar,1,328,descansar,rest,отдыхать
+327,7,attirer,atraer,1,329,atraer,attract,привлекать
+328,7,songer,pensar,1,330,"pensar, soñar",think about,размышлять
+328,7,songer,soñar,2,330,"pensar, soñar",think about,размышлять
+329,7,se débarrasser,deshacerse de,1,331,deshacerse de,get rid of,избавляться
+330,7,emmener,llevar,1,332,llevar,take along,забирать
+331,7,opposer,oponer,1,333,oponer,oppose,противопоставлять
+332,7,visiter,visitar,1,334,visitar,visit,посещать
+333,7,améliorer,mejorar,1,335,mejorar,improve,улучшать
+334,7,annoncer,anunciar,1,336,anunciar,announce,объявлять
+335,7,éprouver,experimentar,1,337,"experimentar, sentir",experience,испытывать
+335,7,éprouver,sentir,2,337,"experimentar, sentir",experience,испытывать
+336,7,accompagner,acompañar,1,338,acompañar,accompany,сопровождать
+337,7,recommencer,recomenzar,1,339,"recomenzar, empezar de nuevo",start again,возобновлять
+337,7,recommencer,empezar de nuevo,2,339,"recomenzar, empezar de nuevo",start again,возобновлять
+338,7,conseiller,aconsejar,1,340,aconsejar,advise,советовать
+339,7,brûler,quemar,1,341,quemar,burn,сжигать
+340,7,adresser,dirigir,1,342,"dirigir, enviar",address,направлять
+340,7,adresser,enviar,2,342,"dirigir, enviar",address,направлять
+341,7,adapter,adaptar,1,343,adaptar,adapt,приспосабливать
+342,7,prétendre,pretender,1,344,"pretender, afirmar",claim,утверждать
+342,7,prétendre,afirmar,2,344,"pretender, afirmar",claim,утверждать
+343,7,rapprocher,acercar,1,345,acercar,bring closer,приближать
+344,7,confier,confiar,1,346,"confiar, encomendar",entrust,поручать
+344,7,confier,encomendar,2,346,"confiar, encomendar",entrust,поручать
+345,7,indiquer,indicar,1,347,indicar,indicate,указывать
+346,7,nier,negar,1,348,negar,deny,отрицать
+347,7,signaler,señalar,1,349,señalar,point out,сообщать
+348,7,serrer,apretar,1,350,"apretar, estrechar",squeeze,сжимать
+348,7,serrer,estrechar,2,350,"apretar, estrechar",squeeze,сжимать
+349,7,démontrer,demostrar,1,351,demostrar,demonstrate,демонстрировать
+350,7,réussir,lograr,1,352,"lograr, tener éxito",succeed,преуспевать
+350,7,réussir,tener éxito,2,352,"lograr, tener éxito",succeed,преуспевать

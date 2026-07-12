@@ -76,6 +76,37 @@
   }
 </script>
 
+<style>
+  .typing-dots {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    height: 1rem;
+  }
+
+  .typing-dots span {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 999px;
+    background: currentColor;
+    opacity: 0.5;
+    animation: typing-bounce 1s ease-in-out infinite;
+  }
+
+  .typing-dots span:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+
+  .typing-dots span:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  @keyframes typing-bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+    30% { transform: translateY(-3px); opacity: 1; }
+  }
+</style>
+
 <section class="trainer-shell">
   {#if loading && !state}
     <div class="glass-panel skeleton-card tall-skeleton"></div>
@@ -104,7 +135,11 @@
           {#each state.messages as item}
             <article class={`bubble ${item.role}`}>
               <span>{item.role === 'user' ? 'You' : 'Tutor'}</span>
-              <p>{item.content}</p>
+              {#if item.role === 'assistant' && !item.content && sending}
+                <p class="typing-dots" aria-label="Tutor is typing"><span></span><span></span><span></span></p>
+              {:else}
+                <p>{item.content}</p>
+              {/if}
             </article>
           {:else}
             <div class="empty-copy">No tutor history yet. Start with a focused prompt below.</div>

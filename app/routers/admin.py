@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse, RedirectResponse
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.security import require_admin_context
+from app.core.security import get_current_user
 from app.db.models import (
     ChatMessage,
     Language,
@@ -37,6 +37,12 @@ router = APIRouter(prefix="/admin", tags=["admin"])
 @router.get("/")
 async def admin_root():
     return RedirectResponse(url="/admin/users", status_code=status.HTTP_303_SEE_OTHER)
+
+
+def _open_admin_profile(request: Request, user: User | None) -> UserProfile | None:
+    if user is not None:
+        request.state.user = user
+    return user.profile if user is not None else None
 
 
 async def _monitor_snapshot(db: AsyncSession) -> dict[str, object]:
@@ -117,15 +123,15 @@ async def _monitor_snapshot(db: AsyncSession) -> dict[str, object]:
 async def monitor_page(
     request: Request,
     db: AsyncSession = Depends(get_db),
-    auth=Depends(require_admin_context),
+    user: User | None = Depends(get_current_user),
 ):
-    request.state.user = auth.user
+    profile = _open_admin_profile(request, user)
     snapshot = await _monitor_snapshot(db)
     return render_template(
         request,
         "admin/monitor.html",
         {
-            "profile": auth.profile,
+            "profile": profile,
             **snapshot,
         },
     )
@@ -135,13 +141,13 @@ async def monitor_page(
 async def monitor_panel(
     request: Request,
     db: AsyncSession = Depends(get_db),
-    auth=Depends(require_admin_context),
+    user: User | None = Depends(get_current_user),
 ):
-    request.state.user = auth.user
+    profile = _open_admin_profile(request, user)
     snapshot = await _monitor_snapshot(db)
     context = {
         "request": request,
-        "profile": auth.profile,
+        "profile": profile,
         **snapshot,
     }
     return templates.TemplateResponse(
@@ -154,7 +160,7 @@ async def monitor_panel(
 @router.get("/api/live")
 async def live_monitor_api(
     db: AsyncSession = Depends(get_db),
-    auth=Depends(require_admin_context),
+    user: User | None = Depends(get_current_user),
 ):
     snapshot = await _monitor_snapshot(db)
     payload = {
@@ -222,7 +228,7 @@ async def live_monitor_api(
             }
             for message in snapshot["recent_messages"]
         ],
-        "viewer": auth.user.username,
+        "viewer": user.username if user is not None else "open-admin",
     }
     return JSONResponse(payload)
 
@@ -231,7 +237,9 @@ async def live_monitor_api(
 async def users_list(
     request: Request,
     db: AsyncSession = Depends(get_db),
+    user: User | None = Depends(get_current_user),
 ):
+    profile = _open_admin_profile(request, user)
     user_rows = (await db.execute(select(User).order_by(User.username.asc()))).scalars().all()
     progress_counts: dict[int, int] = {}
     counts_query = await db.execute(
@@ -263,7 +271,7 @@ async def users_list(
     return render_template(
         request,
         "admin/users_list.html",
-        {"profile": None, "users": users},
+        {"profile": profile, "users": users},
     )
 
 
@@ -272,7 +280,9 @@ async def user_inspect(
     user_id: int,
     request: Request,
     db: AsyncSession = Depends(get_db),
+    viewer: User | None = Depends(get_current_user),
 ):
+    profile = _open_admin_profile(request, viewer)
     user_lookup = await db.execute(select(User).where(User.id == user_id))
     user = user_lookup.scalar_one_or_none()
     if user is None:
@@ -433,7 +443,7 @@ async def user_inspect(
         )
 
     context = {
-        "profile": None,
+        "profile": profile,
         "target_user": {
             "id": user.id,
             "username": user.username,
@@ -459,7 +469,9 @@ async def user_inspect(
 async def reports_list(
     request: Request,
     db: AsyncSession = Depends(get_db),
+    user: User | None = Depends(get_current_user),
 ):
+    profile = _open_admin_profile(request, user)
     status_filter = request.query_params.get("status", "pending")
     query = select(TranslationReport).order_by(TranslationReport.created_at.desc())
     if status_filter and status_filter != "all":
@@ -520,7 +532,7 @@ async def reports_list(
         request,
         "admin/reports_list.html",
         {
-            "profile": None,
+            "profile": profile,
             "reports": reports_view,
             "current_filter": status_filter,
             "counts": counts,
@@ -533,6 +545,7 @@ async def resolve_report(
     report_id: int,
     request: Request,
     db: AsyncSession = Depends(get_db),
+    user: User | None = Depends(get_current_user),
 ):
     form = await request.form()
     action = str(form.get("action", ""))
@@ -546,7 +559,7 @@ async def resolve_report(
     if action == "dismiss":
         report.status = "dismissed"
         report.resolved_at = datetime.now(timezone.utc)
-        report.resolver_id = None
+        report.resolver_id = user.id if user is not None else None
     elif action == "delete_translation":
         if report.entry_type == "lexical":
             entry = (
@@ -560,7 +573,7 @@ async def resolve_report(
             await db.delete(entry)
         report.status = "resolved"
         report.resolved_at = datetime.now(timezone.utc)
-        report.resolver_id = None
+        report.resolver_id = user.id if user is not None else None
     elif action == "regenerate":
         if report.entry_type == "lexical":
             entry = (
@@ -597,12 +610,13 @@ async def resolve_report(
                 learning_lang=learning,
                 mother_tongue=mother,
                 force=True,
+                user_id=user.id if user is not None else None,
             )
         except WordAIError as exc:
             raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail=str(exc)) from exc
         report.status = "resolved"
         report.resolved_at = datetime.now(timezone.utc)
-        report.resolver_id = None
+        report.resolver_id = user.id if user is not None else None
     else:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Unknown action")
 

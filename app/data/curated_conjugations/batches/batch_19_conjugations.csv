@@ -2645,60 +2645,60 @@ FR,barrer,Subjonctif,Subjonctif imparfait,"il (elle, on)",barrât,19,reviewed,
 FR,barrer,Subjonctif,Subjonctif imparfait,nous,barrassions,19,reviewed,
 FR,barrer,Subjonctif,Subjonctif imparfait,vous,barrassiez,19,reviewed,
 FR,barrer,Subjonctif,Subjonctif imparfait,ils (elles),barrassent,19,reviewed,
-FR,pater,Indicatif,Présent,je,pate,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Présent,tu,pates,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Présent,"il (elle, on)",pate,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Présent,nous,patons,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Présent,vous,patez,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Présent,ils (elles),patent,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Futur,je,paterai,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Futur,tu,pateras,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Futur,"il (elle, on)",patera,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Futur,nous,paterons,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Futur,vous,paterez,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Futur,ils (elles),pateront,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Passé composé,je,ai paté,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Passé composé,tu,as paté,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Passé composé,"il (elle, on)",a paté,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Passé composé,nous,avons paté,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Passé composé,vous,avez paté,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Passé composé,ils (elles),ont paté,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Imparfait,je,patais,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Imparfait,tu,patais,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Imparfait,"il (elle, on)",patait,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Imparfait,nous,pations,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Imparfait,vous,patiez,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Imparfait,ils (elles),pataient,19,reviewed,colloquial verb; QA recommended
-FR,pater,Conditionnel,Conditionnel présent,je,paterais,19,reviewed,colloquial verb; QA recommended
-FR,pater,Conditionnel,Conditionnel présent,tu,paterais,19,reviewed,colloquial verb; QA recommended
-FR,pater,Conditionnel,Conditionnel présent,"il (elle, on)",paterait,19,reviewed,colloquial verb; QA recommended
-FR,pater,Conditionnel,Conditionnel présent,nous,paterions,19,reviewed,colloquial verb; QA recommended
-FR,pater,Conditionnel,Conditionnel présent,vous,pateriez,19,reviewed,colloquial verb; QA recommended
-FR,pater,Conditionnel,Conditionnel présent,ils (elles),pateraient,19,reviewed,colloquial verb; QA recommended
-FR,pater,Impératif,Impératif,je,-,19,reviewed,colloquial verb; QA recommended; French imperative only uses tu / nous / vous; placeholder - used for unsupported slot
-FR,pater,Impératif,Impératif,tu,pate,19,reviewed,colloquial verb; QA recommended
-FR,pater,Impératif,Impératif,"il (elle, on)",-,19,reviewed,colloquial verb; QA recommended; French imperative only uses tu / nous / vous; placeholder - used for unsupported slot
-FR,pater,Impératif,Impératif,nous,patons,19,reviewed,colloquial verb; QA recommended
-FR,pater,Impératif,Impératif,vous,patez,19,reviewed,colloquial verb; QA recommended
-FR,pater,Impératif,Impératif,ils (elles),-,19,reviewed,colloquial verb; QA recommended; French imperative only uses tu / nous / vous; placeholder - used for unsupported slot
-FR,pater,Subjonctif,Subjonctif présent,je,pate,19,reviewed,colloquial verb; QA recommended
-FR,pater,Subjonctif,Subjonctif présent,tu,pates,19,reviewed,colloquial verb; QA recommended
-FR,pater,Subjonctif,Subjonctif présent,"il (elle, on)",pate,19,reviewed,colloquial verb; QA recommended
-FR,pater,Subjonctif,Subjonctif présent,nous,pations,19,reviewed,colloquial verb; QA recommended
-FR,pater,Subjonctif,Subjonctif présent,vous,patiez,19,reviewed,colloquial verb; QA recommended
-FR,pater,Subjonctif,Subjonctif présent,ils (elles),patent,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Passé Simple,je,patai,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Passé Simple,tu,patas,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Passé Simple,"il (elle, on)",pata,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Passé Simple,nous,patâmes,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Passé Simple,vous,patâtes,19,reviewed,colloquial verb; QA recommended
-FR,pater,Indicatif,Passé Simple,ils (elles),patèrent,19,reviewed,colloquial verb; QA recommended
-FR,pater,Subjonctif,Subjonctif imparfait,je,patasse,19,reviewed,colloquial verb; QA recommended
-FR,pater,Subjonctif,Subjonctif imparfait,tu,patasses,19,reviewed,colloquial verb; QA recommended
-FR,pater,Subjonctif,Subjonctif imparfait,"il (elle, on)",patât,19,reviewed,colloquial verb; QA recommended
-FR,pater,Subjonctif,Subjonctif imparfait,nous,patassions,19,reviewed,colloquial verb; QA recommended
-FR,pater,Subjonctif,Subjonctif imparfait,vous,patassiez,19,reviewed,colloquial verb; QA recommended
-FR,pater,Subjonctif,Subjonctif imparfait,ils (elles),patassent,19,reviewed,colloquial verb; QA recommended
+FR,pâtir,Indicatif,Présent,je,pâtis,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Présent,tu,pâtis,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Présent,"il (elle, on)",pâtit,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Présent,nous,pâtissons,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Présent,vous,pâtissez,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Présent,ils (elles),pâtissent,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Futur,je,pâtirai,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Futur,tu,pâtiras,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Futur,"il (elle, on)",pâtira,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Futur,nous,pâtirons,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Futur,vous,pâtirez,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Futur,ils (elles),pâtiront,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Passé composé,je,ai pâti,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Passé composé,tu,as pâti,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Passé composé,"il (elle, on)",a pâti,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Passé composé,nous,avons pâti,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Passé composé,vous,avez pâti,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Passé composé,ils (elles),ont pâti,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Imparfait,je,pâtissais,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Imparfait,tu,pâtissais,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Imparfait,"il (elle, on)",pâtissait,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Imparfait,nous,pâtissions,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Imparfait,vous,pâtissiez,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Imparfait,ils (elles),pâtissaient,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Conditionnel,Conditionnel présent,je,pâtirais,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Conditionnel,Conditionnel présent,tu,pâtirais,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Conditionnel,Conditionnel présent,"il (elle, on)",pâtirait,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Conditionnel,Conditionnel présent,nous,pâtirions,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Conditionnel,Conditionnel présent,vous,pâtiriez,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Conditionnel,Conditionnel présent,ils (elles),pâtiraient,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Impératif,Impératif,je,-,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Impératif,Impératif,tu,pâtis,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Impératif,Impératif,"il (elle, on)",-,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Impératif,Impératif,nous,pâtissons,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Impératif,Impératif,vous,pâtissez,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Impératif,Impératif,ils (elles),-,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Subjonctif,Subjonctif présent,je,pâtisse,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Subjonctif,Subjonctif présent,tu,pâtisses,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Subjonctif,Subjonctif présent,"il (elle, on)",pâtisse,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Subjonctif,Subjonctif présent,nous,pâtissions,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Subjonctif,Subjonctif présent,vous,pâtissiez,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Subjonctif,Subjonctif présent,ils (elles),pâtissent,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Passé Simple,je,pâtis,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Passé Simple,tu,pâtis,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Passé Simple,"il (elle, on)",pâtit,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Passé Simple,nous,pâtîmes,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Passé Simple,vous,pâtîtes,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Indicatif,Passé Simple,ils (elles),pâtirent,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Subjonctif,Subjonctif imparfait,je,pâtisse,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Subjonctif,Subjonctif imparfait,tu,pâtisses,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Subjonctif,Subjonctif imparfait,"il (elle, on)",pâtît,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Subjonctif,Subjonctif imparfait,nous,pâtissions,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Subjonctif,Subjonctif imparfait,vous,pâtissiez,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
+FR,pâtir,Subjonctif,Subjonctif imparfait,ils (elles),pâtissent,19,reviewed,regular -ir paradigm; source infinitive corrected from pater to pâtir during QA
 ES,bromear,Indicativo,Presente,yo,bromeo,19,reviewed,
 ES,bromear,Indicativo,Presente,tú,bromeas,19,reviewed,
 ES,bromear,Indicativo,Presente,él,bromea,19,reviewed,
@@ -4199,66 +4199,66 @@ ES,modelar,Indicativo,Pretérito pluscuamperfecto,él,había modelado,19,reviewe
 ES,modelar,Indicativo,Pretérito pluscuamperfecto,nosotros,habíamos modelado,19,reviewed,
 ES,modelar,Indicativo,Pretérito pluscuamperfecto,vosotros,habíais modelado,19,reviewed,
 ES,modelar,Indicativo,Pretérito pluscuamperfecto,ellos,habían modelado,19,reviewed,
-ES,ir rápido,Indicativo,Presente,yo,voy,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Presente,tú,vas,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Presente,él,va,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Presente,nosotros,vamos,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Presente,vosotros,vais,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Presente,ellos,van,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Futuro,yo,iré,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Futuro,tú,irás,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Futuro,él,irá,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Futuro,nosotros,iremos,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Futuro,vosotros,iréis,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Futuro,ellos,irán,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Pretérito perfecto compuesto,yo,he ido,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Pretérito perfecto compuesto,tú,has ido,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Pretérito perfecto compuesto,él,ha ido,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Pretérito perfecto compuesto,nosotros,hemos ido,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Pretérito perfecto compuesto,vosotros,habéis ido,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Pretérito perfecto compuesto,ellos,han ido,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Pretérito imperfecto,yo,iba,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Pretérito imperfecto,tú,ibas,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Pretérito imperfecto,él,iba,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Pretérito imperfecto,nosotros,íbamos,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Pretérito imperfecto,vosotros,ibais,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Pretérito imperfecto,ellos,iban,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Condicional,Condicional,yo,iría,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Condicional,Condicional,tú,irías,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Condicional,Condicional,él,iría,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Condicional,Condicional,nosotros,iríamos,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Condicional,Condicional,vosotros,iríais,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Condicional,Condicional,ellos,irían,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Presente,yo,voy rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Presente,tú,vas rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Presente,él,va rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Presente,nosotros,vamos rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Presente,vosotros,vais rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Presente,ellos,van rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Futuro,yo,iré rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Futuro,tú,irás rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Futuro,él,irá rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Futuro,nosotros,iremos rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Futuro,vosotros,iréis rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Futuro,ellos,irán rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Pretérito perfecto compuesto,yo,he ido rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Pretérito perfecto compuesto,tú,has ido rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Pretérito perfecto compuesto,él,ha ido rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Pretérito perfecto compuesto,nosotros,hemos ido rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Pretérito perfecto compuesto,vosotros,habéis ido rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Pretérito perfecto compuesto,ellos,han ido rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Pretérito imperfecto,yo,iba rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Pretérito imperfecto,tú,ibas rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Pretérito imperfecto,él,iba rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Pretérito imperfecto,nosotros,íbamos rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Pretérito imperfecto,vosotros,ibais rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Pretérito imperfecto,ellos,iban rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Condicional,Condicional,yo,iría rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Condicional,Condicional,tú,irías rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Condicional,Condicional,él,iría rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Condicional,Condicional,nosotros,iríamos rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Condicional,Condicional,vosotros,iríais rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Condicional,Condicional,ellos,irían rápido,19,reviewed,periphrastic construction; only ir conjugates
 ES,ir rápido,Imperativo,Imperativo,yo,-,19,reviewed,periphrastic construction; only ir conjugates; yo imperative placeholder -; no standard form
-ES,ir rápido,Imperativo,Imperativo,tú,ve,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Imperativo,Imperativo,él,vaya,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Imperativo,Imperativo,nosotros,vayamos,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Imperativo,Imperativo,vosotros,id,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Imperativo,Imperativo,ellos,vayan,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Futuro perfecto,yo,habré ido,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Futuro perfecto,tú,habrás ido,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Futuro perfecto,él,habrá ido,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Futuro perfecto,nosotros,habremos ido,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Futuro perfecto,vosotros,habréis ido,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Futuro perfecto,ellos,habrán ido,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Subjuntivo,Subjuntivo presente,yo,vaya,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Subjuntivo,Subjuntivo presente,tú,vayas,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Subjuntivo,Subjuntivo presente,él,vaya,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Subjuntivo,Subjuntivo presente,nosotros,vayamos,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Subjuntivo,Subjuntivo presente,vosotros,vayáis,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Subjuntivo,Subjuntivo presente,ellos,vayan,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Pretérito perfecto simple,yo,fui,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Pretérito perfecto simple,tú,fuiste,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Pretérito perfecto simple,él,fue,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Pretérito perfecto simple,nosotros,fuimos,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Pretérito perfecto simple,vosotros,fuisteis,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Pretérito perfecto simple,ellos,fueron,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Pretérito pluscuamperfecto,yo,había ido,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Pretérito pluscuamperfecto,tú,habías ido,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Pretérito pluscuamperfecto,él,había ido,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Pretérito pluscuamperfecto,nosotros,habíamos ido,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Pretérito pluscuamperfecto,vosotros,habíais ido,19,reviewed,periphrastic construction; only ir conjugates
-ES,ir rápido,Indicativo,Pretérito pluscuamperfecto,ellos,habían ido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Imperativo,Imperativo,tú,ve rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Imperativo,Imperativo,él,vaya rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Imperativo,Imperativo,nosotros,vayamos rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Imperativo,Imperativo,vosotros,id rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Imperativo,Imperativo,ellos,vayan rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Futuro perfecto,yo,habré ido rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Futuro perfecto,tú,habrás ido rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Futuro perfecto,él,habrá ido rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Futuro perfecto,nosotros,habremos ido rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Futuro perfecto,vosotros,habréis ido rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Futuro perfecto,ellos,habrán ido rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Subjuntivo,Subjuntivo presente,yo,vaya rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Subjuntivo,Subjuntivo presente,tú,vayas rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Subjuntivo,Subjuntivo presente,él,vaya rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Subjuntivo,Subjuntivo presente,nosotros,vayamos rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Subjuntivo,Subjuntivo presente,vosotros,vayáis rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Subjuntivo,Subjuntivo presente,ellos,vayan rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Pretérito perfecto simple,yo,fui rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Pretérito perfecto simple,tú,fuiste rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Pretérito perfecto simple,él,fue rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Pretérito perfecto simple,nosotros,fuimos rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Pretérito perfecto simple,vosotros,fuisteis rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Pretérito perfecto simple,ellos,fueron rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Pretérito pluscuamperfecto,yo,había ido rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Pretérito pluscuamperfecto,tú,habías ido rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Pretérito pluscuamperfecto,él,había ido rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Pretérito pluscuamperfecto,nosotros,habíamos ido rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Pretérito pluscuamperfecto,vosotros,habíais ido rápido,19,reviewed,periphrastic construction; only ir conjugates
+ES,ir rápido,Indicativo,Pretérito pluscuamperfecto,ellos,habían ido rápido,19,reviewed,periphrastic construction; only ir conjugates
 ES,equipar,Indicativo,Presente,yo,equipo,19,reviewed,
 ES,equipar,Indicativo,Presente,tú,equipas,19,reviewed,
 ES,equipar,Indicativo,Presente,él,equipa,19,reviewed,
@@ -5339,66 +5339,66 @@ ES,empezar,Indicativo,Pretérito pluscuamperfecto,él,había empezado,19,reviewe
 ES,empezar,Indicativo,Pretérito pluscuamperfecto,nosotros,habíamos empezado,19,reviewed,
 ES,empezar,Indicativo,Pretérito pluscuamperfecto,vosotros,habíais empezado,19,reviewed,
 ES,empezar,Indicativo,Pretérito pluscuamperfecto,ellos,habían empezado,19,reviewed,
-ES,abrir camino,Indicativo,Presente,yo,abro,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Presente,tú,abres,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Presente,él,abre,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Presente,nosotros,abrimos,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Presente,vosotros,abrís,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Presente,ellos,abren,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Futuro,yo,abriré,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Futuro,tú,abrirás,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Futuro,él,abrirá,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Futuro,nosotros,abriremos,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Futuro,vosotros,abriréis,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Futuro,ellos,abrirán,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Pretérito perfecto compuesto,yo,he abierto,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Pretérito perfecto compuesto,tú,has abierto,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Pretérito perfecto compuesto,él,ha abierto,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Pretérito perfecto compuesto,nosotros,hemos abierto,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Pretérito perfecto compuesto,vosotros,habéis abierto,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Pretérito perfecto compuesto,ellos,han abierto,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Pretérito imperfecto,yo,abría,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Pretérito imperfecto,tú,abrías,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Pretérito imperfecto,él,abría,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Pretérito imperfecto,nosotros,abríamos,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Pretérito imperfecto,vosotros,abríais,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Pretérito imperfecto,ellos,abrían,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Condicional,Condicional,yo,abriría,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Condicional,Condicional,tú,abrirías,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Condicional,Condicional,él,abriría,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Condicional,Condicional,nosotros,abriríamos,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Condicional,Condicional,vosotros,abriríais,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Condicional,Condicional,ellos,abrirían,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Presente,yo,abro camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Presente,tú,abres camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Presente,él,abre camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Presente,nosotros,abrimos camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Presente,vosotros,abrís camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Presente,ellos,abren camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Futuro,yo,abriré camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Futuro,tú,abrirás camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Futuro,él,abrirá camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Futuro,nosotros,abriremos camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Futuro,vosotros,abriréis camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Futuro,ellos,abrirán camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Pretérito perfecto compuesto,yo,he abierto camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Pretérito perfecto compuesto,tú,has abierto camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Pretérito perfecto compuesto,él,ha abierto camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Pretérito perfecto compuesto,nosotros,hemos abierto camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Pretérito perfecto compuesto,vosotros,habéis abierto camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Pretérito perfecto compuesto,ellos,han abierto camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Pretérito imperfecto,yo,abría camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Pretérito imperfecto,tú,abrías camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Pretérito imperfecto,él,abría camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Pretérito imperfecto,nosotros,abríamos camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Pretérito imperfecto,vosotros,abríais camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Pretérito imperfecto,ellos,abrían camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Condicional,Condicional,yo,abriría camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Condicional,Condicional,tú,abrirías camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Condicional,Condicional,él,abriría camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Condicional,Condicional,nosotros,abriríamos camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Condicional,Condicional,vosotros,abriríais camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Condicional,Condicional,ellos,abrirían camino,19,reviewed,periphrastic construction; only abrir conjugates
 ES,abrir camino,Imperativo,Imperativo,yo,-,19,reviewed,periphrastic construction; only abrir conjugates; yo imperative placeholder -; no standard form
-ES,abrir camino,Imperativo,Imperativo,tú,abre,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Imperativo,Imperativo,él,abra,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Imperativo,Imperativo,nosotros,abramos,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Imperativo,Imperativo,vosotros,abrid,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Imperativo,Imperativo,ellos,abran,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Futuro perfecto,yo,habré abierto,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Futuro perfecto,tú,habrás abierto,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Futuro perfecto,él,habrá abierto,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Futuro perfecto,nosotros,habremos abierto,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Futuro perfecto,vosotros,habréis abierto,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Futuro perfecto,ellos,habrán abierto,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Subjuntivo,Subjuntivo presente,yo,abra,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Subjuntivo,Subjuntivo presente,tú,abras,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Subjuntivo,Subjuntivo presente,él,abra,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Subjuntivo,Subjuntivo presente,nosotros,abramos,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Subjuntivo,Subjuntivo presente,vosotros,abráis,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Subjuntivo,Subjuntivo presente,ellos,abran,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Pretérito perfecto simple,yo,abrí,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Pretérito perfecto simple,tú,abriste,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Pretérito perfecto simple,él,abrió,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Pretérito perfecto simple,nosotros,abrimos,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Pretérito perfecto simple,vosotros,abristeis,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Pretérito perfecto simple,ellos,abrieron,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Pretérito pluscuamperfecto,yo,había abierto,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Pretérito pluscuamperfecto,tú,habías abierto,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Pretérito pluscuamperfecto,él,había abierto,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Pretérito pluscuamperfecto,nosotros,habíamos abierto,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Pretérito pluscuamperfecto,vosotros,habíais abierto,19,reviewed,periphrastic construction; only abrir conjugates
-ES,abrir camino,Indicativo,Pretérito pluscuamperfecto,ellos,habían abierto,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Imperativo,Imperativo,tú,abre camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Imperativo,Imperativo,él,abra camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Imperativo,Imperativo,nosotros,abramos camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Imperativo,Imperativo,vosotros,abrid camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Imperativo,Imperativo,ellos,abran camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Futuro perfecto,yo,habré abierto camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Futuro perfecto,tú,habrás abierto camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Futuro perfecto,él,habrá abierto camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Futuro perfecto,nosotros,habremos abierto camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Futuro perfecto,vosotros,habréis abierto camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Futuro perfecto,ellos,habrán abierto camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Subjuntivo,Subjuntivo presente,yo,abra camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Subjuntivo,Subjuntivo presente,tú,abras camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Subjuntivo,Subjuntivo presente,él,abra camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Subjuntivo,Subjuntivo presente,nosotros,abramos camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Subjuntivo,Subjuntivo presente,vosotros,abráis camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Subjuntivo,Subjuntivo presente,ellos,abran camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Pretérito perfecto simple,yo,abrí camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Pretérito perfecto simple,tú,abriste camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Pretérito perfecto simple,él,abrió camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Pretérito perfecto simple,nosotros,abrimos camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Pretérito perfecto simple,vosotros,abristeis camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Pretérito perfecto simple,ellos,abrieron camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Pretérito pluscuamperfecto,yo,había abierto camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Pretérito pluscuamperfecto,tú,habías abierto camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Pretérito pluscuamperfecto,él,había abierto camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Pretérito pluscuamperfecto,nosotros,habíamos abierto camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Pretérito pluscuamperfecto,vosotros,habíais abierto camino,19,reviewed,periphrastic construction; only abrir conjugates
+ES,abrir camino,Indicativo,Pretérito pluscuamperfecto,ellos,habían abierto camino,19,reviewed,periphrastic construction; only abrir conjugates
 ES,rozar,Indicativo,Presente,yo,rozo,19,reviewed,orthographic z/c paradigm; QA recommended
 ES,rozar,Indicativo,Presente,tú,rozas,19,reviewed,orthographic z/c paradigm; QA recommended
 ES,rozar,Indicativo,Presente,él,roza,19,reviewed,orthographic z/c paradigm; QA recommended
@@ -5819,66 +5819,66 @@ ES,tentar,Indicativo,Pretérito pluscuamperfecto,él,había tentado,19,reviewed,
 ES,tentar,Indicativo,Pretérito pluscuamperfecto,nosotros,habíamos tentado,19,reviewed,stem-changing e/ie paradigm; QA recommended
 ES,tentar,Indicativo,Pretérito pluscuamperfecto,vosotros,habíais tentado,19,reviewed,stem-changing e/ie paradigm; QA recommended
 ES,tentar,Indicativo,Pretérito pluscuamperfecto,ellos,habían tentado,19,reviewed,stem-changing e/ie paradigm; QA recommended
-ES,trazar de nuevo,Indicativo,Presente,yo,trazo,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Presente,tú,trazas,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Presente,él,traza,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Presente,nosotros,trazamos,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Presente,vosotros,trazáis,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Presente,ellos,trazan,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Futuro,yo,trazaré,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Futuro,tú,trazarás,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Futuro,él,trazará,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Futuro,nosotros,trazaremos,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Futuro,vosotros,trazaréis,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Futuro,ellos,trazarán,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Pretérito perfecto compuesto,yo,he trazado,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Pretérito perfecto compuesto,tú,has trazado,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Pretérito perfecto compuesto,él,ha trazado,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Pretérito perfecto compuesto,nosotros,hemos trazado,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Pretérito perfecto compuesto,vosotros,habéis trazado,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Pretérito perfecto compuesto,ellos,han trazado,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Pretérito imperfecto,yo,trazaba,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Pretérito imperfecto,tú,trazabas,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Pretérito imperfecto,él,trazaba,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Pretérito imperfecto,nosotros,trazábamos,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Pretérito imperfecto,vosotros,trazabais,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Pretérito imperfecto,ellos,trazaban,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Condicional,Condicional,yo,trazaría,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Condicional,Condicional,tú,trazarías,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Condicional,Condicional,él,trazaría,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Condicional,Condicional,nosotros,trazaríamos,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Condicional,Condicional,vosotros,trazaríais,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Condicional,Condicional,ellos,trazarían,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Presente,yo,trazo de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Presente,tú,trazas de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Presente,él,traza de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Presente,nosotros,trazamos de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Presente,vosotros,trazáis de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Presente,ellos,trazan de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Futuro,yo,trazaré de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Futuro,tú,trazarás de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Futuro,él,trazará de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Futuro,nosotros,trazaremos de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Futuro,vosotros,trazaréis de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Futuro,ellos,trazarán de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Pretérito perfecto compuesto,yo,he trazado de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Pretérito perfecto compuesto,tú,has trazado de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Pretérito perfecto compuesto,él,ha trazado de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Pretérito perfecto compuesto,nosotros,hemos trazado de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Pretérito perfecto compuesto,vosotros,habéis trazado de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Pretérito perfecto compuesto,ellos,han trazado de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Pretérito imperfecto,yo,trazaba de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Pretérito imperfecto,tú,trazabas de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Pretérito imperfecto,él,trazaba de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Pretérito imperfecto,nosotros,trazábamos de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Pretérito imperfecto,vosotros,trazabais de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Pretérito imperfecto,ellos,trazaban de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Condicional,Condicional,yo,trazaría de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Condicional,Condicional,tú,trazarías de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Condicional,Condicional,él,trazaría de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Condicional,Condicional,nosotros,trazaríamos de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Condicional,Condicional,vosotros,trazaríais de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Condicional,Condicional,ellos,trazarían de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
 ES,trazar de nuevo,Imperativo,Imperativo,yo,-,19,reviewed,periphrastic construction; only trazar conjugates; yo imperative placeholder -; no standard form
-ES,trazar de nuevo,Imperativo,Imperativo,tú,traza,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Imperativo,Imperativo,él,trace,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Imperativo,Imperativo,nosotros,tracemos,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Imperativo,Imperativo,vosotros,trazad,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Imperativo,Imperativo,ellos,tracen,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Futuro perfecto,yo,habré trazado,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Futuro perfecto,tú,habrás trazado,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Futuro perfecto,él,habrá trazado,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Futuro perfecto,nosotros,habremos trazado,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Futuro perfecto,vosotros,habréis trazado,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Futuro perfecto,ellos,habrán trazado,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Subjuntivo,Subjuntivo presente,yo,trace,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Subjuntivo,Subjuntivo presente,tú,traces,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Subjuntivo,Subjuntivo presente,él,trace,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Subjuntivo,Subjuntivo presente,nosotros,tracemos,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Subjuntivo,Subjuntivo presente,vosotros,tracéis,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Subjuntivo,Subjuntivo presente,ellos,tracen,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Pretérito perfecto simple,yo,tracé,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Pretérito perfecto simple,tú,trazaste,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Pretérito perfecto simple,él,trazó,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Pretérito perfecto simple,nosotros,trazamos,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Pretérito perfecto simple,vosotros,trazasteis,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Pretérito perfecto simple,ellos,trazaron,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Pretérito pluscuamperfecto,yo,había trazado,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Pretérito pluscuamperfecto,tú,habías trazado,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Pretérito pluscuamperfecto,él,había trazado,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Pretérito pluscuamperfecto,nosotros,habíamos trazado,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Pretérito pluscuamperfecto,vosotros,habíais trazado,19,reviewed,periphrastic construction; only trazar conjugates
-ES,trazar de nuevo,Indicativo,Pretérito pluscuamperfecto,ellos,habían trazado,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Imperativo,Imperativo,tú,traza de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Imperativo,Imperativo,él,trace de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Imperativo,Imperativo,nosotros,tracemos de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Imperativo,Imperativo,vosotros,trazad de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Imperativo,Imperativo,ellos,tracen de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Futuro perfecto,yo,habré trazado de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Futuro perfecto,tú,habrás trazado de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Futuro perfecto,él,habrá trazado de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Futuro perfecto,nosotros,habremos trazado de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Futuro perfecto,vosotros,habréis trazado de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Futuro perfecto,ellos,habrán trazado de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Subjuntivo,Subjuntivo presente,yo,trace de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Subjuntivo,Subjuntivo presente,tú,traces de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Subjuntivo,Subjuntivo presente,él,trace de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Subjuntivo,Subjuntivo presente,nosotros,tracemos de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Subjuntivo,Subjuntivo presente,vosotros,tracéis de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Subjuntivo,Subjuntivo presente,ellos,tracen de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Pretérito perfecto simple,yo,tracé de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Pretérito perfecto simple,tú,trazaste de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Pretérito perfecto simple,él,trazó de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Pretérito perfecto simple,nosotros,trazamos de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Pretérito perfecto simple,vosotros,trazasteis de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Pretérito perfecto simple,ellos,trazaron de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Pretérito pluscuamperfecto,yo,había trazado de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Pretérito pluscuamperfecto,tú,habías trazado de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Pretérito pluscuamperfecto,él,había trazado de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Pretérito pluscuamperfecto,nosotros,habíamos trazado de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Pretérito pluscuamperfecto,vosotros,habíais trazado de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
+ES,trazar de nuevo,Indicativo,Pretérito pluscuamperfecto,ellos,habían trazado de nuevo,19,reviewed,periphrastic construction; only trazar conjugates
 ES,relatar,Indicativo,Presente,yo,relato,19,reviewed,
 ES,relatar,Indicativo,Presente,tú,relatas,19,reviewed,
 ES,relatar,Indicativo,Presente,él,relata,19,reviewed,

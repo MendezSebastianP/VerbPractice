@@ -27,7 +27,7 @@ rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text
 321,7,attaquer,atacar,1,323,atacar
 322,7,combattre,combatir,1,324,"combatir, luchar"
 322,7,combattre,luchar,2,324,"combatir, luchar"
-323,7,s'approcher,acercarse à,1,325,acercarse à
+323,7,s'approcher,acercarse a,1,325,acercarse a
 324,7,accroître,incrementar,1,326,"incrementar, aumentar"
 324,7,accroître,aumentar,2,326,"incrementar, aumentar"
 325,7,ignorer,ignorar,1,327,"ignorar, desconocer"

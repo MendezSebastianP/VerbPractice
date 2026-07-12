@@ -1631,12 +1631,12 @@ FR,retomber,Indicatif,Futur,"il (elle, on)",retombera,10,reviewed,irregular/comp
 FR,retomber,Indicatif,Futur,nous,retomberons,10,reviewed,irregular/compound paradigm patched manually; QA recommended
 FR,retomber,Indicatif,Futur,vous,retomberez,10,reviewed,irregular/compound paradigm patched manually; QA recommended
 FR,retomber,Indicatif,Futur,ils (elles),retomberont,10,reviewed,irregular/compound paradigm patched manually; QA recommended
-FR,retomber,Indicatif,Passé composé,je,ai retombé,10,reviewed,irregular/compound paradigm patched manually; QA recommended
-FR,retomber,Indicatif,Passé composé,tu,as retombé,10,reviewed,irregular/compound paradigm patched manually; QA recommended
-FR,retomber,Indicatif,Passé composé,"il (elle, on)",a retombé,10,reviewed,irregular/compound paradigm patched manually; QA recommended
-FR,retomber,Indicatif,Passé composé,nous,avons retombé,10,reviewed,irregular/compound paradigm patched manually; QA recommended
-FR,retomber,Indicatif,Passé composé,vous,avez retombé,10,reviewed,irregular/compound paradigm patched manually; QA recommended
-FR,retomber,Indicatif,Passé composé,ils (elles),ont retombé,10,reviewed,irregular/compound paradigm patched manually; QA recommended
+FR,retomber,Indicatif,Passé composé,je,suis retombé(e),10,reviewed,irregular/compound paradigm patched manually; QA recommended
+FR,retomber,Indicatif,Passé composé,tu,es retombé(e),10,reviewed,irregular/compound paradigm patched manually; QA recommended
+FR,retomber,Indicatif,Passé composé,"il (elle, on)",est retombé(e),10,reviewed,irregular/compound paradigm patched manually; QA recommended
+FR,retomber,Indicatif,Passé composé,nous,sommes retombé(e)s,10,reviewed,irregular/compound paradigm patched manually; QA recommended
+FR,retomber,Indicatif,Passé composé,vous,êtes retombé(e)(s),10,reviewed,irregular/compound paradigm patched manually; QA recommended
+FR,retomber,Indicatif,Passé composé,ils (elles),sont retombé(e)s,10,reviewed,irregular/compound paradigm patched manually; QA recommended
 FR,retomber,Indicatif,Imparfait,je,retombais,10,reviewed,irregular/compound paradigm patched manually; QA recommended
 FR,retomber,Indicatif,Imparfait,tu,retombais,10,reviewed,irregular/compound paradigm patched manually; QA recommended
 FR,retomber,Indicatif,Imparfait,"il (elle, on)",retombait,10,reviewed,irregular/compound paradigm patched manually; QA recommended
@@ -3839,30 +3839,30 @@ ES,valer,Indicativo,Pretérito pluscuamperfecto,él,había valido,10,reviewed,ir
 ES,valer,Indicativo,Pretérito pluscuamperfecto,nosotros,habíamos valido,10,reviewed,irregular valer paradigm; QA recommended
 ES,valer,Indicativo,Pretérito pluscuamperfecto,vosotros,habíais valido,10,reviewed,irregular valer paradigm; QA recommended
 ES,valer,Indicativo,Pretérito pluscuamperfecto,ellos,habían valido,10,reviewed,irregular valer paradigm; QA recommended
-ES,reproducir,Indicativo,Presente,yo,reprduzco,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Presente,tú,reprduces,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Presente,él,reprduce,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Presente,nosotros,reprducimos,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Presente,vosotros,reprducís,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Presente,ellos,reprducen,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Presente,yo,reproduzco,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Presente,tú,reproduces,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Presente,él,reproduce,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Presente,nosotros,reproducimos,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Presente,vosotros,reproducís,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Presente,ellos,reproducen,10,reviewed,-ducir paradigm; QA recommended
 ES,reproducir,Indicativo,Futuro,yo,reproduciré,10,reviewed,-ducir paradigm; QA recommended
 ES,reproducir,Indicativo,Futuro,tú,reproducirás,10,reviewed,-ducir paradigm; QA recommended
 ES,reproducir,Indicativo,Futuro,él,reproducirá,10,reviewed,-ducir paradigm; QA recommended
 ES,reproducir,Indicativo,Futuro,nosotros,reproduciremos,10,reviewed,-ducir paradigm; QA recommended
 ES,reproducir,Indicativo,Futuro,vosotros,reproduciréis,10,reviewed,-ducir paradigm; QA recommended
 ES,reproducir,Indicativo,Futuro,ellos,reproducirán,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Pretérito perfecto compuesto,yo,he reprducido,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Pretérito perfecto compuesto,tú,has reprducido,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Pretérito perfecto compuesto,él,ha reprducido,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Pretérito perfecto compuesto,nosotros,hemos reprducido,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Pretérito perfecto compuesto,vosotros,habéis reprducido,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Pretérito perfecto compuesto,ellos,han reprducido,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Pretérito imperfecto,yo,reprducía,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Pretérito imperfecto,tú,reprducías,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Pretérito imperfecto,él,reprducía,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Pretérito imperfecto,nosotros,reprducíamos,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Pretérito imperfecto,vosotros,reprducíais,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Pretérito imperfecto,ellos,reprducían,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Pretérito perfecto compuesto,yo,he reproducido,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Pretérito perfecto compuesto,tú,has reproducido,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Pretérito perfecto compuesto,él,ha reproducido,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Pretérito perfecto compuesto,nosotros,hemos reproducido,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Pretérito perfecto compuesto,vosotros,habéis reproducido,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Pretérito perfecto compuesto,ellos,han reproducido,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Pretérito imperfecto,yo,reproducía,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Pretérito imperfecto,tú,reproducías,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Pretérito imperfecto,él,reproducía,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Pretérito imperfecto,nosotros,reproducíamos,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Pretérito imperfecto,vosotros,reproducíais,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Pretérito imperfecto,ellos,reproducían,10,reviewed,-ducir paradigm; QA recommended
 ES,reproducir,Condicional,Condicional,yo,reproduciría,10,reviewed,-ducir paradigm; QA recommended
 ES,reproducir,Condicional,Condicional,tú,reproducirías,10,reviewed,-ducir paradigm; QA recommended
 ES,reproducir,Condicional,Condicional,él,reproduciría,10,reviewed,-ducir paradigm; QA recommended
@@ -3870,35 +3870,35 @@ ES,reproducir,Condicional,Condicional,nosotros,reproduciríamos,10,reviewed,-duc
 ES,reproducir,Condicional,Condicional,vosotros,reproduciríais,10,reviewed,-ducir paradigm; QA recommended
 ES,reproducir,Condicional,Condicional,ellos,reproducirían,10,reviewed,-ducir paradigm; QA recommended
 ES,reproducir,Imperativo,Imperativo,yo,-,10,reviewed,yo imperative placeholder -; no standard form
-ES,reproducir,Imperativo,Imperativo,tú,reprduce,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Imperativo,Imperativo,él,reprduzca,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Imperativo,Imperativo,nosotros,reprduzcamos,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Imperativo,Imperativo,vosotros,reprducid,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Imperativo,Imperativo,ellos,reprduzcan,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Futuro perfecto,yo,habré reprducido,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Futuro perfecto,tú,habrás reprducido,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Futuro perfecto,él,habrá reprducido,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Futuro perfecto,nosotros,habremos reprducido,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Futuro perfecto,vosotros,habréis reprducido,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Futuro perfecto,ellos,habrán reprducido,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Subjuntivo,Subjuntivo presente,yo,reprduzca,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Subjuntivo,Subjuntivo presente,tú,reprduzcas,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Subjuntivo,Subjuntivo presente,él,reprduzca,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Subjuntivo,Subjuntivo presente,nosotros,reprduzcamos,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Subjuntivo,Subjuntivo presente,vosotros,reprduzcáis,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Subjuntivo,Subjuntivo presente,ellos,reprduzcan,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Pretérito perfecto simple,yo,reprduje,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Pretérito perfecto simple,tú,reprdujiste,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Pretérito perfecto simple,él,reprdujo,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Pretérito perfecto simple,nosotros,reprdujimos,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Pretérito perfecto simple,vosotros,reprdujisteis,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Pretérito perfecto simple,ellos,reprdujeron,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Pretérito pluscuamperfecto,yo,había reprducido,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Pretérito pluscuamperfecto,tú,habías reprducido,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Pretérito pluscuamperfecto,él,había reprducido,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Pretérito pluscuamperfecto,nosotros,habíamos reprducido,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Pretérito pluscuamperfecto,vosotros,habíais reprducido,10,reviewed,-ducir paradigm; QA recommended
-ES,reproducir,Indicativo,Pretérito pluscuamperfecto,ellos,habían reprducido,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Imperativo,Imperativo,tú,reproduce,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Imperativo,Imperativo,él,reproduzca,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Imperativo,Imperativo,nosotros,reproduzcamos,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Imperativo,Imperativo,vosotros,reproducid,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Imperativo,Imperativo,ellos,reproduzcan,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Futuro perfecto,yo,habré reproducido,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Futuro perfecto,tú,habrás reproducido,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Futuro perfecto,él,habrá reproducido,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Futuro perfecto,nosotros,habremos reproducido,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Futuro perfecto,vosotros,habréis reproducido,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Futuro perfecto,ellos,habrán reproducido,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Subjuntivo,Subjuntivo presente,yo,reproduzca,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Subjuntivo,Subjuntivo presente,tú,reproduzcas,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Subjuntivo,Subjuntivo presente,él,reproduzca,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Subjuntivo,Subjuntivo presente,nosotros,reproduzcamos,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Subjuntivo,Subjuntivo presente,vosotros,reproduzcáis,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Subjuntivo,Subjuntivo presente,ellos,reproduzcan,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Pretérito perfecto simple,yo,reproduje,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Pretérito perfecto simple,tú,reprodujiste,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Pretérito perfecto simple,él,reprodujo,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Pretérito perfecto simple,nosotros,reprodujimos,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Pretérito perfecto simple,vosotros,reprodujisteis,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Pretérito perfecto simple,ellos,reprodujeron,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Pretérito pluscuamperfecto,yo,había reproducido,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Pretérito pluscuamperfecto,tú,habías reproducido,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Pretérito pluscuamperfecto,él,había reproducido,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Pretérito pluscuamperfecto,nosotros,habíamos reproducido,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Pretérito pluscuamperfecto,vosotros,habíais reproducido,10,reviewed,-ducir paradigm; QA recommended
+ES,reproducir,Indicativo,Pretérito pluscuamperfecto,ellos,habían reproducido,10,reviewed,-ducir paradigm; QA recommended
 ES,recoger,Indicativo,Presente,yo,recojo,10,reviewed,-ger / -jo paradigm; QA recommended
 ES,recoger,Indicativo,Presente,tú,recoges,10,reviewed,-ger / -jo paradigm; QA recommended
 ES,recoger,Indicativo,Presente,él,recoge,10,reviewed,-ger / -jo paradigm; QA recommended

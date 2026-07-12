@@ -432,7 +432,7 @@ rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text
 321,7,attaquer,atacar,1,323,atacar
 322,7,combattre,combatir,1,324,"combatir, luchar"
 322,7,combattre,luchar,2,324,"combatir, luchar"
-323,7,s'approcher,acercarse à,1,325,acercarse à
+323,7,s'approcher,acercarse a,1,325,acercarse a
 324,7,accroître,incrementar,1,326,"incrementar, aumentar"
 324,7,accroître,aumentar,2,326,"incrementar, aumentar"
 325,7,ignorer,ignorar,1,327,"ignorar, desconocer"
@@ -1244,7 +1244,7 @@ rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text
 948,19,camper,acampar,1,950,acampar
 949,19,barrer,bloquear,1,951,"bloquear, tachar"
 949,19,barrer,tachar,2,951,"bloquear, tachar"
-950,19,pater,sufrir,1,952,sufrir
+950,19,pâtir,sufrir,1,952,sufrir
 951,20,se dépêcher,apresurarse,1,953,apresurarse
 952,20,flatter,halagar,1,954,halagar
 953,20,ranimer,reanimar,1,955,reanimar

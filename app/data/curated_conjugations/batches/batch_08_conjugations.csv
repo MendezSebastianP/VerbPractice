@@ -11,12 +11,12 @@ FR,soumettre,Indicatif,Futur,"il (elle, on)",soumettra,8,reviewed,repo-local leg
 FR,soumettre,Indicatif,Futur,nous,soumettrons,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
 FR,soumettre,Indicatif,Futur,vous,soumettrez,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
 FR,soumettre,Indicatif,Futur,ils (elles),soumettront,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
-FR,soumettre,Indicatif,Passé composé,je,ai soumettu,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
-FR,soumettre,Indicatif,Passé composé,tu,as soumettu,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
-FR,soumettre,Indicatif,Passé composé,"il (elle, on)",a soumettu,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
-FR,soumettre,Indicatif,Passé composé,nous,avons soumettu,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
-FR,soumettre,Indicatif,Passé composé,vous,avez soumettu,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
-FR,soumettre,Indicatif,Passé composé,ils (elles),ont soumettu,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
+FR,soumettre,Indicatif,Passé composé,je,ai soumis,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
+FR,soumettre,Indicatif,Passé composé,tu,as soumis,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
+FR,soumettre,Indicatif,Passé composé,"il (elle, on)",a soumis,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
+FR,soumettre,Indicatif,Passé composé,nous,avons soumis,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
+FR,soumettre,Indicatif,Passé composé,vous,avez soumis,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
+FR,soumettre,Indicatif,Passé composé,ils (elles),ont soumis,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
 FR,soumettre,Indicatif,Imparfait,je,soumettais,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
 FR,soumettre,Indicatif,Imparfait,tu,soumettais,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
 FR,soumettre,Indicatif,Imparfait,"il (elle, on)",soumettait,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
@@ -1145,12 +1145,12 @@ FR,s'endormir,Indicatif,Futur,"il (elle, on)",s'endormira,8,reviewed,pronominal 
 FR,s'endormir,Indicatif,Futur,nous,nous endormirons,8,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,s'endormir,Indicatif,Futur,vous,vous endormirez,8,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,s'endormir,Indicatif,Futur,ils (elles),s'endormiront,8,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
-FR,s'endormir,Indicatif,Passé composé,je,me suis endormi,8,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
-FR,s'endormir,Indicatif,Passé composé,tu,t'es endormi,8,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
-FR,s'endormir,Indicatif,Passé composé,"il (elle, on)",s'est endormi,8,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
-FR,s'endormir,Indicatif,Passé composé,nous,nous sommes endormis,8,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
-FR,s'endormir,Indicatif,Passé composé,vous,vous êtes endormis,8,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
-FR,s'endormir,Indicatif,Passé composé,ils (elles),se sont endormis,8,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
+FR,s'endormir,Indicatif,Passé composé,je,me suis endormi(e),8,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
+FR,s'endormir,Indicatif,Passé composé,tu,t'es endormi(e),8,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
+FR,s'endormir,Indicatif,Passé composé,"il (elle, on)",s'est endormi(e),8,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
+FR,s'endormir,Indicatif,Passé composé,nous,nous sommes endormi(e)s,8,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
+FR,s'endormir,Indicatif,Passé composé,vous,vous êtes endormi(e)(s),8,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
+FR,s'endormir,Indicatif,Passé composé,ils (elles),se sont endormi(e)s,8,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,s'endormir,Indicatif,Imparfait,je,m'endormais,8,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,s'endormir,Indicatif,Imparfait,tu,t'endormais,8,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,s'endormir,Indicatif,Imparfait,"il (elle, on)",s'endormait,8,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
@@ -1164,7 +1164,7 @@ FR,s'endormir,Conditionnel,Conditionnel présent,nous,nous endormirions,8,review
 FR,s'endormir,Conditionnel,Conditionnel présent,vous,vous endormiriez,8,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,s'endormir,Conditionnel,Conditionnel présent,ils (elles),s'endormiraient,8,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,s'endormir,Impératif,Impératif,je,-,8,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended; French imperative only uses tu / nous / vous; placeholder - used for unsupported slot
-FR,s'endormir,Impératif,Impératif,tu,endor-toi,8,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
+FR,s'endormir,Impératif,Impératif,tu,endors-toi,8,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,s'endormir,Impératif,Impératif,"il (elle, on)",-,8,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended; French imperative only uses tu / nous / vous; placeholder - used for unsupported slot
 FR,s'endormir,Impératif,Impératif,nous,endormons-nous,8,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,s'endormir,Impératif,Impératif,vous,endormez-vous,8,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
@@ -1631,12 +1631,12 @@ FR,repartir,Indicatif,Futur,"il (elle, on)",repartira,8,reviewed,repo-local lega
 FR,repartir,Indicatif,Futur,nous,repartirons,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
 FR,repartir,Indicatif,Futur,vous,repartirez,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
 FR,repartir,Indicatif,Futur,ils (elles),repartiront,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
-FR,repartir,Indicatif,Passé composé,je,ai reparti,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
-FR,repartir,Indicatif,Passé composé,tu,as reparti,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
-FR,repartir,Indicatif,Passé composé,"il (elle, on)",a reparti,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
-FR,repartir,Indicatif,Passé composé,nous,avons reparti,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
-FR,repartir,Indicatif,Passé composé,vous,avez reparti,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
-FR,repartir,Indicatif,Passé composé,ils (elles),ont reparti,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
+FR,repartir,Indicatif,Passé composé,je,suis reparti(e),8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
+FR,repartir,Indicatif,Passé composé,tu,es reparti(e),8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
+FR,repartir,Indicatif,Passé composé,"il (elle, on)",est reparti(e),8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
+FR,repartir,Indicatif,Passé composé,nous,sommes reparti(e)s,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
+FR,repartir,Indicatif,Passé composé,vous,êtes reparti(e)(s),8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
+FR,repartir,Indicatif,Passé composé,ils (elles),sont reparti(e)s,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
 FR,repartir,Indicatif,Imparfait,je,repartais,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
 FR,repartir,Indicatif,Imparfait,tu,repartais,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
 FR,repartir,Indicatif,Imparfait,"il (elle, on)",repartait,8,reviewed,repo-local legacy seed normalized into curated contract; QA recommended

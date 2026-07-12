@@ -344,3 +344,11 @@
     {/if}
   </section>
 {/if}
+
+<style>
+  .dashboard-stack {
+    max-width: 720px;
+    margin-inline: auto;
+    width: 100%;
+  }
+</style>

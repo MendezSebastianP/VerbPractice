@@ -8,6 +8,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.db.models import ProgressItemType, UserProgress
+from app.services.ai_usage import record_ai_usage
+
+
+CHAT_AI_MODEL = "gpt-4o-mini"
 
 
 async def weak_items_context(db: AsyncSession, user_id: int) -> str:
@@ -54,9 +58,11 @@ async def stream_chat_response(
     )
 
     client = AsyncOpenAI(api_key=settings.openai_api_key)
+    usage = None
     stream = await client.chat.completions.create(
-        model="gpt-4o-mini",
+        model=CHAT_AI_MODEL,
         stream=True,
+        stream_options={"include_usage": True},
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_message},
@@ -64,5 +70,18 @@ async def stream_chat_response(
     )
 
     async for chunk in stream:
+        if getattr(chunk, "usage", None) is not None:
+            usage = chunk.usage
         if chunk.choices and chunk.choices[0].delta.content:
             yield chunk.choices[0].delta.content
+
+    if usage is not None:
+        await record_ai_usage(
+            db,
+            user_id=user_id,
+            feature="chat_stream",
+            model=CHAT_AI_MODEL,
+            usage=usage,
+            request_label=user_message[:120],
+            extra_data={"message_chars": len(user_message)},
+        )

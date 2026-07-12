@@ -4,11 +4,17 @@
   import { api, ApiError } from '../api';
   import { navigate } from '../router';
   import { playCue } from '../sound';
-  import type { LanguageEntry, RewardState, TranslationState, UserSettings, WordSetSummary } from '../types';
+  import { applyReward } from '../profile';
+  import { celebrateReward, flashMiss, fxQueue } from '../fx';
+  import HelpTip from '../components/HelpTip.svelte';
+  import PlayGrid from '../components/PlayGrid.svelte';
+  import PlayMist from '../components/PlayMist.svelte';
+  import type { LanguageEntry, RewardState, ThemeName, TranslationState, UserSettings, WordSetSummary } from '../types';
 
   export let mode: 'words' | 'verbs';
   export let csrfToken = '';
   export let soundEnabled = false;
+  export let theme: ThemeName = 'light';
   export let notify: (message: string, tone?: 'info' | 'success' | 'error') => void;
 
   let loading = true;
@@ -25,42 +31,111 @@
   let finishSessionWarning = false;
   let escTimer: ReturnType<typeof setTimeout> | null = null;
 
-  // Ctrl+Space ×2 hint shortcut (ctrlSpaceArmed lights up the Hint button after tap 1)
+  // Ctrl+Space ×2 hint shortcut (ctrlSpaceArmed lights up the Hint chip after tap 1)
   let ctrlSpaceCount = 0;
   let ctrlSpaceTimer: ReturnType<typeof setTimeout> | null = null;
   let ctrlSpaceArmed = false;
 
-  // Esc ×2 to "Change settings" when session is done
-  let settingsWarning = false;
-  let settingsTimer: ReturnType<typeof setTimeout> | null = null;
-
   // Button refs for programmatic pop animation on keyboard shortcuts
-  let lengthChipEls: Array<HTMLButtonElement | null> = [null, null, null];
   let swapButtonEl: HTMLButtonElement | null = null;
-  let launchButton: HTMLButtonElement | null = null;
   let hintButton: HTMLButtonElement | null = null;
   let skipButton: HTMLButtonElement | null = null;
   let finishButton: HTMLButtonElement | null = null;
-  let changeSettingsButton: HTMLButtonElement | null = null;
+
+  // Themed PLAY controls + launch transition state (per the .dc.html designs)
+  let playMistRef: PlayMist | null = null;
+  let playGridRef: PlayGrid | null = null;
+  let launching = false;
+  let pixelOverlay = false;
+  let pixelFade = false;
 
   // Static lookup tables
   const LANG_KEY: Record<string, string> = { e: 'EN', s: 'ES', r: 'RU', f: 'FR' };
   const LANG_SHORTCUT: Record<string, string> = { EN: 'E', ES: 'S', RU: 'R', FR: 'F' };
   const LENGTH_OPTS: number[] = [5, 10, 20];
+  const LENGTH_TIERS: string[] = ['Easy', 'Normal', 'Insane'];
+  const DIFF_STARS: string[] = ['★★☆☆☆', '★★★☆☆', '★★★★★'];
+
+  // Pixel-dissolve overlay cells (launch transition from VerbPractice App.dc.html,
+  // tinted per theme). Tiles propagate radially from the center of the screen.
+  const PIX_PALETTES: Record<string, string[]> = {
+    arcade: ['#7c3aed', '#5b21b6', '#8f52f5'],
+    light: ['#0ea5e9', '#0284c7', '#38bdf8'],
+    dark: ['#2563eb', '#1d4ed8', '#3b82f6'],
+  };
+  const PIX_CELLS = (() => {
+    const cells: Array<{ ci: number; delay: string }> = [];
+    for (let r = 0; r < 10; r++) {
+      for (let c = 0; c < 16; c++) {
+        const dx = c - 7.5;
+        const dy = (r - 4.5) * 1.6;
+        cells.push({ ci: (c + r) % 3, delay: (Math.sqrt(dx * dx + dy * dy) * 0.045).toFixed(2) });
+      }
+    }
+    return cells;
+  })();
+  $: pixPalette = PIX_PALETTES[theme] ?? PIX_PALETTES.light;
+
+  // Answer-wave cell grid (arcade grading ripple, radial delay from center)
+  const WAVE_CELLS = (() => {
+    const cells: Array<{ delay: string }> = [];
+    for (let r = 0; r < 11; r++) {
+      for (let c = 0; c < 22; c++) {
+        const dx = c - 10.5;
+        const dy = (r - 5) * 1.9;
+        cells.push({ delay: (Math.sqrt(dx * dx + dy * dy) * 0.032).toFixed(2) });
+      }
+    }
+    return cells;
+  })();
+
+  $: isArcade = theme === 'arcade';
+  $: diffIdx = Math.max(0, LENGTH_OPTS.indexOf(length)) ;
 
   // Wrong-attempt tracking for the two-strike flow
   let wrongAttempts = 0;
   let currentQuestionId: number | null = null;
 
-  // Preserve last question/session for the session-done overlay
+  // Correct answers this run (drives the Stage Clear score + dots)
+  let okRun = 0;
+
+  // Preserve last question/session for the stage-clear screen
   let prevQuestion: NonNullable<TranslationState['question']> | null = null;
   let prevSession: NonNullable<TranslationState['session']> | null = null;
   $: if (state?.question) prevQuestion = state.question;
   $: if (state?.session) prevSession = state.session;
 
-  // Inline feedback area (reserved top space inside the question card)
+  // Inline feedback area (reserved space under the input)
   let inlineMsg = '';
   let inlineTone = '';  // 'success' | 'error' | 'info' | ''
+
+  // Grading pulse: drives wave ring / cell wave / flash / shake, keyed so
+  // rapid answers restart the animations.
+  let feedbackPulse: 'success' | 'error' | null = null;
+  let pulseSeq = 0;
+  let pulseTimer: ReturnType<typeof setTimeout> | null = null;
+  function triggerPulse(kind: 'success' | 'error'): void {
+    feedbackPulse = null;
+    requestAnimationFrame(() => {
+      feedbackPulse = kind;
+      pulseSeq += 1;
+      if (pulseTimer) clearTimeout(pulseTimer);
+      pulseTimer = setTimeout(() => { feedbackPulse = null; }, 1100);
+    });
+  }
+  // Pulses are triggered explicitly at each grading site (a reactive statement
+  // on inlineTone misses back-to-back identical tones, e.g. two corrects in a
+  // row, and the check-draw must replay every time).
+
+  // Arcade: the prompt glitches in place on a wrong answer
+  let promptEl: HTMLElement | null = null;
+  function glitchPrompt(): void {
+    if (!promptEl) return;
+    promptEl.classList.remove('prompt-glitch');
+    void promptEl.offsetWidth;
+    promptEl.classList.add('prompt-glitch');
+  }
+  $: if (feedbackPulse === 'error' && isArcade) glitchPrompt();
 
   let languages: LanguageEntry[] = [];
   let userSettings: UserSettings | null = null;
@@ -103,6 +178,12 @@
   $: if (sourceCode && targetCode) {
     direction = `${sourceCode.toLowerCase()}_${targetCode.toLowerCase()}`;
   }
+
+  // Top weak words for the current direction (max 4); empty slots are padded so the
+  // card keeps a stable height even when a direction has no data yet.
+  $: weakItems = state
+    ? state.overview.focus_items.filter((i) => i.language_pair === direction).slice(0, 4)
+    : [];
 
   function languageByCode(code: string): LanguageEntry | undefined {
     return languages.find((l) => l.code === code.toUpperCase());
@@ -150,6 +231,13 @@
   }
 
   $: sessionDone = justFinished && !showSetupAfterFinish;
+  $: menuView = Boolean(state?.setup && (!justFinished || showSetupAfterFinish));
+  $: sessionView = Boolean(state?.question && state?.session && !sessionDone);
+  $: ds = state?.session ?? prevSession;
+  $: routeCode = (ds?.direction ?? direction).replace('_', ' → ').toUpperCase();
+  $: progressPct = ds?.progress_total ? (Math.min(ds.progress_current, ds.progress_total) / ds.progress_total) * 100 : 0;
+  $: clearTotal = prevSession?.progress_total ?? 0;
+  $: clearScore = clearTotal ? Math.round((okRun / clearTotal) * 100) : 0;
 
   async function focusPrimaryControl(): Promise<void> {
     await tick();
@@ -210,8 +298,9 @@
 
   onMount(load);
 
-  async function startSession(): Promise<void> {
-    loading = true;
+  // Fetch a fresh session but let the caller decide when to swap it in — the
+  // launch transitions depend on applying the new state at an exact moment.
+  async function requestSessionState(): Promise<TranslationState | null> {
     error = '';
     finishSessionWarning = false;
     if (escTimer) { clearTimeout(escTimer); escTimer = null; }
@@ -222,27 +311,88 @@
         csrf_token: csrfToken,
         ...(setScope ? { set_id: setScope.id } : {}),
       };
-      state = mode === 'words'
+      return mode === 'words'
         ? await api.startWords(startPayload)
         : await api.startVerbs(startPayload);
-      justFinished = false;
-      showSetupAfterFinish = false;
-      wrongAttempts = 0;
-      inlineMsg = '';
-      inlineTone = '';
-      syncControlsFromState(state);
-      answer = '';
-      void api.patchSettings({
-        csrf_token: csrfToken,
-        last_practice_pair: direction,
-        last_practice_mode: mode === 'words' ? 'word_translation' : 'verb_translation',
-      }).catch(() => {});
     } catch (err) {
       error = err instanceof ApiError ? err.message : 'Unable to start session';
-    } finally {
-      loading = false;
+      return null;
+    }
+  }
+
+  function applySessionState(next: TranslationState): void {
+    state = next;
+    justFinished = false;
+    showSetupAfterFinish = false;
+    wrongAttempts = 0;
+    okRun = 0;
+    inlineMsg = '';
+    inlineTone = '';
+    syncControlsFromState(next);
+    answer = '';
+    void api.patchSettings({
+      csrf_token: csrfToken,
+      last_practice_pair: direction,
+      last_practice_mode: mode === 'words' ? 'word_translation' : 'verb_translation',
+    }).catch(() => {});
+    void focusPrimaryControl();
+  }
+
+  async function startSession(): Promise<void> {
+    loading = true;
+    const next = await requestSessionState();
+    loading = false;
+    if (next) {
+      applySessionState(next);
     }
     await focusPrimaryControl();
+  }
+
+  function delay(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  // Launch choreography: the tile dissolve propagates from the center and
+  // reaches full cover at ~700ms; the screen swaps behind it, then the cover
+  // fades to reveal the session. The API call runs behind the effect.
+  async function firePlay(): Promise<void> {
+    if (launching || loading) return;
+    launching = true;
+    try {
+      pixelOverlay = true;
+      pixelFade = false;
+      const [next] = await Promise.all([requestSessionState(), delay(700)]);
+      if (next) {
+        applySessionState(next);
+        await tick();
+      }
+      pixelFade = true;
+      window.setTimeout(() => { pixelOverlay = false; pixelFade = false; }, 600);
+    } finally {
+      launching = false;
+      if (!state?.session) {
+        // launch failed — restore the menu controls
+        playMistRef?.reset();
+        playGridRef?.reset();
+        pixelOverlay = false;
+        pixelFade = false;
+      }
+    }
+  }
+
+  // Keyboard path (Enter on the menu): trigger the control so its own fire
+  // visuals play; the control dispatches `fire` back into firePlay().
+  function firePlayViaControl(): void {
+    if (launching || loading) return;
+    if (isArcade && playGridRef) {
+      playGridRef.fire();
+      return;
+    }
+    if (playMistRef) {
+      playMistRef.fire?.();
+      return;
+    }
+    void firePlay();
   }
 
   async function submitAnswer(reveal = false): Promise<void> {
@@ -260,6 +410,11 @@
         inlineMsg = state.feedback ?? '';
         inlineTone = 'info';
         wrongAttempts = 0;
+        flashMiss();
+        // Reveals earn no XP themselves, but the final one can still carry
+        // session-complete rewards (bonus XP, badges)
+        applyReward(state.result?.gamification);
+        celebrateReward(state.result?.gamification);
         if (soundEnabled) playCue('error');
       } else if (wrongAttempts >= 1) {
         // Second attempt: grade it; auto-reveal if still wrong
@@ -268,10 +423,15 @@
           : await api.answerVerbs({ answer, csrf_token: csrfToken });
         if (gradeState.result?.is_correct) {
           state = gradeState;
-          inlineMsg = 'Correct!';
-          inlineTone = 'success';
+          // No text on success — the check-draw + tile wave confirm it
+          inlineMsg = '';
+          inlineTone = '';
+          triggerPulse('success');
           wrongAttempts = 0;
+          okRun += 1;
           const rewardState = state.result?.gamification;
+          applyReward(rewardState);
+          celebrateReward(rewardState);
           if (soundEnabled) {
             if (rewardState?.leveled_up) playCue('level');
             else if (rewardState?.unlocked_badges?.length) playCue('badge');
@@ -284,7 +444,11 @@
             : await api.revealVerbs({ answer, csrf_token: csrfToken });
           inlineMsg = state.feedback ?? '';
           inlineTone = 'error';
+          triggerPulse('error');
           wrongAttempts = 0;
+          flashMiss();
+          applyReward(state.result?.gamification);
+          celebrateReward(state.result?.gamification);
           if (soundEnabled) playCue('error');
         }
       } else {
@@ -293,9 +457,13 @@
           ? await api.answerWords({ answer, csrf_token: csrfToken })
           : await api.answerVerbs({ answer, csrf_token: csrfToken });
         if (state.result?.is_correct) {
-          inlineMsg = 'Correct!';
-          inlineTone = 'success';
+          inlineMsg = '';
+          inlineTone = '';
+          triggerPulse('success');
+          okRun += 1;
           const rewardState = state.result?.gamification;
+          applyReward(rewardState);
+          celebrateReward(rewardState);
           if (soundEnabled) {
             if (rewardState?.leveled_up) playCue('level');
             else if (rewardState?.unlocked_badges?.length) playCue('badge');
@@ -307,6 +475,8 @@
           state = mode === 'words' ? await api.hintWords(csrfToken) : await api.hintVerbs(csrfToken);
           inlineMsg = `Wrong answer, try a last time! hint: ${state.hint}`;
           inlineTone = 'error';
+          triggerPulse('error');
+          flashMiss();
           if (soundEnabled) playCue('error');
         }
       }
@@ -336,13 +506,6 @@
       loading = false;
     }
     await focusPrimaryControl();
-  }
-
-  function percentage(): number {
-    if (!state?.session || !state.session.progress_total) {
-      return 0;
-    }
-    return (state.session.progress_current / state.session.progress_total) * 100;
   }
 
   function reward(): RewardState | null {
@@ -392,22 +555,23 @@
   }
 
   function handleKeydown(event: KeyboardEvent): void {
-    if (loading) return;
+    if (loading || launching) return;
+    // A reward overlay (level-up / badge reveal) owns the keyboard until dismissed
+    if ($fxQueue.length) return;
 
-    // Enter on setup screen: launch unless the user is typing in a real text field
-    if (event.key === 'Enter' && state?.setup && !state?.session && !justFinished && !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
+    // Enter on setup screen: fire the play control unless typing in a real text field
+    if (event.key === 'Enter' && menuView && !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
       const active = document.activeElement as HTMLElement | null;
       const tag = active?.tagName;
       const isTyping = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || active?.isContentEditable;
       if (!isTyping) {
         event.preventDefault();
-        popEl(launchButton);
-        void startSession();
+        firePlayViaControl();
         return;
       }
     }
 
-    // Enter when session-done: retry
+    // Enter on stage clear: replay
     if (event.key === 'Enter' && sessionDone && !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
       if (document.activeElement === retryButton) return;
       event.preventDefault();
@@ -416,19 +580,10 @@
       return;
     }
 
-    // Escape when session-done: "Change settings" (double Esc)
+    // Escape on stage clear: back to menu (single press, per the design)
     if (event.key === 'Escape' && sessionDone && !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
       event.preventDefault();
-      if (settingsWarning) {
-        settingsWarning = false;
-        if (settingsTimer) { clearTimeout(settingsTimer); settingsTimer = null; }
-        popEl(changeSettingsButton);
-        revealSetup();
-      } else {
-        settingsWarning = true;
-        if (settingsTimer) clearTimeout(settingsTimer);
-        settingsTimer = setTimeout(() => { settingsWarning = false; }, 2500);
-      }
+      revealSetup();
       return;
     }
 
@@ -440,7 +595,7 @@
     }
 
     // Setup-screen shortcuts (length, lang select, swap)
-    if (state?.setup && !state?.session && !justFinished) {
+    if (menuView) {
       const active = document.activeElement as HTMLElement | null;
       const isTyping = active?.tagName === 'INPUT' || active?.tagName === 'TEXTAREA';
 
@@ -455,12 +610,11 @@
       if (!isTyping && !event.ctrlKey && !event.metaKey && !event.altKey) {
         const key = event.key;
 
-        // 1/2/3: session length
+        // 1/2/3: session length (indicator slides)
         const lengthIdx = ['1', '2', '3'].indexOf(key);
         if (lengthIdx !== -1) {
           event.preventDefault();
           length = LENGTH_OPTS[lengthIdx];
-          popEl(lengthChipEls[lengthIdx]);
           return;
         }
 
@@ -476,6 +630,12 @@
             if (code === targetCode) targetCode = sourceCode;
             sourceCode = code;
           }
+          return;
+        }
+
+        if (event.key === 'Escape') {
+          sourceTileOpen = false;
+          targetTileOpen = false;
           return;
         }
       }
@@ -521,41 +681,31 @@
 <section class="trainer-shell">
   {#if loading && !state}
     <div class="glass-panel skeleton-card tall-skeleton"></div>
-  {:else if error}
+  {:else if error && !state}
     <div class="glass-panel">
       <div class="feedback-banner error-banner">{error}</div>
     </div>
   {:else if state}
     <div class="trainer-stack" in:fade={{ duration: 180 }}>
-      <header class="trainer-head glass-panel">
-        <div>
-          <p class="eyebrow">{state.direction_label}</p>
-          <h1>{state.title}</h1>
-          {#if setScope}
-            <p style="margin-top: 0.25rem; font-size: 0.9rem;">
-              Practicing set:
-              <strong>{setScope.name}</strong>
-              <span style="opacity: 0.7;">({setScope.word_count} words)</span>
-              <button
-                type="button"
-                class="ghost-button"
-                on:click={clearScope}
-                style="margin-left: 0.5rem; padding: 0.1rem 0.5rem; font-size: 0.75rem;"
-              >
-                clear scope
-              </button>
-            </p>
-          {/if}
+      {#if setScope}
+        <div class="feedback-banner info-banner scope-banner">
+          Practicing set:
+          <strong>{setScope.name}</strong>
+          <span style="opacity: 0.7;">({setScope.word_count} words)</span>
+          <button
+            type="button"
+            class="ghost-button"
+            on:click={clearScope}
+            style="margin-left: 0.5rem; padding: 0.1rem 0.5rem; font-size: 0.75rem;"
+          >
+            clear scope
+          </button>
         </div>
-        <div class="pill-row">
-          <span class="pill-chip">{state.overview.unlocked} unlocked</span>
-          <span class="pill-chip">{state.overview.mastered} mastered</span>
-          <span class="pill-chip">pressure {state.overview.avg_probability}</span>
-          {#if state.session}
-            <span class="pill-chip">combo {state.session.combo}x</span>
-          {/if}
-        </div>
-      </header>
+      {/if}
+
+      {#if error}
+        <div class="feedback-banner error-banner">{error}</div>
+      {/if}
 
       <!-- External feedback only for non-session setup messages -->
       {#if state.feedback && !state.session && !justFinished}
@@ -599,238 +749,757 @@
         </article>
       {/if}
 
-      {#if state.setup && (!justFinished || showSetupAfterFinish)}
-        <article class="glass-panel strong-panel trainer-card">
-          <p class="section-copy">
-            Weighted prompts keep weak translations circulating while mastered items fall back. Start a session and the
-            loop will keep you in the same surface with no page reload.
-          </p>
+      {#if menuView}
+        <!-- ===== WORD RUSH MENU (final design from the .dc.html files) ===== -->
+        <article class="glass-panel strong-panel trainer-card setup-card">
+          <div class="floaty-dot" aria-hidden="true"></div>
+          <div class="card-help-row">
+            <HelpTip label="How sessions work">
+              <h4>How a practice session works</h4>
+              <p>
+                Each session pulls words from your queue using <strong>weighted selection</strong>: weak
+                translations come up far more often, while ones you've mastered fade into the background. The loop
+                keeps you in the same screen with no page reloads.
+              </p>
+              <p>Before you start, set two things:</p>
+              <ul>
+                <li><strong>Session length</strong> — how many prompts this round.</li>
+                <li><strong>Direction</strong> — the <em>prompt</em> language and the <em>answer</em> language.</li>
+              </ul>
+              <p>While answering:</p>
+              <ul>
+                <li>You get <strong>two tries</strong> per word. After the first wrong answer a hint appears automatically.</li>
+                <li><strong>Hint</strong> reveals a clue; <strong>Skip and show</strong> reveals the answer.</li>
+                <li>Correct answers build your <strong>combo</strong> and earn XP.</li>
+                <li><strong>Finish session</strong> ends the round early.</li>
+              </ul>
+              <p>Keyboard shortcuts:</p>
+              <ul>
+                <li><kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd> — session length</li>
+                <li><kbd>E</kbd>/<kbd>S</kbd>/<kbd>R</kbd>/<kbd>F</kbd> — prompt language · add <kbd>Shift</kbd> for the answer language</li>
+                <li><kbd>Ctrl</kbd>+<kbd>Space</kbd> — swap direction · <kbd>Enter</kbd> — launch</li>
+                <li><kbd>F2</kbd> — hint · <kbd>Alt</kbd>+<kbd>Enter</kbd> — skip · <kbd>Esc</kbd> ×2 — finish</li>
+              </ul>
+            </HelpTip>
+          </div>
 
-          <div class="toggle-cluster">
-            <div class="toggle-group">
-              <span class="toggle-label">Session length</span>
-              <div class="option-row">
-                {#each LENGTH_OPTS as option, i}
-                  <button bind:this={lengthChipEls[i]} class:option-on={length === option} class="option-chip" type="button" on:click={() => { length = option; popEl(lengthChipEls[i]); }}>
-                    {option} items
-                    <span class="btn-shortcut">{i + 1}</span>
-                  </button>
-                {/each}
-              </div>
+          <div class="menu-head">
+            <div>
+              <p class="eyebrow">Daily stage · {routeCode}</p>
+              <h1 class="menu-title">{mode === 'words' ? 'Word Rush' : 'Verb Rush'}</h1>
             </div>
-
-            <div class="toggle-group">
-              <span class="toggle-label">Direction</span>
-              <div class="direction-tiles" style="display: flex; align-items: center; gap: 0.75rem;">
-                <div style="position: relative; flex: 1;">
-                  <button
-                    class="option-chip option-on"
-                    type="button"
-                    on:click={() => { sourceTileOpen = !sourceTileOpen; targetTileOpen = false; }}
-                    style="width: 100%; padding: 1rem; font-size: 1.1rem;"
-                  >
-                    {languageByCode(sourceCode)?.name || sourceCode || '—'}
-                    <small style="display: block; opacity: 0.6;">prompt</small>
-                    {#if LANG_SHORTCUT[sourceCode]}<span class="btn-shortcut" style="margin-top: 0.2rem;">{LANG_SHORTCUT[sourceCode]}</span>{/if}
-                  </button>
-                  {#if sourceTileOpen}
-                    <div class="glass-panel" style="position: absolute; top: 100%; left: 0; right: 0; z-index: 10; padding: 0.5rem; margin-top: 0.25rem;">
-                      {#each languages as lang}
-                        <button
-                          class="option-chip"
-                          type="button"
-                          on:click={() => { sourceCode = lang.code; sourceTileOpen = false; }}
-                          style="display: block; width: 100%; margin: 0.15rem 0; text-align: left;"
-                          disabled={lang.code === targetCode}
-                        >
-                          {lang.name}
-                        </button>
-                      {/each}
-                    </div>
-                  {/if}
-                </div>
-
-                <button
-                  bind:this={swapButtonEl}
-                  class="ghost-button"
-                  type="button"
-                  aria-label="Swap direction"
-                  title="Swap"
-                  on:click={() => { swapDirection(); popEl(swapButtonEl); }}
-                  style="padding: 0.5rem 0.75rem; font-size: 1.25rem;"
-                >
-                  ⇄
-                  <span class="btn-shortcut" style="display: block; font-size: 0.55rem; margin-top: 0.2rem;">Ctrl+Space</span>
-                </button>
-
-                <div style="position: relative; flex: 1;">
-                  <button
-                    class="option-chip option-on"
-                    type="button"
-                    on:click={() => { targetTileOpen = !targetTileOpen; sourceTileOpen = false; }}
-                    style="width: 100%; padding: 1rem; font-size: 1.1rem;"
-                  >
-                    {languageByCode(targetCode)?.name || targetCode || '—'}
-                    <small style="display: block; opacity: 0.6;">answer</small>
-                    {#if LANG_SHORTCUT[targetCode]}<span class="btn-shortcut" style="margin-top: 0.2rem;">Shift+{LANG_SHORTCUT[targetCode]}</span>{/if}
-                  </button>
-                  {#if targetTileOpen}
-                    <div class="glass-panel" style="position: absolute; top: 100%; left: 0; right: 0; z-index: 10; padding: 0.5rem; margin-top: 0.25rem;">
-                      {#each languages as lang}
-                        <button
-                          class="option-chip"
-                          type="button"
-                          on:click={() => { targetCode = lang.code; targetTileOpen = false; }}
-                          style="display: block; width: 100%; margin: 0.15rem 0; text-align: left;"
-                          disabled={lang.code === sourceCode}
-                        >
-                          {lang.name}
-                        </button>
-                      {/each}
-                    </div>
-                  {/if}
-                </div>
-              </div>
+            <div class="diff-readout">
+              <div class="diff-stars">{DIFF_STARS[diffIdx]}</div>
+              <div class="diff-name">{LENGTH_TIERS[diffIdx]}</div>
             </div>
           </div>
 
-          <p class="eyebrow" style="margin-bottom: 0.1rem;">Top weak words</p>
-          <div class="metric-grid tight-grid">
-            {#each state.overview.focus_items.filter(i => i.language_pair === direction).slice(0, 4) as item}
-              <div class="stat-card compact-stat">
-                <span>{item.language_pair.replace('_', ' → ').toUpperCase()}</span>
-                <strong style="font-size: 0.95rem; letter-spacing: normal; line-height: 1.3;">{item.label}</strong>
-                {#if item.translation}
-                  <span style="font-size: 0.78rem; color: var(--muted); margin-top: 0.1rem;">{item.translation}</span>
-                {/if}
-              </div>
-            {:else}
-              <p class="section-copy" style="grid-column: 1/-1;">No data yet — start a session!</p>
+          <div class="diff-switch">
+            <div class="diff-indicator" style={`transform: translateX(calc(${diffIdx * 100}% + ${diffIdx * 10}px));`} aria-hidden="true"></div>
+            {#each LENGTH_OPTS as option, i}
+              <button class="diff-tile" type="button" on:click={() => (length = option)} aria-pressed={length === option}>
+                <span class="diff-tile-head">
+                  <span class="diff-tile-tier">{LENGTH_TIERS[i]}</span>
+                  <span class="kbd-chip">{i + 1}</span>
+                </span>
+                <span class="diff-tile-count">{option} words</span>
+              </button>
             {/each}
           </div>
 
-          {#if mode === 'words'}
-            <div class="sets-teaser">
-              <span class="eyebrow">Sets</span>
-              <span class="coming-soon-badge">Coming soon</span>
-              <p class="section-copy" style="margin-top: 0.25rem; margin-bottom: 0;">Group words into themed sets and practice them separately.</p>
-            </div>
+          {#if sourceTileOpen || targetTileOpen}
+            <button
+              class="dd-backdrop"
+              type="button"
+              aria-label="Close language menu"
+              on:click={() => { sourceTileOpen = false; targetTileOpen = false; }}
+            ></button>
           {/if}
 
-          <button bind:this={launchButton} class="primary-button" type="button" on:click={() => { popEl(launchButton); void startSession(); }}>
-            Launch session
-            <svg class="enter-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 10 4 15 9 20"></polyline><path d="M20 4v7a4 4 0 0 1-4 4H4"></path></svg>
-          </button>
-        </article>
-      {:else if (state.question && state.session) || sessionDone}
-        {@const dq = state.question ?? prevQuestion}
-        {@const ds = state.session ?? prevSession}
-        <article class="glass-panel strong-panel trainer-card" in:fade={{ duration: 160 }}>
+          <div class="lang-grid">
+            <div>
+              <p class="toggle-label">Prompt language</p>
+              <div class="lang-select">
+                <button
+                  class="lang-button"
+                  type="button"
+                  aria-expanded={sourceTileOpen}
+                  on:click={() => { sourceTileOpen = !sourceTileOpen; targetTileOpen = false; }}
+                >
+                  <span class="lang-name">
+                    {languageByCode(sourceCode)?.name || sourceCode || '—'}
+                    {#if LANG_SHORTCUT[sourceCode]}<span class="kbd-chip">{LANG_SHORTCUT[sourceCode]}</span>{/if}
+                  </span>
+                  <span class="lang-chev" style={`transform: rotate(${sourceTileOpen ? 180 : 0}deg);`}>▼</span>
+                </button>
+                {#if sourceTileOpen}
+                  <div class="lang-menu">
+                    {#each languages as lang}
+                      <button
+                        class="lang-option"
+                        type="button"
+                        on:click={() => { sourceCode = lang.code; sourceTileOpen = false; }}
+                        disabled={lang.code === targetCode}
+                      >
+                        <span>{lang.name}</span>
+                        <span class="kbd-chip">{LANG_SHORTCUT[lang.code] ?? ''}</span>
+                      </button>
+                    {/each}
+                  </div>
+                {/if}
+              </div>
+            </div>
 
-          <!-- Reserved inline feedback — always occupies space; shows session-done message when finished -->
-          <div
-            class="session-msg"
-            class:has-msg={!!inlineMsg || sessionDone}
-            class:msg-success={sessionDone || inlineTone === 'success'}
-            class:msg-error={!sessionDone && inlineTone === 'error'}
-            class:msg-info={!sessionDone && inlineTone === 'info'}
-          >
-            {#if sessionDone}
-              <span>Session complete — jump back in!</span>
-            {:else if inlineMsg}
-              <span>{inlineMsg}</span>
+            <div class="swap-cluster">
+              <button
+                bind:this={swapButtonEl}
+                class="swap-round-button"
+                type="button"
+                aria-label="Swap direction"
+                title="Swap"
+                on:click={() => { swapDirection(); popEl(swapButtonEl); }}
+              >
+                ⇄
+              </button>
+              <span class="kbd-chip">Ctrl+Space</span>
+            </div>
+
+            <div>
+              <p class="toggle-label">Answer language</p>
+              <div class="lang-select">
+                <button
+                  class="lang-button"
+                  type="button"
+                  aria-expanded={targetTileOpen}
+                  on:click={() => { targetTileOpen = !targetTileOpen; sourceTileOpen = false; }}
+                >
+                  <span class="lang-name">
+                    {languageByCode(targetCode)?.name || targetCode || '—'}
+                    {#if LANG_SHORTCUT[targetCode]}<span class="kbd-chip">⇧{LANG_SHORTCUT[targetCode]}</span>{/if}
+                  </span>
+                  <span class="lang-chev" style={`transform: rotate(${targetTileOpen ? 180 : 0}deg);`}>▼</span>
+                </button>
+                {#if targetTileOpen}
+                  <div class="lang-menu">
+                    {#each languages as lang}
+                      <button
+                        class="lang-option"
+                        type="button"
+                        on:click={() => { targetCode = lang.code; targetTileOpen = false; }}
+                        disabled={lang.code === sourceCode}
+                      >
+                        <span>{lang.name}</span>
+                        <span class="kbd-chip">⇧{LANG_SHORTCUT[lang.code] ?? ''}</span>
+                      </button>
+                    {/each}
+                  </div>
+                {/if}
+              </div>
+            </div>
+          </div>
+
+          <p class="route-label">{languageByCode(sourceCode)?.name || sourceCode} → {languageByCode(targetCode)?.name || targetCode}</p>
+
+          <div class="play-area">
+            {#if isArcade}
+              <PlayGrid bind:this={playGridRef} disabled={launching || loading} on:fire={() => void firePlay()} />
+            {:else}
+              <PlayMist bind:this={playMistRef} {theme} disabled={launching || loading} on:fire={() => void firePlay()} />
             {/if}
           </div>
+          <p class="play-caption" class:blinky={isArcade}>
+            {isArcade ? 'CLICK THE GRID TO START' : 'Wipe the mist · click to start'}
+          </p>
 
-          <!-- Progress + question: blurred when session is done -->
-          <div class:done-blur={sessionDone}>
-            <div class="progress-shell">
-              <div class="progress-top">
-                <span>Session progress</span>
-                <strong>{ds?.progress_current ?? 0}/{ds?.progress_total ?? 0}</strong>
+          <div class="kbd-footer">
+            <span><span class="kbd-chip">1</span> <span class="kbd-chip">2</span> <span class="kbd-chip">3</span> length</span>
+            <span><span class="kbd-chip">Enter</span> start</span>
+          </div>
+        </article>
+
+        {#if weakItems.length || (mode === 'words' && !setScope)}
+          <article class="glass-panel aux-card">
+            <p class="eyebrow" style="margin-bottom: 0.5rem;">Top weak words</p>
+            <div class="weak-words-area">
+              <div class="metric-grid tight-grid">
+                {#each weakItems as item}
+                  <div class="stat-card compact-stat">
+                    <span>{item.language_pair.replace('_', ' → ').toUpperCase()}</span>
+                    <strong style="font-size: 0.95rem; letter-spacing: normal; line-height: 1.3;">{item.label}</strong>
+                    {#if item.translation}
+                      <span style="font-size: 0.78rem; color: var(--muted); margin-top: 0.1rem;">{item.translation}</span>
+                    {/if}
+                  </div>
+                {/each}
+                {#each Array(4 - weakItems.length) as _}
+                  <div class="stat-card compact-stat ghost-stat" aria-hidden="true"></div>
+                {/each}
               </div>
-              <div class="progress-track"><span class="progress-bar" style={`width: ${ds?.progress_total ? (ds.progress_current / ds.progress_total) * 100 : 0}%`}></span></div>
+              {#if weakItems.length === 0}
+                <p class="section-copy weak-empty">No data yet — start a session!</p>
+              {/if}
             </div>
-
-            <div class="question-stage">
-              <p class="eyebrow">Prompt</p>
-              <h2 class="question-word">{dq?.prompt ?? ''}</h2>
-              <p class="section-copy">Type the strongest translation you know and keep your combo alive.</p>
+            {#if mode === 'words' && !setScope}
+              <div class="sets-teaser">
+                <span class="eyebrow">Sets</span>
+                <p class="section-copy" style="margin-top: 0.25rem; margin-bottom: 0;">Group words into themed sets and practice them separately.</p>
+                <button type="button" class="text-switch sets-teaser-link" on:click={() => navigate('/sets')}>Browse your sets →</button>
+              </div>
+            {/if}
+          </article>
+        {/if}
+      {:else if sessionView}
+        {@const dq = state.question}
+        <!-- ===== SESSION (rails, underline input, wave feedback) =====
+             Entrance animation lives on the wrapper: toggling the shake class
+             on the card would otherwise restart it (one animation shorthand). -->
+        <div class:session-in-clean={!isArcade} class:session-in-arcade={isArcade}>
+        <article
+          class="glass-panel strong-panel session-card"
+          class:shake-anim={feedbackPulse === 'error'}
+        >
+          <!-- progress rail towers -->
+          <div class="rail rail-left" aria-hidden="true">
+            <div class="rail-fill" style={`height: ${progressPct}%;`}>
+              <div class="rail-cap" style={`opacity: ${(ds?.progress_current ?? 0) > 0 ? 1 : 0};`}></div>
+            </div>
+          </div>
+          <div class="rail rail-right" aria-hidden="true">
+            <div class="rail-fill" style={`height: ${progressPct}%;`}>
+              <div class="rail-cap" style={`opacity: ${(ds?.progress_current ?? 0) > 0 ? 1 : 0};`}></div>
             </div>
           </div>
 
-          <!-- Answer row: input blurred when done, submit button becomes Retry -->
-          <form class="answer-form" on:submit|preventDefault={() => sessionDone ? startSession() : submitAnswer(false)}>
-            <div class="answer-row">
-              <input
-                bind:this={answerInput}
-                bind:value={answer}
-                class="answer-input"
-                class:done-blur={sessionDone}
-                placeholder="Type your answer"
-                autocomplete="off"
-                disabled={sessionDone || loading}
-                required={!sessionDone}
-              />
-              <button class="primary-button" type="submit" disabled={loading} bind:this={retryButton}>
-                {#if sessionDone}
-                  Retry session
-                {:else}
-                  Submit
-                {/if}
-                <svg class="enter-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 10 4 15 9 20"></polyline><path d="M20 4v7a4 4 0 0 1-4 4H4"></path></svg>
-              </button>
-            </div>
-          </form>
+          <!-- grading feedback: vignette-masked tile wave propagating from center -->
+          {#key pulseSeq}
+            {#if feedbackPulse}
+              <div class="cell-wave" aria-hidden="true">
+                {#each WAVE_CELLS as c, i (i)}
+                  <div style={`animation: cellw-${feedbackPulse} .45s ease-out ${c.delay}s both;`}></div>
+                {/each}
+              </div>
+              {#if isArcade}
+                <div class={`edge-flash ${feedbackPulse}`} aria-hidden="true"></div>
+              {/if}
+            {/if}
+          {/key}
 
-          <!-- Actions: session controls when active; change-settings when done -->
-          {#if sessionDone}
-            <div class="trainer-actions">
-              <button
-                bind:this={changeSettingsButton}
-                class="secondary-button"
-                class:finish-warn={settingsWarning}
-                type="button"
-                on:click={() => { popEl(changeSettingsButton); revealSetup(); }}
-                disabled={loading}
-              >
-                Change settings
-                <span class="btn-shortcut">{settingsWarning ? 'Esc ×1' : 'Esc ×2'}</span>
-              </button>
+          <div class="session-inner">
+            <div class="session-top">
+              <span class="session-meta">{ds?.progress_current ?? 0}/{ds?.progress_total ?? 0}</span>
+              <span class="session-meta">{routeCode}</span>
+              {#key ds?.combo}
+                <span class="combo-chip" class:combo-swell={(ds?.combo ?? 0) > 1}>combo ×{ds?.combo ?? 0}</span>
+              {/key}
             </div>
-          {:else}
-            <div class="trainer-actions">
-              <button bind:this={hintButton} class="secondary-button" class:hint-armed={ctrlSpaceArmed} type="button" on:click={() => { popEl(hintButton); void showHint(); }} disabled={loading}>
-                Hint
-                <span class="btn-shortcut">F2 / Ctrl+Space {ctrlSpaceArmed ? '×1' : '×2'}</span>
-              </button>
-              <button bind:this={skipButton} class="ghost-button" type="button" on:click={() => { popEl(skipButton); void submitAnswer(true); }} disabled={loading}>
-                Skip and show
-                <span class="btn-shortcut">Alt+Enter</span>
-              </button>
-              <button
-                bind:this={finishButton}
-                class={`ghost-button${finishSessionWarning ? ' finish-warn' : ''}`}
-                type="button"
-                on:click={handleFinishClick}
-                disabled={loading}
-              >
-                Finish session
-                <span class="btn-shortcut">{finishSessionWarning ? 'Esc ×1' : 'Esc ×2'}</span>
-              </button>
+
+            {#key dq?.item_id}
+              <div class="prompt-word" bind:this={promptEl}>{dq?.prompt ?? ''}</div>
+            {/key}
+
+            <form class="answer-line-form" on:submit|preventDefault={() => submitAnswer(false)}>
+              <div class="line-input-wrap">
+                <input
+                  bind:this={answerInput}
+                  bind:value={answer}
+                  class="line-input"
+                  placeholder={isArcade ? '▊ type your answer' : 'type your answer'}
+                  autocomplete="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  disabled={loading}
+                  required
+                />
+                {#key pulseSeq}
+                  {#if feedbackPulse === 'success'}
+                    <!-- Check draw (chosen in /playground): underline surges,
+                         a checkmark draws itself at the end of the line -->
+                    <span class="line-surge" aria-hidden="true"></span>
+                    <svg class="check-draw" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M4 12.5 L10 18 L20 6" />
+                    </svg>
+                    {#if isArcade}
+                      <div class="input-burst" aria-hidden="true"></div>
+                    {/if}
+                  {/if}
+                {/key}
+              </div>
+
+              <div class="session-msg" class:msg-success={inlineTone === 'success'} class:msg-error={inlineTone === 'error'} class:msg-info={inlineTone === 'info'}>
+                {#if inlineMsg}<span>{inlineMsg}</span>{/if}
+              </div>
+
+              <div class="kbd-row">
+                <button class="kbd-action" type="submit" disabled={loading}>
+                  <span class="kbd-chip">Enter</span> submit
+                </button>
+                <button bind:this={hintButton} class="kbd-action" class:hint-armed={ctrlSpaceArmed} type="button" on:click={() => { popEl(hintButton); void showHint(); }} disabled={loading}>
+                  <span class="kbd-chip">F2</span> hint
+                </button>
+                <button bind:this={skipButton} class="kbd-action" type="button" on:click={() => { popEl(skipButton); void submitAnswer(true); }} disabled={loading}>
+                  <span class="kbd-chip">Alt+Enter</span> skip
+                </button>
+                <button
+                  bind:this={finishButton}
+                  class="kbd-action"
+                  class:finish-warn={finishSessionWarning}
+                  type="button"
+                  on:click={handleFinishClick}
+                  disabled={loading}
+                >
+                  <span class="kbd-chip" class:kbd-chip-armed={finishSessionWarning}>{finishSessionWarning ? 'Esc ×1' : 'Esc ×2'}</span> finish
+                </button>
+              </div>
+            </form>
+          </div>
+        </article>
+        </div>
+      {:else if sessionDone}
+        <!-- ===== STAGE CLEAR ===== -->
+        <article class="glass-panel strong-panel clear-card" class:session-in-arcade={isArcade} class:clear-in={!isArcade}>
+          {#if !isArcade}
+            <div class="wave-mask success clear-sweep" aria-hidden="true"><div class="wave-disc"></div></div>
+          {/if}
+          <h2 class="clear-title">{isArcade ? 'STAGE CLEAR ★' : 'Stage clear'}</h2>
+          <p class="clear-score">
+            {#if clearTotal}
+              Score {clearScore}% · {okRun}/{clearTotal} words · Best combo ×{prevSession?.best_combo ?? 0}
+            {:else}
+              Session complete — jump back in!
+            {/if}
+          </p>
+          {#if isArcade}
+            <p class="clear-gg">GG, WORDSMITH</p>
+          {/if}
+          {#if clearTotal}
+            <div class="clear-dots" aria-label={`${okRun} of ${clearTotal} correct`}>
+              {#each Array(clearTotal) as _, i}
+                <span class="clear-dot" class:dot-ok={i < okRun}></span>
+              {/each}
             </div>
           {/if}
+          <div class="clear-actions">
+            <button bind:this={retryButton} class="primary-button" type="button" on:click={() => { popEl(retryButton); void startSession(); }} disabled={loading}>
+              ▶ Replay <span class="kbd-chip">Enter</span>
+            </button>
+            <button class="secondary-button" type="button" on:click={revealSetup} disabled={loading}>
+              Menu <span class="kbd-chip">Esc</span>
+            </button>
+          </div>
         </article>
       {/if}
+    </div>
+  {/if}
+
+  <!-- Arcade launch: full-screen pixel dissolve -->
+  {#if pixelOverlay}
+    <div class="pixel-overlay" class:pixel-fade={pixelFade} aria-hidden="true">
+      {#each PIX_CELLS as c, i (i)}
+        <div style={`background: ${pixPalette[c.ci]}; animation: cellon .32s ease-out ${c.delay}s both;`}></div>
+      {/each}
     </div>
   {/if}
 </section>
 
 <style>
   .trainer-shell {
-    max-width: 660px;
+    max-width: 720px;
     margin-inline: auto;
     width: 100%;
+  }
+
+  .card-help-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: -0.5rem;
+  }
+
+  .scope-banner {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  /* ===== Menu (Word Rush) ===== */
+  .setup-card {
+    position: relative;
+  }
+
+  .floaty-dot {
+    position: absolute;
+    top: 1.1rem;
+    right: 4rem;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--accent) 30%, transparent);
+    animation: floaty 5s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  :global(html[data-theme='arcade']) .floaty-dot {
+    border-radius: 0;
+    width: 14px;
+    height: 14px;
+    background: color-mix(in srgb, var(--accent) 50%, transparent);
+    animation-duration: 4s;
+  }
+
+  @keyframes floaty {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .menu-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .menu-title {
+    font-family: var(--display);
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin: 0.35rem 0 0;
+    line-height: 1.2;
+  }
+
+  :global(html[data-theme='arcade']) .menu-title {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    text-shadow: 0 0 14px color-mix(in srgb, var(--accent) 95%, transparent);
+  }
+
+  .diff-readout {
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .diff-stars {
+    font-size: 15px;
+    letter-spacing: 3px;
+    color: var(--accent);
+  }
+
+  :global(html[data-theme='arcade']) .diff-stars {
+    font-family: var(--display);
+    font-size: 9px;
+    color: var(--text);
+  }
+
+  .diff-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin-top: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-family: var(--mono);
+  }
+
+  /* Sliding difficulty selector */
+  .diff-switch {
+    position: relative;
+    display: flex;
+    gap: 10px;
+    padding: 6px;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: color-mix(in srgb, var(--surface-strong) 55%, transparent);
+  }
+
+  .diff-indicator {
+    position: absolute;
+    top: 6px;
+    bottom: 6px;
+    left: 6px;
+    width: calc((100% - 32px) / 3);
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--surface-strong) 96%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    box-shadow: 0 3px 10px -3px color-mix(in srgb, var(--accent) 35%, transparent);
+    pointer-events: none;
+    transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.3, 1);
+  }
+
+  :global(html[data-theme='arcade']) .diff-indicator {
+    background: transparent;
+    border: 2px solid var(--accent);
+    box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 55%, transparent), inset 0 0 14px color-mix(in srgb, var(--accent) 30%, transparent);
+    transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .diff-tile {
+    position: relative;
+    flex: 1;
+    background: transparent;
+    border: 0;
+    border-radius: 10px;
+    padding: 11px 0 10px;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .diff-tile-head {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .diff-tile-tier {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+
+  .diff-tile-count {
+    display: block;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-top: 5px;
+    font-family: var(--display);
+  }
+
+  :global(html[data-theme='arcade']) .diff-tile-count {
+    font-family: var(--ui);
+  }
+
+  /* Language dropdowns */
+  .dd-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 25;
+    background: transparent;
+    border: 0;
+    cursor: default;
+  }
+
+  .lang-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 16px;
+    align-items: end;
+  }
+
+  .lang-select {
+    position: relative;
+    margin-top: 0.5rem;
+  }
+
+  .lang-button {
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: color-mix(in srgb, var(--surface-strong) 85%, transparent);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px 14px;
+    color: var(--text);
+    font-size: 1rem;
+    transition: border-color 0.25s, box-shadow 0.25s;
+  }
+
+  .lang-button:hover {
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+    box-shadow: 0 4px 14px -6px color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+
+  .lang-name {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+  }
+
+  .lang-chev {
+    color: var(--accent);
+    font-size: 11px;
+    transition: transform 0.25s;
+    flex-shrink: 0;
+  }
+
+  .lang-menu {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 6px);
+    z-index: 30;
+    background: var(--surface-strong);
+    border: 1px solid var(--line-strong);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    max-height: 180px;
+    overflow-y: auto;
+    animation: dd-open 0.18s ease-out;
+    backdrop-filter: blur(14px);
+  }
+
+  @keyframes dd-open {
+    0% { opacity: 0; transform: translateY(-8px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  .lang-option {
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: transparent;
+    border: 0;
+    padding: 11px 14px;
+    color: var(--text);
+    font-size: 0.95rem;
+  }
+
+  .lang-option:hover:not(:disabled) {
+    background: var(--accent-soft);
+  }
+
+  .lang-option:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .swap-cluster {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding-bottom: 2px;
+  }
+
+  .swap-round-button {
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: color-mix(in srgb, var(--surface-strong) 85%, transparent);
+    color: var(--accent);
+    font-size: 17px;
+    transition: background 0.3s, color 0.3s, transform 0.4s;
+  }
+
+  .swap-round-button:hover {
+    background: var(--accent);
+    color: white;
+    transform: rotate(180deg);
+  }
+
+  .route-label {
+    text-align: center;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--accent-strong);
+    letter-spacing: 0.03em;
+    margin: 0;
+  }
+
+  :global(html[data-theme='arcade']) .route-label {
+    font-family: var(--mono);
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    color: var(--accent);
+  }
+
+  .play-area {
+    display: flex;
+    justify-content: center;
+    margin-top: 0.25rem;
+  }
+
+  .play-caption {
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin: 0.35rem 0 0;
+    animation: softpulse 2.6s ease-in-out infinite;
+  }
+
+  :global(html[data-theme='arcade']) .play-caption {
+    font-family: var(--display);
+    font-size: 0.5rem;
+    letter-spacing: 0.08em;
+  }
+
+  .play-caption.blinky {
+    animation: blinky 1.4s step-end infinite;
+  }
+
+  @keyframes softpulse {
+    0%, 100% { opacity: 0.45; }
+    50% { opacity: 1; }
+  }
+
+  @keyframes blinky {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+
+  .kbd-footer {
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+    align-items: center;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    flex-wrap: wrap;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--muted);
+  }
+
+  .aux-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  /* Top weak words: reserve a stable footprint so the empty state never
+     shifts the rest of the card when switching direction/language. */
+  .weak-words-area {
+    position: relative;
+  }
+
+  .weak-words-area .stat-card {
+    height: 6.5rem;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .weak-words-area .stat-card > span,
+  .weak-words-area .stat-card > strong {
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ghost-stat {
+    visibility: hidden;
+  }
+
+  .weak-empty {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
   }
 
   .sets-teaser {
@@ -843,16 +1512,9 @@
     gap: 0.5rem;
   }
 
-  .coming-soon-badge {
-    font-size: 0.6rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    font-family: var(--mono, monospace);
-    color: var(--accent-strong);
-    border: 1px solid var(--accent);
-    border-radius: 99px;
-    padding: 0.15rem 0.5rem;
-    opacity: 0.8;
+  .sets-teaser-link {
+    margin-left: auto;
+    white-space: nowrap;
   }
 
   /* Keyboard shortcut pop — spring bounce on programmatic trigger */
@@ -863,91 +1525,595 @@
     100% { transform: scale(1); }
   }
 
-  .btn-pop {
+  :global(.btn-pop) {
     animation: btn-pop 0.24s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
-  /* Click press ripple for all buttons */
   button:active:not(:disabled) {
-    transform: scale(0.93);
+    transform: scale(0.96);
     transition: transform 0.07s ease-out;
   }
 
-  .progress-bar {
-    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  /* ===== Session ===== */
+  .session-card,
+  .clear-card {
+    position: relative;
+    overflow: hidden;
+    text-align: center;
   }
 
-  .enter-icon {
-    display: inline-block;
-    vertical-align: middle;
-    margin-left: 0.35rem;
-    flex-shrink: 0;
+  .session-in-clean {
+    animation: focus-in 0.48s ease-out both;
   }
 
-  .btn-shortcut {
-    font-size: 0.6rem;
-    letter-spacing: 0.04em;
-    opacity: 0.55;
-    margin-left: 0.4rem;
-    padding: 0.1rem 0.3rem;
-    border: 1px solid currentColor;
+  @keyframes focus-in {
+    0% { opacity: 0; filter: blur(14px); }
+    100% { opacity: 1; filter: blur(0); }
+  }
+
+  .session-in-arcade {
+    animation: drop-in 0.4s ease-out both;
+  }
+
+  @keyframes drop-in {
+    0% { transform: scale(1.7); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .clear-in {
+    animation: clear-in 0.45s ease-out both;
+  }
+
+  @keyframes clear-in {
+    0% { opacity: 0; transform: translateY(12px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  .rail {
+    position: absolute;
+    top: 14px;
+    bottom: 14px;
+    width: 5px;
     border-radius: 3px;
-    font-family: var(--mono, monospace);
-    vertical-align: middle;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    z-index: 2;
+  }
+
+  .rail-left { left: 9px; }
+  .rail-right { right: 9px; }
+
+  .rail-fill {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 3px;
+    background: linear-gradient(180deg, var(--accent-strong), var(--accent));
+    box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 50%, transparent);
+    transition: height 0.6s ease;
+  }
+
+  .rail-cap {
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    height: 9px;
+    border-radius: 5px;
+    background: linear-gradient(180deg, #ffffff, var(--accent-strong));
+    box-shadow: 0 0 12px 3px color-mix(in srgb, var(--accent) 85%, transparent), 0 0 30px 8px color-mix(in srgb, var(--accent) 40%, transparent);
+    animation: fillhead 1.6s ease-in-out infinite;
+    transition: opacity 0.4s;
+  }
+
+  @keyframes fillhead {
+    0%, 100% { opacity: 0.55; }
+    50% { opacity: 1; }
+  }
+
+  .session-inner {
+    position: relative;
+    z-index: 3;
+    padding: 0 1.25rem;
+  }
+
+  .session-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .session-meta {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    font-family: var(--mono);
+    text-transform: uppercase;
+  }
+
+  .combo-chip {
     display: inline-block;
-    flex-shrink: 0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent-strong);
+  }
+
+  :global(html[data-theme='arcade']) .combo-chip {
+    font-family: var(--display);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px color-mix(in srgb, var(--accent) 90%, transparent);
+  }
+
+  .combo-swell {
+    animation: cswell 0.5s ease-out;
+  }
+
+  @keyframes cswell {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.28); }
+    100% { transform: scale(1); }
+  }
+
+  .prompt-word {
+    display: inline-block;
+    font-family: var(--display);
+    font-size: clamp(2.2rem, 6vw, 3rem);
+    font-weight: 700;
+    color: var(--text);
+    margin: 1.1rem 0 1.35rem;
+    animation: prompt-blur 0.17s ease-out both;
+  }
+
+  :global(html[data-theme='arcade']) .prompt-word {
+    font-family: var(--ui);
+    font-size: clamp(2.4rem, 6vw, 3.4rem);
+    animation: drop-in 0.35s ease-out both;
+  }
+
+  @keyframes prompt-blur {
+    0% { opacity: 0; filter: blur(10px); }
+    100% { opacity: 1; filter: blur(0); }
+  }
+
+  :global(.prompt-glitch) {
+    animation: glitchy 0.5s ease-out !important;
+  }
+
+  @keyframes glitchy {
+    0%, 100% { transform: translate(0) skewX(0); text-shadow: none; }
+    20% { transform: translate(-7px, 1px) skewX(-8deg); text-shadow: 4px 0 var(--danger), -4px 0 var(--accent); }
+    45% { transform: translate(6px, -2px); text-shadow: -4px 0 var(--danger), 4px 0 var(--accent); }
+    70% { transform: translate(-4px, 1px) skewX(6deg); text-shadow: 3px 0 var(--danger); }
+  }
+
+  .answer-line-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .line-input-wrap {
+    position: relative;
+    max-width: 420px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .line-input {
+    width: 100%;
+    box-sizing: border-box;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    padding: 12px 4px;
+    color: var(--text);
+    font-size: 1.3rem;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    border-radius: 0;
+  }
+
+  :global(html[data-theme='arcade']) .line-input {
+    font-family: var(--mono);
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    color: var(--accent-strong);
+  }
+
+  .line-input:focus {
+    border-bottom-color: var(--accent);
+    box-shadow: 0 12px 20px -16px color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+
+  /* Check draw — the chosen correct-answer feedback (playground option A) */
+  .line-surge {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: var(--accent);
+    pointer-events: none;
+    animation: line-surge 0.8s ease-out both;
+  }
+
+  @keyframes line-surge {
+    0% { opacity: 0; box-shadow: none; }
+    25% { opacity: 1; box-shadow: 0 6px 18px -4px var(--accent); }
+    100% { opacity: 0; box-shadow: none; }
+  }
+
+  .check-draw {
+    position: absolute;
+    right: -34px;
+    top: 50%;
+    margin-top: -11px;
+    width: 22px;
+    height: 22px;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .check-draw path {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 3.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 32;
+    stroke-dashoffset: 32;
+    filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent) 60%, transparent));
+    animation: check-dash 0.4s 0.1s cubic-bezier(0.3, 0.9, 0.4, 1) forwards;
+  }
+
+  @keyframes check-dash {
+    to { stroke-dashoffset: 0; }
+  }
+
+  @media (max-width: 560px) {
+    .check-draw {
+      right: -26px;
+      width: 18px;
+      height: 18px;
+      margin-top: -9px;
+    }
+  }
+
+  .input-burst {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 8px;
+    height: 8px;
+    opacity: 0;
+    animation: burst 0.6s ease-out;
+    pointer-events: none;
+  }
+
+  @keyframes burst {
+    0% {
+      opacity: 1;
+      box-shadow: 0 0 0 2px #cdbcff, 0 0 0 2px #a78bfa, 0 0 0 2px #7c3aed, 0 0 0 2px #cdbcff, 0 0 0 2px #a78bfa, 0 0 0 2px #7c3aed, 0 0 0 2px #cdbcff, 0 0 0 2px #a78bfa;
+    }
+    100% {
+      opacity: 0;
+      box-shadow: -70px -54px 0 3px #cdbcff, 64px -60px 0 4px #a78bfa, -84px 10px 0 2px #7c3aed, 78px 6px 0 3px #cdbcff, -46px 58px 0 4px #a78bfa, 52px 50px 0 2px #7c3aed, -8px -74px 0 3px #cdbcff, 6px 66px 0 4px #a78bfa;
+    }
+  }
+
+  .session-msg {
+    min-height: 24px;
+    margin-top: 14px;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .session-msg.msg-success { color: var(--success); }
+  .session-msg.msg-error { color: var(--danger); }
+  .session-msg.msg-info { color: var(--accent-strong); }
+
+  .kbd-row {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    align-items: center;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    flex-wrap: wrap;
+  }
+
+  .kbd-action {
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--muted);
+    padding: 0;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    transition: color 0.2s;
+  }
+
+  .kbd-action:hover:not(:disabled) {
+    color: var(--accent-strong);
   }
 
   .finish-warn {
     color: var(--danger) !important;
-    border-color: var(--danger) !important;
   }
 
-  /* Reserved inline feedback area at top of the question card */
-  .session-msg {
-    min-height: 2.25rem;
-    display: flex;
-    align-items: center;
-    padding: 0.4rem 0.75rem;
-    border-radius: 10px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    border: 1px solid transparent;
-    transition: background 0.18s, border-color 0.18s, color 0.18s;
+  .hint-armed :global(.kbd-chip),
+  .kbd-chip-armed {
+    color: var(--bg) !important;
+    background: var(--accent-strong) !important;
+    border-color: var(--accent-strong) !important;
+    box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 70%, transparent);
   }
 
-  .session-msg.has-msg.msg-success {
-    color: var(--success);
-    background: color-mix(in srgb, var(--success) 12%, transparent);
-    border-color: color-mix(in srgb, var(--success) 35%, transparent);
-  }
-
-  .session-msg.has-msg.msg-error {
-    color: var(--danger);
-    background: color-mix(in srgb, var(--danger) 12%, transparent);
-    border-color: color-mix(in srgb, var(--danger) 35%, transparent);
-  }
-
-  .session-msg.has-msg.msg-info {
-    color: var(--muted);
-    background: color-mix(in srgb, var(--accent-soft) 180%, transparent);
-    border-color: var(--line);
-  }
-
-  /* Hint button pulses after first Ctrl+Space tap */
-  .hint-armed {
-    border-color: var(--accent, #6c63ff) !important;
-    color: var(--accent, #6c63ff) !important;
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent, #6c63ff) 25%, transparent);
-    transition: border-color 0.15s, color 0.15s, box-shadow 0.15s;
-  }
-
-  /* Blur effect on question/input when session is done */
-  .done-blur {
-    filter: blur(3px);
-    opacity: 0.35;
+  /* Grading overlays */
+  .wave-mask {
+    position: absolute;
+    inset: 0;
     pointer-events: none;
-    user-select: none;
-    transition: filter 0.25s, opacity 0.25s;
+    z-index: 4;
+    overflow: hidden;
+    border-radius: 18px;
+    -webkit-mask-image: radial-gradient(ellipse 76% 72% at 50% 46%, rgba(0,0,0,0) 0%, rgba(0,0,0,.05) 34%, rgba(0,0,0,.45) 58%, #000 82%);
+    mask-image: radial-gradient(ellipse 76% 72% at 50% 46%, rgba(0,0,0,0) 0%, rgba(0,0,0,.05) 34%, rgba(0,0,0,.45) 58%, #000 82%);
+  }
+
+  .wave-disc {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 180%;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    filter: blur(6px);
+    animation: wave-ring 0.95s ease-out both;
+  }
+
+  .wave-mask.success .wave-disc {
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent) 0%, transparent) 20%, color-mix(in srgb, var(--accent) 52%, transparent) 38%, color-mix(in srgb, var(--accent-2) 32%, transparent) 58%, transparent 78%);
+  }
+
+  .clear-sweep .wave-disc {
+    animation-duration: 1.4s;
+  }
+
+  @keyframes wave-ring {
+    0% { transform: translate(-50%, -50%) scale(0.05); opacity: 0; }
+    14% { opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+  }
+
+  .cell-wave {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 4;
+    display: grid;
+    grid-template-columns: repeat(22, 1fr);
+    grid-auto-rows: 1fr;
+    gap: 2px;
+    padding: 3px;
+    opacity: 0.9;
+    -webkit-mask-image: radial-gradient(ellipse 95% 95% at 50% 50%, rgba(0,0,0,.15) 0%, rgba(0,0,0,.22) 55%, rgba(0,0,0,.6) 82%, #000 97%);
+    mask-image: radial-gradient(ellipse 95% 95% at 50% 50%, rgba(0,0,0,.15) 0%, rgba(0,0,0,.22) 55%, rgba(0,0,0,.6) 82%, #000 97%);
+  }
+
+  .cell-wave > div {
+    border-radius: 1px;
+  }
+
+  /* Tile colors ride the theme tokens: violet in arcade, sky in light,
+     blue in dark; wrong is always the theme's danger red.
+     -global- keeps the names unscoped: the cells reference them from inline
+     styles (per-cell radial delays), which Svelte's scoping can't rewrite. */
+  @keyframes -global-cellw-success {
+    0% { background: color-mix(in srgb, var(--accent) 5%, transparent); }
+    35% { background: color-mix(in srgb, var(--accent) 60%, transparent); }
+    100% { background: color-mix(in srgb, var(--accent) 5%, transparent); }
+  }
+
+  @keyframes -global-cellw-error {
+    0% { background: color-mix(in srgb, var(--accent) 5%, transparent); }
+    35% { background: color-mix(in srgb, var(--danger) 58%, transparent); }
+    100% { background: color-mix(in srgb, var(--accent) 5%, transparent); }
+  }
+
+  .edge-flash {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+    border-radius: 16px;
+    opacity: 0;
+  }
+
+  .edge-flash.success {
+    border: 2px solid var(--accent-strong);
+    box-shadow: inset 0 0 60px color-mix(in srgb, var(--accent) 80%, transparent);
+    animation: flash-fade 0.6s ease-out;
+  }
+
+  .edge-flash.error {
+    border: 2px solid var(--danger);
+    box-shadow: inset 0 0 60px color-mix(in srgb, var(--danger) 50%, transparent);
+    animation: flash-fade 0.5s ease-out;
+  }
+
+  @keyframes flash-fade {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  @keyframes shake-anim {
+    0%, 100% { transform: translate(0, 0); }
+    20% { transform: translate(-4px, 1px); }
+    45% { transform: translate(4px, -1px); }
+    70% { transform: translate(-2px, 1px); }
+  }
+
+  .shake-anim {
+    animation: shake-anim 0.45s ease-out;
+  }
+
+  :global(html[data-theme='arcade']) .shake-anim {
+    animation-name: shake-arcade;
+  }
+
+  @keyframes shake-arcade {
+    0%, 100% { transform: translate(0, 0); }
+    15% { transform: translate(-9px, 2px); }
+    30% { transform: translate(8px, -3px); }
+    45% { transform: translate(-6px, 3px); }
+    60% { transform: translate(5px, -2px); }
+    80% { transform: translate(-3px, 1px); }
+  }
+
+  /* ===== Stage clear ===== */
+  .clear-card {
+    padding-top: 2.5rem;
+    padding-bottom: 2.25rem;
+  }
+
+  .clear-title {
+    position: relative;
+    font-family: var(--display);
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: var(--text);
+    margin: 0;
+  }
+
+  :global(html[data-theme='arcade']) .clear-title {
+    font-size: 1.5rem;
+    text-shadow: 0 0 18px color-mix(in srgb, var(--accent) 100%, transparent);
+  }
+
+  .clear-score {
+    position: relative;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin: 12px 0 0;
+  }
+
+  :global(html[data-theme='arcade']) .clear-score {
+    font-family: var(--mono);
+    font-size: 1.15rem;
+    color: var(--accent);
+  }
+
+  .clear-gg {
+    position: relative;
+    font-family: var(--mono);
+    font-size: 1rem;
+    color: var(--muted);
+    margin: 6px 0 0;
+    letter-spacing: 1px;
+  }
+
+  .clear-dots {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+  }
+
+  .clear-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: transparent;
+    border: 2px solid color-mix(in srgb, var(--danger) 55%, transparent);
+  }
+
+  .clear-dot.dot-ok {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  :global(html[data-theme='arcade']) .clear-dot {
+    border-radius: 2px;
+  }
+
+  .clear-actions {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 26px;
+    flex-wrap: wrap;
+  }
+
+  /* ===== Arcade pixel dissolve overlay ===== */
+  .pixel-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 55;
+    pointer-events: none;
+    display: grid;
+    grid-template-columns: repeat(16, 1fr);
+    grid-auto-rows: 1fr;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+  }
+
+  .pixel-overlay.pixel-fade {
+    opacity: 0;
+  }
+
+  /* -global-: referenced from the overlay cells' inline styles */
+  @keyframes -global-cellon {
+    0% { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .session-in-clean,
+    .session-in-arcade,
+    .clear-in,
+    .prompt-word,
+    .menu-out {
+      animation-duration: 1ms;
+    }
+
+    .cell-wave,
+    .wave-mask,
+    .input-burst,
+    .floaty-dot {
+      display: none;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .lang-grid {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .swap-cluster {
+      flex-direction: row;
+      justify-content: center;
+    }
+
+    .menu-head {
+      flex-direction: column;
+    }
+
+    .diff-readout {
+      text-align: left;
+    }
   }
 </style>

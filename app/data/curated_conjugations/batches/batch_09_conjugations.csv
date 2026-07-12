@@ -443,12 +443,12 @@ FR,surprendre,Indicatif,Futur,"il (elle, on)",surprendra,9,reviewed,repo-local l
 FR,surprendre,Indicatif,Futur,nous,surprendrons,9,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
 FR,surprendre,Indicatif,Futur,vous,surprendrez,9,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
 FR,surprendre,Indicatif,Futur,ils (elles),surprendront,9,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
-FR,surprendre,Indicatif,Passé composé,je,ai surprendu,9,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
-FR,surprendre,Indicatif,Passé composé,tu,as surprendu,9,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
-FR,surprendre,Indicatif,Passé composé,"il (elle, on)",a surprendu,9,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
-FR,surprendre,Indicatif,Passé composé,nous,avons surprendu,9,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
-FR,surprendre,Indicatif,Passé composé,vous,avez surprendu,9,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
-FR,surprendre,Indicatif,Passé composé,ils (elles),ont surprendu,9,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
+FR,surprendre,Indicatif,Passé composé,je,ai surpris,9,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
+FR,surprendre,Indicatif,Passé composé,tu,as surpris,9,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
+FR,surprendre,Indicatif,Passé composé,"il (elle, on)",a surpris,9,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
+FR,surprendre,Indicatif,Passé composé,nous,avons surpris,9,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
+FR,surprendre,Indicatif,Passé composé,vous,avez surpris,9,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
+FR,surprendre,Indicatif,Passé composé,ils (elles),ont surpris,9,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
 FR,surprendre,Indicatif,Imparfait,je,surprenais,9,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
 FR,surprendre,Indicatif,Imparfait,tu,surprenais,9,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
 FR,surprendre,Indicatif,Imparfait,"il (elle, on)",surprenait,9,reviewed,repo-local legacy seed normalized into curated contract; QA recommended
@@ -1469,12 +1469,12 @@ FR,se fondre,Indicatif,Futur,"il (elle, on)",se fondra,9,reviewed,pronominal par
 FR,se fondre,Indicatif,Futur,nous,nous fondrons,9,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,se fondre,Indicatif,Futur,vous,vous fondrez,9,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,se fondre,Indicatif,Futur,ils (elles),se fondront,9,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
-FR,se fondre,Indicatif,Passé composé,je,me suis fondu,9,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
-FR,se fondre,Indicatif,Passé composé,tu,t'es fondu,9,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
-FR,se fondre,Indicatif,Passé composé,"il (elle, on)",s'est fondu,9,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
-FR,se fondre,Indicatif,Passé composé,nous,nous sommes fondus,9,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
-FR,se fondre,Indicatif,Passé composé,vous,vous êtes fondus,9,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
-FR,se fondre,Indicatif,Passé composé,ils (elles),se sont fondus,9,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
+FR,se fondre,Indicatif,Passé composé,je,me suis fondu(e),9,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
+FR,se fondre,Indicatif,Passé composé,tu,t'es fondu(e),9,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
+FR,se fondre,Indicatif,Passé composé,"il (elle, on)",s'est fondu(e),9,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
+FR,se fondre,Indicatif,Passé composé,nous,nous sommes fondu(e)s,9,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
+FR,se fondre,Indicatif,Passé composé,vous,vous êtes fondu(e)(s),9,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
+FR,se fondre,Indicatif,Passé composé,ils (elles),se sont fondu(e)s,9,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,se fondre,Indicatif,Imparfait,je,me fondais,9,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,se fondre,Indicatif,Imparfait,tu,te fondais,9,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,se fondre,Indicatif,Imparfait,"il (elle, on)",se fondait,9,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
@@ -1488,7 +1488,7 @@ FR,se fondre,Conditionnel,Conditionnel présent,nous,nous fondrions,9,reviewed,p
 FR,se fondre,Conditionnel,Conditionnel présent,vous,vous fondriez,9,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,se fondre,Conditionnel,Conditionnel présent,ils (elles),se fondraient,9,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,se fondre,Impératif,Impératif,je,-,9,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended; French imperative only uses tu / nous / vous; placeholder - used for unsupported slot
-FR,se fondre,Impératif,Impératif,tu,fond-toi,9,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
+FR,se fondre,Impératif,Impératif,tu,fonds-toi,9,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,se fondre,Impératif,Impératif,"il (elle, on)",-,9,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended; French imperative only uses tu / nous / vous; placeholder - used for unsupported slot
 FR,se fondre,Impératif,Impératif,nous,fondons-nous,9,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended
 FR,se fondre,Impératif,Impératif,vous,fondez-vous,9,reviewed,pronominal paradigm normalized for clitic position and compound agreement; QA recommended

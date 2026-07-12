@@ -1,4 +1,5 @@
 from app.db.models import (
+    AIUsageLog,
     ChatMessage,
     ChatRole,
     Language,
@@ -17,6 +18,7 @@ from app.db.models import (
 )
 
 __all__ = [
+    "AIUsageLog",
     "ChatMessage",
     "ChatRole",
     "Language",

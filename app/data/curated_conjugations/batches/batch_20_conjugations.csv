@@ -11,12 +11,12 @@ FR,se dépêcher,Indicatif,Futur,"il (elle, on)",se dépêchera,20,reviewed,pron
 FR,se dépêcher,Indicatif,Futur,nous,nous dépêcherons,20,reviewed,pronominal paradigm manually normalized; imperative clitics and passé composé agreement curated; QA recommended
 FR,se dépêcher,Indicatif,Futur,vous,vous dépêcherez,20,reviewed,pronominal paradigm manually normalized; imperative clitics and passé composé agreement curated; QA recommended
 FR,se dépêcher,Indicatif,Futur,ils (elles),se dépêcheront,20,reviewed,pronominal paradigm manually normalized; imperative clitics and passé composé agreement curated; QA recommended
-FR,se dépêcher,Indicatif,Passé composé,je,me suis dépêché,20,reviewed,pronominal paradigm manually normalized; imperative clitics and passé composé agreement curated; QA recommended
-FR,se dépêcher,Indicatif,Passé composé,tu,t'es dépêché,20,reviewed,pronominal paradigm manually normalized; imperative clitics and passé composé agreement curated; QA recommended
-FR,se dépêcher,Indicatif,Passé composé,"il (elle, on)",s'est dépêché,20,reviewed,pronominal paradigm manually normalized; imperative clitics and passé composé agreement curated; QA recommended
-FR,se dépêcher,Indicatif,Passé composé,nous,nous sommes dépêchés,20,reviewed,pronominal paradigm manually normalized; imperative clitics and passé composé agreement curated; QA recommended
-FR,se dépêcher,Indicatif,Passé composé,vous,vous êtes dépêchés,20,reviewed,pronominal paradigm manually normalized; imperative clitics and passé composé agreement curated; QA recommended
-FR,se dépêcher,Indicatif,Passé composé,ils (elles),se sont dépêchés,20,reviewed,pronominal paradigm manually normalized; imperative clitics and passé composé agreement curated; QA recommended
+FR,se dépêcher,Indicatif,Passé composé,je,me suis dépêché(e),20,reviewed,pronominal paradigm manually normalized; imperative clitics and passé composé agreement curated; QA recommended
+FR,se dépêcher,Indicatif,Passé composé,tu,t'es dépêché(e),20,reviewed,pronominal paradigm manually normalized; imperative clitics and passé composé agreement curated; QA recommended
+FR,se dépêcher,Indicatif,Passé composé,"il (elle, on)",s'est dépêché(e),20,reviewed,pronominal paradigm manually normalized; imperative clitics and passé composé agreement curated; QA recommended
+FR,se dépêcher,Indicatif,Passé composé,nous,nous sommes dépêché(e)s,20,reviewed,pronominal paradigm manually normalized; imperative clitics and passé composé agreement curated; QA recommended
+FR,se dépêcher,Indicatif,Passé composé,vous,vous êtes dépêché(e)(s),20,reviewed,pronominal paradigm manually normalized; imperative clitics and passé composé agreement curated; QA recommended
+FR,se dépêcher,Indicatif,Passé composé,ils (elles),se sont dépêché(e)s,20,reviewed,pronominal paradigm manually normalized; imperative clitics and passé composé agreement curated; QA recommended
 FR,se dépêcher,Indicatif,Imparfait,je,me dépêchais,20,reviewed,pronominal paradigm manually normalized; imperative clitics and passé composé agreement curated; QA recommended
 FR,se dépêcher,Indicatif,Imparfait,tu,te dépêchais,20,reviewed,pronominal paradigm manually normalized; imperative clitics and passé composé agreement curated; QA recommended
 FR,se dépêcher,Indicatif,Imparfait,"il (elle, on)",se dépêchait,20,reviewed,pronominal paradigm manually normalized; imperative clitics and passé composé agreement curated; QA recommended
@@ -4331,12 +4331,12 @@ ES,torcer,Indicativo,Futuro,él,torcerá,20,reviewed,stem-changing orthographic 
 ES,torcer,Indicativo,Futuro,nosotros,torceremos,20,reviewed,stem-changing orthographic paradigm; QA recommended
 ES,torcer,Indicativo,Futuro,vosotros,torceréis,20,reviewed,stem-changing orthographic paradigm; QA recommended
 ES,torcer,Indicativo,Futuro,ellos,torcerán,20,reviewed,stem-changing orthographic paradigm; QA recommended
-ES,torcer,Indicativo,Pretérito perfecto compuesto,yo,he tuerto,20,reviewed,stem-changing orthographic paradigm; QA recommended
-ES,torcer,Indicativo,Pretérito perfecto compuesto,tú,has tuerto,20,reviewed,stem-changing orthographic paradigm; QA recommended
-ES,torcer,Indicativo,Pretérito perfecto compuesto,él,ha tuerto,20,reviewed,stem-changing orthographic paradigm; QA recommended
-ES,torcer,Indicativo,Pretérito perfecto compuesto,nosotros,hemos tuerto,20,reviewed,stem-changing orthographic paradigm; QA recommended
-ES,torcer,Indicativo,Pretérito perfecto compuesto,vosotros,habéis tuerto,20,reviewed,stem-changing orthographic paradigm; QA recommended
-ES,torcer,Indicativo,Pretérito perfecto compuesto,ellos,han tuerto,20,reviewed,stem-changing orthographic paradigm; QA recommended
+ES,torcer,Indicativo,Pretérito perfecto compuesto,yo,he torcido,20,reviewed,stem-changing orthographic paradigm; participle torcido; QA recommended
+ES,torcer,Indicativo,Pretérito perfecto compuesto,tú,has torcido,20,reviewed,stem-changing orthographic paradigm; participle torcido; QA recommended
+ES,torcer,Indicativo,Pretérito perfecto compuesto,él,ha torcido,20,reviewed,stem-changing orthographic paradigm; participle torcido; QA recommended
+ES,torcer,Indicativo,Pretérito perfecto compuesto,nosotros,hemos torcido,20,reviewed,stem-changing orthographic paradigm; participle torcido; QA recommended
+ES,torcer,Indicativo,Pretérito perfecto compuesto,vosotros,habéis torcido,20,reviewed,stem-changing orthographic paradigm; participle torcido; QA recommended
+ES,torcer,Indicativo,Pretérito perfecto compuesto,ellos,han torcido,20,reviewed,stem-changing orthographic paradigm; participle torcido; QA recommended
 ES,torcer,Indicativo,Pretérito imperfecto,yo,torcía,20,reviewed,stem-changing orthographic paradigm; QA recommended
 ES,torcer,Indicativo,Pretérito imperfecto,tú,torcías,20,reviewed,stem-changing orthographic paradigm; QA recommended
 ES,torcer,Indicativo,Pretérito imperfecto,él,torcía,20,reviewed,stem-changing orthographic paradigm; QA recommended
@@ -4355,12 +4355,12 @@ ES,torcer,Imperativo,Imperativo,él,tuerza,20,reviewed,stem-changing orthographi
 ES,torcer,Imperativo,Imperativo,nosotros,torzamos,20,reviewed,stem-changing orthographic paradigm; QA recommended
 ES,torcer,Imperativo,Imperativo,vosotros,torced,20,reviewed,stem-changing orthographic paradigm; QA recommended
 ES,torcer,Imperativo,Imperativo,ellos,tuerzan,20,reviewed,stem-changing orthographic paradigm; QA recommended
-ES,torcer,Indicativo,Futuro perfecto,yo,habré tuerto,20,reviewed,stem-changing orthographic paradigm; QA recommended
-ES,torcer,Indicativo,Futuro perfecto,tú,habrás tuerto,20,reviewed,stem-changing orthographic paradigm; QA recommended
-ES,torcer,Indicativo,Futuro perfecto,él,habrá tuerto,20,reviewed,stem-changing orthographic paradigm; QA recommended
-ES,torcer,Indicativo,Futuro perfecto,nosotros,habremos tuerto,20,reviewed,stem-changing orthographic paradigm; QA recommended
-ES,torcer,Indicativo,Futuro perfecto,vosotros,habréis tuerto,20,reviewed,stem-changing orthographic paradigm; QA recommended
-ES,torcer,Indicativo,Futuro perfecto,ellos,habrán tuerto,20,reviewed,stem-changing orthographic paradigm; QA recommended
+ES,torcer,Indicativo,Futuro perfecto,yo,habré torcido,20,reviewed,stem-changing orthographic paradigm; participle torcido; QA recommended
+ES,torcer,Indicativo,Futuro perfecto,tú,habrás torcido,20,reviewed,stem-changing orthographic paradigm; participle torcido; QA recommended
+ES,torcer,Indicativo,Futuro perfecto,él,habrá torcido,20,reviewed,stem-changing orthographic paradigm; participle torcido; QA recommended
+ES,torcer,Indicativo,Futuro perfecto,nosotros,habremos torcido,20,reviewed,stem-changing orthographic paradigm; participle torcido; QA recommended
+ES,torcer,Indicativo,Futuro perfecto,vosotros,habréis torcido,20,reviewed,stem-changing orthographic paradigm; participle torcido; QA recommended
+ES,torcer,Indicativo,Futuro perfecto,ellos,habrán torcido,20,reviewed,stem-changing orthographic paradigm; participle torcido; QA recommended
 ES,torcer,Subjuntivo,Subjuntivo presente,yo,tuerza,20,reviewed,stem-changing orthographic paradigm; QA recommended
 ES,torcer,Subjuntivo,Subjuntivo presente,tú,tuerzas,20,reviewed,stem-changing orthographic paradigm; QA recommended
 ES,torcer,Subjuntivo,Subjuntivo presente,él,tuerza,20,reviewed,stem-changing orthographic paradigm; QA recommended
@@ -4373,12 +4373,12 @@ ES,torcer,Indicativo,Pretérito perfecto simple,él,torció,20,reviewed,stem-cha
 ES,torcer,Indicativo,Pretérito perfecto simple,nosotros,torcimos,20,reviewed,stem-changing orthographic paradigm; QA recommended
 ES,torcer,Indicativo,Pretérito perfecto simple,vosotros,torcisteis,20,reviewed,stem-changing orthographic paradigm; QA recommended
 ES,torcer,Indicativo,Pretérito perfecto simple,ellos,torcieron,20,reviewed,stem-changing orthographic paradigm; QA recommended
-ES,torcer,Indicativo,Pretérito pluscuamperfecto,yo,había tuerto,20,reviewed,stem-changing orthographic paradigm; QA recommended
-ES,torcer,Indicativo,Pretérito pluscuamperfecto,tú,habías tuerto,20,reviewed,stem-changing orthographic paradigm; QA recommended
-ES,torcer,Indicativo,Pretérito pluscuamperfecto,él,había tuerto,20,reviewed,stem-changing orthographic paradigm; QA recommended
-ES,torcer,Indicativo,Pretérito pluscuamperfecto,nosotros,habíamos tuerto,20,reviewed,stem-changing orthographic paradigm; QA recommended
-ES,torcer,Indicativo,Pretérito pluscuamperfecto,vosotros,habíais tuerto,20,reviewed,stem-changing orthographic paradigm; QA recommended
-ES,torcer,Indicativo,Pretérito pluscuamperfecto,ellos,habían tuerto,20,reviewed,stem-changing orthographic paradigm; QA recommended
+ES,torcer,Indicativo,Pretérito pluscuamperfecto,yo,había torcido,20,reviewed,stem-changing orthographic paradigm; participle torcido; QA recommended
+ES,torcer,Indicativo,Pretérito pluscuamperfecto,tú,habías torcido,20,reviewed,stem-changing orthographic paradigm; participle torcido; QA recommended
+ES,torcer,Indicativo,Pretérito pluscuamperfecto,él,había torcido,20,reviewed,stem-changing orthographic paradigm; participle torcido; QA recommended
+ES,torcer,Indicativo,Pretérito pluscuamperfecto,nosotros,habíamos torcido,20,reviewed,stem-changing orthographic paradigm; participle torcido; QA recommended
+ES,torcer,Indicativo,Pretérito pluscuamperfecto,vosotros,habíais torcido,20,reviewed,stem-changing orthographic paradigm; participle torcido; QA recommended
+ES,torcer,Indicativo,Pretérito pluscuamperfecto,ellos,habían torcido,20,reviewed,stem-changing orthographic paradigm; participle torcido; QA recommended
 ES,arrastrarse,Indicativo,Presente,yo,me arrastro,20,reviewed,pronominal imperative accents curated; QA recommended
 ES,arrastrarse,Indicativo,Presente,tú,te arrastras,20,reviewed,pronominal imperative accents curated; QA recommended
 ES,arrastrarse,Indicativo,Presente,él,se arrastra,20,reviewed,pronominal imperative accents curated; QA recommended

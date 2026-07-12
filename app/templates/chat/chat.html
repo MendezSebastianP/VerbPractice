@@ -44,6 +44,7 @@
   </div>
 
   <form class="chat-form" @submit.prevent="send()">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
     <textarea x-model="message" rows="3" maxlength="1200" placeholder="Ask for a focused drill, a tense explanation, or a mini quiz."></textarea>
     <div class="chat-form-footer">
       <p class="muted small">Streaming uses Server-Sent Events and saves the conversation to the database.</p>

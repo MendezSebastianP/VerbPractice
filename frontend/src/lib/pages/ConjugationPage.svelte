@@ -3,6 +3,8 @@
   import { fade } from 'svelte/transition';
   import { api, ApiError } from '../api';
   import { playCue } from '../sound';
+  import { applyReward } from '../profile';
+  import { celebrateReward, flashMiss } from '../fx';
   import type { ConjugationState, LanguageConfig, RewardState } from '../types';
 
   export let csrfToken = '';
@@ -17,6 +19,7 @@
   let fillLevel = 'easy';
   let length = 5;
   let retryButton: HTMLButtonElement | null = null;
+  let submitButton: HTMLButtonElement | null = null;
   let finishedCard: HTMLElement | null = null;
   let selectedTenses: string[] = [];
   let answers: Record<string, Record<string, string>> = {};
@@ -268,6 +271,11 @@
         notify(state.feedback, state.result?.accuracy === 100 ? 'success' : 'info');
       }
       const rewardState = state.result?.gamification;
+      applyReward(rewardState);
+      celebrateReward(rewardState);
+      if (state.result?.accuracy !== undefined && state.result.accuracy < 100) {
+        flashMiss();
+      }
       if (soundEnabled) {
         if (rewardState?.leveled_up) {
           playCue('level');
@@ -446,7 +454,7 @@
               <span class="toggle-label">Difficulty</span>
               <div class="option-row wrap-row">
                 {#each ['easy', 'medium', 'hard', 'custom'] as item}
-                  <button class:option-on={level === item} class="option-chip" type="button" on:click={() => { level = item; syncSelection(); }}>{item}</button>
+                  <button class:option-on={level === item} class="option-chip" type="button" on:click={() => { level = item; syncSelection(); }}>{item[0].toUpperCase()}{item.slice(1)}</button>
                 {/each}
               </div>
             </div>
@@ -463,8 +471,11 @@
             <div class="toggle-group">
               <span class="toggle-label">Queue length</span>
               <div class="option-row wrap-row">
-                {#each [3, 5, 8] as option}
-                  <button class:option-on={length === option} class="option-chip" type="button" on:click={() => (length = option)}>{option} verbs</button>
+                {#each [3, 5, 8] as option, i}
+                  <button class:option-on={length === option} class="option-chip length-chip" type="button" on:click={() => (length = option)}>
+                    <span class="length-tier">{['Easy', 'Normal', 'Insane'][i]}</span>
+                    <strong class="length-count">{option} verbs</strong>
+                  </button>
                 {/each}
               </div>
             </div>
@@ -557,7 +568,7 @@
             </div>
 
             <div class="trainer-actions">
-              <button class="primary-button" type="button" on:click={submit} disabled={loading}>Submit and continue</button>
+              <button bind:this={submitButton} class="primary-button" type="button" on:click={submit} disabled={loading}>Submit and continue</button>
               <button class="ghost-button" type="button" on:click={finishSession} disabled={loading}>Finish session</button>
             </div>
           </article>

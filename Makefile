@@ -33,7 +33,7 @@ POSTGRES_PASSWORD ?= postgres
 POSTGRES_DB ?= verbpractice
 POSTGRES_PORT ?= 5432
 
-.PHONY: help up venv install check-venv env db-up db-wait db-down db-logs init-db migrate migrate-adopt migrate-stamp migration seed inventory batch-template import-curated validate-curated curated-report grant-admin spa-install spa-check spa-build visual-install e2e visual-check setup run health profile backup-db test validate smoke clean
+.PHONY: help up venv install ocr-models check-venv env db-up db-wait db-down db-logs init-db migrate migrate-adopt migrate-stamp migration seed inventory batch-template import-curated validate-curated curated-report grant-admin spa-install spa-check spa-build visual-install e2e visual-check setup run health profile backup-db test validate smoke clean
 
 help:
 	@printf "Important targets:\n"
@@ -84,6 +84,11 @@ venv:
 
 install: venv
 	$(PIP) install -e '.[dev]'
+
+ocr-models: check-venv
+	$(PYTHON) -c "from app.services.ocr_service import OCR_LANG_BY_CODE, _get_engine; \
+	[_get_engine(key) for key in dict.fromkeys(OCR_LANG_BY_CODE.values())]; \
+	print('OCR models ready.')"
 
 check-venv:
 	@if [ ! -x "$(PYTHON)" ]; then \

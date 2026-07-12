@@ -34,7 +34,7 @@ async def _fake_extract(data: bytes, lang: str) -> OcrResult:
 
 
 def test_ocr_endpoint_returns_extracted_text(client, smoke_user, monkeypatch):
-    monkeypatch.setattr("app.routers.words.extract_subtitle_text", _fake_extract)
+    monkeypatch.setattr("app.routers.words.extract_text", _fake_extract)
     csrf_token = _login(client, smoke_user)
     response = client.post(
         "/api/words/ocr",
@@ -46,7 +46,7 @@ def test_ocr_endpoint_returns_extracted_text(client, smoke_user, monkeypatch):
     assert payload["text"] == "hola mundo"
     assert payload["lines"] == ["hola mundo"]
     assert payload["mean_confidence"] == 91.5
-    assert payload["ocr_lang"] == "spa"
+    assert payload["ocr_lang"] == "es"
 
 
 def test_ocr_endpoint_rejects_bad_csrf(client, smoke_user):
@@ -91,11 +91,11 @@ def test_ocr_endpoint_rejects_oversized_upload(client, smoke_user):
     assert response.status_code == 413
 
 
-def test_ocr_endpoint_maps_missing_tesseract_to_503(client, smoke_user, monkeypatch):
+def test_ocr_endpoint_maps_missing_engine_to_503(client, smoke_user, monkeypatch):
     async def _unavailable(data: bytes, lang: str) -> OcrResult:
-        raise OcrUnavailableError("The tesseract binary is not installed.")
+        raise OcrUnavailableError("RapidOCR is not installed.")
 
-    monkeypatch.setattr("app.routers.words.extract_subtitle_text", _unavailable)
+    monkeypatch.setattr("app.routers.words.extract_text", _unavailable)
     csrf_token = _login(client, smoke_user)
     response = client.post(
         "/api/words/ocr",

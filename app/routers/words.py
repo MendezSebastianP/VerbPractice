@@ -32,10 +32,10 @@ from app.schemas.spa import (
 from app.services.gamification import ensure_user_preference
 from app.services.ocr_service import (
     MAX_UPLOAD_BYTES,
-    TESSERACT_LANG_BY_CODE,
+    OCR_LANG_BY_CODE,
     OcrError,
     OcrUnavailableError,
-    extract_subtitle_text,
+    extract_text,
 )
 from app.services.word_ai_service import WordAIError, expand_word, translate_word
 
@@ -229,8 +229,8 @@ async def ocr_extract(
 ):
     validate_csrf(request, csrf_token)
 
-    tesseract_lang = TESSERACT_LANG_BY_CODE.get(lang_code.lower())
-    if tesseract_lang is None:
+    lang_code = lang_code.lower()
+    if lang_code not in OCR_LANG_BY_CODE:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Unsupported OCR language: {lang_code}",
@@ -248,7 +248,7 @@ async def ocr_extract(
         )
 
     try:
-        result = await extract_subtitle_text(data, tesseract_lang)
+        result = await extract_text(data, lang_code)
     except OcrUnavailableError as exc:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(exc)
@@ -262,7 +262,7 @@ async def ocr_extract(
         text=result.text,
         lines=result.lines,
         mean_confidence=result.mean_confidence,
-        ocr_lang=tesseract_lang,
+        ocr_lang=lang_code,
     )
 
 

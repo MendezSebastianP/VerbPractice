@@ -443,24 +443,28 @@ html[data-theme='arcade'] {
     flex-shrink: 0;
   }
 
-  .nav-link:hover,
   .active-link,
-  .option-chip:hover,
-  .tense-chip:hover,
-  .option-on {
+  .option-on,
+  .icon-button-on {
     color: var(--text);
     background: var(--accent-soft);
     border-color: var(--line);
     transform: translateY(-1px);
   }
 
-  .home-button:hover,
-  .icon-button-on,
-  .user-chip-button:hover {
-    color: var(--text);
-    background: var(--accent-soft);
-    border-color: var(--line);
-    transform: translateY(-1px);
+  /* Hover-capable pointers only: on touch screens the hover state sticks
+     after a tap, making unselected chips look selected. */
+  @media (hover: hover) {
+    .nav-link:hover,
+    .option-chip:hover,
+    .tense-chip:hover,
+    .home-button:hover,
+    .user-chip-button:hover {
+      color: var(--text);
+      background: var(--accent-soft);
+      border-color: var(--line);
+      transform: translateY(-1px);
+    }
   }
 
   .nav-meta {
@@ -620,23 +624,24 @@ html[data-theme='arcade'] {
     transition: transform 200ms cubic-bezier(0.25, 0.8, 0.3, 1), box-shadow 200ms ease;
   }
 
+  /* Soft fill (Playground experiment 04, option B): translucent accent wash,
+     hairline border, accent text — no gradient, no pill. */
   .primary-button {
-    color: white;
-    border-color: transparent;
-    background: linear-gradient(135deg, var(--accent-strong), var(--accent), var(--accent-2));
-    box-shadow: var(--button-shadow);
+    color: var(--accent-strong);
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    background: var(--accent-soft);
+    border-radius: 12px;
   }
 
-  .primary-button:hover {
-    transform: scale(1.02);
+  @media (hover: hover) {
+    .primary-button:hover {
+      transform: translateY(-1px);
+    }
   }
 
   .primary-button:active {
-    transform: scale(0.98);
-  }
-
-  html[data-theme='arcade'] .primary-button {
-    color: var(--bg);
+    background: color-mix(in srgb, var(--accent) 28%, transparent);
+    transform: translateY(1px);
   }
 
   .secondary-button {

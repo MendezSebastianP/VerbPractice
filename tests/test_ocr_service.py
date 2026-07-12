@@ -1,18 +1,22 @@
 import asyncio
+import importlib.util
 import io
-import shutil
+from types import SimpleNamespace
 
+import numpy as np
 import pytest
-from PIL import Image, ImageDraw, ImageFont, ImageStat
+from PIL import Image, ImageDraw, ImageFont
 
 from app.services.ocr_service import (
-    TESSERACT_LANG_BY_CODE,
+    OCR_LANG_BY_CODE,
     OcrError,
+    OcrUnavailableError,
     _preprocess,
-    extract_subtitle_text,
+    _run,
+    extract_text,
 )
 
-TESSERACT_MISSING = shutil.which("tesseract") is None
+RAPIDOCR_MISSING = importlib.util.find_spec("rapidocr") is None
 
 
 def _to_bytes(img: Image.Image, fmt: str = "JPEG") -> bytes:
@@ -21,8 +25,8 @@ def _to_bytes(img: Image.Image, fmt: str = "JPEG") -> bytes:
     return buffer.getvalue()
 
 
-def _subtitle_image(text: str) -> bytes:
-    """A synthetic TV frame: dark background, white subtitle with black stroke."""
+def _text_image(text: str) -> bytes:
+    """A synthetic photo: dark background, white text with black stroke."""
     img = Image.new("RGB", (1280, 720), (25, 22, 30))
     draw = ImageDraw.Draw(img)
     try:
@@ -31,27 +35,28 @@ def _subtitle_image(text: str) -> bytes:
         )
     except OSError:
         font = ImageFont.load_default(size=42)
-    draw.text((160, 600), text, font=font, fill="white", stroke_width=3, stroke_fill="black")
+    draw.text((160, 340), text, font=font, fill="white", stroke_width=3, stroke_fill="black")
     return _to_bytes(img)
 
 
+class _FakeEngine:
+    def __init__(self, txts, scores):
+        self._output = SimpleNamespace(txts=txts, scores=scores)
+
+    def __call__(self, img):
+        return self._output
+
+
 def test_language_mapping_covers_app_languages():
-    assert TESSERACT_LANG_BY_CODE == {"en": "eng", "es": "spa", "fr": "fra", "ru": "rus"}
+    assert OCR_LANG_BY_CODE == {"en": "en", "es": "latin", "fr": "latin", "ru": "cyrillic"}
 
 
-def test_preprocess_downscales_and_grayscales():
+def test_preprocess_downscales_and_returns_bgr_array():
     big = Image.new("RGB", (4000, 2200), (120, 130, 140))
     processed = _preprocess(_to_bytes(big))
-    assert processed.mode == "L"
-    assert max(processed.size) <= 1600
-
-
-def test_preprocess_inverts_dark_images():
-    dark = Image.new("RGB", (400, 300), (10, 10, 10))
-    draw = ImageDraw.Draw(dark)
-    draw.rectangle((0, 0, 60, 300), fill=(240, 240, 240))
-    processed = _preprocess(_to_bytes(dark))
-    assert ImageStat.Stat(processed).mean[0] > 128
+    assert isinstance(processed, np.ndarray)
+    assert processed.ndim == 3 and processed.shape[2] == 3
+    assert max(processed.shape[:2]) <= 1600
 
 
 def test_preprocess_rejects_garbage_bytes():
@@ -65,18 +70,42 @@ def test_preprocess_rejects_huge_resolution():
         _preprocess(_to_bytes(huge, fmt="PNG"))
 
 
-@pytest.mark.skipif(TESSERACT_MISSING, reason="tesseract binary not installed")
-def test_extract_reads_subtitle_image():
-    data = _subtitle_image("the quick brown fox jumps")
-    result = asyncio.run(extract_subtitle_text(data, "eng"))
+def test_run_filters_low_score_lines_and_scales_confidence():
+    engine = _FakeEngine(["good line", "  ", "noise"], [0.96, 0.9, 0.2])
+    result = _run(engine, np.zeros((10, 10, 3), dtype=np.uint8))
+    assert result.lines == ["good line"]
+    assert result.text == "good line"
+    assert result.mean_confidence == 96.0
+
+
+def test_run_handles_empty_output():
+    engine = _FakeEngine(None, None)
+    result = _run(engine, np.zeros((10, 10, 3), dtype=np.uint8))
+    assert result.text == ""
+    assert result.lines == []
+    assert result.mean_confidence is None
+
+
+def test_extract_unknown_language_raises():
+    with pytest.raises(OcrError):
+        asyncio.run(extract_text(_text_image("hello"), "de"))
+
+
+@pytest.mark.skipif(RAPIDOCR_MISSING, reason="rapidocr not installed")
+def test_extract_reads_text_image():
+    data = _text_image("the quick brown fox jumps")
+    try:
+        result = asyncio.run(extract_text(data, "en"))
+    except OcrUnavailableError as exc:
+        pytest.skip(f"OCR models unavailable: {exc}")
     found = result.text.lower()
     for word in ("quick", "brown", "fox"):
         assert word in found
     assert result.lines
-    assert result.mean_confidence is not None and result.mean_confidence > 40
+    assert result.mean_confidence is not None and result.mean_confidence > 50
 
 
-@pytest.mark.skipif(TESSERACT_MISSING, reason="tesseract binary not installed")
+@pytest.mark.skipif(RAPIDOCR_MISSING, reason="rapidocr not installed")
 def test_extract_garbage_raises_ocr_error():
     with pytest.raises(OcrError):
-        asyncio.run(extract_subtitle_text(b"not an image", "eng"))
+        asyncio.run(extract_text(b"not an image", "en"))

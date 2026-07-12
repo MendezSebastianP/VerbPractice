@@ -5,8 +5,8 @@
 - Keep PostgreSQL outside the app process and enable daily backups.
 - Build the SPA bundle before deploys with `make spa-build`.
 - Point health checks to `/healthz` and readiness checks to `/readyz`.
-- Install Tesseract for the photo OCR feature:
-  `apt install tesseract-ocr tesseract-ocr-eng tesseract-ocr-fra tesseract-ocr-spa tesseract-ocr-rus`.
+- Prefetch the photo-OCR models once after installing deps: `make ocr-models`
+  (RapidOCR downloads ~15 MB per language on first use otherwise).
 
 ## Environment
 - `APP_ENV=production`

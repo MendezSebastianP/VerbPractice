@@ -28,15 +28,13 @@ pip install -e .[dev]
 cp .env.example .env
 ```
 
-The photo-based Add Word flow (`/app/photo-word`) reads TV-subtitle photos with a
-local Tesseract OCR install. Install the binary plus the language packs for the
-four supported languages:
-
-```bash
-sudo apt install tesseract-ocr tesseract-ocr-eng tesseract-ocr-fra tesseract-ocr-spa tesseract-ocr-rus
-```
-
-Without them, `/api/words/ocr` responds `503` and the rest of the app works normally.
+The photo-based Add Word flow (`/app/photo-word`) reads photographed text with
+RapidOCR (PP-OCR ONNX models on CPU) — installed automatically with the Python
+dependencies, no system packages needed. The first photo per language downloads
+its recognition model (~15 MB) into the package cache; run
+`make ocr-models` once after install to prefetch all of them so the feature
+also works offline. If the models can't be fetched, `/api/words/ocr` responds
+`503` and the rest of the app works normally.
 
 The default env keeps `DATABASE_USE_NULL_POOL=true` so async Postgres behaves reliably during local development and test runs.
 

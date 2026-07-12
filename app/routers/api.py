@@ -517,7 +517,7 @@ async def register(
     user = User(username=username, password_hash=hash_password(payload.password))
     db.add(user)
     await db.flush()
-    profile = UserProfile(user_id=user.id, xp=0, level=1, streak_days=0, theme_preference="light")
+    profile = UserProfile(user_id=user.id, xp=0, level=1, streak_days=0, theme_preference="arcade")
     db.add(profile)
     await ensure_gamification_catalog(db)
     await ensure_user_preference(db, user.id)
@@ -542,7 +542,7 @@ async def update_theme(
     auth=Depends(require_auth_context),
 ):
     validate_csrf(request, payload.csrf_token)
-    theme = payload.theme if payload.theme in {"light", "dark", "arcade"} else "light"
+    theme = payload.theme if payload.theme in {"light", "dark", "arcade"} else "arcade"
     auth.profile.theme_preference = theme
     await db.commit()
     return JSONResponse({"ok": True, "theme": theme})

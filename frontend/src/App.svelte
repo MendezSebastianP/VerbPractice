@@ -9,7 +9,6 @@
   import DashboardPage from './lib/pages/DashboardPage.svelte';
   import GameFx from './lib/components/GameFx.svelte';
   import MonitorPage from './lib/pages/MonitorPage.svelte';
-  import PhotoWordPage from './lib/pages/PhotoWordPage.svelte';
   import PlaygroundPage from './lib/pages/PlaygroundPage.svelte';
   import SetsPage from './lib/pages/SetsPage.svelte';
   import TranslationPage from './lib/pages/TranslationPage.svelte';
@@ -29,7 +28,7 @@
 
   let booting = true;
   let boot: BootPayload | null = null;
-  let theme: ThemeName = 'light';
+  let theme: ThemeName = 'arcade';
   let soundEnabled = false;
   let toasts: Toast[] = [];
 
@@ -75,6 +74,10 @@
     }
     if (boot.authenticated && $route === '/settings') {
       navigate('/dashboard', { replace: true });
+    }
+    if (boot.authenticated && $route === '/photo-word') {
+      // Photo capture moved into Add Word (Experiment 05); keep old links alive.
+      navigate('/add-word', { replace: true });
     }
     if (!boot.authenticated && !isAuthRoute($route) && $route !== '/playground') {
       navigate('/login', { replace: true });
@@ -147,7 +150,7 @@
     <a class="skip-link" href="#main-content">Skip to content</a>
     <GameFx />
     {#if boot?.authenticated && boot.user && !isAuthRoute($route)}
-      <NavBar routePath={$route} user={boot.user} />
+      <NavBar routePath={$route} />
     {/if}
 
     <main class="workspace-shell" id="main-content">
@@ -176,8 +179,6 @@
             <ChatPage csrfToken={boot.csrf_token} {notify} />
           {:else if $route === '/add-word'}
             <AddWordPage csrfToken={boot.csrf_token} {theme} {notify} />
-          {:else if $route === '/photo-word'}
-            <PhotoWordPage csrfToken={boot.csrf_token} {notify} />
           {:else if $route === '/sets'}
             <SetsPage csrfToken={boot.csrf_token} {notify} />
           {:else if $route === '/community'}

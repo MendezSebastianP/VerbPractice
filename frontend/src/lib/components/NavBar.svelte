@@ -2,20 +2,16 @@
   import { onMount, tick } from 'svelte';
   import { href, navigate } from '../router';
   import { profile } from '../profile';
-  import type { UserState } from '../types';
 
   export let routePath = '/dashboard';
-  export let user: UserState;
 
+  // Sets, Community, AI Tutor and Monitor are parked until they earn a slot —
+  // eight links overflowed the desktop rail. The routes stay reachable by URL.
   const links = [
     { path: '/dashboard', label: 'Home' },
     { path: '/training/words', label: 'Words' },
     { path: '/training/verbs', label: 'Verb Lab' },
     { path: '/add-word', label: 'Add Word' },
-    { path: '/sets', label: 'Sets' },
-    { path: '/community', label: 'Community' },
-    { path: '/chat', label: 'AI Tutor' },
-    ...(user.is_admin ? [{ path: '/monitor', label: 'Monitor' }] : []),
   ];
 
   // Flame grows with streak length (report.md §9.6): 5+ and 14+ days step it up.

@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     )
     database_use_null_pool: bool = Field(default=True, alias="DATABASE_USE_NULL_POOL")
     openai_api_key: str | None = Field(default=None, alias="OPENAI_API_KEY")
-    default_theme: str = Field(default="light", alias="DEFAULT_THEME")
+    default_theme: str = Field(default="arcade", alias="DEFAULT_THEME")
     rate_limit_per_minute: int = Field(default=80, alias="RATE_LIMIT_PER_MINUTE")
     log_level: str = Field(default="INFO", alias="LOG_LEVEL")
     request_id_header: str = Field(default="X-Request-ID", alias="REQUEST_ID_HEADER")

@@ -5,7 +5,8 @@
   import { navigate } from '../router';
   import { playCue } from '../sound';
   import { applyReward } from '../profile';
-  import { celebrateReward, flashMiss, fxQueue } from '../fx';
+  import { celebrateReward, flashMiss, fxQueue, popEl } from '../fx';
+  import DirectionPicker from '../components/DirectionPicker.svelte';
   import HelpTip from '../components/HelpTip.svelte';
   import PlayGrid from '../components/PlayGrid.svelte';
   import PlayMist from '../components/PlayMist.svelte';
@@ -31,13 +32,33 @@
   let finishSessionWarning = false;
   let escTimer: ReturnType<typeof setTimeout> | null = null;
 
+  // Desktop fullscreen. While active the browser owns Esc (it exits
+  // fullscreen), so the finish/menu shortcuts move to Ctrl+Space.
+  let isFullscreen = false;
+
+  function syncFullscreen(): void {
+    isFullscreen = Boolean(document.fullscreenElement);
+  }
+
+  async function toggleFullscreen(): Promise<void> {
+    try {
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+      } else {
+        await document.documentElement.requestFullscreen();
+      }
+    } catch {
+      // Request can be denied (permissions policy) — state stays synced via fullscreenchange.
+    }
+  }
+
   // Ctrl+Space ×2 hint shortcut (ctrlSpaceArmed lights up the Hint chip after tap 1)
   let ctrlSpaceCount = 0;
   let ctrlSpaceTimer: ReturnType<typeof setTimeout> | null = null;
   let ctrlSpaceArmed = false;
 
   // Button refs for programmatic pop animation on keyboard shortcuts
-  let swapButtonEl: HTMLButtonElement | null = null;
+  let directionRef: DirectionPicker | null = null;
   let hintButton: HTMLButtonElement | null = null;
   let skipButton: HTMLButtonElement | null = null;
   let finishButton: HTMLButtonElement | null = null;
@@ -51,7 +72,6 @@
 
   // Static lookup tables
   const LANG_KEY: Record<string, string> = { e: 'EN', s: 'ES', r: 'RU', f: 'FR' };
-  const LANG_SHORTCUT: Record<string, string> = { EN: 'E', ES: 'S', RU: 'R', FR: 'F' };
   const LENGTH_OPTS: number[] = [5, 10, 20];
   const LENGTH_TIERS: string[] = ['Easy', 'Normal', 'Insane'];
   const DIFF_STARS: string[] = ['★★☆☆☆', '★★★☆☆', '★★★★★'];
@@ -141,8 +161,6 @@
   let userSettings: UserSettings | null = null;
   let sourceCode = '';
   let targetCode = '';
-  let sourceTileOpen = false;
-  let targetTileOpen = false;
 
   let setScope: WordSetSummary | null = null;
 
@@ -153,14 +171,6 @@
       currentQuestionId = qid;
       wrongAttempts = 0;
     }
-  }
-
-  function popEl(el: HTMLElement | null): void {
-    if (!el) return;
-    el.classList.remove('btn-pop');
-    void el.offsetWidth; // reflow to restart animation
-    el.classList.add('btn-pop');
-    el.addEventListener('animationend', () => el.classList.remove('btn-pop'), { once: true });
   }
 
   function readSetIdFromUrl(): number | null {
@@ -297,6 +307,12 @@
   }
 
   onMount(load);
+
+  onMount(() => {
+    syncFullscreen();
+    document.addEventListener('fullscreenchange', syncFullscreen);
+    return () => document.removeEventListener('fullscreenchange', syncFullscreen);
+  });
 
   // Fetch a fresh session but let the caller decide when to swap it in — the
   // launch transitions depend on applying the new state at an exact moment.
@@ -580,15 +596,24 @@
       return;
     }
 
-    // Escape on stage clear: back to menu (single press, per the design)
-    if (event.key === 'Escape' && sessionDone && !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
+    // Escape on stage clear: back to menu (single press, per the design).
+    // Not in fullscreen — there Esc belongs to the browser (exit fullscreen).
+    if (event.key === 'Escape' && sessionDone && !isFullscreen && !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
       event.preventDefault();
       revealSetup();
       return;
     }
 
-    // Escape during active session: finish (double Esc via handleFinishClick)
-    if (event.key === 'Escape' && state?.session && !sessionDone && !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
+    // Ctrl+Space on stage clear while fullscreen: back to menu
+    if (isFullscreen && sessionDone && event.code === 'Space' && event.ctrlKey && !event.altKey && !event.metaKey) {
+      event.preventDefault();
+      revealSetup();
+      return;
+    }
+
+    // Escape during active session: finish (double Esc via handleFinishClick).
+    // In fullscreen the finish shortcut is Ctrl+Space ×2 instead (below).
+    if (event.key === 'Escape' && state?.session && !sessionDone && !isFullscreen && !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
       event.preventDefault();
       handleFinishClick();
       return;
@@ -603,7 +628,7 @@
       if (event.code === 'Space' && event.ctrlKey && !event.altKey && !event.metaKey) {
         event.preventDefault();
         swapDirection();
-        popEl(swapButtonEl);
+        directionRef?.popSwap();
         return;
       }
 
@@ -634,17 +659,22 @@
         }
 
         if (event.key === 'Escape') {
-          sourceTileOpen = false;
-          targetTileOpen = false;
+          directionRef?.closeMenus();
           return;
         }
       }
     }
 
-    // Ctrl+Space ×2 OR F2 → hint (during active session)
+    // During an active session: Ctrl+Space ×2 finishes when fullscreen (Esc is
+    // taken by the browser there), otherwise it double-taps into a hint. F2
+    // always hints.
     if (state?.session && !sessionDone && !event.altKey && !event.metaKey) {
       if (event.code === 'Space' && event.ctrlKey) {
         event.preventDefault();
+        if (isFullscreen) {
+          handleFinishClick();
+          return;
+        }
         ctrlSpaceCount++;
         if (ctrlSpaceTimer) clearTimeout(ctrlSpaceTimer);
         if (ctrlSpaceCount >= 2) {
@@ -754,6 +784,21 @@
         <article class="glass-panel strong-panel trainer-card setup-card">
           <div class="floaty-dot" aria-hidden="true"></div>
           <div class="card-help-row">
+            <button
+              class="fs-toggle"
+              type="button"
+              aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+              title={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+              on:click={() => void toggleFullscreen()}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                {#if isFullscreen}
+                  <path d="M8 3v3a2 2 0 0 1-2 2H3" /><path d="M21 8h-3a2 2 0 0 1-2-2V3" /><path d="M3 16h3a2 2 0 0 1 2 2v3" /><path d="M16 21v-3a2 2 0 0 1 2-2h3" />
+                {:else}
+                  <path d="M8 3H5a2 2 0 0 0-2 2v3" /><path d="M16 3h3a2 2 0 0 1 2 2v3" /><path d="M8 21H5a2 2 0 0 1-2-2v-3" /><path d="M16 21h3a2 2 0 0 0 2-2v-3" />
+                {/if}
+              </svg>
+            </button>
             <HelpTip label="How sessions work">
               <h4>How a practice session works</h4>
               <p>
@@ -779,6 +824,7 @@
                 <li><kbd>E</kbd>/<kbd>S</kbd>/<kbd>R</kbd>/<kbd>F</kbd> — prompt language · add <kbd>Shift</kbd> for the answer language</li>
                 <li><kbd>Ctrl</kbd>+<kbd>Space</kbd> — swap direction · <kbd>Enter</kbd> — launch</li>
                 <li><kbd>F2</kbd> — hint · <kbd>Alt</kbd>+<kbd>Enter</kbd> — skip · <kbd>Esc</kbd> ×2 — finish</li>
+                <li>In fullscreen <kbd>Esc</kbd> leaves fullscreen, so finish becomes <kbd>Ctrl</kbd>+<kbd>Space</kbd> ×2</li>
               </ul>
             </HelpTip>
           </div>
@@ -807,96 +853,12 @@
             {/each}
           </div>
 
-          {#if sourceTileOpen || targetTileOpen}
-            <button
-              class="dd-backdrop"
-              type="button"
-              aria-label="Close language menu"
-              on:click={() => { sourceTileOpen = false; targetTileOpen = false; }}
-            ></button>
-          {/if}
-
-          <div class="lang-grid">
-            <div>
-              <p class="toggle-label">Prompt language</p>
-              <div class="lang-select">
-                <button
-                  class="lang-button"
-                  type="button"
-                  aria-expanded={sourceTileOpen}
-                  on:click={() => { sourceTileOpen = !sourceTileOpen; targetTileOpen = false; }}
-                >
-                  <span class="lang-name">
-                    {languageByCode(sourceCode)?.name || sourceCode || '—'}
-                    {#if LANG_SHORTCUT[sourceCode]}<span class="kbd-chip">{LANG_SHORTCUT[sourceCode]}</span>{/if}
-                  </span>
-                  <span class="lang-chev" style={`transform: rotate(${sourceTileOpen ? 180 : 0}deg);`}>▼</span>
-                </button>
-                {#if sourceTileOpen}
-                  <div class="lang-menu">
-                    {#each languages as lang}
-                      <button
-                        class="lang-option"
-                        type="button"
-                        on:click={() => { sourceCode = lang.code; sourceTileOpen = false; }}
-                        disabled={lang.code === targetCode}
-                      >
-                        <span>{lang.name}</span>
-                        <span class="kbd-chip">{LANG_SHORTCUT[lang.code] ?? ''}</span>
-                      </button>
-                    {/each}
-                  </div>
-                {/if}
-              </div>
-            </div>
-
-            <div class="swap-cluster">
-              <button
-                bind:this={swapButtonEl}
-                class="swap-round-button"
-                type="button"
-                aria-label="Swap direction"
-                title="Swap"
-                on:click={() => { swapDirection(); popEl(swapButtonEl); }}
-              >
-                ⇄
-              </button>
-              <span class="kbd-chip">Ctrl+Space</span>
-            </div>
-
-            <div>
-              <p class="toggle-label">Answer language</p>
-              <div class="lang-select">
-                <button
-                  class="lang-button"
-                  type="button"
-                  aria-expanded={targetTileOpen}
-                  on:click={() => { targetTileOpen = !targetTileOpen; sourceTileOpen = false; }}
-                >
-                  <span class="lang-name">
-                    {languageByCode(targetCode)?.name || targetCode || '—'}
-                    {#if LANG_SHORTCUT[targetCode]}<span class="kbd-chip">⇧{LANG_SHORTCUT[targetCode]}</span>{/if}
-                  </span>
-                  <span class="lang-chev" style={`transform: rotate(${targetTileOpen ? 180 : 0}deg);`}>▼</span>
-                </button>
-                {#if targetTileOpen}
-                  <div class="lang-menu">
-                    {#each languages as lang}
-                      <button
-                        class="lang-option"
-                        type="button"
-                        on:click={() => { targetCode = lang.code; targetTileOpen = false; }}
-                        disabled={lang.code === sourceCode}
-                      >
-                        <span>{lang.name}</span>
-                        <span class="kbd-chip">⇧{LANG_SHORTCUT[lang.code] ?? ''}</span>
-                      </button>
-                    {/each}
-                  </div>
-                {/if}
-              </div>
-            </div>
-          </div>
+          <DirectionPicker
+            bind:this={directionRef}
+            bind:sourceCode
+            bind:targetCode
+            {languages}
+          />
 
           <p class="route-label">{languageByCode(sourceCode)?.name || sourceCode} → {languageByCode(targetCode)?.name || targetCode}</p>
 
@@ -988,9 +950,26 @@
             <div class="session-top">
               <span class="session-meta">{ds?.progress_current ?? 0}/{ds?.progress_total ?? 0}</span>
               <span class="session-meta">{routeCode}</span>
-              {#key ds?.combo}
-                <span class="combo-chip" class:combo-swell={(ds?.combo ?? 0) > 1}>combo ×{ds?.combo ?? 0}</span>
-              {/key}
+              <span class="session-top-end">
+                {#key ds?.combo}
+                  <span class="combo-chip" class:combo-swell={(ds?.combo ?? 0) > 1}>combo ×{ds?.combo ?? 0}</span>
+                {/key}
+                <button
+                  class="fs-toggle fs-toggle-session"
+                  type="button"
+                  aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+                  title={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+                  on:click={() => void toggleFullscreen()}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    {#if isFullscreen}
+                      <path d="M8 3v3a2 2 0 0 1-2 2H3" /><path d="M21 8h-3a2 2 0 0 1-2-2V3" /><path d="M3 16h3a2 2 0 0 1 2 2v3" /><path d="M16 21v-3a2 2 0 0 1 2-2h3" />
+                    {:else}
+                      <path d="M8 3H5a2 2 0 0 0-2 2v3" /><path d="M16 3h3a2 2 0 0 1 2 2v3" /><path d="M8 21H5a2 2 0 0 1-2-2v-3" /><path d="M16 21h3a2 2 0 0 0 2-2v-3" />
+                    {/if}
+                  </svg>
+                </button>
+              </span>
             </div>
 
             {#key dq?.item_id}
@@ -1047,7 +1026,7 @@
                   on:click={handleFinishClick}
                   disabled={loading}
                 >
-                  <span class="kbd-chip" class:kbd-chip-armed={finishSessionWarning}>{finishSessionWarning ? 'Esc ×1' : 'Esc ×2'}</span> finish
+                  <span class="kbd-chip" class:kbd-chip-armed={finishSessionWarning}>{isFullscreen ? (finishSessionWarning ? 'Ctrl+Space ×1' : 'Ctrl+Space ×2') : (finishSessionWarning ? 'Esc ×1' : 'Esc ×2')}</span> finish
                 </button>
               </div>
             </form>
@@ -1083,7 +1062,7 @@
               ▶ Replay <span class="kbd-chip">Enter</span>
             </button>
             <button class="secondary-button" type="button" on:click={revealSetup} disabled={loading}>
-              Menu <span class="kbd-chip">Esc</span>
+              Menu <span class="kbd-chip">{isFullscreen ? 'Ctrl+Space' : 'Esc'}</span>
             </button>
           </div>
         </article>
@@ -1111,7 +1090,50 @@
   .card-help-row {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
     margin-bottom: -0.5rem;
+  }
+
+  /* Fullscreen is a desktop affordance — pointless chrome on phones/tablets */
+  .fs-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+  }
+
+  .fs-toggle svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  @media (hover: hover) {
+    .fs-toggle:hover {
+      color: var(--text);
+      border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+      background: var(--accent-soft);
+    }
+  }
+
+  @media (pointer: coarse), (max-width: 760px) {
+    .fs-toggle {
+      display: none;
+    }
+  }
+
+  .session-top-end {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
   }
 
   .scope-banner {
@@ -1274,130 +1296,6 @@
   }
 
   /* Language dropdowns */
-  .dd-backdrop {
-    position: fixed;
-    inset: 0;
-    z-index: 25;
-    background: transparent;
-    border: 0;
-    cursor: default;
-  }
-
-  .lang-grid {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    gap: 16px;
-    align-items: end;
-  }
-
-  .lang-select {
-    position: relative;
-    margin-top: 0.5rem;
-  }
-
-  .lang-button {
-    cursor: pointer;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: color-mix(in srgb, var(--surface-strong) 85%, transparent);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 12px 14px;
-    color: var(--text);
-    font-size: 1rem;
-    transition: border-color 0.25s, box-shadow 0.25s;
-  }
-
-  .lang-button:hover {
-    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
-    box-shadow: 0 4px 14px -6px color-mix(in srgb, var(--accent) 40%, transparent);
-  }
-
-  .lang-name {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    min-width: 0;
-  }
-
-  .lang-chev {
-    color: var(--accent);
-    font-size: 11px;
-    transition: transform 0.25s;
-    flex-shrink: 0;
-  }
-
-  .lang-menu {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: calc(100% + 6px);
-    z-index: 30;
-    background: var(--surface-strong);
-    border: 1px solid var(--line-strong);
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    max-height: 180px;
-    overflow-y: auto;
-    animation: dd-open 0.18s ease-out;
-    backdrop-filter: blur(14px);
-  }
-
-  @keyframes dd-open {
-    0% { opacity: 0; transform: translateY(-8px); }
-    100% { opacity: 1; transform: translateY(0); }
-  }
-
-  .lang-option {
-    cursor: pointer;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: transparent;
-    border: 0;
-    padding: 11px 14px;
-    color: var(--text);
-    font-size: 0.95rem;
-  }
-
-  .lang-option:hover:not(:disabled) {
-    background: var(--accent-soft);
-  }
-
-  .lang-option:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-
-  .swap-cluster {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    padding-bottom: 2px;
-  }
-
-  .swap-round-button {
-    cursor: pointer;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    border: 1px solid var(--line);
-    background: color-mix(in srgb, var(--surface-strong) 85%, transparent);
-    color: var(--accent);
-    font-size: 17px;
-    transition: background 0.3s, color 0.3s, transform 0.4s;
-  }
-
-  .swap-round-button:hover {
-    background: var(--accent);
-    color: white;
-    transform: rotate(180deg);
-  }
-
   .route-label {
     text-align: center;
     font-size: 0.95rem;
@@ -1515,18 +1413,6 @@
   .sets-teaser-link {
     margin-left: auto;
     white-space: nowrap;
-  }
-
-  /* Keyboard shortcut pop — spring bounce on programmatic trigger */
-  @keyframes btn-pop {
-    0%   { transform: scale(1); }
-    30%  { transform: scale(0.88); }
-    65%  { transform: scale(1.08); }
-    100% { transform: scale(1); }
-  }
-
-  :global(.btn-pop) {
-    animation: btn-pop 0.24s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   button:active:not(:disabled) {
@@ -2098,16 +1984,6 @@
   }
 
   @media (max-width: 560px) {
-    .lang-grid {
-      grid-template-columns: 1fr;
-      gap: 10px;
-    }
-
-    .swap-cluster {
-      flex-direction: row;
-      justify-content: center;
-    }
-
     .menu-head {
       flex-direction: column;
     }

@@ -103,7 +103,7 @@ class UserProfile(Base):
     level: Mapped[int] = mapped_column(Integer, default=1)
     streak_days: Mapped[int] = mapped_column(Integer, default=0)
     last_active_date: Mapped[date | None] = mapped_column(Date, nullable=True)
-    theme_preference: Mapped[str] = mapped_column(String(16), default="light")
+    theme_preference: Mapped[str] = mapped_column(String(16), default="arcade")
 
     user: Mapped[User] = relationship("User", back_populates="profile")
 

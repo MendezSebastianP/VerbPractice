@@ -24,6 +24,16 @@ export function flashMiss(): void {
   missFlash.update((n) => n + 1);
 }
 
+// Restartable "pop" feedback for buttons triggered via keyboard shortcuts
+// (the .btn-pop animation lives in app.css).
+export function popEl(el: HTMLElement | null): void {
+  if (!el) return;
+  el.classList.remove('btn-pop');
+  void el.offsetWidth; // reflow to restart animation
+  el.classList.add('btn-pop');
+  el.addEventListener('animationend', () => el.classList.remove('btn-pop'), { once: true });
+}
+
 export function dismissOverlay(id: number): void {
   fxQueue.update((queue) => queue.filter((overlay) => overlay.id !== id));
 }

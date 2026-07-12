@@ -2,7 +2,7 @@
   // Public experiment bench (/playground) — no login required. Anything we
   // want to evaluate before shipping gets a section here; once a winner ships,
   // the experiment is cleaned out (past ones live in git history: answer
-  // feedback, logos, word selection, primary button).
+  // feedback, logos, word selection, primary button, photo capture entry).
   import { navigate } from '../router';
 
   function setTheme(next: 'light' | 'dark' | 'arcade'): void {

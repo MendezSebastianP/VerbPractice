@@ -1094,7 +1094,7 @@
 
   .column-row label strong {
     color: white;
-    font-size: 0.82rem;
+    font-size: clamp(1rem, 2.4vw, 1.16rem);
     font-weight: 800;
   }
 
@@ -1193,7 +1193,7 @@
   .answer-correction strong {
     overflow: hidden;
     color: white;
-    font-size: 0.72rem;
+    font-size: clamp(0.9rem, 2.2vw, 1.05rem);
     text-overflow: ellipsis;
   }
 
@@ -1213,7 +1213,7 @@
   .answer-correction del {
     overflow: hidden;
     color: rgba(255, 255, 255, 0.48);
-    font-size: 0.62rem;
+    font-size: 0.82rem;
     text-decoration-color: #ff7188;
     text-decoration-thickness: 2px;
     text-overflow: ellipsis;

@@ -18,9 +18,11 @@
     ? 'conjugation'
     : 'translation';
   let lastRoutePath = routePath;
+  let tableSessionActive = false;
 
   $: if (routePath !== lastRoutePath) {
     lastRoutePath = routePath;
+    tableSessionActive = false;
     view = routePath === '/training/conjugation' || routePath.startsWith('/training/verbs/conjugation')
       ? 'conjugation'
       : 'translation';
@@ -28,13 +30,15 @@
 
   function openView(nextView: VerbView): void {
     view = nextView;
+    tableSessionActive = false;
     const query = nextView === 'conjugation' ? '?mode=tables' : '';
     window.history.replaceState({}, '', `${href('/training/verbs')}${query}`);
   }
 </script>
 
 <section class="verb-lab-shell">
-  <header class="glass-panel verb-lab-header">
+  {#if !tableSessionActive}
+    <header class="glass-panel verb-lab-header">
     <div class="verb-lab-copy">
       <p class="eyebrow">Verb lab</p>
       <h1>Choose how you want to train verbs.</h1>
@@ -77,11 +81,12 @@
         <small>Tense by tense</small>
       </button>
     </div>
-  </header>
+    </header>
+  {/if}
 
   {#if view === 'translation'}
     <TranslationPage mode="verbs" {csrfToken} {soundEnabled} {theme} {notify} />
   {:else}
-    <ConjugationPage {csrfToken} {soundEnabled} {notify} />
+    <ConjugationPage {csrfToken} {soundEnabled} {notify} onSessionActiveChange={(active) => (tableSessionActive = active)} />
   {/if}
 </section>

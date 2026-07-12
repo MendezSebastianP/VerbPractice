@@ -409,6 +409,9 @@ async def test_conjugation_multiple_wrong_pronouns_all_change_tense_score(seeded
     ).scalar_one()
 
     assert result["finished"] is True
+    assert result["session_score"] == pytest.approx(session.score)
+    assert result["session_length"] == 1
+    assert result["best_combo"] == session.config["best_combo"]
     assert progress.extra_data["tense_scores"]["Présent"] == pytest.approx(966.6666666667)
     assert progress.probability == pytest.approx(966.6666666667)
     assert item.multiplier_applied == pytest.approx(0.9666666667)

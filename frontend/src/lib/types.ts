@@ -296,6 +296,9 @@ export interface ConjugationState {
     accuracy?: number;
     correct?: number;
     total?: number;
+    session_score?: number | null;
+    session_length?: number;
+    best_combo?: number;
     review?: {
       verb_id: number;
       verb: string;

@@ -1570,6 +1570,9 @@ async def submit_conjugation_answers(
         "accuracy": round(accuracy, 1),
         "correct": total_correct,
         "total": total_answered,
+        "session_score": round(float(session.score), 1) if finished and session.score is not None else None,
+        "session_length": len(queue),
+        "best_combo": int(config.get("best_combo", 0)),
         "language_pair": language_pair,
         "review": {
             "verb_id": question.verb_id,

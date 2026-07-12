@@ -4,12 +4,13 @@
   import { api, ApiError } from '../api';
   import { playCue } from '../sound';
   import { applyReward } from '../profile';
-  import { celebrateReward, flashMiss } from '../fx';
+  import { celebrateReward, flashMiss, popEl } from '../fx';
   import type { ConjugationState, ConjugationTenseReview, LanguageConfig, RewardState } from '../types';
 
   export let csrfToken = '';
   export let soundEnabled = false;
   export let notify: (message: string, tone?: 'info' | 'success' | 'error') => void;
+  export let onSessionActiveChange: (active: boolean) => void = () => {};
 
   let loading = true;
   let error = '';
@@ -20,6 +21,7 @@
   let length = 5;
   let retryButton: HTMLButtonElement | null = null;
   let nextTenseButton: HTMLButtonElement | null = null;
+  let finishButton: HTMLButtonElement | null = null;
   let finishedCard: HTMLElement | null = null;
   let selectedTenses: string[] = [];
   let answers: Record<string, Record<string, string>> = {};
@@ -30,6 +32,8 @@
   let tenseReview: ConjugationTenseReview | null = null;
   let checkedTenses = new Set<string>();
   let tenseScores: Record<string, { correct: number; total: number }> = {};
+  let finishSessionWarning = false;
+  let escTimer: ReturnType<typeof setTimeout> | null = null;
 
   const LEVELS = [
     { value: 'easy', label: 'Level 1', note: 'Core tense' },
@@ -49,6 +53,9 @@
   let currentInputCells: InputCell[] = [];
   let currentActiveCell: InputCell | null = null;
   let currentActiveLabel = 'Nothing left to fill';
+  let sessionActive = false;
+  let sessionDone = false;
+  let menuView = false;
 
   function currentLanguage(): LanguageConfig | undefined {
     return state?.languages.find((entry) => entry.code === language);
@@ -94,16 +101,8 @@
     return true;
   }
 
-  function completeVerbCount(): number {
-    const config = currentLanguage();
-    if (!config || !selectedTenses.length) {
-      return 0;
-    }
-    return Math.min(...selectedTenses.map((tense) => config.tense_verb_counts[tense] || 0));
-  }
-
   function canStart(): boolean {
-    return Boolean(currentLanguage()?.available && selectedTenses.length && completeVerbCount() > 0);
+    return Boolean(currentLanguage()?.available && selectedTenses.length);
   }
 
   function syncSelection(): void {
@@ -170,13 +169,13 @@
   $: currentInputCells = buildInputCells(state?.question, activeTense);
   $: currentActiveCell = currentInputCells.find((cell) => cell.key === activeCellKey) || currentInputCells[0] || null;
   $: currentActiveLabel = currentActiveCell ? `${currentActiveCell.pronoun} -> ${currentActiveCell.tense}` : 'Nothing left to fill';
+  $: sessionActive = Boolean(state?.session && state?.question);
+  $: sessionDone = Boolean(!state?.session && (justFinished || state?.finished || state?.result?.finished) && !showSetupAfterFinish);
+  $: menuView = Boolean(state?.setup && (!sessionDone || showSetupAfterFinish));
+  $: onSessionActiveChange(sessionActive);
 
   function showFinishedPrompt(): boolean {
-    return Boolean(
-      !state?.session
-      && (justFinished || state?.finished || state?.result?.finished)
-      && !showSetupAfterFinish,
-    );
+    return sessionDone;
   }
 
   function resetQuestionProgress(nextState: ConjugationState | null): void {
@@ -210,7 +209,15 @@
     }
   }
 
-  onMount(load);
+  onMount(() => {
+    void load();
+    return () => {
+      if (escTimer) {
+        clearTimeout(escTimer);
+      }
+      onSessionActiveChange(false);
+    };
+  });
 
   function focusCellByKey(key: string): void {
     activeCellKey = key;
@@ -293,6 +300,10 @@
   async function startSession(): Promise<void> {
     if (!canStart()) {
       error = level === 'custom' ? 'Choose at least one available tense.' : 'No complete tables are available for this setup.';
+      if (sessionDone) {
+        justFinished = false;
+        showSetupAfterFinish = true;
+      }
       return;
     }
     loading = true;
@@ -317,6 +328,10 @@
       }).catch(() => {});
     } catch (err) {
       error = err instanceof ApiError ? err.message : 'Unable to start conjugation session';
+      if (sessionDone) {
+        justFinished = false;
+        showSetupAfterFinish = true;
+      }
     } finally {
       loading = false;
       await focusPrimaryControl();
@@ -426,7 +441,32 @@
   }
 
   function revealSetup(): void {
+    justFinished = false;
     showSetupAfterFinish = true;
+  }
+
+  function handleFinishClick(): void {
+    if (loading) {
+      return;
+    }
+    if (finishSessionWarning) {
+      finishSessionWarning = false;
+      if (escTimer) {
+        clearTimeout(escTimer);
+        escTimer = null;
+      }
+      popEl(finishButton);
+      void finishSession();
+      return;
+    }
+    finishSessionWarning = true;
+    if (escTimer) {
+      clearTimeout(escTimer);
+    }
+    escTimer = setTimeout(() => {
+      finishSessionWarning = false;
+      escTimer = null;
+    }, 2500);
   }
 
   async function finishSession(): Promise<void> {
@@ -437,6 +477,7 @@
       activeCellKey = '';
       justFinished = false;
       showSetupAfterFinish = true;
+      finishSessionWarning = false;
       answers = {};
       resetQuestionProgress(state);
       syncControlsFromState(state);
@@ -451,20 +492,56 @@
   }
 
   function handleWindowKeydown(event: KeyboardEvent): void {
-    if (event.key !== 'Enter' || loading || (!showFinishedPrompt() && !tenseReview)) {
+    if (loading) {
       return;
     }
-    if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
+
+    const plainKey = !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey;
+    if (!plainKey) {
       return;
     }
-    if (document.activeElement === retryButton || document.activeElement === nextTenseButton) {
+
+    if (event.key === 'Escape' && sessionActive) {
+      event.preventDefault();
+      handleFinishClick();
       return;
     }
-    event.preventDefault();
-    if (tenseReview) {
-      void continueAfterTense();
-    } else {
+
+    if (event.key === 'Escape' && sessionDone) {
+      event.preventDefault();
+      revealSetup();
+      return;
+    }
+
+    if (event.key !== 'Enter') {
+      return;
+    }
+
+    if (menuView) {
+      const active = document.activeElement as HTMLElement | null;
+      const isTyping = ['INPUT', 'TEXTAREA', 'SELECT'].includes(active?.tagName || '') || active?.isContentEditable;
+      if (!isTyping) {
+        event.preventDefault();
+        void startSession();
+      }
+      return;
+    }
+
+    if (sessionDone) {
+      if (document.activeElement === retryButton) {
+        return;
+      }
+      event.preventDefault();
       void startSession();
+      return;
+    }
+
+    if (tenseReview) {
+      if (document.activeElement === nextTenseButton) {
+        return;
+      }
+      event.preventDefault();
+      void continueAfterTense();
     }
   }
 </script>
@@ -482,29 +559,35 @@
     <div class="trainer-stack" in:fade={{ duration: 180 }}>
       {#if error}
         <div class="feedback-banner error-banner">{error}</div>
-      {:else if state.feedback}
+      {:else if state.feedback && !state.feedback.startsWith('Score:') && !sessionActive && !sessionDone}
         <div class="feedback-banner info-banner">{state.feedback}</div>
       {/if}
 
-      {#if showFinishedPrompt()}
-        <div bind:this={finishedCard} class="feedback-banner success-banner finish-prompt-banner" in:fade={{ duration: 160 }}>
-          <div class="finish-prompt-copy">
-            <strong>Conjugation run complete.</strong>
-            <span>Press Enter to restart with the same settings, or use the buttons.</span>
+      {#if sessionDone}
+        <article bind:this={finishedCard} class="glass-panel strong-panel table-clear-card" in:fade={{ duration: 180 }}>
+          <div class="table-clear-burst" aria-hidden="true"><i></i><i></i><i></i></div>
+          <p class="eyebrow">Table run complete</p>
+          <h2>Stage clear</h2>
+          <p class="table-clear-score">
+            Score {state.result?.session_score ?? 0}% · {state.result?.session_length ?? length} verbs · Best combo ×{state.result?.best_combo ?? 0}
+          </p>
+          <div class="table-clear-dots" aria-hidden="true">
+            {#each Array(state.result?.session_length ?? length) as _, index}
+              <span class:table-clear-dot-on={index < Math.round((state.result?.session_length ?? length) * ((state.result?.session_score ?? 0) / 100))}></span>
+            {/each}
           </div>
-
-          <div class="trainer-actions finish-prompt-actions">
-            <button bind:this={retryButton} class="primary-button" type="button" on:click={startSession} disabled={loading}>
-              Try again
+          <div class="table-clear-actions">
+            <button bind:this={retryButton} class="primary-button" type="button" on:click={() => { popEl(retryButton); void startSession(); }} disabled={loading}>
+              ▶ Replay <span class="kbd-chip">Enter</span>
             </button>
             <button class="secondary-button" type="button" on:click={revealSetup} disabled={loading}>
-              Change settings
+              Menu <span class="kbd-chip">Esc</span>
             </button>
           </div>
-        </div>
+        </article>
       {/if}
 
-      {#if reward() && !showFinishedPrompt()}
+      {#if reward() && !sessionDone}
         <article class="glass-panel reward-panel">
           <div class="section-head">
             <div>
@@ -541,7 +624,7 @@
         </article>
       {/if}
 
-      {#if !showFinishedPrompt() && state.setup}
+      {#if menuView}
         <article class="glass-panel strong-panel trainer-card table-setup-card">
           <div class="table-setup-lead">
             <div>
@@ -641,7 +724,6 @@
             <div class="launch-summary">
               <span>{currentLanguage()?.name || language}</span>
               <strong>{selectedTenses.length} {selectedTenses.length === 1 ? 'tense' : 'tenses'} × {length} verbs</strong>
-              <small>At least {completeVerbCount()} complete tables available</small>
             </div>
             <button class="primary-button table-launch-button" type="button" on:click={startSession} disabled={loading || !canStart()}>
               Start table run <span aria-hidden="true">→</span>
@@ -662,7 +744,7 @@
             <div class="g1-session-frame">
               <div class="g1-utility-row">
                 <span><i aria-hidden="true"></i> TABLE SHORTCUTS ON</span>
-                <small>{tenseReview ? 'All feedback shown · Enter continues' : 'Enter moves top to bottom'}</small>
+                <small>{tenseReview ? 'All feedback shown · Enter continues' : 'Enter moves top to bottom'} · Esc ×2 finishes</small>
               </div>
 
               <div class="g1-tense-strip" aria-label="Tense progress">
@@ -754,13 +836,15 @@
 
             <div class="trainer-actions g1-actions">
               {#if tenseReview}
-                <button bind:this={nextTenseButton} class="primary-button" type="button" on:click={continueAfterTense} disabled={loading}>
+                <button bind:this={nextTenseButton} class="primary-button g1-shortcut-action" type="button" on:click={continueAfterTense} disabled={loading}>
                   {activeTenseIndex < state.question.selected_tenses.length - 1 ? `Next: ${state.question.selected_tenses[activeTenseIndex + 1]}` : 'Finish verb'} <span class="kbd-chip">Enter</span>
                 </button>
               {:else}
-                <button class="primary-button" type="button" on:click={checkActiveTense} disabled={loading}>Check {activeTense}</button>
+                <button class="primary-button g1-shortcut-action" type="button" on:click={checkActiveTense} disabled={loading}><span class="kbd-chip">Enter</span> Check {activeTense}</button>
               {/if}
-              <button class="ghost-button" type="button" on:click={finishSession} disabled={loading}>Finish session</button>
+              <button bind:this={finishButton} class:finish-warn={finishSessionWarning} class="ghost-button g1-shortcut-action" type="button" on:click={handleFinishClick} disabled={loading}>
+                <span class="kbd-chip" class:kbd-chip-armed={finishSessionWarning}>{finishSessionWarning ? 'Esc ×1' : 'Esc ×2'}</span> {finishSessionWarning ? 'again to finish' : 'finish run'}
+              </button>
             </div>
           </article>
         {/key}
@@ -823,8 +907,7 @@
 
   .setup-step-head small,
   .language-card small,
-  .level-card small,
-  .launch-summary small {
+  .level-card small {
     color: var(--muted);
   }
 
@@ -1064,8 +1147,96 @@
     gap: 0.65rem;
   }
 
+  .table-clear-card {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 0.85rem;
+    overflow: hidden;
+    padding: clamp(1.5rem, 5vw, 2.7rem);
+    text-align: center;
+    animation: table-clear-in 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  .table-clear-card h2 {
+    margin: 0;
+    color: var(--text);
+    font: 850 clamp(2rem, 7vw, 3.8rem)/0.95 var(--display);
+    letter-spacing: -0.06em;
+  }
+
+  .table-clear-score {
+    margin: 0;
+    color: var(--muted);
+    font: 700 0.78rem/1.5 var(--mono);
+  }
+
+  .table-clear-dots {
+    display: flex;
+    max-width: 100%;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    justify-content: center;
+  }
+
+  .table-clear-dots span {
+    width: 0.62rem;
+    height: 0.62rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    background: var(--surface);
+  }
+
+  .table-clear-dots .table-clear-dot-on {
+    border-color: var(--success);
+    background: var(--success);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--success) 45%, transparent);
+  }
+
+  .table-clear-actions {
+    display: flex;
+    gap: 0.65rem;
+    margin-top: 0.35rem;
+  }
+
+  .table-clear-burst {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    z-index: -1;
+  }
+
+  .table-clear-burst i {
+    position: absolute;
+    width: 12rem;
+    height: 12rem;
+    border: 1px solid color-mix(in srgb, var(--success) 35%, transparent);
+    border-radius: 50%;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.2);
+    animation: table-clear-ring 1.4s ease-out both;
+  }
+
+  .table-clear-burst i:nth-child(2) { animation-delay: 120ms; }
+  .table-clear-burst i:nth-child(3) { animation-delay: 240ms; }
+
+  @keyframes table-clear-in {
+    from { opacity: 0; transform: translateY(1rem) scale(0.985); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  @keyframes table-clear-ring {
+    0% { opacity: 0.7; transform: translate(-50%, -50%) scale(0.2); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(2.4); }
+  }
+
   .g1-production-card {
     gap: 1rem;
+    animation: g1-stage-in 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  @keyframes g1-stage-in {
+    from { opacity: 0; transform: translateY(0.8rem); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   .g1-session-frame {
@@ -1313,11 +1484,11 @@
   .g1-column-row {
     position: relative;
     display: grid;
-    grid-template-columns: auto 7.5rem minmax(0, 1fr);
-    gap: 0.55rem;
+    grid-template-columns: auto 9rem minmax(0, 1fr);
+    gap: 0.7rem;
     align-items: center;
-    min-height: 3.2rem;
-    padding: 0.45rem 0.55rem;
+    min-height: 4rem;
+    padding: 0.58rem 0.65rem;
     border: 1px solid rgba(255, 255, 255, 0.09);
     border-radius: 5px;
     background: rgba(255, 255, 255, 0.025);
@@ -1329,6 +1500,14 @@
     background: color-mix(in srgb, var(--accent) 18%, rgba(255, 255, 255, 0.025));
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 9%, transparent);
     transform: translateX(0.2rem);
+  }
+
+  .g1-row-active .g1-row-marker {
+    animation: g1-pointer-pulse 1.15s ease-in-out infinite;
+  }
+
+  @keyframes g1-pointer-pulse {
+    50% { opacity: 0.45; transform: translateX(0.18rem); }
   }
 
   .g1-row-guide {
@@ -1381,8 +1560,9 @@
 
   .g1-column-row label strong {
     color: white;
-    font-size: 0.86rem;
+    font-size: clamp(1.02rem, 2.4vw, 1.18rem);
     font-weight: 820;
+    line-height: 1.15;
   }
 
   .g1-input-shell {
@@ -1393,13 +1573,13 @@
   .g1-conj-input {
     width: 100%;
     min-width: 0;
-    padding: 0.65rem 0.7rem;
+    padding: 0.72rem 0.8rem;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     outline: none;
     color: white;
     background: rgba(6, 8, 24, 0.72);
-    font: 650 0.74rem/1 var(--display);
+    font: 680 0.95rem/1 var(--display);
   }
 
   .g1-conj-input:focus {
@@ -1422,7 +1602,7 @@
   .g1-inline-feedback,
   .g1-missing-form {
     min-width: 0;
-    padding: 0.58rem 0.65rem;
+    padding: 0.68rem 0.75rem;
     border-radius: 8px;
   }
 
@@ -1449,7 +1629,7 @@
   .g1-inline-feedback strong {
     overflow: hidden;
     color: white;
-    font-size: 0.72rem;
+    font-size: clamp(0.92rem, 2.2vw, 1.08rem);
     text-overflow: ellipsis;
   }
 
@@ -1461,12 +1641,12 @@
 
   .g1-inline-feedback > span:first-child {
     display: grid;
-    width: 1.35rem;
-    height: 1.35rem;
+    width: 1.65rem;
+    height: 1.65rem;
     place-items: center;
     border: 1px solid currentColor;
     border-radius: 50%;
-    font: 850 0.65rem/1 var(--mono);
+    font: 850 0.78rem/1 var(--mono);
   }
 
   .g1-feedback-correct {
@@ -1489,7 +1669,7 @@
   .g1-feedback-wrong del {
     overflow: hidden;
     color: rgba(255, 255, 255, 0.5);
-    font-size: 0.64rem;
+    font-size: 0.84rem;
     text-decoration-color: #ff7188;
     text-decoration-thickness: 2px;
     text-overflow: ellipsis;
@@ -1509,6 +1689,24 @@
 
   .g1-actions {
     justify-content: flex-end;
+  }
+
+  .g1-shortcut-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  .g1-shortcut-action.finish-warn {
+    border-color: #f6c84c;
+    color: #f6c84c;
+    background: color-mix(in srgb, #f6c84c 10%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, #f6c84c 8%, transparent);
+  }
+
+  .g1-shortcut-action .kbd-chip-armed {
+    border-color: #f6c84c;
+    color: #f6c84c;
   }
 
   :global(html[data-theme='arcade']) .step-number,
@@ -1587,6 +1785,10 @@
       grid-template-columns: auto 1fr;
     }
 
+    .g1-column-row label strong {
+      font-size: 1.08rem;
+    }
+
     .g1-input-shell,
     .g1-locked-guide,
     .g1-inline-feedback,
@@ -1617,6 +1819,26 @@
 
     .g1-actions button {
       width: 100%;
+      justify-content: center;
+    }
+
+    .table-clear-actions {
+      width: 100%;
+      flex-direction: column;
+    }
+
+    .table-clear-actions button {
+      width: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .g1-production-card,
+    .g1-column-review .g1-column-row,
+    .g1-row-active .g1-row-marker,
+    .table-clear-card,
+    .table-clear-burst i {
+      animation: none;
     }
   }
 </style>

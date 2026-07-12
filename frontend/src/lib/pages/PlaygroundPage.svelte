@@ -1,4 +1,6 @@
 <script lang="ts">
+  import LaunchControlConcept from '../components/playground/LaunchControlConcept.svelte';
+  import SideProgressConcept from '../components/playground/SideProgressConcept.svelte';
   import TableGameConcept from '../components/playground/TableGameConcept.svelte';
   import VerbSetupConcept from '../components/playground/VerbSetupConcept.svelte';
   import { navigate } from '../router';
@@ -14,9 +16,9 @@
 <section class="pg-shell">
   <header class="glass-panel strong-panel pg-header">
     <div>
-      <p class="eyebrow">Playground · Final G1 direction</p>
-      <h1>G1-B is selected and now lives in Verb Lab.</h1>
-      <p class="section-copy">The active column grades the complete tense in place. There is no separate verdict bar or correction navigation: read every result, then press Enter once to continue.</p>
+      <p class="eyebrow">Playground · Verb tables design bench</p>
+      <h1>G1 is locked. Two decisions remain.</h1>
+      <p class="section-copy">The selected active-column game remains final. Compare three mirrored side-progress systems and three replacement launch controls before either direction enters production.</p>
     </div>
     <div class="pg-header-actions">
       <div class="pg-theme-row" role="group" aria-label="Preview theme">
@@ -31,6 +33,8 @@
   <nav class="study-nav" aria-label="Playground studies">
     <a href="#setup-study"><span>01</span><strong>Chosen setup</strong><small>A1 · staircase</small></a>
     <a href="#game-study"><span>02</span><strong>Chosen game</strong><small>G1-B · final behavior</small></a>
+    <a href="#progress-study"><span>03</span><strong>Side progress</strong><small>Three mirrored options</small></a>
+    <a href="#launch-study"><span>04</span><strong>Launch control</strong><small>Three button options</small></a>
   </nav>
 
   <section class="study-section" id="setup-study">
@@ -99,9 +103,73 @@
     </div>
   </section>
 
+  <section class="study-section decision-study" id="progress-study">
+    <header class="study-heading">
+      <span class="study-index">03 / SIDE PROGRESS</span>
+      <h2>Progress leaves the top and frames the game.</h2>
+      <p>All three options mirror the same verb progress on the left and right without competing with tense status inside G1.</p>
+    </header>
+
+    <div class="concept-stack decision-stack">
+      <SideProgressConcept
+        variant="rails"
+        index="P1"
+        kicker="Continuous signal"
+        title="Twin ascent rails"
+        description="A quiet continuous fill rises from the bottom on both sides. The glowing cap marks the exact session position without adding another dashboard."
+      />
+      <SideProgressConcept
+        variant="rungs"
+        index="P2"
+        kicker="Verb-by-verb ladder"
+        title="Mirrored checkpoint rungs"
+        description="Each side contains one substantial block per verb. Completed blocks remain lit and the current checkpoint receives a warm focus signal."
+      />
+      <SideProgressConcept
+        variant="pulse"
+        index="P3"
+        kicker="Arcade telemetry"
+        title="Dual pulse columns"
+        description="Fine-grained light nodes climb both edges. It is the least structural option and gives Arcade a lively instrument-panel rhythm."
+      />
+    </div>
+  </section>
+
+  <section class="study-section decision-study" id="launch-study">
+    <header class="study-heading">
+      <span class="study-index">04 / LAUNCH CONTROL</span>
+      <h2>Three exits from setup into play.</h2>
+      <p>Each option keeps the explicit setup summary but replaces the oversized current button with a more intentional final action.</p>
+    </header>
+
+    <div class="concept-stack launch-stack">
+      <LaunchControlConcept
+        variant="command"
+        index="L1"
+        kicker="Compact command deck"
+        title="Summary left, launch right"
+        description="The lowest-risk direction: compact, fast to scan, and visibly keyboard-ready without repeating the entire setup hierarchy."
+      />
+      <LaunchControlConcept
+        variant="gate"
+        index="L2"
+        kicker="Threshold interaction"
+        title="Open the training gate"
+        description="A horizontal gate turns launch into a transition moment. The moving arrow and striped threshold make the action feel physical but still restrained."
+      />
+      <LaunchControlConcept
+        variant="ticket"
+        index="L3"
+        kicker="Session artifact"
+        title="Validate a run ticket"
+        description="The setup resolves into a compact ticket with a perforated PLAY stub. It is the most distinctive option and suits the Arcade visual language strongly."
+      />
+    </div>
+  </section>
+
   <footer class="pg-footer glass-panel">
     <span>DESIGN BENCH</span>
-    <p>This remains a safe visual prototype, while the finalized behavior is now implemented in the real Verb Lab.</p>
+    <p>G1 is production-ready. P1–P3 and L1–L3 are isolated visual decisions and do not alter real training progress.</p>
     <a href="#setup-study">Back to setup concepts ↑</a>
   </footer>
 </section>
@@ -154,7 +222,7 @@
 
   .study-nav {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 0.6rem;
   }
 
@@ -208,7 +276,8 @@
     scroll-margin-top: 6rem;
   }
 
-  .game-study {
+  .game-study,
+  .decision-study {
     padding-top: 2rem;
     border-top: 1px solid var(--line);
   }
@@ -250,6 +319,14 @@
   }
 
   .game-stack {
+    gap: 2.6rem;
+  }
+
+  .decision-stack {
+    gap: 3rem;
+  }
+
+  .launch-stack {
     gap: 2.6rem;
   }
 
@@ -475,6 +552,10 @@
 
     .pg-header-actions {
       align-items: flex-start;
+    }
+
+    .study-nav {
+      grid-template-columns: repeat(2, 1fr);
     }
 
     .law-track {

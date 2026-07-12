@@ -1,0 +1,9 @@
+[Unit]
+Description=Poll GitHub main every minute and auto-deploy VerbPractice
+
+[Timer]
+OnBootSec=90s
+OnUnitActiveSec=60s
+
+[Install]
+WantedBy=timers.target

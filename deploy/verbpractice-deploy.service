@@ -1,0 +1,7 @@
+# Oneshot deploy check — triggered by verbpractice-deploy.timer.
+[Unit]
+Description=VerbPractice auto-deploy (pull + build + restart when main moves)
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash %h/VerbPractice/deploy/autodeploy.sh

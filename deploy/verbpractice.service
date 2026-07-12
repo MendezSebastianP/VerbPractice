@@ -1,0 +1,16 @@
+# systemd user unit — install to ~/.config/systemd/user/ on the mini PC.
+# --proxy-headers trusts X-Forwarded-* from cloudflared (connects via 127.0.0.1),
+# so the app sees the real client scheme/IP behind the Cloudflare tunnel.
+[Unit]
+Description=VerbPractice language app
+After=network-online.target
+
+[Service]
+WorkingDirectory=%h/VerbPractice
+ExecStartPre=/bin/sh -c "docker start verbpractice-pg >/dev/null 2>&1 || true; sleep 2"
+ExecStart=%h/VerbPractice/.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 --proxy-headers --forwarded-allow-ips=127.0.0.1
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

@@ -23,7 +23,12 @@ from app.db.models import (
     Word,
     WordTranslation,
 )
-from app.services.conjugation_engine import PronounCheck, conjugation_answer_is_correct, update_tense_score
+from app.services.conjugation_engine import (
+    PronounCheck,
+    accepted_conjugation_forms,
+    conjugation_answer_is_correct,
+    update_tense_score,
+)
 from app.services.gamification import (
     RewardSummary,
     grant_xp,
@@ -33,6 +38,7 @@ from app.services.gamification import (
     unlock_badges,
     update_streak,
 )
+from app.services.normalization import normalize_for_comparison
 from app.services.training_engine import (
     GradeResult,
     WeightedItem,
@@ -60,6 +66,12 @@ class TranslationQuestion:
 
 
 @dataclass(slots=True)
+class ConjugationFormGroup:
+    representative: str
+    pronouns: list[str]
+
+
+@dataclass(slots=True)
 class ConjugationQuestion:
     verb_id: int
     verb: str
@@ -67,6 +79,7 @@ class ConjugationQuestion:
     table: dict[str, dict[str, str]]
     prefill: dict[str, dict[str, bool]]
     pronouns: list[str]
+    form_groups: dict[str, list[ConjugationFormGroup]]
 
 
 async def _resolve_inventory_language(
@@ -1057,6 +1070,75 @@ async def _conjugation_table_for_verb(
     return table
 
 
+def _conjugation_form_groups(
+    *,
+    table: dict[str, dict[str, str]],
+    selected_tenses: list[str],
+    pronouns: list[str],
+    language_code: str,
+) -> dict[str, list[ConjugationFormGroup]]:
+    """Collapse only forms that dominate an entire tense.
+
+    Small repetitions are useful grammar to memorize, so matching pairs or
+    triplets remain separate answers. A shared answer is reserved for a form
+    used by every applicable pronoun, or every applicable pronoun but one.
+    """
+    grouped: dict[str, list[ConjugationFormGroup]] = {}
+    for tense in selected_tenses:
+        groups_by_forms: dict[tuple[str, ...], ConjugationFormGroup] = {}
+        raw_groups: list[ConjugationFormGroup] = []
+        applicable_pronouns: list[str] = []
+        for pronoun in pronouns:
+            expected = table[tense].get(pronoun, "-")
+            if expected == "-":
+                continue
+            applicable_pronouns.append(pronoun)
+            accepted = tuple(
+                sorted(
+                    {
+                        normalize_for_comparison(form)
+                        for form in accepted_conjugation_forms(expected, language_code)
+                    }
+                )
+            )
+            group = groups_by_forms.get(accepted)
+            if group is None:
+                group = ConjugationFormGroup(representative=pronoun, pronouns=[])
+                groups_by_forms[accepted] = group
+                raw_groups.append(group)
+            group.pronouns.append(pronoun)
+
+        applicable_count = len(applicable_pronouns)
+        dominant_group = next(
+            (
+                group
+                for group in raw_groups
+                if len(group.pronouns) > 1
+                and len(group.pronouns) in {applicable_count, applicable_count - 1}
+            ),
+            None,
+        )
+        if dominant_group is None:
+            grouped[tense] = [
+                ConjugationFormGroup(representative=pronoun, pronouns=[pronoun])
+                for pronoun in applicable_pronouns
+            ]
+            continue
+
+        dominant_pronouns = set(dominant_group.pronouns)
+        ordered_groups: list[ConjugationFormGroup] = []
+        dominant_added = False
+        for pronoun in applicable_pronouns:
+            if pronoun in dominant_pronouns:
+                if not dominant_added:
+                    ordered_groups.append(dominant_group)
+                    dominant_added = True
+                continue
+            ordered_groups.append(ConjugationFormGroup(representative=pronoun, pronouns=[pronoun]))
+        grouped[tense] = ordered_groups
+    return grouped
+
+
 async def get_conjugation_question(
     db: AsyncSession,
     session: TrainingSession,
@@ -1082,34 +1164,36 @@ async def get_conjugation_question(
         selected_tenses=selected_tenses,
     )
 
+    pronouns = list(language.pronoun_set or [])
+    form_groups = _conjugation_form_groups(
+        table=table,
+        selected_tenses=selected_tenses,
+        pronouns=pronouns,
+        language_code=language_code,
+    )
+
     fill_level = str(config.get("fill_level", "easy"))
     prefill: dict[str, dict[str, bool]] = {}
     for tense in selected_tenses:
-        pronouns = list(language.pronoun_set or [])
-        valid_pronouns = [pronoun for pronoun in pronouns if table[tense].get(pronoun, "-") != "-"]
-        unique_forms = {
-            table[tense][pronoun].strip().casefold()
-            for pronoun in valid_pronouns
-        }
-        giveaway_tense = len(valid_pronouns) <= 1 or len(unique_forms) <= 1
+        groups = form_groups[tense]
 
         guide_count = 0
-        if not giveaway_tense and fill_level == "medium":
+        if len(groups) > 1 and fill_level == "medium":
             guide_count = 1
-        elif not giveaway_tense and fill_level == "easy":
-            guide_count = min(len(valid_pronouns) - 1, int(len(valid_pronouns) * 0.7))
+        elif len(groups) > 1 and fill_level == "easy":
+            guide_count = min(len(groups) - 1, int(len(groups) * 0.7))
 
         indexed_pronouns = {pronoun: index for index, pronoun in enumerate(pronouns)}
         guide_order = sorted(
-            valid_pronouns,
-            key=lambda pronoun: (
+            groups,
+            key=lambda group: (
                 verb_id * 31
                 + len(tense) * 13
-                + indexed_pronouns[pronoun] * 17
+                + indexed_pronouns[group.representative] * 17
             )
             % 101,
         )
-        guides = set(guide_order[:guide_count])
+        guides = {group.representative for group in guide_order[:guide_count]}
         prefill[tense] = {
             pronoun: pronoun in guides
             for pronoun in pronouns
@@ -1121,7 +1205,8 @@ async def get_conjugation_question(
         selected_tenses=selected_tenses,
         table=table,
         prefill=prefill,
-        pronouns=list(language.pronoun_set or []),
+        pronouns=pronouns,
+        form_groups=form_groups,
     )
 
 
@@ -1210,48 +1295,56 @@ def _conjugation_tense_review(
     tense: str,
     answers: dict[str, str],
 ) -> dict[str, Any]:
-    cells: list[dict[str, Any]] = []
+    cells_by_pronoun: dict[str, dict[str, Any]] = {}
     correct_count = 0
     answer_count = 0
 
     for pronoun in question.pronouns:
-        user_answer = (answers.get(pronoun) or "").strip()
         correct_answer = question.table[tense].get(pronoun, "-")
         if correct_answer == "-":
-            cells.append(
-                {
-                    "pronoun": pronoun,
-                    "kind": "missing",
-                    "answer": "",
-                    "expected": "-",
-                    "correct": None,
-                }
-            )
-            continue
-        if question.prefill[tense].get(pronoun, False):
-            cells.append(
-                {
-                    "pronoun": pronoun,
-                    "kind": "prefilled",
-                    "answer": correct_answer,
-                    "expected": correct_answer,
-                    "correct": True,
-                }
-            )
-            continue
-
-        is_correct = conjugation_answer_is_correct(user_answer, correct_answer, language_code)
-        answer_count += 1
-        correct_count += int(is_correct)
-        cells.append(
-            {
+            cells_by_pronoun[pronoun] = {
                 "pronoun": pronoun,
-                "kind": "answer",
-                "answer": user_answer,
-                "expected": correct_answer,
-                "correct": is_correct,
+                "kind": "missing",
+                "answer": "",
+                "expected": "-",
+                "correct": None,
             }
+
+    for group in question.form_groups[tense]:
+        representative = group.representative
+        correct_answer = question.table[tense][representative]
+        is_prefilled = question.prefill[tense].get(representative, False)
+        user_answer = correct_answer if is_prefilled else (answers.get(representative) or "").strip()
+        is_correct = True if is_prefilled else conjugation_answer_is_correct(
+            user_answer,
+            correct_answer,
+            language_code,
         )
+        if not is_prefilled:
+            answer_count += 1
+            correct_count += int(is_correct)
+
+        representative_cell: dict[str, Any] = {
+            "pronoun": representative,
+            "kind": "prefilled" if is_prefilled else "answer",
+            "answer": user_answer,
+            "expected": correct_answer,
+            "correct": is_correct,
+        }
+        if len(group.pronouns) > 1:
+            representative_cell["group_pronouns"] = group.pronouns
+        cells_by_pronoun[representative] = representative_cell
+        for pronoun in group.pronouns[1:]:
+            cells_by_pronoun[pronoun] = {
+                "pronoun": pronoun,
+                "kind": "linked",
+                "answer": user_answer,
+                "expected": question.table[tense][pronoun],
+                "correct": is_correct,
+                "linked_to": representative,
+                "group_pronouns": group.pronouns,
+                "prefilled": is_prefilled,
+            }
 
     accuracy = (correct_count / answer_count * 100.0) if answer_count else 0.0
     return {
@@ -1261,7 +1354,7 @@ def _conjugation_tense_review(
         "correct": correct_count,
         "total": answer_count,
         "accuracy": round(accuracy, 1),
-        "cells": cells,
+        "cells": [cells_by_pronoun[pronoun] for pronoun in question.pronouns],
     }
 
 
@@ -1369,44 +1462,32 @@ async def submit_conjugation_answers(
         scored_checks: list[PronounCheck] = []
         applied_slot_keys: set[str] = set()
 
-        for pronoun in question.pronouns:
-            user_answer = (tense_answers.get(pronoun) or "").strip()
-            correct_answer = question.table[tense].get(pronoun, "-")
-            if correct_answer == "-":
-                review_by_slot[(tense, pronoun)] = {
-                    "kind": "missing",
-                    "answer": "",
-                    "expected": "-",
-                    "correct": None,
-                }
-                continue
-            if question.prefill[tense].get(pronoun, False):
-                review_by_slot[(tense, pronoun)] = {
-                    "kind": "prefilled",
-                    "answer": correct_answer,
-                    "expected": correct_answer,
-                    "correct": True,
-                }
+        tense_review = _conjugation_tense_review(
+            question=question,
+            language_code=language_code,
+            tense=tense,
+            answers=tense_answers,
+        )
+        for cell in tense_review["cells"]:
+            pronoun = str(cell["pronoun"])
+            review_by_slot[(tense, pronoun)] = {
+                key: value
+                for key, value in cell.items()
+                if key != "pronoun"
+            }
+            if cell["kind"] != "answer":
                 continue
 
-            is_correct = conjugation_answer_is_correct(user_answer, correct_answer, language_code)
-            review_by_slot[(tense, pronoun)] = {
-                "kind": "answer",
-                "answer": user_answer,
-                "expected": correct_answer,
-                "correct": is_correct,
-            }
-            checks.append(
-                PronounCheck(
-                    pronoun=pronoun,
-                    user_answer=user_answer,
-                    correct_answer=correct_answer,
-                    is_correct=is_correct,
-                )
+            check = PronounCheck(
+                pronoun=pronoun,
+                user_answer=str(cell["answer"]),
+                correct_answer=str(cell["expected"]),
+                is_correct=bool(cell["correct"]),
             )
+            checks.append(check)
             slot_key = _conjugation_slot_key(verb_id=question.verb_id, tense=tense, pronoun=pronoun)
             if slot_key not in scored_conjugation_slots:
-                scored_checks.append(checks[-1])
+                scored_checks.append(check)
                 applied_slot_keys.add(slot_key)
 
         if not checks:

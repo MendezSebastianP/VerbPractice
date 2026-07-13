@@ -23,6 +23,7 @@
   --mono: "IBM Plex Mono", monospace;
   --ui: "Figtree", sans-serif;
   --display: "Schibsted Grotesk", sans-serif;
+  --marquee: "Schibsted Grotesk", sans-serif;
 }
 
 html[data-theme='dark'] {
@@ -47,6 +48,7 @@ html[data-theme='dark'] {
   --button-shadow: 0 10px 24px -14px rgba(59, 130, 246, 0.55);
   --ui: "Space Grotesk", sans-serif;
   --display: "Space Grotesk", sans-serif;
+  --marquee: "Space Grotesk", sans-serif;
 }
 
 html[data-theme='arcade'] {
@@ -69,8 +71,12 @@ html[data-theme='arcade'] {
   --xp: #ffda57;
   --shadow: 0 0 20px rgba(167, 139, 250, 0.18), 0 28px 60px rgba(0, 0, 0, 0.5);
   --button-shadow: 0 0 18px rgba(205, 188, 255, 0.55);
+  /* T1-A type discipline: Press Start 2P is marquee-only (one hero moment
+     per screen); everything interactive reads in Space Grotesk. VT323 keeps
+     numbers/eyebrows but draws ~30% small, so those get size compensation. */
   --ui: "Space Grotesk", sans-serif;
-  --display: "Press Start 2P", monospace;
+  --display: "Space Grotesk", sans-serif;
+  --marquee: "Press Start 2P", monospace;
   --mono: "VT323", monospace;
 }
 
@@ -314,7 +320,7 @@ html[data-theme='arcade'] {
     align-items: center;
     justify-content: center;
     gap: 1px;
-    font-family: var(--display);
+    font-family: var(--marquee);
     font-size: 0.95rem;
     font-weight: 800;
     overflow: hidden;
@@ -528,11 +534,6 @@ html[data-theme='arcade'] {
     background: var(--accent-soft);
   }
 
-  html[data-theme='arcade'] .level-chip {
-    font-size: 0.55rem;
-    line-height: 1.6;
-  }
-
   .xp-chip {
     @apply text-sm font-bold;
     font-family: var(--mono);
@@ -541,7 +542,27 @@ html[data-theme='arcade'] {
   }
 
   html[data-theme='arcade'] .xp-chip {
+    font-size: 1.05rem;
     text-shadow: 0 0 10px color-mix(in srgb, var(--xp) 55%, transparent);
+  }
+
+  /* T1-A: VT323 optical compensation — mono UI chrome never lands under
+     ~12px optical in arcade (1.05rem declared ≈ 12px drawn). */
+  html[data-theme='arcade'] .stat-card span,
+  html[data-theme='arcade'] .pill-chip,
+  html[data-theme='arcade'] .mini-tag,
+  html[data-theme='arcade'] .demo-chip,
+  html[data-theme='arcade'] .hint-chip,
+  html[data-theme='arcade'] .eyebrow,
+  html[data-theme='arcade'] .toggle-label,
+  html[data-theme='arcade'] .bubble span {
+    font-size: 1.05rem;
+    line-height: 1.2;
+  }
+
+  html[data-theme='arcade'] .streak-flame,
+  html[data-theme='arcade'] .brand-word {
+    font-size: 1.05rem;
   }
 
   @keyframes xp-tick {
@@ -939,8 +960,10 @@ html[data-theme='arcade'] {
   }
 
   .verb-mode-switch {
-    @apply inline-grid items-stretch gap-2 border p-1;
-    grid-template-columns: 1fr 1fr;
+    @apply grid items-stretch gap-2 border p-1;
+    /* Stacks to one column when the header row gets tight instead of
+       overflowing the panel (labels are nowrap since S1-A). */
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12.5rem), 1fr));
     border-color: var(--line);
     border-radius: 18px;
     background: color-mix(in srgb, var(--surface-strong) 80%, transparent);
@@ -948,11 +971,11 @@ html[data-theme='arcade'] {
 
   .verb-mode-button {
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: auto 1fr auto;
     grid-template-rows: auto auto;
     column-gap: 0.55rem;
     align-items: center;
-    min-width: 8.5rem;
+    min-width: 9.5rem;
     padding: 0.65rem 0.8rem;
     border: 1px solid transparent;
     border-radius: 14px;
@@ -971,8 +994,39 @@ html[data-theme='arcade'] {
   }
 
   .verb-mode-button small {
-    font-size: 0.62rem;
+    font-size: 0.72rem;
     color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .verb-mode-key {
+    grid-column: 3;
+    grid-row: 1 / 3;
+    align-self: center;
+    padding: 0.22rem 0.34rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 6px;
+    color: var(--muted);
+    background: color-mix(in srgb, var(--surface-strong) 82%, transparent);
+    font: 700 0.68rem/1 var(--mono);
+    white-space: nowrap;
+  }
+
+  html[data-theme='arcade'] .verb-mode-key {
+    font-size: 1.05rem;
+  }
+
+  /* Keycap hints are desktop affordances — reclaim the space on touch */
+  @media (pointer: coarse) {
+    .verb-mode-key {
+      display: none;
+    }
+  }
+
+  .verb-mode-on .verb-mode-key,
+  .verb-mode-button:hover .verb-mode-key {
+    color: var(--accent-strong);
+    border-color: color-mix(in srgb, var(--accent) 42%, var(--line));
   }
 
   .verb-mode-on,
@@ -1055,6 +1109,8 @@ html[data-theme='arcade'] {
     color: var(--accent-strong);
     border-color: color-mix(in srgb, var(--accent) 50%, transparent);
     background: rgba(13, 5, 32, 0.8);
+    font-size: 1.05rem;
+    line-height: 1.2;
   }
 
   /* Keyboard shortcut pop — spring bounce on programmatic trigger (popEl in fx.ts) */
@@ -1447,5 +1503,36 @@ html[data-theme='arcade'] {
 @media (min-width: 901px) {
   .nav-rail {
     max-width: 42rem;
+  }
+}
+
+/* Shortcut visibility is a display preference only; keyboard handlers stay
+   active. Touch devices hide hints unconditionally because they cannot use
+   them and the reclaimed space materially improves the training layouts. */
+.shortcuts-hidden :is(
+  .kbd-chip,
+  .kbd-footer,
+  .setup-keycap,
+  .setup-shortcut-footer,
+  .verb-mode-key,
+  .g1-utility-line,
+  .g1-input-shortcut,
+  .keyboard-shortcut-help
+) {
+  display: none !important;
+}
+
+@media (max-width: 760px), (hover: none) and (pointer: coarse) {
+  :is(
+    .kbd-chip,
+    .kbd-footer,
+    .setup-keycap,
+    .setup-shortcut-footer,
+    .verb-mode-key,
+    .g1-utility-line,
+    .g1-input-shortcut,
+    .keyboard-shortcut-help
+  ) {
+    display: none !important;
   }
 }

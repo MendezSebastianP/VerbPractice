@@ -746,12 +746,14 @@
             button to flip the direction. You may type in either language; if the AI detects you typed in the
             target language it offers to switch.
           </p>
-          <p>Keyboard shortcuts:</p>
-          <ul>
-            <li><kbd>E</kbd>/<kbd>S</kbd>/<kbd>R</kbd>/<kbd>F</kbd> — source language</li>
-            <li><kbd>Shift</kbd> + those — target language</li>
-            <li><kbd>Ctrl</kbd>+<kbd>Space</kbd> — swap direction</li>
-          </ul>
+          <div class="keyboard-shortcut-help">
+            <p>Keyboard shortcuts:</p>
+            <ul>
+              <li><kbd>E</kbd>/<kbd>S</kbd>/<kbd>R</kbd>/<kbd>F</kbd> — source language</li>
+              <li><kbd>Shift</kbd> + those — target language</li>
+              <li><kbd>Ctrl</kbd>+<kbd>Space</kbd> — swap direction</li>
+            </ul>
+          </div>
           <p>
             <strong>Optional context</strong> sharpens ambiguous words. Use the drawers below to review history,
             manage saved words, or add a pair manually without the AI.

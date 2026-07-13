@@ -357,6 +357,21 @@ def test_training_finish_endpoints(client: TestClient, smoke_user: dict[str, str
         },
     )
     assert conjugation_start.status_code == 200
+    start_question = conjugation_start.json()["question"]
+    editable_cells = [
+        cell
+        for row in start_question["rows"]
+        for cell in row["cells"]
+        if cell["tense"] == "Présent" and cell["kind"] == "input"
+    ]
+    assert editable_cells
+    assert all(cell["accepted_answers"] for cell in editable_cells)
+    expected_answers = sum(
+        cell["kind"] == "input"
+        for row in start_question["rows"]
+        for cell in row["cells"]
+        if cell["tense"] == "Présent"
+    )
     conjugation_review = client.post(
         "/api/training/conjugation/check-tense",
         json={
@@ -373,11 +388,12 @@ def test_training_finish_endpoints(client: TestClient, smoke_user: dict[str, str
         },
     )
     assert conjugation_review.status_code == 200
-    assert conjugation_review.json()["tense"] == "Présent"
-    assert conjugation_review.json()["total"] == 6
-    assert len(conjugation_review.json()["cells"]) == 6
-    assert conjugation_review.json()["cells"][1]["answer"] == "wrong"
-    assert conjugation_review.json()["cells"][1]["expected"]
+    review_payload = conjugation_review.json()
+    assert review_payload["tense"] == "Présent"
+    assert review_payload["total"] == expected_answers
+    assert len(review_payload["cells"]) == len(start_question["pronouns"])
+    assert sum(cell["kind"] == "answer" for cell in review_payload["cells"]) == expected_answers
+    assert all(cell["expected"] for cell in review_payload["cells"])
     conjugation_finish = client.post("/api/training/conjugation/finish", json={"csrf_token": csrf_token})
     assert conjugation_finish.status_code == 200
     assert conjugation_finish.json()["setup"] is True
@@ -405,10 +421,22 @@ def test_training_finish_endpoints(client: TestClient, smoke_user: dict[str, str
 
     conjugation_preference = client.patch(
         "/api/settings",
-        json={"last_practice_mode": "conjugation", "csrf_token": csrf_token},
+        json={
+            "last_practice_mode": "conjugation",
+            "show_shortcuts": False,
+            "csrf_token": csrf_token,
+        },
     )
     assert conjugation_preference.status_code == 200
     assert conjugation_preference.json()["last_practice_mode"] == "conjugation"
+    assert conjugation_preference.json()["show_shortcuts"] is False
+
+    shortcuts_on = client.patch(
+        "/api/settings",
+        json={"show_shortcuts": True, "csrf_token": csrf_token},
+    )
+    assert shortcuts_on.status_code == 200
+    assert shortcuts_on.json()["show_shortcuts"] is True
 
 
 def test_training_and_chat_flows(client: TestClient, smoke_user: dict[str, str]):

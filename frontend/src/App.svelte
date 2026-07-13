@@ -10,6 +10,7 @@
   import GameFx from './lib/components/GameFx.svelte';
   import MonitorPage from './lib/pages/MonitorPage.svelte';
   import PlaygroundPage from './lib/pages/PlaygroundPage.svelte';
+  import Playground2Page from './lib/pages/Playground2Page.svelte';
   import SetsPage from './lib/pages/SetsPage.svelte';
   import TranslationPage from './lib/pages/TranslationPage.svelte';
   import VerbLabPage from './lib/pages/VerbLabPage.svelte';
@@ -30,6 +31,7 @@
   let boot: BootPayload | null = null;
   let theme: ThemeName = 'arcade';
   let soundEnabled = false;
+  let showShortcuts = true;
   let toasts: Toast[] = [];
 
   function notify(message: string, tone: ToastTone = 'info'): void {
@@ -50,6 +52,7 @@
       boot = await api.bootstrap();
       theme = boot.theme;
       soundEnabled = boot.preferences.sound_enabled;
+      showShortcuts = boot.preferences.show_shortcuts;
       setProfile(boot.user?.profile);
       const savedTheme = window.localStorage.getItem('lexarena-theme') as ThemeName | null;
       if (!boot.authenticated && savedTheme) {
@@ -82,7 +85,7 @@
       // Photo capture moved into Add Word (Experiment 05); keep old links alive.
       navigate('/add-word', { replace: true });
     }
-    if (!boot.authenticated && !isAuthRoute($route) && $route !== '/playground') {
+    if (!boot.authenticated && !isAuthRoute($route) && $route !== '/playground' && $route !== '/playground2') {
       navigate('/login', { replace: true });
     }
     if (boot.authenticated && (isAuthRoute($route) || $route === '/')) {
@@ -109,6 +112,7 @@
     try {
       boot = await api.logout(boot.csrf_token);
       soundEnabled = false;
+      showShortcuts = true;
       setProfile(null);
       navigate('/login', { replace: true });
       notify('Session closed.', 'info');
@@ -124,9 +128,16 @@
     }
     try {
       await api.updateSound(next, boot.csrf_token);
-      boot = { ...boot, preferences: { sound_enabled: next } };
+      boot = { ...boot, preferences: { ...boot.preferences, sound_enabled: next } };
     } catch (err) {
       notify(err instanceof ApiError ? err.message : 'Unable to save sound preference', 'error');
+    }
+  }
+
+  function setShortcutVisibility(next: boolean): void {
+    showShortcuts = next;
+    if (boot) {
+      boot = { ...boot, preferences: { ...boot.preferences, show_shortcuts: next } };
     }
   }
 
@@ -134,6 +145,7 @@
     boot = event.detail;
     theme = boot.theme;
     soundEnabled = boot.preferences.sound_enabled;
+    showShortcuts = boot.preferences.show_shortcuts;
     setProfile(boot.user?.profile);
     window.localStorage.setItem('lexarena-theme', theme);
     navigate('/dashboard', { replace: true });
@@ -149,7 +161,7 @@
     </div>
   </main>
 {:else}
-  <div class="app-shell">
+  <div class:shortcuts-hidden={!showShortcuts} class="app-shell">
     <a class="skip-link" href="#main-content">Skip to content</a>
     <GameFx />
     {#if boot?.authenticated && boot.user && !isAuthRoute($route)}
@@ -166,14 +178,17 @@
       {#key $route + String(boot?.authenticated)}
         <div class="page-shell" in:fade={{ duration: 140 }}>
           {#if $route === '/playground'}
-            <!-- Public experiment bench — reachable with or without a session -->
+            <!-- Public mobile experiment bench, reachable with or without a session. -->
             <PlaygroundPage />
+          {:else if $route === '/playground2'}
+            <!-- Independent Fable design bench. -->
+            <Playground2Page />
           {:else if !boot?.authenticated && $route === '/register'}
             <AuthPage mode="register" csrfToken={boot?.csrf_token || ''} on:authenticated={handleAuthenticated} />
           {:else if !boot?.authenticated}
             <AuthPage mode="login" csrfToken={boot?.csrf_token || ''} on:authenticated={handleAuthenticated} />
           {:else if $route === '/dashboard'}
-            <DashboardPage csrfToken={boot.csrf_token} {theme} onTheme={setTheme} onLogout={handleLogout} {notify} />
+            <DashboardPage csrfToken={boot.csrf_token} {theme} onTheme={setTheme} onShowShortcuts={setShortcutVisibility} onLogout={handleLogout} {notify} />
           {:else if $route === '/training/words'}
             <TranslationPage mode="words" csrfToken={boot.csrf_token} soundEnabled={soundEnabled} {theme} {notify} />
           {:else if $route.startsWith('/training/verbs') || $route === '/training/conjugation'}

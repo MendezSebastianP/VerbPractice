@@ -61,6 +61,7 @@ from app.services.admin_content import (
 )
 from app.services.ai_usage import ai_usage_report
 from app.services.chat_service import stream_chat_response
+from app.services.conjugation_engine import accepted_conjugation_forms
 from app.services.dashboard_service import dashboard_snapshot, recent_chat_messages, summarize_progress
 from app.services.gamification import (
     add_circle_friend,
@@ -120,11 +121,11 @@ async def _ensure_profile(db: AsyncSession, user: User | None) -> UserProfile | 
     return profile
 
 
-async def _ensure_sound_preference(db: AsyncSession, user: User | None) -> bool:
+async def _ensure_app_preferences(db: AsyncSession, user: User | None) -> tuple[bool, bool]:
     if user is None:
-        return False
+        return False, True
     preference = await ensure_user_preference(db, user.id)
-    return preference.sound_enabled
+    return preference.sound_enabled, preference.show_shortcuts
 
 
 def _profile_payload(profile: UserProfile | None) -> dict[str, Any] | None:
@@ -150,9 +151,13 @@ def _user_payload(user: User | None, profile: UserProfile | None) -> dict[str, A
     }
 
 
-def _preferences_payload(sound_enabled: bool | None) -> dict[str, Any]:
+def _preferences_payload(
+    sound_enabled: bool | None,
+    show_shortcuts: bool = True,
+) -> dict[str, Any]:
     return {
         "sound_enabled": bool(sound_enabled),
+        "show_shortcuts": show_shortcuts,
     }
 
 
@@ -162,6 +167,7 @@ def _bootstrap_payload(
     profile: UserProfile | None,
     *,
     sound_enabled: bool | None = None,
+    show_shortcuts: bool = True,
 ) -> dict[str, Any]:
     theme = profile.theme_preference if profile else settings.default_theme
     return {
@@ -170,7 +176,7 @@ def _bootstrap_payload(
         "csrf_token": get_or_create_csrf_token(request),
         "theme": theme,
         "user": _user_payload(user, profile),
-        "preferences": _preferences_payload(sound_enabled),
+        "preferences": _preferences_payload(sound_enabled, show_shortcuts),
         "entry_path": "/app/dashboard" if user else "/app/login",
     }
 
@@ -443,14 +449,17 @@ async def _conjugation_state(
             "slug": "conjugation",
             "title": "Conjugation Training",
             "setup": True,
-            "finished": True,
-            "feedback": feedback or "Conjugation session complete.",
+            # An exhausted active session can survive an interrupted/older client.
+            # A fresh state request must recover to setup, not replay Stage Clear.
+            "finished": bool(result and result.get("finished")),
+            "feedback": feedback,
             "result": result,
             "overview": overview,
             "languages": serialized_languages,
         }
 
     config = active.config or {}
+    language_code = str(config.get("language", "FR")).upper()
     queue = list(config.get("queue", []))
     index = int(config.get("index", 0))
     rows: list[dict[str, Any]] = []
@@ -458,13 +467,68 @@ async def _conjugation_state(
         cells: list[dict[str, Any]] = []
         for tense in question.selected_tenses:
             expected = question.table[tense][pronoun]
-            is_prefilled = question.prefill[tense].get(pronoun, False)
+            form_group = next(
+                group
+                for group in question.form_groups[tense]
+                if pronoun in group.pronouns
+            ) if expected != "-" else None
+            representative = form_group.representative if form_group else None
+            is_representative = representative == pronoun
+            is_prefilled = bool(
+                representative
+                and question.prefill[tense].get(representative, False)
+            )
+            group_payload = {
+                "representative": representative,
+                "group_pronouns": list(form_group.pronouns) if form_group else [],
+                "group_size": len(form_group.pronouns) if form_group else 0,
+                "group_count": len(question.form_groups[tense]),
+            }
             if expected == "-":
-                cells.append({"tense": tense, "kind": "missing", "value": None, "prefilled": False})
+                cells.append(
+                    {
+                        "tense": tense,
+                        "kind": "missing",
+                        "value": None,
+                        "prefilled": False,
+                        **group_payload,
+                    }
+                )
+            elif not is_representative:
+                cells.append(
+                    {
+                        "tense": tense,
+                        "kind": "linked",
+                        "value": expected if is_prefilled else "",
+                        "prefilled": is_prefilled,
+                        "linked_to": representative,
+                        **group_payload,
+                    }
+                )
             elif is_prefilled:
-                cells.append({"tense": tense, "kind": "prefilled", "value": expected, "prefilled": True})
+                cells.append(
+                    {
+                        "tense": tense,
+                        "kind": "prefilled",
+                        "value": expected,
+                        "prefilled": True,
+                        **group_payload,
+                    }
+                )
             else:
-                cells.append({"tense": tense, "kind": "input", "value": "", "prefilled": False})
+                cells.append(
+                    {
+                        "tense": tense,
+                        "kind": "input",
+                        "value": "",
+                        "prefilled": False,
+                        "accepted_answers": sorted(
+                            accepted_conjugation_forms(expected, language_code),
+                            key=lambda answer: (len(answer), answer),
+                        ),
+                        **group_payload,
+                    }
+                )
         rows.append({"pronoun": pronoun, "cells": cells})
 
     return {
@@ -493,6 +557,16 @@ async def _conjugation_state(
             "verb": question.verb,
             "selected_tenses": question.selected_tenses,
             "pronouns": question.pronouns,
+            "form_groups": {
+                tense: [
+                    {
+                        "representative": group.representative,
+                        "pronouns": list(group.pronouns),
+                    }
+                    for group in question.form_groups[tense]
+                ]
+                for tense in question.selected_tenses
+            },
             "rows": rows,
         },
     }
@@ -524,9 +598,17 @@ async def bootstrap(
 ):
     await ensure_gamification_catalog(db)
     profile = await _ensure_profile(db, user)
-    sound_enabled = await _ensure_sound_preference(db, user)
+    sound_enabled, show_shortcuts = await _ensure_app_preferences(db, user)
     await db.commit()
-    return JSONResponse(_bootstrap_payload(request, user, profile, sound_enabled=sound_enabled))
+    return JSONResponse(
+        _bootstrap_payload(
+            request,
+            user,
+            profile,
+            sound_enabled=sound_enabled,
+            show_shortcuts=show_shortcuts,
+        )
+    )
 
 
 @router.post("/auth/login")
@@ -546,9 +628,17 @@ async def login(
     request.session[SESSION_USER_KEY] = user.id
     await ensure_gamification_catalog(db)
     profile = await _ensure_profile(db, user)
-    sound_enabled = await _ensure_sound_preference(db, user)
+    sound_enabled, show_shortcuts = await _ensure_app_preferences(db, user)
     await db.commit()
-    return JSONResponse(_bootstrap_payload(request, user, profile, sound_enabled=sound_enabled))
+    return JSONResponse(
+        _bootstrap_payload(
+            request,
+            user,
+            profile,
+            sound_enabled=sound_enabled,
+            show_shortcuts=show_shortcuts,
+        )
+    )
 
 
 @router.post("/auth/register")
@@ -579,7 +669,9 @@ async def register(
     await db.commit()
 
     request.session[SESSION_USER_KEY] = user.id
-    return JSONResponse(_bootstrap_payload(request, user, profile, sound_enabled=False))
+    return JSONResponse(
+        _bootstrap_payload(request, user, profile, sound_enabled=False, show_shortcuts=True)
+    )
 
 
 @router.post("/auth/logout")
@@ -622,7 +714,7 @@ async def dashboard(
     auth=Depends(require_auth_context),
 ):
     await ensure_gamification_catalog(db)
-    await ensure_user_preference(db, auth.user.id)
+    preference = await ensure_user_preference(db, auth.user.id)
     snapshot = await dashboard_snapshot(db, user_id=auth.user.id)
     gamification = await gamification_snapshot(db, user=auth.user, profile=auth.profile)
     await db.commit()
@@ -630,7 +722,10 @@ async def dashboard(
         {
             "user": _user_payload(auth.user, auth.profile),
             "theme": auth.profile.theme_preference,
-            "preferences": _preferences_payload(gamification["sound_enabled"]),
+            "preferences": _preferences_payload(
+                gamification["sound_enabled"],
+                preference.show_shortcuts,
+            ),
             "gamification": gamification,
             **_serialize_dashboard_snapshot(snapshot),
         }

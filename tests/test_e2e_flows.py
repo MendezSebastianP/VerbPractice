@@ -137,6 +137,7 @@ def test_preferences_community_and_training_rewards(
     assert dashboard.status_code == 200
     payload = dashboard.json()
     assert payload["preferences"]["sound_enabled"] is True
+    assert payload["preferences"]["show_shortcuts"] is True
     assert payload["gamification"]["recent_xp"]
     assert any(friend["username"] == circle_user["username"] for friend in payload["gamification"]["circle"]["friends"])
 

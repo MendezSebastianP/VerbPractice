@@ -21,6 +21,7 @@ VALID_PRACTICE_MODES = {"word_translation", "verb_translation", "conjugation"}
 def _serialize_preference(pref: UserPreference, languages: dict[int, Language]) -> dict:
     return {
         "sound_enabled": pref.sound_enabled,
+        "show_shortcuts": pref.show_shortcuts,
         "mother_tongue": _lang_payload(languages.get(pref.mother_tongue_language_id)) if pref.mother_tongue_language_id else None,
         "learning_language": _lang_payload(languages.get(pref.learning_language_id)) if pref.learning_language_id else None,
         "translation_display_mode": pref.translation_display_mode,
@@ -87,6 +88,9 @@ async def patch_settings(
 
     if payload.force_unlock_added_words is not None:
         preference.force_unlock_added_words = payload.force_unlock_added_words
+
+    if payload.show_shortcuts is not None:
+        preference.show_shortcuts = payload.show_shortcuts
 
     if payload.last_practice_pair is not None:
         preference.last_practice_pair = payload.last_practice_pair

@@ -10,6 +10,7 @@
   import HelpTip from '../components/HelpTip.svelte';
   import PlayGrid from '../components/PlayGrid.svelte';
   import PlayMist from '../components/PlayMist.svelte';
+  import StageClearRank from '../components/StageClearRank.svelte';
   import type { LanguageEntry, RewardState, ThemeName, TranslationState, UserSettings, WordSetSummary } from '../types';
 
   export let mode: 'words' | 'verbs';
@@ -820,14 +821,16 @@
                 <li>Correct answers build your <strong>combo</strong> and earn XP.</li>
                 <li><strong>Finish session</strong> ends the round early.</li>
               </ul>
-              <p>Keyboard shortcuts:</p>
-              <ul>
-                <li><kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd> — session length</li>
-                <li><kbd>E</kbd>/<kbd>S</kbd>/<kbd>R</kbd>/<kbd>F</kbd> — prompt language · add <kbd>Shift</kbd> for the answer language</li>
-                <li><kbd>Ctrl</kbd>+<kbd>Space</kbd> — swap direction · <kbd>Enter</kbd> — launch</li>
-                <li><kbd>F2</kbd> — hint · <kbd>Alt</kbd>+<kbd>Enter</kbd> — skip · <kbd>Esc</kbd> ×2 — finish</li>
-                <li>In fullscreen <kbd>Esc</kbd> leaves fullscreen, so finish becomes <kbd>Ctrl</kbd>+<kbd>Space</kbd> ×2</li>
-              </ul>
+              <div class="keyboard-shortcut-help">
+                <p>Keyboard shortcuts:</p>
+                <ul>
+                  <li><kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd> — session length</li>
+                  <li><kbd>E</kbd>/<kbd>S</kbd>/<kbd>R</kbd>/<kbd>F</kbd> — prompt language · add <kbd>Shift</kbd> for the answer language</li>
+                  <li><kbd>Ctrl</kbd>+<kbd>Space</kbd> — swap direction · <kbd>Enter</kbd> — launch</li>
+                  <li><kbd>F2</kbd> — hint · <kbd>Alt</kbd>+<kbd>Enter</kbd> — skip · <kbd>Esc</kbd> ×2 — finish</li>
+                  <li>In fullscreen <kbd>Esc</kbd> leaves fullscreen, so finish becomes <kbd>Ctrl</kbd>+<kbd>Space</kbd> ×2</li>
+                </ul>
+              </div>
             </HelpTip>
           </div>
 
@@ -1036,37 +1039,25 @@
         </article>
         </div>
       {:else if sessionDone}
-        <!-- ===== STAGE CLEAR ===== -->
+        <!-- ===== STAGE CLEAR (C1-A rank screen, chosen in /playground2) ===== -->
         <article class="glass-panel strong-panel clear-card" class:session-in-arcade={isArcade} class:clear-in={!isArcade}>
           {#if !isArcade}
             <div class="wave-mask success clear-sweep" aria-hidden="true"><div class="wave-disc"></div></div>
           {/if}
-          <h2 class="clear-title">{isArcade ? 'STAGE CLEAR ★' : 'Stage clear'}</h2>
-          <p class="clear-score">
-            {#if clearTotal}
-              Score {clearScore}% · {okRun}/{clearTotal} {itemPlural} · Best combo ×{prevSession?.best_combo ?? 0}
-            {:else}
-              Session complete — jump back in!
-            {/if}
-          </p>
-          {#if isArcade}
-            <p class="clear-gg">GG, {mode === 'words' ? 'WORDSMITH' : 'VERBSMITH'}</p>
-          {/if}
-          {#if clearTotal}
-            <div class="clear-dots" aria-label={`${okRun} of ${clearTotal} correct`}>
-              {#each Array(clearTotal) as _, i}
-                <span class="clear-dot" class:dot-ok={i < okRun}></span>
-              {/each}
-            </div>
-          {/if}
-          <div class="clear-actions">
+          <StageClearRank
+            score={clearScore}
+            ok={okRun}
+            total={clearTotal}
+            bestCombo={prevSession?.best_combo ?? 0}
+            unitLabel={itemPlural}
+          >
             <button bind:this={retryButton} class="primary-button" type="button" on:click={() => { popEl(retryButton); void startSession(); }} disabled={loading}>
               ▶ Replay <span class="kbd-chip">Enter</span>
             </button>
             <button class="secondary-button" type="button" on:click={revealSetup} disabled={loading}>
               Menu <span class="kbd-chip">{isFullscreen ? 'Ctrl+Space' : 'Esc'}</span>
             </button>
-          </div>
+          </StageClearRank>
         </article>
       {/if}
     </div>
@@ -1183,7 +1174,7 @@
   }
 
   .menu-title {
-    font-family: var(--display);
+    font-family: var(--marquee);
     font-size: 1.75rem;
     font-weight: 700;
     letter-spacing: -0.03em;
@@ -1210,9 +1201,8 @@
   }
 
   :global(html[data-theme='arcade']) .diff-stars {
-    font-family: var(--display);
-    font-size: 9px;
     color: var(--text);
+    text-shadow: 0 0 10px color-mix(in srgb, var(--accent) 60%, transparent);
   }
 
   .diff-name {
@@ -1330,9 +1320,9 @@
   }
 
   :global(html[data-theme='arcade']) .play-caption {
-    font-family: var(--display);
-    font-size: 0.5rem;
-    letter-spacing: 0.08em;
+    font-size: 0.8rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
   }
 
   .play-caption.blinky {
@@ -1529,10 +1519,14 @@
   }
 
   :global(html[data-theme='arcade']) .combo-chip {
-    font-family: var(--display);
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     text-transform: uppercase;
+    letter-spacing: 0.06em;
     text-shadow: 0 0 10px color-mix(in srgb, var(--accent) 90%, transparent);
+  }
+
+  :global(html[data-theme='arcade']) .session-meta {
+    font-size: 1.05rem;
   }
 
   .combo-swell {
@@ -1867,82 +1861,16 @@
     80% { transform: translate(-3px, 1px); }
   }
 
-  /* ===== Stage clear ===== */
+  /* ===== Stage clear (content lives in StageClearRank) ===== */
   .clear-card {
     padding-top: 2.5rem;
     padding-bottom: 2.25rem;
   }
 
-  .clear-title {
+  /* Keep the rank content above the clear-sweep overlay (z-index 4) */
+  .clear-card :global(.rank-clear) {
     position: relative;
-    font-family: var(--display);
-    font-size: 1.9rem;
-    font-weight: 800;
-    color: var(--text);
-    margin: 0;
-  }
-
-  :global(html[data-theme='arcade']) .clear-title {
-    font-size: 1.5rem;
-    text-shadow: 0 0 18px color-mix(in srgb, var(--accent) 100%, transparent);
-  }
-
-  .clear-score {
-    position: relative;
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--muted);
-    margin: 12px 0 0;
-  }
-
-  :global(html[data-theme='arcade']) .clear-score {
-    font-family: var(--mono);
-    font-size: 1.15rem;
-    color: var(--accent);
-  }
-
-  .clear-gg {
-    position: relative;
-    font-family: var(--mono);
-    font-size: 1rem;
-    color: var(--muted);
-    margin: 6px 0 0;
-    letter-spacing: 1px;
-  }
-
-  .clear-dots {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 18px;
-  }
-
-  .clear-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: transparent;
-    border: 2px solid color-mix(in srgb, var(--danger) 55%, transparent);
-  }
-
-  .clear-dot.dot-ok {
-    background: var(--accent);
-    border-color: var(--accent);
-  }
-
-  :global(html[data-theme='arcade']) .clear-dot {
-    border-radius: 2px;
-  }
-
-  .clear-actions {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    gap: 14px;
-    margin-top: 26px;
-    flex-wrap: wrap;
+    z-index: 5;
   }
 
   /* ===== Arcade pixel dissolve overlay ===== */

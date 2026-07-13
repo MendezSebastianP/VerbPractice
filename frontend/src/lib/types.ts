@@ -23,6 +23,7 @@ export interface BootPayload {
   user: UserState | null;
   preferences: {
     sound_enabled: boolean;
+    show_shortcuts: boolean;
   };
   entry_path: string;
 }
@@ -44,6 +45,7 @@ export interface DashboardPayload {
   theme: ThemeName;
   preferences: {
     sound_enabled: boolean;
+    show_shortcuts: boolean;
   };
   overall: {
     total: number;
@@ -240,10 +242,13 @@ export interface ConjugationTenseReview {
   accuracy: number;
   cells: Array<{
     pronoun: string;
-    kind: 'missing' | 'prefilled' | 'answer';
+    kind: 'missing' | 'prefilled' | 'answer' | 'linked';
     answer: string;
     expected: string;
     correct: boolean | null;
+    linked_to?: string;
+    group_pronouns?: string[];
+    prefilled?: boolean;
   }>;
 }
 
@@ -281,13 +286,23 @@ export interface ConjugationState {
     verb: string;
     selected_tenses: string[];
     pronouns: string[];
+    form_groups: Record<string, Array<{
+      representative: string;
+      pronouns: string[];
+    }>>;
     rows: Array<{
       pronoun: string;
       cells: Array<{
         tense: string;
-        kind: 'missing' | 'prefilled' | 'input';
+        kind: 'missing' | 'prefilled' | 'input' | 'linked';
         value: string | null;
+        accepted_answers?: string[];
         prefilled: boolean;
+        representative: string | null;
+        linked_to?: string;
+        group_pronouns: string[];
+        group_size: number;
+        group_count: number;
       }>;
     }>;
   };
@@ -307,10 +322,13 @@ export interface ConjugationState {
         pronoun: string;
         cells: Array<{
           tense: string;
-          kind: 'missing' | 'prefilled' | 'answer';
+          kind: 'missing' | 'prefilled' | 'answer' | 'linked';
           answer: string;
           expected: string;
           correct: boolean | null;
+          linked_to?: string;
+          group_pronouns?: string[];
+          prefilled?: boolean;
         }>;
       }>;
     };
@@ -518,6 +536,7 @@ export type TranslationDisplayMode = 'mother_full' | 'partial' | 'learning_full'
 
 export interface UserSettings {
   sound_enabled: boolean;
+  show_shortcuts: boolean;
   mother_tongue: LanguageEntry | null;
   learning_language: LanguageEntry | null;
   translation_display_mode: TranslationDisplayMode;
@@ -531,6 +550,7 @@ export interface UserSettingsPatch {
   learning_language_code: string;
   translation_display_mode: TranslationDisplayMode;
   force_unlock_added_words: boolean;
+  show_shortcuts: boolean;
   last_practice_pair: string;
   last_practice_mode: string;
 }

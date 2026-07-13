@@ -34,7 +34,21 @@
     const query = nextView === 'conjugation' ? '?mode=tables' : '';
     window.history.replaceState({}, '', `${href('/training/verbs')}${query}`);
   }
+
+  function handleModeShortcut(event: KeyboardEvent): void {
+    if (tableSessionActive || !event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
+      return;
+    }
+    const shortcut = event.key.toLowerCase();
+    if (shortcut !== 'v' && shortcut !== 'b') {
+      return;
+    }
+    event.preventDefault();
+    openView(shortcut === 'v' ? 'translation' : 'conjugation');
+  }
 </script>
+
+<svelte:window on:keydown={handleModeShortcut} />
 
 <section class="verb-lab-shell">
   {#if !tableSessionActive}
@@ -62,6 +76,7 @@
         </svg>
         <span>Translate</span>
         <small>Infinitive recall</small>
+        <kbd class="verb-mode-key">Alt+V</kbd>
       </button>
 
       <button
@@ -79,6 +94,7 @@
         </svg>
         <span>Fill tables</span>
         <small>Tense by tense</small>
+        <kbd class="verb-mode-key">Alt+B</kbd>
       </button>
     </div>
     </header>

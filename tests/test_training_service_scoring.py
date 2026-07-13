@@ -297,6 +297,156 @@ async def test_conjugation_uniform_tense_never_prefills_a_giveaway(seeded_traini
 
     assert question is not None
     assert not any(question.prefill["Présent"].values())
+    assert [group.pronouns for group in question.form_groups["Présent"]] == [
+        ["je", "tu", "il", "nous", "vous", "ils"]
+    ]
+
+    state = await _conjugation_state(db, user_id=user.id)
+    cells = [row["cells"][0] for row in state["question"]["rows"]]
+    assert [cell["kind"] for cell in cells] == [
+        "input",
+        "linked",
+        "linked",
+        "linked",
+        "linked",
+        "linked",
+    ]
+    assert all(cell.get("linked_to") == "je" for cell in cells[1:])
+
+    review = await check_conjugation_tense(
+        db,
+        session=session,
+        tense="Présent",
+        answers={"je": "same form"},
+    )
+    assert review["correct"] == 1
+    assert review["total"] == 1
+    assert [cell["kind"] for cell in review["cells"]] == [
+        "answer",
+        "linked",
+        "linked",
+        "linked",
+        "linked",
+        "linked",
+    ]
+
+
+@pytest.mark.asyncio
+async def test_conjugation_duplicate_forms_require_one_answer_per_group(seeded_training_context):
+    db = seeded_training_context["db"]
+    user = seeded_training_context["user"]
+    profile = seeded_training_context["profile"]
+    grouped_forms = {
+        "je": "accept",
+        "tu": "accept",
+        "il": "accepts",
+        "nous": "accept",
+        "vous": "accept",
+        "ils": "accept",
+    }
+    conjugations = (await db.execute(select(VerbConjugation))).scalars().all()
+    for conjugation in conjugations:
+        conjugation.conjugated_form = grouped_forms[conjugation.pronoun]
+    await db.flush()
+
+    session = await start_conjugation_session(
+        db,
+        user_id=user.id,
+        language_code="FR",
+        level="easy",
+        selected_tenses=["Présent"],
+        fill_level="hard",
+        length=1,
+    )
+    question = await get_conjugation_question(db, session)
+
+    assert question is not None
+    assert [group.pronouns for group in question.form_groups["Présent"]] == [
+        ["je", "tu", "nous", "vous", "ils"],
+        ["il"],
+    ]
+
+    state = await _conjugation_state(db, user_id=user.id)
+    cells_by_pronoun = {
+        row["pronoun"]: row["cells"][0]
+        for row in state["question"]["rows"]
+    }
+    assert cells_by_pronoun["je"]["kind"] == "input"
+    assert cells_by_pronoun["il"]["kind"] == "input"
+    assert cells_by_pronoun["tu"]["kind"] == "linked"
+    assert cells_by_pronoun["tu"]["linked_to"] == "je"
+
+    result = await submit_conjugation_answers(
+        db,
+        session=session,
+        profile=profile,
+        answers={"Présent": {"je": "accept", "il": "accepts"}},
+    )
+    item = (
+        await db.execute(select(SessionItem).where(SessionItem.session_id == session.id))
+    ).scalar_one()
+
+    assert result["correct"] == 2
+    assert result["total"] == 2
+    assert len(item.meta["checks"]) == 2
+    tu_review = next(row for row in result["review"]["rows"] if row["pronoun"] == "tu")["cells"][0]
+    assert tu_review["kind"] == "linked"
+    assert tu_review["linked_to"] == "je"
+    assert tu_review["correct"] is True
+
+
+@pytest.mark.asyncio
+async def test_conjugation_small_duplicate_forms_stay_independent(seeded_training_context):
+    db = seeded_training_context["db"]
+    user = seeded_training_context["user"]
+    forms = {
+        "je": "fais",
+        "tu": "fais",
+        "il": "fait",
+        "nous": "faisons",
+        "vous": "faites",
+        "ils": "font",
+    }
+    conjugations = (await db.execute(select(VerbConjugation))).scalars().all()
+    for conjugation in conjugations:
+        conjugation.conjugated_form = forms[conjugation.pronoun]
+    await db.flush()
+
+    session = await start_conjugation_session(
+        db,
+        user_id=user.id,
+        language_code="FR",
+        level="easy",
+        selected_tenses=["Présent"],
+        fill_level="hard",
+        length=1,
+    )
+    question = await get_conjugation_question(db, session)
+
+    assert question is not None
+    assert [group.pronouns for group in question.form_groups["Présent"]] == [
+        ["je"],
+        ["tu"],
+        ["il"],
+        ["nous"],
+        ["vous"],
+        ["ils"],
+    ]
+
+    state = await _conjugation_state(db, user_id=user.id)
+    cells = [row["cells"][0] for row in state["question"]["rows"]]
+    assert [cell["kind"] for cell in cells] == ["input"] * 6
+    assert all("linked_to" not in cell for cell in cells)
+
+    review = await check_conjugation_tense(
+        db,
+        session=session,
+        tense="Présent",
+        answers=forms,
+    )
+    assert review["correct"] == 6
+    assert review["total"] == 6
+    assert [cell["kind"] for cell in review["cells"]] == ["answer"] * 6
 
 
 @pytest.mark.asyncio
@@ -550,3 +700,30 @@ async def test_finished_states_expose_retry_signal_and_last_settings(seeded_trai
     assert translation_state["defaults"] == {"length": 20, "direction": "fr_es"}
     assert conjugation_state["setup"] is True
     assert conjugation_state["finished"] is True
+
+
+@pytest.mark.asyncio
+async def test_exhausted_conjugation_session_recovers_to_setup(seeded_training_context):
+    db = seeded_training_context["db"]
+    user = seeded_training_context["user"]
+    session = await start_conjugation_session(
+        db,
+        user_id=user.id,
+        language_code="FR",
+        level="easy",
+        selected_tenses=["Présent"],
+        fill_level="hard",
+        length=1,
+    )
+    config = dict(session.config or {})
+    config["index"] = len(config["queue"])
+    session.config = config
+    await db.flush()
+
+    state = await _conjugation_state(db, user_id=user.id)
+
+    assert state["setup"] is True
+    assert state["finished"] is False
+    assert state["feedback"] is None
+    assert state["result"] is None
+    assert "session" not in state

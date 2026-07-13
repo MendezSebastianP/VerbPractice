@@ -106,7 +106,7 @@ export const api = {
     request<TranslationState>('/api/training/words/reveal', { method: 'POST', body: JSON.stringify(payload) }),
   revealVerbs: (payload: { answer: string; csrf_token: string }) =>
     request<TranslationState>('/api/training/verbs/reveal', { method: 'POST', body: JSON.stringify(payload) }),
-  conjugationState: () => request<ConjugationState>('/api/training/conjugation'),
+  conjugationState: () => request<ConjugationState>('/api/training/conjugation', { cache: 'no-store' }),
   startConjugation: (payload: {
     language: string;
     level: string;

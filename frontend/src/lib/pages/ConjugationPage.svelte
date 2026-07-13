@@ -5,6 +5,8 @@
   import { playCue } from '../sound';
   import { applyReward } from '../profile';
   import { celebrateReward, flashMiss, popEl } from '../fx';
+  import QuickShotIcon from '../components/QuickShotIcon.svelte';
+  import StageClearRank from '../components/StageClearRank.svelte';
   import type { ConjugationState, ConjugationTenseReview, LanguageConfig, RewardState } from '../types';
 
   export let csrfToken = '';
@@ -34,6 +36,17 @@
   let tenseScores: Record<string, { correct: number; total: number }> = {};
   let finishSessionWarning = false;
   let escTimer: ReturnType<typeof setTimeout> | null = null;
+  let shortcutsExpanded = false;
+  let isFullscreen = false;
+  let mobileCenterFrame: number | null = null;
+  let quickShotSpent = new Set<string>();
+  let quickShotGuarding = false;
+  let quickShotAccepted = false;
+  let quickShotExplanationOpen = false;
+  let quickShotAdvanceInFlight = false;
+  let quickShotComposing = false;
+  let quickShotGuardTimer: ReturnType<typeof setTimeout> | null = null;
+  let quickShotAcceptedTimer: ReturnType<typeof setTimeout> | null = null;
 
   const LEVELS = [
     { value: 'easy', label: 'Core', note: 'Start with the essential forms' },
@@ -41,17 +54,30 @@
     { value: 'hard', label: 'Master', note: 'Open the complete corpus' },
   ];
   const LENGTH_OPTIONS = [3, 5, 8];
+  const LANGUAGE_SHORTCUTS: Record<string, string> = { EN: 'E', ES: 'S', FR: 'F', RU: 'R' };
+  const FILL_LEVEL_SHORTCUTS: Record<string, string> = { hard: 'Shift+1', medium: 'Shift+2', easy: 'Shift+3' };
 
   type InputCell = {
     key: string;
     tense: string;
     pronoun: string;
+    acceptedAnswers: string[];
   };
+
+  type FormGroup = {
+    representative: string;
+    pronouns: string[];
+  };
+
+  const GROUP_COLORS = ['#76ddff', '#f8cc63', '#7ee7a8', '#ff8da1', '#b7a0ff', '#f0a1d6'];
 
   let activeTense = '';
   let currentInputCells: InputCell[] = [];
   let currentActiveCell: InputCell | null = null;
-  let currentActiveLabel = 'Nothing left to fill';
+  let quickShotReady = false;
+  let activeFormGroups: FormGroup[] = [];
+  let uniformFormLayout = false;
+  let clusteredFormLayout = false;
   let sessionActive = false;
   let sessionDone = false;
   let menuView = false;
@@ -149,7 +175,7 @@
       return;
     }
 
-    if (!allowSetupReset || nextState.finished) {
+    if (!allowSetupReset) {
       return;
     }
 
@@ -180,7 +206,12 @@
       const row = rowsByPronoun.get(pronoun);
       const cell = row?.cells.find((entry) => entry.tense === tense);
       if (cell?.kind === 'input') {
-        cells.push({ key: cellKey(tense, pronoun), tense, pronoun });
+        cells.push({
+          key: cellKey(tense, pronoun),
+          tense,
+          pronoun,
+          acceptedAnswers: cell.accepted_answers || [],
+        });
       }
     }
     return cells;
@@ -188,11 +219,17 @@
 
   $: activeTense = state?.question?.selected_tenses[activeTenseIndex] || '';
   $: activeLanguage = state?.languages.find((entry) => entry.code === language);
+  $: activeFormGroups = state?.question?.form_groups[activeTense] || [];
+  $: uniformFormLayout = activeFormGroups.length === 1 && activeFormGroups[0].pronouns.length > 1;
+  $: clusteredFormLayout = activeFormGroups.length > 1 && activeFormGroups.some((group) => group.pronouns.length > 1);
   $: currentInputCells = buildInputCells(state?.question, activeTense);
   $: currentActiveCell = currentInputCells.find((cell) => cell.key === activeCellKey) || currentInputCells[0] || null;
-  $: currentActiveLabel = currentActiveCell ? `${currentActiveCell.pronoun} -> ${currentActiveCell.tense}` : 'Nothing left to fill';
+  $: quickShotReady = Boolean(
+    currentActiveCell?.acceptedAnswers.length
+    && !quickShotSpent.has(currentActiveCell.key),
+  );
   $: sessionActive = Boolean(state?.session && state?.question);
-  $: sessionDone = Boolean(!state?.session && (justFinished || state?.finished || state?.result?.finished) && !showSetupAfterFinish);
+  $: sessionDone = Boolean(justFinished && !state?.session && !showSetupAfterFinish);
   $: menuView = Boolean(state?.setup && (!sessionDone || showSetupAfterFinish));
   $: onSessionActiveChange(sessionActive);
 
@@ -208,6 +245,78 @@
     tenseReview = null;
     tenseScores = {};
     activeCellKey = '';
+    resetQuickShotProgress();
+  }
+
+  function clearQuickShotTimers(): void {
+    if (quickShotGuardTimer) {
+      clearTimeout(quickShotGuardTimer);
+      quickShotGuardTimer = null;
+    }
+    if (quickShotAcceptedTimer) {
+      clearTimeout(quickShotAcceptedTimer);
+      quickShotAcceptedTimer = null;
+    }
+  }
+
+  function resetQuickShotProgress(): void {
+    clearQuickShotTimers();
+    quickShotSpent = new Set<string>();
+    quickShotGuarding = false;
+    quickShotAccepted = false;
+    quickShotExplanationOpen = false;
+    quickShotAdvanceInFlight = false;
+    quickShotComposing = false;
+  }
+
+  function syncFullscreen(): void {
+    isFullscreen = Boolean(document.fullscreenElement);
+  }
+
+  async function toggleFullscreen(): Promise<void> {
+    try {
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+      } else {
+        await document.documentElement.requestFullscreen();
+      }
+    } catch {
+      // Fullscreen can be denied by browser or embedding permissions.
+    }
+  }
+
+  function usesCompactViewport(): boolean {
+    return window.matchMedia('(max-width: 760px) and (hover: none) and (pointer: coarse)').matches;
+  }
+
+  function centerFocusedCellInViewport(): void {
+    if (!usesCompactViewport()) {
+      return;
+    }
+    const input = document.activeElement as HTMLInputElement | null;
+    if (!input?.classList.contains('g1-conj-input')) {
+      return;
+    }
+    const target = input.closest('.g1-column-row') || input;
+    const rect = target.getBoundingClientRect();
+    const viewport = window.visualViewport;
+    const visibleTop = viewport?.offsetTop ?? 0;
+    const visibleHeight = viewport?.height ?? window.innerHeight;
+    const desiredCenter = visibleTop + visibleHeight * 0.48;
+    const delta = rect.top + rect.height / 2 - desiredCenter;
+    if (Math.abs(delta) > 6) {
+      window.scrollBy({ top: delta, behavior: 'auto' });
+    }
+  }
+
+  function scheduleMobileViewportCenter(): void {
+    if (mobileCenterFrame !== null) {
+      cancelAnimationFrame(mobileCenterFrame);
+    }
+    mobileCenterFrame = requestAnimationFrame(() => {
+      mobileCenterFrame = null;
+      centerFocusedCellInViewport();
+    });
   }
 
   async function load(): Promise<void> {
@@ -215,7 +324,9 @@
     error = '';
     try {
       state = await api.conjugationState();
-      justFinished = Boolean(state?.finished || state?.result?.finished);
+      // Stage Clear belongs only to the immediate final-submit response. A
+      // fresh visit always recovers to setup when no session is active.
+      justFinished = false;
       showSetupAfterFinish = false;
       syncControlsFromState(state, true);
       answers = {};
@@ -233,18 +344,52 @@
 
   onMount(() => {
     void load();
+    syncFullscreen();
+    document.addEventListener('fullscreenchange', syncFullscreen);
+    window.visualViewport?.addEventListener('resize', scheduleMobileViewportCenter);
+    window.visualViewport?.addEventListener('scroll', scheduleMobileViewportCenter);
     return () => {
       if (escTimer) {
         clearTimeout(escTimer);
       }
+      if (mobileCenterFrame !== null) {
+        cancelAnimationFrame(mobileCenterFrame);
+      }
+      clearQuickShotTimers();
+      document.removeEventListener('fullscreenchange', syncFullscreen);
+      window.visualViewport?.removeEventListener('resize', scheduleMobileViewportCenter);
+      window.visualViewport?.removeEventListener('scroll', scheduleMobileViewportCenter);
       onSessionActiveChange(false);
     };
   });
 
-  function focusCellByKey(key: string): void {
+  function focusCellByKey(key: string, caretAtEnd = false): void {
     activeCellKey = key;
+    quickShotExplanationOpen = false;
     const input = document.getElementById(cellDomId(key)) as HTMLInputElement | null;
-    input?.focus();
+    if (!input) {
+      return;
+    }
+    const compact = usesCompactViewport();
+    input.focus({ preventScroll: compact });
+    if (caretAtEnd) {
+      const end = input.value.length;
+      input.setSelectionRange(end, end);
+    }
+    if (compact) {
+      scheduleMobileViewportCenter();
+      void tick().then(() => {
+        const current = document.getElementById(cellDomId(key)) as HTMLInputElement | null;
+        if (current && document.activeElement !== current) {
+          current.focus({ preventScroll: true });
+        }
+        if (caretAtEnd && current) {
+          const end = current.value.length;
+          current.setSelectionRange(end, end);
+        }
+        scheduleMobileViewportCenter();
+      });
+    }
   }
 
   function focusFirstInput(): void {
@@ -276,6 +421,127 @@
         [pronoun]: value,
       },
     };
+  }
+
+  function normalizeQuickShotAnswer(value: string): string {
+    return value
+      .trim()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/\p{M}/gu, '')
+      .replaceAll('œ', 'oe')
+      .replaceAll('æ', 'ae');
+  }
+
+  function spendQuickShot(key: string): void {
+    quickShotSpent = new Set([...quickShotSpent, key]);
+  }
+
+  function armQuickShotGuard(): void {
+    quickShotGuarding = true;
+    if (quickShotGuardTimer) {
+      clearTimeout(quickShotGuardTimer);
+    }
+    quickShotGuardTimer = setTimeout(() => {
+      quickShotGuarding = false;
+      quickShotGuardTimer = null;
+    }, 600);
+  }
+
+  function animateQuickShotAccepted(): void {
+    quickShotAccepted = true;
+    if (quickShotAcceptedTimer) {
+      clearTimeout(quickShotAcceptedTimer);
+    }
+    quickShotAcceptedTimer = setTimeout(() => {
+      quickShotAccepted = false;
+      quickShotAcceptedTimer = null;
+    }, 520);
+  }
+
+  async function advanceAfterQuickShot(key: string): Promise<void> {
+    await tick();
+    const cells = currentInputCells;
+    const index = cells.findIndex((cell) => cell.key === key);
+    if (index >= 0 && index < cells.length - 1) {
+      focusCellByKey(cells[index + 1].key);
+    } else if (index === cells.length - 1) {
+      await checkActiveTense();
+    }
+    quickShotAdvanceInFlight = false;
+  }
+
+  function processQuickShot(cell: InputCell, value: string): void {
+    if (quickShotComposing || quickShotAdvanceInFlight || quickShotSpent.has(cell.key)) {
+      return;
+    }
+
+    const draft = normalizeQuickShotAnswer(value);
+    if (!draft) {
+      return;
+    }
+    const accepted = cell.acceptedAnswers.map(normalizeQuickShotAnswer).filter(Boolean);
+    if (!accepted.length) {
+      return;
+    }
+    if (accepted.includes(draft)) {
+      quickShotExplanationOpen = false;
+      quickShotAdvanceInFlight = true;
+      armQuickShotGuard();
+      animateQuickShotAccepted();
+      void advanceAfterQuickShot(cell.key);
+      return;
+    }
+    if (!accepted.some((answer) => answer.startsWith(draft))) {
+      spendQuickShot(cell.key);
+    }
+  }
+
+  function handleAnswerInput(
+    event: Event,
+    tense: string,
+    pronoun: string,
+    acceptedAnswers: string[],
+  ): void {
+    const value = (event.currentTarget as HTMLInputElement).value;
+    const cell = { key: cellKey(tense, pronoun), tense, pronoun, acceptedAnswers };
+    setAnswer(tense, pronoun, value);
+    processQuickShot(cell, value);
+  }
+
+  function handleAnswerCompositionEnd(
+    event: CompositionEvent,
+    tense: string,
+    pronoun: string,
+    acceptedAnswers: string[],
+  ): void {
+    quickShotComposing = false;
+    const value = (event.currentTarget as HTMLInputElement).value;
+    const cell = { key: cellKey(tense, pronoun), tense, pronoun, acceptedAnswers };
+    setAnswer(tense, pronoun, value);
+    processQuickShot(cell, value);
+  }
+
+  function linkedFormValue(tense: string, linkedTo: string | undefined, fallback: string | null): string {
+    return linkedTo ? answers[tense]?.[linkedTo] || fallback || '' : fallback || '';
+  }
+
+  function sharedFormLabel(groupSize: number, groupCount: number): string {
+    return groupCount === 1
+      ? `All ${groupSize} pronouns · type once`
+      : `${groupSize} pronouns share this form`;
+  }
+
+  function formGroupIndex(representative: string | null): number {
+    return Math.max(0, activeFormGroups.findIndex((group) => group.representative === representative));
+  }
+
+  function formGroupLetter(index: number): string {
+    return String.fromCharCode(65 + Math.min(index, 25));
+  }
+
+  function formGroupColor(index: number): string {
+    return GROUP_COLORS[index % GROUP_COLORS.length];
   }
 
   function toggleTense(tense: string): void {
@@ -442,6 +708,7 @@
     if (activeTenseIndex < state.question.selected_tenses.length - 1) {
       activeTenseIndex += 1;
       activeCellKey = '';
+      quickShotExplanationOpen = false;
       tenseReview = null;
       await focusPrimaryControl();
       return;
@@ -450,15 +717,33 @@
   }
 
   function handleCellKeydown(event: KeyboardEvent): void {
-    if (event.key !== 'Enter') {
-      return;
-    }
-    event.preventDefault();
-    event.stopPropagation();
     const current = event.currentTarget as HTMLInputElement;
     const currentKey = current.dataset.cellKey;
     const cells = currentInputCells;
     const index = currentKey ? cells.findIndex((cell) => cell.key === currentKey) : -1;
+
+    if (event.key === 'Backspace' && current.value === '' && index > 0) {
+      event.preventDefault();
+      event.stopPropagation();
+      focusCellByKey(cells[index - 1].key, true);
+      return;
+    }
+
+    if (event.key !== 'Enter' || event.isComposing || quickShotComposing) {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+    if (quickShotGuarding || quickShotAdvanceInFlight) {
+      return;
+    }
+    quickShotExplanationOpen = false;
+    if (index > 0 && current.value === '') {
+      const previous = cells[index - 1];
+      const previousValue = answers[previous.tense]?.[previous.pronoun] || '';
+      current.value = previousValue;
+      setAnswer(cells[index].tense, cells[index].pronoun, previousValue);
+    }
     if (index >= 0 && index < cells.length - 1) {
       focusCellByKey(cells[index + 1].key);
       return;
@@ -518,18 +803,94 @@
   }
 
   function handleWindowKeydown(event: KeyboardEvent): void {
+    if (
+      event.key === 'F11'
+      && !event.altKey
+      && !event.ctrlKey
+      && !event.metaKey
+      && !event.shiftKey
+    ) {
+      event.preventDefault();
+      void toggleFullscreen();
+      return;
+    }
+
     if (loading) {
       return;
     }
 
-    if (menuView && event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey && ['1', '2', '3', '4'].includes(event.key)) {
-      event.preventDefault();
-      chooseLevel(event.key === '4' ? 'custom' : LEVELS[Number(event.key) - 1].value);
-      return;
+    if (menuView) {
+      const active = document.activeElement as HTMLElement | null;
+      const isTyping = ['INPUT', 'TEXTAREA', 'SELECT'].includes(active?.tagName || '') || active?.isContentEditable;
+      const digitKey = event.code.startsWith('Digit') ? event.code.slice(-1) : event.key;
+
+      if (!isTyping && event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey && ['1', '2', '3', '4'].includes(digitKey)) {
+        event.preventDefault();
+        chooseLevel(digitKey === '4' ? 'custom' : LEVELS[Number(digitKey) - 1].value);
+        return;
+      }
+
+      if (!isTyping && !event.altKey && event.shiftKey && event.ctrlKey && !event.metaKey && /^[0-9]$/.test(digitKey)) {
+        const tenseIndex = digitKey === '0' ? 9 : Number(digitKey) - 1;
+        const tense = currentLanguage()?.available_tenses[tenseIndex];
+        if (tense) {
+          event.preventDefault();
+          toggleTense(tense);
+          return;
+        }
+      }
+
+      if (!isTyping && event.shiftKey && !event.altKey && !event.ctrlKey && !event.metaKey && ['1', '2', '3'].includes(digitKey)) {
+        event.preventDefault();
+        fillLevel = (['hard', 'medium', 'easy'] as const)[Number(digitKey) - 1];
+        return;
+      }
+
+      if (!isTyping && !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
+        const languageCode = Object.keys(LANGUAGE_SHORTCUTS).find(
+          (code) => LANGUAGE_SHORTCUTS[code].toLowerCase() === event.key.toLowerCase(),
+        );
+        if (languageCode) {
+          event.preventDefault();
+          chooseLanguage(languageCode);
+          return;
+        }
+
+        const lengthIndex = ['1', '2', '3'].indexOf(digitKey);
+        if (lengthIndex >= 0) {
+          event.preventDefault();
+          length = LENGTH_OPTIONS[lengthIndex];
+          return;
+        }
+      }
+    }
+
+    if (
+      isFullscreen
+      && event.code === 'Space'
+      && event.ctrlKey
+      && !event.altKey
+      && !event.metaKey
+      && !event.shiftKey
+    ) {
+      if (sessionActive) {
+        event.preventDefault();
+        handleFinishClick();
+        return;
+      }
+      if (sessionDone) {
+        event.preventDefault();
+        revealSetup();
+        return;
+      }
     }
 
     const plainKey = !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey;
     if (!plainKey) {
+      return;
+    }
+
+    if (event.key === 'Escape' && isFullscreen) {
       return;
     }
 
@@ -597,25 +958,21 @@
 
       {#if sessionDone}
         <article bind:this={finishedCard} class="glass-panel strong-panel table-clear-card" in:fade={{ duration: 180 }}>
-          <div class="table-clear-burst" aria-hidden="true"><i></i><i></i><i></i></div>
           <p class="eyebrow">Table run complete</p>
-          <h2>Stage clear</h2>
-          <p class="table-clear-score">
-            Score {state.result?.session_score ?? 0}% · {state.result?.session_length ?? length} verbs · Best combo ×{state.result?.best_combo ?? 0}
-          </p>
-          <div class="table-clear-dots" aria-hidden="true">
-            {#each Array(state.result?.session_length ?? length) as _, index}
-              <span class:table-clear-dot-on={index < Math.round((state.result?.session_length ?? length) * ((state.result?.session_score ?? 0) / 100))}></span>
-            {/each}
-          </div>
-          <div class="table-clear-actions">
+          <StageClearRank
+            score={state.result?.session_score ?? 0}
+            ok={Math.round((state.result?.session_length ?? length) * ((state.result?.session_score ?? 0) / 100))}
+            total={state.result?.session_length ?? length}
+            bestCombo={state.result?.best_combo ?? 0}
+            unitLabel="verbs"
+          >
             <button bind:this={retryButton} class="primary-button" type="button" on:click={() => { popEl(retryButton); void startSession(); }} disabled={loading}>
               ▶ Replay <span class="kbd-chip">Enter</span>
             </button>
             <button class="secondary-button" type="button" on:click={revealSetup} disabled={loading}>
-              Menu <span class="kbd-chip">Esc</span>
+              Menu <span class="kbd-chip">{isFullscreen ? 'Ctrl+Space' : 'Esc'}</span>
             </button>
-          </div>
+          </StageClearRank>
         </article>
       {/if}
 
@@ -663,7 +1020,25 @@
               <p class="eyebrow">Build a table run</p>
               <h2>Choose the tense load, then fill every open cell.</h2>
             </div>
-            <p class="section-copy">Enter moves down each pronoun, then crosses to the next tense.</p>
+            <div class="table-setup-side">
+              <button
+                class="table-fs-toggle"
+                type="button"
+                aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+                title={isFullscreen ? 'Exit fullscreen (F11)' : 'Fullscreen (F11)'}
+                on:click={() => void toggleFullscreen()}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  {#if isFullscreen}
+                    <path d="M8 3v3a2 2 0 0 1-2 2H3M21 8h-3a2 2 0 0 1-2-2V3M3 16h3a2 2 0 0 1 2 2v3M16 21v-3a2 2 0 0 1 2-2h3" />
+                  {:else}
+                    <path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3" />
+                  {/if}
+                </svg>
+                <kbd class="kbd-chip">F11</kbd>
+              </button>
+              <p class="section-copy">Enter moves down each pronoun, then crosses to the next tense.</p>
+            </div>
           </div>
 
           <div class="setup-step">
@@ -684,7 +1059,7 @@
                 >
                   <span class="language-code">{item.code}</span>
                   <span class="language-card-copy"><strong>{item.name}</strong><small>{item.available ? `${item.verb_count} verbs` : 'Import required'}</small></span>
-                  <span class="language-check" aria-hidden="true">{language === item.code ? '✓' : ''}</span>
+                  <span class="language-card-tools"><kbd class="setup-keycap">{LANGUAGE_SHORTCUTS[item.code]}</kbd><span class="language-check" aria-hidden="true">{language === item.code ? '✓' : ''}</span></span>
                 </button>
               {/each}
             </div>
@@ -707,12 +1082,12 @@
                     aria-pressed={level === item.value}
                     on:click={() => chooseLevel(item.value)}
                   >
-                    <strong>L{tierIndex + 1}</strong><span>Alt+{tierIndex + 1}</span>
+                    <strong>L{tierIndex + 1}</strong><kbd class="setup-keycap">Alt+{tierIndex + 1}</kbd>
                   </button>
                   <div class="stair-copy"><strong>{item.label}</strong><small>{item.note}</small></div>
                   <div class="stair-tense-row">
                     {#each tierTenses as tense}
-                      <button class:tense-on={selectedTenses.includes(tense)} type="button" on:click={() => toggleTense(tense)}>{tense}</button>
+                      <button class:tense-on={selectedTenses.includes(tense)} type="button" aria-pressed={selectedTenses.includes(tense)} on:click={() => toggleTense(tense)}>{#if selectedTenses.includes(tense)}<i class="tense-check" aria-hidden="true">✓</i>{/if}<span>{tense}</span></button>
                     {/each}
                   </div>
                 </div>
@@ -720,7 +1095,7 @@
               <button class:custom-on={level === 'custom'} class="custom-route" type="button" on:click={() => chooseLevel('custom')}>
                 <span class="custom-spark" aria-hidden="true">✦</span>
                 <span><strong>Custom route</strong><small>Touch any tense to rewrite the staircase</small></span>
-                <span class="custom-key">Alt+4</span>
+                <kbd class="setup-keycap custom-key">Alt+4</kbd>
               </button>
             </div>
           </div>
@@ -732,9 +1107,9 @@
                 <div><strong>Number of verbs</strong><small>Pick the run size.</small></div>
               </div>
               <div class="length-card-row">
-                {#each LENGTH_OPTIONS as option}
+                {#each LENGTH_OPTIONS as option, optionIndex}
                   <button class:length-card-on={length === option} class="length-card" type="button" aria-pressed={length === option} on:click={() => (length = option)}>
-                    <strong>{option}</strong><span>verbs</span>
+                    <kbd class="setup-keycap">{optionIndex + 1}</kbd><strong>{option}</strong><span>verbs</span>
                   </button>
                 {/each}
               </div>
@@ -746,9 +1121,9 @@
                 <div><strong>Table support</strong><small>How many forms are revealed.</small></div>
               </div>
               <div class="support-row">
-                <button class:support-on={fillLevel === 'easy'} type="button" on:click={() => (fillLevel = 'easy')}><strong>Guided</strong><small>≈ 70%</small></button>
-                <button class:support-on={fillLevel === 'medium'} type="button" on:click={() => (fillLevel = 'medium')}><strong>Hints</strong><small>1 / tense</small></button>
-                <button class:support-on={fillLevel === 'hard'} type="button" on:click={() => (fillLevel = 'hard')}><strong>Blank</strong><small>0%</small></button>
+                <button class:support-on={fillLevel === 'easy'} type="button" on:click={() => (fillLevel = 'easy')}><kbd class="setup-keycap">{FILL_LEVEL_SHORTCUTS.easy}</kbd><strong>Guided</strong><small>≈ 70%</small></button>
+                <button class:support-on={fillLevel === 'medium'} type="button" on:click={() => (fillLevel = 'medium')}><kbd class="setup-keycap">{FILL_LEVEL_SHORTCUTS.medium}</kbd><strong>Hints</strong><small>1 / tense</small></button>
+                <button class:support-on={fillLevel === 'hard'} type="button" on:click={() => (fillLevel = 'hard')}><kbd class="setup-keycap">{FILL_LEVEL_SHORTCUTS.hard}</kbd><strong>Blank</strong><small>0%</small></button>
               </div>
             </div>
           </div>
@@ -759,7 +1134,21 @@
               <strong>{selectedTenses.length} {selectedTenses.length === 1 ? 'tense' : 'tenses'} × {length} verbs</strong>
             </div>
             <button class="primary-button table-launch-button" type="button" on:click={startSession} disabled={loading || !canStart()}>
-              Start table run <span aria-hidden="true">→</span>
+              Start table run <kbd class="setup-keycap setup-keycap-launch">Enter</kbd><span aria-hidden="true">→</span>
+            </button>
+          </div>
+
+          <div class="setup-shortcut-footer" aria-label="Table setup shortcuts">
+            <span><kbd>E/S/F/R</kbd> language</span>
+            <span><kbd>Alt+1…4</kbd> tense route</span>
+            <span><kbd>1/2/3</kbd> run size</span>
+            {#if shortcutsExpanded}
+              <span><kbd>Ctrl+Shift+1…0</kbd> individual tenses</span>
+              <span><kbd>Shift+1…3</kbd> support</span>
+              <span><kbd>Enter</kbd> start</span>
+            {/if}
+            <button class="shortcut-footer-toggle" type="button" aria-expanded={shortcutsExpanded} on:click={() => (shortcutsExpanded = !shortcutsExpanded)}>
+              {shortcutsExpanded ? 'Fewer shortcuts' : 'All shortcuts…'}
             </button>
           </div>
         </article>
@@ -769,64 +1158,106 @@
             <div class="progress-shell">
               <div class="progress-top">
                 <span>Verb progress</span>
-                <strong>{state.session.progress_current}/{state.session.progress_total}</strong>
+                <div class="g1-progress-end">
+                  <strong>{state.session.progress_current}/{state.session.progress_total}</strong>
+                  <button
+                    class="table-fs-toggle table-fs-toggle-game"
+                    type="button"
+                    aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+                    title={isFullscreen ? 'Exit fullscreen (F11)' : 'Fullscreen (F11)'}
+                    on:click={() => void toggleFullscreen()}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      {#if isFullscreen}
+                        <path d="M8 3v3a2 2 0 0 1-2 2H3M21 8h-3a2 2 0 0 1-2-2V3M3 16h3a2 2 0 0 1 2 2v3M16 21v-3a2 2 0 0 1 2-2h3" />
+                      {:else}
+                        <path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3" />
+                      {/if}
+                    </svg>
+                    <kbd class="kbd-chip">F11</kbd>
+                  </button>
+                </div>
               </div>
               <div class="progress-track"><span class="progress-bar" style={`width: ${progressPercent()}%`}></span></div>
             </div>
 
             <div class="g1-session-frame">
-              <div class="g1-utility-row">
-                <span><i aria-hidden="true"></i> TABLE SHORTCUTS ON</span>
-                <small>{tenseReview ? 'All feedback shown · Enter continues' : 'Enter moves top to bottom'} · Esc ×2 finishes</small>
-              </div>
-
-              <div class="g1-tense-strip" aria-label="Tense progress">
-                {#each state.question.selected_tenses as tense, tenseIndex}
-                  {@const score = tenseScores[tense]}
-                  <div class:g1-tense-active={tenseIndex === activeTenseIndex} class:g1-tense-done={checkedTenses.has(tense)} class:g1-tense-review={tenseIndex === activeTenseIndex && tenseReview} class="g1-tense-card">
-                    <span>{String(tenseIndex + 1).padStart(2, '0')}</span>
-                    <div><strong>{tense}</strong><small>{score ? `${score.correct}/${score.total} correct` : checkedTenses.has(tense) ? 'checked' : tenseIndex === activeTenseIndex ? tenseReview ? 'feedback shown' : 'filling now' : 'waiting'}</small></div>
-                    <i aria-hidden="true">{checkedTenses.has(tense) ? '✓' : tenseIndex === activeTenseIndex ? '↓' : '·'}</i>
-                  </div>
-                {/each}
-              </div>
-
-              <div class="g1-verb-prompt">
-                <div><span>CURRENT VERB</span><strong>{state.question.verb}</strong></div>
-                <div>
-                  <span>{activeTense} · {tenseReview ? 'feedback in place' : 'active answer'}</span>
-                  {#if tenseReview}
-                    <strong class="g1-prompt-score">{tenseReview.correct} / {tenseReview.total} correct</strong>
-                    <small>Every result is shown. Enter opens the next tense.</small>
-                  {:else}
-                    <strong><em>{currentActiveCell?.pronoun || state.question.pronouns[0]}</em> + {state.question.verb}</strong>
-                    <small>Locked guides stay visible; only cyan cells receive the pointer.</small>
-                  {/if}
+              <!-- H1-B1 (chosen in /playground2): named segment strip + one
+                   big active-tense marquee instead of three shrunken cards -->
+              <div class="g1-strip-block">
+                <div class="g1-strip-head">
+                  <span class="g1-strip-count">Tense {Math.min(activeTenseIndex + 1, state.question.selected_tenses.length)}/{state.question.selected_tenses.length}</span>
+                  <strong class="g1-strip-name">{activeTense}</strong>
                 </div>
-                <div><span>TENSE</span><strong>{Math.min(activeTenseIndex + 1, state.question.selected_tenses.length)}/{state.question.selected_tenses.length}</strong><small>{tenseReview ? 'checked' : currentActiveLabel}</small></div>
+                <div
+                  class="g1-name-strip"
+                  class:g1-strip-many={state.question.selected_tenses.length > 5}
+                  role="img"
+                  aria-label={`Tense ${Math.min(activeTenseIndex + 1, state.question.selected_tenses.length)} of ${state.question.selected_tenses.length}: ${activeTense}`}
+                >
+                  {#each state.question.selected_tenses as tense, tenseIndex}
+                    {@const score = tenseScores[tense]}
+                    <span
+                      class="g1-seg"
+                      class:g1-seg-done={checkedTenses.has(tense) && tenseIndex !== activeTenseIndex}
+                      class:g1-seg-active={tenseIndex === activeTenseIndex}
+                      class:g1-seg-review={tenseIndex === activeTenseIndex && Boolean(tenseReview)}
+                      title={score ? `${tense} — ${score.correct}/${score.total} correct` : tense}
+                    >{tense}</span>
+                  {/each}
+                </div>
               </div>
 
-              <div class:g1-column-review={tenseReview} class="g1-active-column">
+              <div class="g1-hero">
+                <span>Current verb</span>
+                <strong>{state.question.verb}</strong>
+                {#if tenseReview}
+                  <em class="g1-hero-review">{tenseReview.correct}/{tenseReview.total} correct · all feedback shown</em>
+                {:else}
+                  <em><b>{currentActiveCell?.pronoun || state.question.pronouns[0]}</b> + {state.question.verb}</em>
+                {/if}
+              </div>
+
+              <div class:g1-column-review={tenseReview} class:g1-layout-u1={uniformFormLayout} class:g1-layout-c1={clusteredFormLayout} class="g1-active-column">
                 <div class="g1-column-head">
                   <div><span>{tenseReview ? 'TENSE FEEDBACK' : 'ACTIVE TENSE'} {Math.min(activeTenseIndex + 1, state.question.selected_tenses.length)}/{state.question.selected_tenses.length}</span><strong>{activeTense}</strong></div>
-                  <div><strong>{tenseReview ? `${tenseReview.correct}/${tenseReview.total} correct` : `${currentInputCells.length} answers`}</strong><small>{tenseReview ? 'all feedback shown' : 'fill top to bottom'}</small></div>
+                  <div><strong>{tenseReview ? `${tenseReview.correct}/${tenseReview.total} correct` : `${currentInputCells.length} unique ${currentInputCells.length === 1 ? 'answer' : 'answers'}`}</strong><small>{tenseReview ? 'all feedback shown' : uniformFormLayout ? 'one form · type once for the whole tense' : clusteredFormLayout ? 'color-linked form groups' : 'fill top to bottom'}</small></div>
                 </div>
 
+                {#if uniformFormLayout}
+                  <div class="u1-form-notice">
+                    <span>TYPE ONCE</span>
+                    <div><strong>One form completes all {activeFormGroups[0].pronouns.length} pronouns.</strong><small>The first row is graded; every linked row mirrors it live.</small></div>
+                    <em>1 GRADED ANSWER</em>
+                  </div>
+                {:else if clusteredFormLayout}
+                  <div class="c1-form-key" aria-label="Pronoun form groups">
+                    {#each activeFormGroups as group, groupIndex}
+                      <span style={`--group-color: ${formGroupColor(groupIndex)}`}><i>{formGroupLetter(groupIndex)}</i><strong>{group.pronouns.join(' · ')}</strong></span>
+                    {/each}
+                    <small>{activeFormGroups.length} distinct forms · {state.question.pronouns.length} pronouns</small>
+                  </div>
+                {/if}
+
                 <div class="g1-column-rows">
-                  <span class="g1-column-rail" aria-hidden="true"><i style={`height: ${tenseReview ? 100 : ((Math.max(0, currentInputCells.findIndex((cell) => cell.key === currentActiveCell?.key)) + 1) / Math.max(1, currentInputCells.length)) * 100}%`}></i></span>
+                  <span class:g1-column-rail-uniform={uniformFormLayout} class:g1-column-rail-hidden={clusteredFormLayout} class="g1-column-rail" aria-hidden="true"><i style={`height: ${tenseReview ? 100 : ((Math.max(0, currentInputCells.findIndex((cell) => cell.key === currentActiveCell?.key)) + 1) / Math.max(1, currentInputCells.length)) * 100}%`}></i></span>
                   {#each state.question.rows as row, rowIndex (row.pronoun)}
                     {@const cell = row.cells.find((entry) => entry.tense === activeTense)}
                     {@const feedbackCell = tenseReview?.cells.find((entry) => entry.pronoun === row.pronoun)}
                     {#if cell}
+                      {@const groupIndex = formGroupIndex(cell.representative)}
                       <div
                         class:g1-row-active={!tenseReview && currentActiveCell?.tense === cell.tense && currentActiveCell?.pronoun === row.pronoun}
                         class:g1-row-guide={cell.kind === 'prefilled'}
-                        class:g1-row-correct={feedbackCell?.kind === 'answer' && feedbackCell.correct === true}
-                        class:g1-row-wrong={feedbackCell?.kind === 'answer' && feedbackCell.correct === false}
+                        class:g1-row-linked={cell.kind === 'linked'}
+                        class:g1-row-representative={cell.kind === 'input' && cell.group_size > 1}
+                        class:g1-row-clustered={clusteredFormLayout && cell.kind !== 'missing'}
+                        class:g1-row-correct={(feedbackCell?.kind === 'answer' || feedbackCell?.kind === 'linked') && feedbackCell.correct === true}
+                        class:g1-row-wrong={(feedbackCell?.kind === 'answer' || feedbackCell?.kind === 'linked') && feedbackCell.correct === false}
                         class="g1-column-row"
-                        style={`--row-index: ${rowIndex}`}
+                        style={`--row-index: ${rowIndex}; --group-color: ${formGroupColor(groupIndex)}`}
                       >
-                        <span class="g1-row-marker" aria-hidden="true">{cell.kind === 'prefilled' ? '◆' : feedbackCell?.kind === 'answer' ? feedbackCell.correct ? '✓' : '×' : cell.kind === 'missing' ? '–' : currentActiveCell?.tense === cell.tense && currentActiveCell?.pronoun === row.pronoun ? '▶' : Boolean(answers[cell.tense]?.[row.pronoun]?.trim()) ? '✓' : '·'}</span>
+                        <span class="g1-row-marker" aria-hidden="true">{feedbackCell?.kind === 'answer' || feedbackCell?.kind === 'linked' ? feedbackCell.correct ? '✓' : '×' : clusteredFormLayout && cell.kind !== 'missing' ? formGroupLetter(groupIndex) : cell.kind === 'prefilled' ? '◆' : cell.kind === 'linked' ? '=' : cell.kind === 'missing' ? '–' : currentActiveCell?.tense === cell.tense && currentActiveCell?.pronoun === row.pronoun ? '▶' : Boolean(answers[cell.tense]?.[row.pronoun]?.trim()) ? '✓' : '·'}</span>
                         <label for={!tenseReview && cell.kind === 'input' ? cellDomId(cellKey(cell.tense, row.pronoun)) : undefined}><small>{String(rowIndex + 1).padStart(2, '0')}</small><strong>{row.pronoun}</strong></label>
 
                         {#if cell.kind === 'missing'}
@@ -834,36 +1265,92 @@
                         {:else if cell.kind === 'prefilled'}
                           <div class="g1-locked-guide"><span aria-hidden="true">◆</span><strong>{cell.value}</strong><small>GIVEN GUIDE</small></div>
                         {:else if tenseReview && feedbackCell}
-                          {#if feedbackCell.correct}
+                          {#if feedbackCell.kind === 'linked'}
+                            <div class:g1-linked-correct={feedbackCell.correct} class:g1-linked-wrong={!feedbackCell.correct} class="g1-linked-form g1-linked-review">
+                              <span aria-hidden="true">=</span>
+                              <div><strong>{feedbackCell.answer || feedbackCell.expected}</strong><small>same checked answer as {feedbackCell.linked_to}</small></div>
+                              <em>{feedbackCell.correct ? 'LINKED · RIGHT' : 'FOLLOW CORRECTION ABOVE'}</em>
+                            </div>
+                          {:else if feedbackCell.correct}
                             <div class="g1-inline-feedback g1-feedback-correct"><span aria-hidden="true">✓</span><strong>{feedbackCell.answer}</strong><small>RIGHT</small></div>
                           {:else}
                             <div class="g1-inline-feedback g1-feedback-wrong"><span aria-hidden="true">×</span><div><del>{feedbackCell.answer || 'No answer'}</del><strong>{feedbackCell.expected}</strong></div><small>CORRECT</small></div>
                           {/if}
+                        {:else if cell.kind === 'linked'}
+                          <div class:g1-linked-guide={cell.prefilled} class="g1-linked-form">
+                            <span aria-hidden="true">=</span>
+                            <div>
+                              <strong class:g1-linked-empty={!linkedFormValue(cell.tense, cell.linked_to, cell.value)}>{linkedFormValue(cell.tense, cell.linked_to, cell.value) || 'Same answer'}</strong>
+                              <small>same as {cell.linked_to}</small>
+                            </div>
+                            <em>{cell.group_count === 1 ? 'ONE FORM · WHOLE TENSE' : 'LOCKED · SHARED FORM'}</em>
+                          </div>
                         {:else}
                           <div class="g1-input-shell">
-                            <input
-                              id={cellDomId(cellKey(cell.tense, row.pronoun))}
-                              class="g1-conj-input"
-                              type="text"
-                              data-cell-key={cellKey(cell.tense, row.pronoun)}
-                              value={answers[cell.tense]?.[row.pronoun] || ''}
-                              tabindex={currentActiveCell?.tense === cell.tense && currentActiveCell?.pronoun === row.pronoun ? 0 : -1}
-                              disabled={loading}
-                              on:focus={() => (activeCellKey = cellKey(cell.tense, row.pronoun))}
-                              on:input={(event) => setAnswer(cell.tense, row.pronoun, (event.currentTarget as HTMLInputElement).value)}
-                              on:keydown={handleCellKeydown}
-                              autocomplete="off"
-                              autocapitalize="off"
-                              spellcheck="false"
-                              placeholder=""
-                            />
-                            {#if currentActiveCell?.tense === cell.tense && currentActiveCell?.pronoun === row.pronoun}<span>{currentInputCells[currentInputCells.length - 1]?.key === cellKey(cell.tense, row.pronoun) ? 'ENTER = CHECK TENSE' : 'ENTER = NEXT EMPTY ↓'}</span>{/if}
+                            {#if cell.group_size > 1 || clusteredFormLayout}
+                              <small class="g1-group-badge">{clusteredFormLayout ? `Group ${formGroupLetter(groupIndex)} · ${cell.group_size} ${cell.group_size === 1 ? 'pronoun' : 'pronouns'}` : sharedFormLabel(cell.group_size, cell.group_count)}</small>
+                            {/if}
+                            <div
+                              class:g1-input-control-active={currentActiveCell?.tense === cell.tense && currentActiveCell?.pronoun === row.pronoun}
+                              class="g1-input-control"
+                            >
+                              <input
+                                id={cellDomId(cellKey(cell.tense, row.pronoun))}
+                                class="g1-conj-input"
+                                type="text"
+                                data-cell-key={cellKey(cell.tense, row.pronoun)}
+                                value={answers[cell.tense]?.[row.pronoun] || ''}
+                                tabindex={currentActiveCell?.tense === cell.tense && currentActiveCell?.pronoun === row.pronoun ? 0 : -1}
+                                disabled={loading}
+                                inputmode="text"
+                                enterkeyhint={currentInputCells[currentInputCells.length - 1]?.key === cellKey(cell.tense, row.pronoun) ? 'done' : 'next'}
+                                on:focus={() => {
+                                  activeCellKey = cellKey(cell.tense, row.pronoun);
+                                  quickShotExplanationOpen = false;
+                                }}
+                                on:input={(event) => handleAnswerInput(event, cell.tense, row.pronoun, cell.accepted_answers || [])}
+                                on:compositionstart={() => (quickShotComposing = true)}
+                                on:compositionend={(event) => handleAnswerCompositionEnd(event, cell.tense, row.pronoun, cell.accepted_answers || [])}
+                                on:keydown={handleCellKeydown}
+                                autocomplete="off"
+                                autocapitalize="off"
+                                spellcheck="false"
+                                placeholder=""
+                              />
+                              {#if currentActiveCell?.tense === cell.tense && currentActiveCell?.pronoun === row.pronoun}
+                                <QuickShotIcon
+                                  ready={quickShotReady}
+                                  guarding={quickShotGuarding}
+                                  accepted={quickShotAccepted}
+                                  explanationOpen={quickShotExplanationOpen}
+                                  controls={`quick-shot-note-${cellKey(cell.tense, row.pronoun)}`}
+                                  onToggle={() => (quickShotExplanationOpen = !quickShotExplanationOpen)}
+                                />
+                              {/if}
+                            </div>
+                            {#if quickShotExplanationOpen && currentActiveCell?.tense === cell.tense && currentActiveCell?.pronoun === row.pronoun}
+                              <div class="g1-quick-shot-note" id={`quick-shot-note-${cellKey(cell.tense, row.pronoun)}`} role="note">
+                                <span>{quickShotReady ? 'QUICK-SHOT ARMED' : 'QUICK-SHOT SPENT'}</span>
+                                <strong>{quickShotReady ? 'A perfect first attempt advances instantly.' : 'This answer now waits for Enter.'}</strong>
+                                <p>{quickShotReady ? 'One impossible letter spends the charge for this cell.' : 'Correct it normally. The next cell starts fully charged.'}</p>
+                              </div>
+                            {/if}
                           </div>
                         {/if}
                       </div>
                     {/if}
                   {/each}
                 </div>
+              </div>
+
+              <div class="g1-utility-line">
+                {#if tenseReview}
+                  <span><b>Enter</b> continue</span>
+                {:else}
+                  <span><b>Enter</b> next · empty repeats · last row checks</span><i aria-hidden="true"></i><span><b>Backspace</b> back</span>
+                {/if}
+                <i aria-hidden="true"></i>
+                <span><b>{isFullscreen ? 'Ctrl+Space ×2' : 'Esc ×2'}</b> finish</span>
               </div>
             </div>
 
@@ -876,7 +1363,7 @@
                 <button class="primary-button g1-shortcut-action" type="button" on:click={checkActiveTense} disabled={loading}><span class="kbd-chip">Enter</span> Check {activeTense}</button>
               {/if}
               <button bind:this={finishButton} class:finish-warn={finishSessionWarning} class="ghost-button g1-shortcut-action" type="button" on:click={handleFinishClick} disabled={loading}>
-                <span class="kbd-chip" class:kbd-chip-armed={finishSessionWarning}>{finishSessionWarning ? 'Esc ×1' : 'Esc ×2'}</span> {finishSessionWarning ? 'again to finish' : 'finish run'}
+                <span class="kbd-chip" class:kbd-chip-armed={finishSessionWarning}>{isFullscreen ? (finishSessionWarning ? 'Ctrl+Space ×1' : 'Ctrl+Space ×2') : (finishSessionWarning ? 'Esc ×1' : 'Esc ×2')}</span> {finishSessionWarning ? 'again to finish' : 'finish run'}
               </button>
             </div>
           </article>
@@ -903,14 +1390,51 @@
   .table-setup-lead h2 {
     margin: 0.3rem 0 0;
     font-family: var(--display);
-    font-size: clamp(1.25rem, 3vw, 1.8rem);
+    font-size: clamp(1.4rem, 3vw, 2rem);
     line-height: 1.15;
     letter-spacing: -0.035em;
   }
 
-  .table-setup-lead > .section-copy {
+  .table-setup-side {
+    display: grid;
+    justify-items: end;
+    gap: 0.55rem;
+  }
+
+  .table-setup-side .section-copy {
     max-width: 16rem;
+    margin: 0;
+    font-size: 0.86rem;
     text-align: right;
+  }
+
+  .table-fs-toggle {
+    display: inline-flex;
+    min-height: 2.35rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 0.45rem 0.62rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 10px;
+    color: var(--muted);
+    background: color-mix(in srgb, var(--surface-strong) 78%, transparent);
+    transition: border-color 150ms ease, color 150ms ease, transform 150ms ease;
+  }
+
+  .table-fs-toggle:hover {
+    border-color: color-mix(in srgb, var(--accent) 62%, var(--line));
+    color: var(--accent-strong);
+    transform: translateY(-1px);
+  }
+
+  .table-fs-toggle svg {
+    width: 1.05rem;
+    height: 1.05rem;
+  }
+
+  .table-fs-toggle .kbd-chip {
+    font-size: 0.62rem;
   }
 
   .setup-step {
@@ -934,31 +1458,33 @@
   }
 
   .setup-step-head strong {
-    font-size: 0.88rem;
+    font-size: 1.05rem;
     letter-spacing: 0.01em;
   }
 
   .setup-step-head small,
   .language-card small {
     color: var(--muted);
+    font-size: 0.8rem;
   }
 
   .step-number {
     display: grid;
     place-items: center;
-    width: 2rem;
-    height: 2rem;
+    width: 2.1rem;
+    height: 2.1rem;
     flex: 0 0 auto;
     border: 1px solid color-mix(in srgb, var(--accent) 38%, var(--line));
     border-radius: 10px;
     color: var(--accent-strong);
     background: color-mix(in srgb, var(--accent-soft) 140%, transparent);
-    font: 700 0.68rem/1 var(--mono);
+    font: 700 0.78rem/1 var(--mono);
   }
 
   .language-card-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    /* 2×2 at trainer width — full language names beat a cramped 4-up row */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.55rem;
   }
 
@@ -993,12 +1519,12 @@
   .language-code {
     display: grid;
     place-items: center;
-    width: 2.2rem;
-    height: 2.2rem;
+    width: 2.4rem;
+    height: 2.4rem;
     border-radius: 12px;
     color: var(--accent-strong);
     background: var(--accent-soft);
-    font: 800 0.72rem/1 var(--mono);
+    font: 800 0.85rem/1 var(--mono);
   }
 
   .language-card-copy {
@@ -1015,11 +1541,17 @@
   }
 
   .language-card-copy strong {
-    font-size: 0.84rem;
+    font-size: 1rem;
   }
 
   .language-card-copy small {
-    font-size: 0.64rem;
+    font-size: 0.8rem;
+  }
+
+  .language-card-tools {
+    display: grid;
+    justify-items: end;
+    gap: 0.3rem;
   }
 
   .language-check {
@@ -1038,7 +1570,7 @@
     position: absolute;
     top: 1.55rem;
     bottom: 3.15rem;
-    left: 1.7rem;
+    left: 1.95rem;
     width: 1px;
     content: '';
     background: linear-gradient(var(--accent), color-mix(in srgb, var(--accent) 12%, var(--line)));
@@ -1070,11 +1602,11 @@
   .stair-level {
     z-index: 1;
     display: grid;
-    width: 2.45rem;
-    min-height: 2.65rem;
-    gap: 0.22rem;
+    width: 3rem;
+    min-height: 3rem;
+    gap: 0.26rem;
     place-items: center;
-    padding: 0.3rem;
+    padding: 0.35rem;
     border: 1px solid var(--line-strong);
     border-radius: 11px;
     color: var(--muted);
@@ -1088,13 +1620,13 @@
   }
 
   .stair-level strong {
-    font: 800 0.66rem/1 var(--mono);
+    font: 800 0.85rem/1 var(--mono);
   }
 
-  .stair-level span,
+  .stair-level .setup-keycap,
   .custom-key {
     color: var(--muted);
-    font: 700 0.4rem/1 var(--mono);
+    font: 700 0.68rem/1 var(--mono);
     white-space: nowrap;
   }
 
@@ -1106,12 +1638,13 @@
   }
 
   .stair-copy strong {
-    font-size: 0.84rem;
+    font-size: 1.02rem;
   }
 
   .stair-copy small {
     color: var(--muted);
-    font-size: 0.58rem;
+    font-size: 0.82rem;
+    line-height: 1.35;
   }
 
   .stair-tense-row {
@@ -1123,18 +1656,38 @@
   }
 
   .stair-tense-row button {
-    padding: 0.46rem 0.58rem;
+    display: inline-flex;
+    gap: 0.4rem;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0.6rem 0.85rem;
     border: 1px solid var(--line);
-    border-radius: 8px;
+    border-radius: 10px;
     color: var(--muted);
     background: color-mix(in srgb, var(--surface-strong) 74%, transparent);
-    font-size: 0.62rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+  }
+
+  @media (hover: hover) {
+    .stair-tense-row button:hover {
+      border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+      color: var(--text);
+    }
   }
 
   .stair-tense-row button.tense-on {
     border-color: color-mix(in srgb, var(--accent) 68%, var(--line));
     color: var(--text);
     background: var(--accent-soft);
+    font-weight: 600;
+  }
+
+  .tense-check {
+    color: var(--accent-strong);
+    font-style: normal;
+    font-weight: 800;
   }
 
   .custom-route {
@@ -1164,11 +1717,11 @@
   }
 
   .custom-route strong {
-    font-size: 0.76rem;
+    font-size: 0.95rem;
   }
 
   .custom-route small {
-    font-size: 0.56rem;
+    font-size: 0.78rem;
   }
 
   .custom-spark {
@@ -1199,8 +1752,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.05rem;
-    min-height: 3.5rem;
+    gap: 0.16rem;
+    min-height: 4.25rem;
     padding: 0.55rem 0.3rem;
     border: 1px solid var(--line);
     border-radius: 13px;
@@ -1215,7 +1768,7 @@
 
   .length-card span,
   .support-row small {
-    font-size: 0.65rem;
+    font-size: 0.8rem;
   }
 
   .length-card-on,
@@ -1226,7 +1779,48 @@
   }
 
   .support-row strong {
-    font-size: 0.72rem;
+    font-size: 0.9rem;
+  }
+
+  .setup-keycap,
+  .setup-shortcut-footer kbd {
+    display: inline-grid;
+    width: fit-content;
+    place-items: center;
+    padding: 0.24rem 0.42rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 6px;
+    color: color-mix(in srgb, var(--accent-strong) 55%, var(--muted));
+    background: color-mix(in srgb, var(--surface-strong) 82%, transparent);
+    font: 750 0.68rem/1 var(--mono);
+    white-space: nowrap;
+  }
+
+  :global(html[data-theme='arcade']) .setup-keycap,
+  :global(html[data-theme='arcade']) .setup-shortcut-footer kbd {
+    font-size: 1.05rem;
+  }
+
+  /* Keycap hints are desktop affordances — free the space on touch */
+  @media (pointer: coarse) {
+    .setup-keycap {
+      display: none;
+    }
+  }
+
+  .language-card-on .setup-keycap,
+  .stair-on .setup-keycap,
+  .custom-on .setup-keycap,
+  .length-card-on .setup-keycap,
+  .support-on .setup-keycap {
+    border-color: color-mix(in srgb, var(--accent) 48%, var(--line));
+    color: var(--accent-strong);
+  }
+
+  .setup-keycap-launch {
+    border-color: currentColor;
+    color: inherit;
+    background: color-mix(in srgb, currentColor 10%, transparent);
   }
 
   .setup-launch-row {
@@ -1244,14 +1838,53 @@
 
   .launch-summary > span {
     color: var(--accent-strong);
-    font: 700 0.67rem/1.4 var(--mono);
-    letter-spacing: 0.12em;
+    font: 700 0.78rem/1.4 var(--mono);
+    letter-spacing: 0.1em;
     text-transform: uppercase;
+  }
+
+  :global(html[data-theme='arcade']) .launch-summary > span {
+    font-size: 1.05rem;
   }
 
   .table-launch-button {
     flex: 0 0 auto;
     gap: 0.65rem;
+  }
+
+  .setup-shortcut-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.1rem;
+    align-items: center;
+    justify-content: center;
+    padding-top: 0.2rem;
+    color: var(--muted);
+    font: 600 0.78rem/1.5 var(--ui);
+  }
+
+  .setup-shortcut-footer span {
+    display: inline-flex;
+    gap: 0.4rem;
+    align-items: center;
+  }
+
+  .shortcut-footer-toggle {
+    padding: 0.3rem 0.6rem;
+    border: 0;
+    background: transparent;
+    color: var(--accent-strong);
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* On touch the keycaps are hidden, so the expander has nothing to reveal */
+  @media (pointer: coarse) {
+    .setup-shortcut-footer {
+      display: none;
+    }
   }
 
   .table-clear-card {
@@ -1265,80 +1898,25 @@
     animation: table-clear-in 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
   }
 
-  .table-clear-card h2 {
-    margin: 0;
-    color: var(--text);
-    font: 850 clamp(2rem, 7vw, 3.8rem)/0.95 var(--display);
-    letter-spacing: -0.06em;
-  }
-
-  .table-clear-score {
-    margin: 0;
-    color: var(--muted);
-    font: 700 0.78rem/1.5 var(--mono);
-  }
-
-  .table-clear-dots {
-    display: flex;
-    max-width: 100%;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-    justify-content: center;
-  }
-
-  .table-clear-dots span {
-    width: 0.62rem;
-    height: 0.62rem;
-    border: 1px solid var(--line-strong);
-    border-radius: 50%;
-    background: var(--surface);
-  }
-
-  .table-clear-dots .table-clear-dot-on {
-    border-color: var(--success);
-    background: var(--success);
-    box-shadow: 0 0 10px color-mix(in srgb, var(--success) 45%, transparent);
-  }
-
-  .table-clear-actions {
-    display: flex;
-    gap: 0.65rem;
-    margin-top: 0.35rem;
-  }
-
-  .table-clear-burst {
-    position: absolute;
-    inset: 50% auto auto 50%;
-    z-index: -1;
-  }
-
-  .table-clear-burst i {
-    position: absolute;
-    width: 12rem;
-    height: 12rem;
-    border: 1px solid color-mix(in srgb, var(--success) 35%, transparent);
-    border-radius: 50%;
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.2);
-    animation: table-clear-ring 1.4s ease-out both;
-  }
-
-  .table-clear-burst i:nth-child(2) { animation-delay: 120ms; }
-  .table-clear-burst i:nth-child(3) { animation-delay: 240ms; }
-
   @keyframes table-clear-in {
     from { opacity: 0; transform: translateY(1rem) scale(0.985); }
     to { opacity: 1; transform: translateY(0) scale(1); }
   }
 
-  @keyframes table-clear-ring {
-    0% { opacity: 0.7; transform: translate(-50%, -50%) scale(0.2); }
-    100% { opacity: 0; transform: translate(-50%, -50%) scale(2.4); }
-  }
-
   .g1-production-card {
     gap: 1rem;
     animation: g1-stage-in 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  .g1-progress-end {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .table-fs-toggle-game {
+    min-height: 2rem;
+    padding: 0.32rem 0.48rem;
   }
 
   @keyframes g1-stage-in {
@@ -1361,7 +1939,6 @@
     box-shadow: 0 24px 55px rgba(5, 8, 20, 0.2);
   }
 
-  .g1-utility-row,
   .g1-column-head,
   .g1-actions {
     display: flex;
@@ -1370,111 +1947,97 @@
     gap: 0.8rem;
   }
 
-  .g1-utility-row {
-    color: rgba(255, 255, 255, 0.48);
-    font: 700 0.5rem/1 var(--mono);
-    letter-spacing: 0.1em;
+  /* ===== H1-B1 strip: named segments + active-tense marquee ===== */
+  .g1-strip-block {
+    display: grid;
+    gap: 0.45rem;
   }
 
-  .g1-utility-row > span {
+  .g1-strip-head {
     display: flex;
-    align-items: center;
-    gap: 0.45rem;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
   }
 
-  .g1-utility-row i {
-    width: 0.45rem;
-    height: 0.45rem;
-    border-radius: 50%;
-    background: #55ee9b;
-    box-shadow: 0 0 9px #55ee9b;
+  .g1-strip-count {
+    color: rgba(255, 255, 255, 0.72);
+    font: 700 0.78rem/1 var(--mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
   }
 
-  .g1-utility-row small {
-    font-size: 0.48rem;
-    letter-spacing: 0;
-  }
-
-  .g1-tense-strip {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
-    gap: 0.4rem;
-  }
-
-  .g1-tense-card {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    gap: 0.45rem;
-    align-items: center;
+  .g1-strip-name {
     min-width: 0;
-    padding: 0.58rem;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 10px;
-    color: rgba(255, 255, 255, 0.5);
-    background: rgba(255, 255, 255, 0.035);
-  }
-
-  .g1-tense-card > span {
-    color: var(--accent-2);
-    font: 750 0.45rem/1 var(--mono);
-  }
-
-  .g1-tense-card > div {
-    display: grid;
-    gap: 0.1rem;
-    min-width: 0;
-  }
-
-  .g1-tense-card strong,
-  .g1-tense-card small {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    color: #f6c84c;
+    font: 800 1.25rem/1.1 var(--display);
+    text-shadow: 0 0 16px color-mix(in srgb, #f6c84c 45%, transparent);
   }
 
-  .g1-tense-card strong {
-    font-size: 0.62rem;
+  .g1-name-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
   }
 
-  .g1-tense-card small {
-    font-size: 0.46rem;
+  .g1-seg {
+    flex: 1 1 0;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+    padding: 0.42rem 0.55rem;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.05);
+    font-size: 0.78rem;
+    font-weight: 600;
+    transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
   }
 
-  .g1-tense-card > i {
-    font-style: normal;
-    font-weight: 850;
+  .g1-strip-many .g1-seg {
+    flex-basis: 5.5rem;
   }
 
-  .g1-tense-active {
-    border-color: var(--accent-2);
-    color: white;
-    background: color-mix(in srgb, var(--accent) 22%, transparent);
-    box-shadow: inset 0 -2px 0 var(--accent-2);
+  .g1-seg-done {
+    border-color: #55ee9b;
+    color: #78f2ad;
+    background: color-mix(in srgb, #55ee9b 14%, transparent);
+    box-shadow: 0 0 8px color-mix(in srgb, #55ee9b 25%, transparent);
   }
 
-  .g1-tense-done {
-    border-color: color-mix(in srgb, #55ee9b 45%, transparent);
-    color: #55ee9b;
-    background: color-mix(in srgb, #55ee9b 9%, transparent);
-    box-shadow: none;
-  }
-
-  .g1-tense-review {
+  .g1-seg-active {
     border-color: #f6c84c;
-    color: white;
-    background: color-mix(in srgb, #f6c84c 12%, transparent);
-    box-shadow: inset 0 -2px 0 #f6c84c;
+    color: #191300;
+    background: color-mix(in srgb, #f6c84c 88%, transparent);
+    font-weight: 800;
+    box-shadow: 0 0 12px color-mix(in srgb, #f6c84c 55%, transparent);
+    animation: g1-seg-pulse 1.3s ease-in-out infinite;
   }
 
-  .g1-verb-prompt {
+  .g1-seg-review {
+    animation: none;
+  }
+
+  @keyframes g1-seg-pulse {
+    50% { opacity: 0.62; }
+  }
+
+  /* ===== H1-B verb hero ===== */
+  .g1-hero {
     display: grid;
-    grid-template-columns: minmax(6rem, 0.65fr) minmax(0, 1.8fr) auto;
-    gap: 0.8rem;
-    align-items: center;
-    min-height: 6.2rem;
-    padding: 0.8rem;
+    gap: 0.3rem;
+    justify-items: center;
+    padding: 1.1rem 0.8rem 1rem;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 16px;
+    text-align: center;
     background:
       linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
@@ -1482,60 +2045,68 @@
     background-size: 24px 24px;
   }
 
-  .g1-verb-prompt > div {
-    display: grid;
-    gap: 0.16rem;
-    min-width: 0;
+  .g1-hero > span {
+    color: rgba(255, 255, 255, 0.66);
+    font: 700 0.72rem/1 var(--mono);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
   }
 
-  .g1-verb-prompt > div:nth-child(2) {
-    justify-items: center;
-    text-align: center;
-  }
-
-  .g1-verb-prompt > div:last-child {
-    justify-items: end;
-    text-align: right;
-  }
-
-  .g1-verb-prompt span,
-  .g1-column-head span {
-    color: var(--accent-2);
-    font: 750 0.48rem/1 var(--mono);
-    letter-spacing: 0.1em;
-  }
-
-  .g1-verb-prompt > div:first-child > strong {
-    font: 820 clamp(1.35rem, 4vw, 2rem)/1 var(--display);
-  }
-
-  .g1-verb-prompt > div:nth-child(2) > strong {
-    font: 780 clamp(1.08rem, 3.1vw, 1.85rem)/1.08 var(--display);
-    letter-spacing: -0.035em;
-  }
-
-  .g1-verb-prompt > div:first-child > strong,
-  .g1-verb-prompt > div:nth-child(2) > strong {
+  .g1-hero > strong {
     max-width: 100%;
     min-width: 0;
     overflow-wrap: anywhere;
+    font: 820 clamp(1.7rem, 5vw, 2.4rem)/1.05 var(--ui);
   }
 
-  .g1-verb-prompt em {
-    color: #f6c84c;
+  .g1-hero > em {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.05rem;
     font-style: normal;
   }
 
-  .g1-verb-prompt .g1-prompt-score {
+  .g1-hero > em b {
     color: #f6c84c;
-    font-family: var(--mono);
-    font-size: clamp(1.05rem, 3vw, 1.45rem);
+    font-weight: 800;
   }
 
-  .g1-verb-prompt small,
+  .g1-hero-review {
+    color: #f6c84c !important;
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ===== bottom utility line ===== */
+  .g1-utility-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.78rem;
+  }
+
+  .g1-utility-line b {
+    color: white;
+    font-weight: 700;
+  }
+
+  .g1-utility-line i {
+    width: 1px;
+    height: 0.9rem;
+    background: rgba(255, 255, 255, 0.18);
+  }
+
+  .g1-column-head span {
+    color: var(--accent-2);
+    font: 750 0.7rem/1.2 var(--mono);
+    letter-spacing: 0.1em;
+  }
+
   .g1-column-head small {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 0.5rem;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.75rem;
   }
 
   .g1-active-column {
@@ -1569,7 +2140,93 @@
   }
 
   .g1-column-head strong {
+    font-size: 0.9rem;
+  }
+
+  .u1-form-notice {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 0.7rem;
+    align-items: center;
+    margin: 0.65rem 0.65rem 0;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid color-mix(in srgb, #f6c84c 34%, transparent);
+    border-radius: 10px;
+    background: color-mix(in srgb, #f6c84c 7%, rgba(6, 8, 24, 0.48));
+  }
+
+  .u1-form-notice > span {
+    color: #f6c84c;
+    font: 850 0.66rem/1.2 var(--mono);
+    letter-spacing: 0.08em;
+  }
+
+  .u1-form-notice > div {
+    display: grid;
+    min-width: 0;
+    gap: 0.12rem;
+  }
+
+  .u1-form-notice strong {
+    color: white;
+    font-size: 0.85rem;
+  }
+
+  .u1-form-notice small {
+    color: rgba(255, 255, 255, 0.7);
     font-size: 0.7rem;
+  }
+
+  .u1-form-notice em {
+    color: #f6c84c;
+    font: 780 0.6rem/1.2 var(--mono);
+    font-style: normal;
+    white-space: nowrap;
+  }
+
+  .c1-form-key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.42rem;
+    align-items: center;
+    padding: 0.65rem 0.65rem 0;
+  }
+
+  .c1-form-key > span {
+    display: inline-flex;
+    min-width: 0;
+    gap: 0.38rem;
+    align-items: center;
+    padding: 0.34rem 0.48rem;
+    border: 1px solid color-mix(in srgb, var(--group-color) 52%, transparent);
+    border-radius: 999px;
+    color: var(--group-color);
+    background: color-mix(in srgb, var(--group-color) 8%, rgba(6, 8, 24, 0.45));
+  }
+
+  .c1-form-key i {
+    display: grid;
+    width: 1.4rem;
+    height: 1.4rem;
+    place-items: center;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    font: 850 0.6rem/1 var(--mono);
+    font-style: normal;
+  }
+
+  .c1-form-key strong {
+    min-width: 0;
+    color: white;
+    font-size: 0.78rem;
+    overflow-wrap: anywhere;
+  }
+
+  .c1-form-key > small {
+    margin-left: auto;
+    color: rgba(255, 255, 255, 0.66);
+    font: 720 0.66rem/1.2 var(--mono);
+    white-space: nowrap;
   }
 
   .g1-column-rows {
@@ -1594,6 +2251,20 @@
     width: 100%;
     background: linear-gradient(var(--accent-2), var(--accent));
     transition: height 180ms ease;
+  }
+
+  .g1-column-rail-uniform {
+    overflow: visible;
+    background: color-mix(in srgb, var(--accent-2) 22%, transparent);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--accent-2) 18%, transparent);
+  }
+
+  .g1-column-rail-uniform i {
+    height: 100% !important;
+  }
+
+  .g1-column-rail-hidden {
+    display: none;
   }
 
   .g1-column-row {
@@ -1625,9 +2296,35 @@
     50% { opacity: 0.45; transform: translateX(0.18rem); }
   }
 
+  .g1-row-clustered {
+    border-color: color-mix(in srgb, var(--group-color) 34%, rgba(255, 255, 255, 0.09));
+    border-left-width: 3px;
+    border-left-color: var(--group-color);
+    background: color-mix(in srgb, var(--group-color) 5%, rgba(255, 255, 255, 0.018));
+  }
+
+  .g1-row-clustered.g1-row-active {
+    border-color: var(--group-color);
+    background: color-mix(in srgb, var(--group-color) 12%, rgba(255, 255, 255, 0.025));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--group-color) 9%, transparent);
+  }
+
   .g1-row-guide {
     border-color: color-mix(in srgb, #f6c84c 42%, transparent);
     background: color-mix(in srgb, #f6c84c 8%, rgba(255, 255, 255, 0.02));
+  }
+
+  .g1-row-linked {
+    border-color: color-mix(in srgb, var(--accent-2) 24%, rgba(255, 255, 255, 0.09));
+    background: color-mix(in srgb, var(--accent) 5%, rgba(255, 255, 255, 0.018));
+  }
+
+  .g1-row-representative {
+    border-left-color: var(--accent-2);
+  }
+
+  .g1-row-clustered.g1-row-representative {
+    border-left-color: var(--group-color);
   }
 
   .g1-row-correct {
@@ -1651,15 +2348,35 @@
   }
 
   .g1-row-marker {
-    width: 0.75rem;
+    width: 1rem;
     color: var(--accent-2);
-    font: 800 0.56rem/1 var(--mono);
+    font: 800 0.7rem/1 var(--mono);
     text-align: center;
   }
 
   .g1-row-guide .g1-row-marker { color: #f6c84c; }
-  .g1-row-correct .g1-row-marker { color: #55ee9b; }
-  .g1-row-wrong .g1-row-marker { color: #ff7188; }
+  .g1-row-linked .g1-row-marker { color: color-mix(in srgb, var(--accent-2) 75%, white); }
+  .g1-row-clustered .g1-row-marker {
+    display: grid;
+    width: 1.45rem;
+    height: 1.45rem;
+    place-items: center;
+    border: 1px solid var(--group-color);
+    border-radius: 6px;
+    color: var(--group-color);
+    background: color-mix(in srgb, var(--group-color) 8%, transparent);
+  }
+  .g1-row-correct .g1-row-marker {
+    border-color: #55ee9b;
+    color: #55ee9b;
+    background: color-mix(in srgb, #55ee9b 8%, transparent);
+  }
+
+  .g1-row-wrong .g1-row-marker {
+    border-color: #ff7188;
+    color: #ff7188;
+    background: color-mix(in srgb, #ff7188 8%, transparent);
+  }
 
   .g1-column-row label {
     display: grid;
@@ -1670,7 +2387,11 @@
 
   .g1-column-row label small {
     color: var(--accent-2);
-    font: 750 0.44rem/1 var(--mono);
+    font: 750 0.68rem/1 var(--mono);
+  }
+
+  .g1-row-clustered label small {
+    color: var(--group-color);
   }
 
   .g1-column-row label strong {
@@ -1682,7 +2403,32 @@
 
   .g1-input-shell {
     position: relative;
+    display: grid;
+    gap: 0.3rem;
     min-width: 0;
+  }
+
+  .g1-input-control {
+    min-width: 0;
+  }
+
+  .g1-input-control-active {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 36px;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .g1-group-badge {
+    width: fit-content;
+    color: color-mix(in srgb, var(--accent-2) 78%, white);
+    font: 800 0.68rem/1.2 var(--mono);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  .g1-row-clustered .g1-group-badge {
+    color: var(--group-color);
   }
 
   .g1-conj-input {
@@ -1702,15 +2448,132 @@
     box-shadow: inset 0 -2px 0 var(--accent-2);
   }
 
-  .g1-input-shell > span {
-    position: absolute;
-    right: 0.35rem;
-    bottom: -0.28rem;
-    padding: 0.13rem 0.3rem;
-    border-radius: 999px;
-    color: #191300;
-    background: #f6c84c;
-    font: 850 0.38rem/1 var(--mono);
+  .g1-row-clustered .g1-conj-input:focus {
+    border-color: var(--group-color);
+    box-shadow: inset 0 -2px 0 var(--group-color);
+  }
+
+  .g1-quick-shot-note {
+    display: grid;
+    gap: 0.25rem;
+    padding: 0.62rem 0.7rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 48%, transparent);
+    border-radius: 8px;
+    color: white;
+    background: color-mix(in srgb, var(--surface-dark) 92%, black);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.26);
+    animation: g1-shot-note-in 140ms ease-out both;
+  }
+
+  .g1-quick-shot-note > span {
+    color: var(--accent-2);
+    font: 800 0.7rem/1 var(--mono);
+    letter-spacing: 0.08em;
+  }
+
+  .g1-quick-shot-note strong {
+    font-size: 0.78rem;
+    line-height: 1.25;
+  }
+
+  .g1-quick-shot-note p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.66);
+    font-size: 0.7rem;
+    line-height: 1.35;
+  }
+
+  @keyframes g1-shot-note-in {
+    from { opacity: 0; transform: translateY(-0.2rem); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .g1-linked-form {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 0.6rem;
+    align-items: center;
+    min-width: 0;
+    padding: 0.62rem 0.72rem;
+    border: 1px dashed color-mix(in srgb, var(--accent-2) 32%, transparent);
+    border-radius: 8px;
+    color: color-mix(in srgb, var(--accent-2) 78%, white);
+    background: color-mix(in srgb, var(--accent) 7%, rgba(6, 8, 24, 0.62));
+  }
+
+  .g1-linked-form > span {
+    display: grid;
+    width: 1.55rem;
+    height: 1.55rem;
+    place-items: center;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    font: 850 0.68rem/1 var(--mono);
+  }
+
+  .g1-linked-form > div {
+    display: grid;
+    min-width: 0;
+    gap: 0.1rem;
+  }
+
+  .g1-linked-form strong {
+    min-width: 0;
+    color: white;
+    font-size: clamp(0.9rem, 2.2vw, 1.05rem);
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+
+  .g1-linked-form .g1-linked-empty {
+    color: rgba(255, 255, 255, 0.62);
+    font-style: italic;
+    font-weight: 620;
+  }
+
+  .g1-linked-form small,
+  .g1-linked-form em {
+    font: 780 0.6rem/1.25 var(--mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .g1-linked-form small {
+    color: color-mix(in srgb, var(--accent-2) 68%, white);
+  }
+
+  .g1-linked-form em {
+    color: rgba(255, 255, 255, 0.66);
+    font-style: normal;
+    text-align: right;
+  }
+
+  .g1-row-clustered .g1-linked-form:not(.g1-linked-guide):not(.g1-linked-correct):not(.g1-linked-wrong) {
+    border-color: color-mix(in srgb, var(--group-color) 38%, transparent);
+    color: var(--group-color);
+    background: color-mix(in srgb, var(--group-color) 6%, rgba(6, 8, 24, 0.62));
+  }
+
+  .g1-row-clustered .g1-linked-form:not(.g1-linked-guide):not(.g1-linked-correct):not(.g1-linked-wrong) small {
+    color: color-mix(in srgb, var(--group-color) 72%, white);
+  }
+
+  .g1-linked-guide {
+    border-color: color-mix(in srgb, #f6c84c 42%, transparent);
+    color: #f6c84c;
+    background: color-mix(in srgb, #f6c84c 7%, rgba(6, 8, 24, 0.62));
+  }
+
+  .g1-linked-correct {
+    border-color: color-mix(in srgb, #55ee9b 44%, transparent);
+    color: #55ee9b;
+    background: color-mix(in srgb, #55ee9b 7%, rgba(6, 8, 24, 0.62));
+  }
+
+  .g1-linked-wrong {
+    border-color: color-mix(in srgb, #ff7188 48%, transparent);
+    color: #ff91a3;
+    background: color-mix(in srgb, #ff7188 7%, rgba(6, 8, 24, 0.62));
   }
 
   .g1-locked-guide,
@@ -1751,7 +2614,7 @@
 
   .g1-locked-guide small,
   .g1-inline-feedback small {
-    font: 800 0.42rem/1 var(--mono);
+    font: 800 0.62rem/1.2 var(--mono);
     letter-spacing: 0.08em;
   }
 
@@ -1798,9 +2661,9 @@
   }
 
   .g1-missing-form {
-    color: rgba(255, 255, 255, 0.42);
+    color: rgba(255, 255, 255, 0.6);
     background: rgba(6, 8, 24, 0.42);
-    font-size: 0.62rem;
+    font-size: 0.8rem;
   }
 
   .g1-actions {
@@ -1828,16 +2691,39 @@
   :global(html[data-theme='arcade']) .step-number,
   :global(html[data-theme='arcade']) .language-code,
   :global(html[data-theme='arcade']) .launch-summary > span,
-  :global(html[data-theme='arcade']) .g1-verb-prompt > div:first-child > strong,
-  :global(html[data-theme='arcade']) .g1-verb-prompt > div:nth-child(2) > strong {
+  :global(html[data-theme='arcade']) .g1-hero > strong {
     text-shadow: 0 0 9px color-mix(in srgb, var(--accent) 65%, transparent);
   }
 
-  @media (max-width: 760px) {
-    .language-card-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+  /* Arcade: the active-tense marquee is this screen's Press Start 2P moment */
+  :global(html[data-theme='arcade']) .g1-strip-name {
+    font-family: var(--marquee);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
 
+  /* VT323 optical compensation for the in-game mono chrome */
+  :global(html[data-theme='arcade']) .g1-strip-count,
+  :global(html[data-theme='arcade']) .g1-hero > span {
+    font-size: 1.05rem;
+  }
+
+  :global(html[data-theme='arcade']) .g1-column-head span,
+  :global(html[data-theme='arcade']) .g1-column-row label small,
+  :global(html[data-theme='arcade']) .g1-group-badge,
+  :global(html[data-theme='arcade']) .g1-linked-form small,
+  :global(html[data-theme='arcade']) .g1-linked-form em,
+  :global(html[data-theme='arcade']) .g1-locked-guide small,
+  :global(html[data-theme='arcade']) .g1-inline-feedback small,
+  :global(html[data-theme='arcade']) .u1-form-notice > span,
+  :global(html[data-theme='arcade']) .u1-form-notice em,
+  :global(html[data-theme='arcade']) .c1-form-key i,
+  :global(html[data-theme='arcade']) .c1-form-key > small {
+    font-size: 1rem;
+    line-height: 1.15;
+  }
+
+  @media (max-width: 760px) {
     .setup-grid-two {
       grid-template-columns: 1fr;
     }
@@ -1851,6 +2737,13 @@
     }
   }
 
+  /* Full language names stop fitting two-up around here */
+  @media (max-width: 430px) {
+    .language-card-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
   @media (max-width: 560px) {
     .table-setup-lead,
     .setup-launch-row {
@@ -1858,13 +2751,17 @@
       flex-direction: column;
     }
 
-    .table-setup-lead > .section-copy {
+    .table-setup-side {
+      justify-items: stretch;
+    }
+
+    .table-setup-side .section-copy {
       max-width: none;
       text-align: left;
     }
 
     .language-card {
-      grid-template-columns: auto 1fr;
+      grid-template-columns: auto minmax(0, 1fr) auto;
     }
 
     .language-check {
@@ -1879,25 +2776,17 @@
       border-radius: 18px;
     }
 
-    .g1-utility-row {
-      align-items: flex-start;
-      flex-direction: column;
+    .u1-form-notice {
+      grid-template-columns: auto minmax(0, 1fr);
     }
 
-    .g1-tense-strip {
-      grid-template-columns: 1fr;
+    .u1-form-notice em {
+      grid-column: 2;
     }
 
-    .g1-verb-prompt {
-      grid-template-columns: 1fr auto;
-      min-height: 0;
-    }
-
-    .g1-verb-prompt > div:nth-child(2) {
-      grid-column: 1 / -1;
-      grid-row: 2;
-      padding-top: 0.55rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    .c1-form-key > small {
+      width: 100%;
+      margin-left: 0;
     }
 
     .g1-column-row {
@@ -1910,18 +2799,21 @@
 
     .g1-input-shell,
     .g1-locked-guide,
+    .g1-linked-form,
     .g1-inline-feedback,
     .g1-missing-form {
       grid-column: 2;
     }
 
     .g1-inline-feedback,
-    .g1-locked-guide {
+    .g1-locked-guide,
+    .g1-linked-form {
       grid-template-columns: auto minmax(0, 1fr);
     }
 
     .g1-inline-feedback > small,
-    .g1-locked-guide > small {
+    .g1-locked-guide > small,
+    .g1-linked-form > em {
       display: none;
     }
 
@@ -1941,13 +2833,14 @@
       justify-content: center;
     }
 
-    .table-clear-actions {
+    .table-clear-card :global(.rank-actions) {
       width: 100%;
       flex-direction: column;
     }
 
-    .table-clear-actions button {
+    .table-clear-card :global(.rank-actions button) {
       width: 100%;
+      justify-content: center;
     }
   }
 
@@ -1955,8 +2848,9 @@
     .g1-production-card,
     .g1-column-review .g1-column-row,
     .g1-row-active .g1-row-marker,
-    .table-clear-card,
-    .table-clear-burst i {
+    .g1-seg-active,
+    .g1-quick-shot-note,
+    .table-clear-card {
       animation: none;
     }
   }

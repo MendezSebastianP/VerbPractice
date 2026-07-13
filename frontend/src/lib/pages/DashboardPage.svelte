@@ -18,6 +18,7 @@
   export let csrfToken = '';
   export let theme: ThemeName = 'light';
   export let onTheme: (theme: ThemeName) => Promise<void> | void;
+  export let onShowShortcuts: (visible: boolean) => void = () => {};
   export let onLogout: () => Promise<void> | void;
   export let notify: (message: string, tone?: 'info' | 'success' | 'error') => void;
 
@@ -34,6 +35,7 @@
   let learningLanguageCode = '';
   let displayMode: TranslationDisplayMode = 'partial';
   let forceUnlock = false;
+  let showShortcuts = true;
 
   let advancedOpen = false;
   let savingTimer: ReturnType<typeof setTimeout> | null = null;
@@ -134,6 +136,8 @@
       learningLanguageCode = s.learning_language?.code ?? '';
       displayMode = s.translation_display_mode;
       forceUnlock = s.force_unlock_added_words;
+      showShortcuts = s.show_shortcuts;
+      onShowShortcuts(showShortcuts);
       hydrated = true;
     } catch (err) {
       error = err instanceof ApiError ? err.message : 'Unable to load home';
@@ -151,7 +155,9 @@
         learning_language_code: learningLanguageCode || undefined,
         translation_display_mode: displayMode,
         force_unlock_added_words: forceUnlock,
+        show_shortcuts: showShortcuts,
       });
+      onShowShortcuts(settings.show_shortcuts);
       savingState = 'saved';
       window.setTimeout(() => {
         if (savingState === 'saved') savingState = 'idle';
@@ -174,7 +180,7 @@
     learningLanguageCode = next;
   }
 
-  $: motherTongueCode, learningLanguageCode, displayMode, forceUnlock, scheduleSave();
+  $: motherTongueCode, learningLanguageCode, displayMode, forceUnlock, showShortcuts, scheduleSave();
 
   function statusLabel(): string {
     if (savingState === 'saving') return 'Saving…';
@@ -335,6 +341,24 @@
           </div>
         </div>
 
+        <div class="settings-row shortcut-setting-row">
+          <div class="shortcut-setting-copy">
+            <p class="eyebrow">Interface</p>
+            <strong>Show shortcuts</strong>
+            <small>Display keyboard hints beside controls. Shortcuts keep working when hidden.</small>
+          </div>
+          <label class="setting-switch">
+            <input
+              type="checkbox"
+              bind:checked={showShortcuts}
+              aria-label="Show keyboard shortcuts"
+              on:change={(event) => onShowShortcuts((event.currentTarget as HTMLInputElement).checked)}
+            />
+            <span aria-hidden="true"><i></i></span>
+            <em>{showShortcuts ? 'Shown' : 'Hidden'}</em>
+          </label>
+        </div>
+
         <p class="eyebrow" style="margin-top: 0.85rem;">Language pair</p>
         <div class="pair-row" style="margin-top: 0.4rem;">
           <div>
@@ -440,7 +464,7 @@
   }
 
   .stage-title {
-    font-family: var(--display);
+    font-family: var(--marquee);
     font-size: 1.4rem;
     font-weight: 700;
     letter-spacing: -0.02em;
@@ -655,6 +679,92 @@
     gap: 0.75rem;
   }
 
+  .shortcut-setting-row {
+    margin-top: 0.85rem;
+    padding: 0.8rem 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .shortcut-setting-copy {
+    display: grid;
+    gap: 0.18rem;
+  }
+
+  .shortcut-setting-copy p {
+    margin: 0;
+  }
+
+  .shortcut-setting-copy strong {
+    color: var(--text);
+    font-size: 0.95rem;
+  }
+
+  .shortcut-setting-copy small {
+    max-width: 25rem;
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.45;
+  }
+
+  .setting-switch {
+    display: grid;
+    justify-items: center;
+    gap: 0.3rem;
+    flex: 0 0 auto;
+    cursor: pointer;
+  }
+
+  .setting-switch input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+
+  .setting-switch > span {
+    position: relative;
+    width: 3.15rem;
+    height: 1.72rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--surface-strong) 86%, black);
+    transition: border-color 160ms ease, background 160ms ease;
+  }
+
+  .setting-switch i {
+    position: absolute;
+    top: 0.2rem;
+    left: 0.2rem;
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 50%;
+    background: var(--muted);
+    transition: transform 180ms cubic-bezier(.2, .8, .2, 1), background 160ms ease;
+  }
+
+  .setting-switch input:checked + span {
+    border-color: color-mix(in srgb, var(--accent) 72%, white);
+    background: color-mix(in srgb, var(--accent) 28%, var(--surface-strong));
+  }
+
+  .setting-switch input:checked + span i {
+    transform: translateX(1.42rem);
+    background: var(--accent-strong);
+  }
+
+  .setting-switch input:focus-visible + span {
+    outline: 3px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    outline-offset: 3px;
+  }
+
+  .setting-switch em {
+    color: var(--muted);
+    font-size: 0.7rem;
+    font-style: normal;
+    font-weight: 750;
+  }
+
   .dashboard-logout-row {
     display: flex;
     justify-content: flex-end;
@@ -664,6 +774,10 @@
   @media (max-width: 480px) {
     .log-when {
       display: none;
+    }
+
+    .shortcut-setting-row {
+      align-items: flex-start;
     }
   }
 </style>

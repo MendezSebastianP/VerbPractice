@@ -85,6 +85,7 @@ class SettingsPatchPayload(CsrfPayload):
     learning_language_code: str | None = None
     translation_display_mode: str | None = None
     force_unlock_added_words: bool | None = None
+    show_shortcuts: bool | None = None
     last_practice_pair: str | None = None
     last_practice_mode: str | None = None
 

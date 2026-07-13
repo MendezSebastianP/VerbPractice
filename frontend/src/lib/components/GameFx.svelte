@@ -179,7 +179,7 @@
   }
 
   .level-up-title {
-    font-family: var(--display);
+    font-family: var(--marquee);
     font-weight: 800;
     font-size: clamp(1.8rem, 5vw, 3rem);
     letter-spacing: 0.04em;
@@ -217,6 +217,11 @@
     letter-spacing: 0.18em;
     font-family: var(--mono);
     color: var(--muted);
+  }
+
+  :global(html[data-theme='arcade']) .fx-dismiss-hint,
+  :global(html[data-theme='arcade']) .badge-headline {
+    font-size: 1.05rem;
   }
 
   .badge-stack {

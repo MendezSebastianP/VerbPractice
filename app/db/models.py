@@ -113,6 +113,7 @@ class UserPreference(Base):
 
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
     sound_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
+    show_shortcuts: Mapped[bool] = mapped_column(Boolean, default=True)
     mother_tongue_language_id: Mapped[int | None] = mapped_column(
         ForeignKey("languages.id", ondelete="SET NULL"), nullable=True
     )

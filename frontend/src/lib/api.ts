@@ -19,6 +19,7 @@ import type {
   MonitorPayload,
   OcrResponse,
   PriorityQueueEntry,
+  StudyPoolResponse,
   ThemeName,
   TranslationState,
   UserSettings,
@@ -86,6 +87,13 @@ export const api = {
   dashboard: () => request<DashboardPayload>('/api/dashboard'),
   wordsState: () => request<TranslationState>('/api/training/words'),
   verbsState: () => request<TranslationState>('/api/training/verbs'),
+  studyPool: (params: { mode: 'words' | 'verbs' | 'conjugation'; direction?: string; language?: string; tenses?: string[] }) => {
+    const query = new URLSearchParams({ mode: params.mode });
+    if (params.direction) query.set('direction', params.direction);
+    if (params.language) query.set('language', params.language);
+    if (params.tenses?.length) query.set('tenses', params.tenses.join(','));
+    return request<StudyPoolResponse>(`/api/training/study-pool?${query.toString()}`, { cache: 'no-store' });
+  },
   startWords: (payload: { length: number; direction: string; set_id?: number; csrf_token: string }) =>
     request<TranslationState>('/api/training/words/start', { method: 'POST', body: JSON.stringify(payload) }),
   startVerbs: (payload: { length: number; direction: string; set_id?: number; csrf_token: string }) =>

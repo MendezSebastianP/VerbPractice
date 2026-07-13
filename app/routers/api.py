@@ -75,6 +75,7 @@ from app.services.training_service import (
     ITEM_TYPE_BY_MODE,
     close_active_sessions,
     check_conjugation_tense,
+    conjugation_study_pool,
     conjugation_tenses_for_level,
     eligible_conjugation_verb_ids,
     eligible_translation_item_ids,
@@ -87,6 +88,7 @@ from app.services.training_service import (
     start_translation_session,
     submit_conjugation_answers,
     submit_translation_answer,
+    translation_study_pool,
     translation_hint_for_session,
 )
 
@@ -746,6 +748,43 @@ async def verbs_state(
     auth=Depends(require_auth_context),
 ):
     return JSONResponse(await _translation_state(db, user_id=auth.user.id, mode=TrainingMode.VERB_TRANSLATION))
+
+
+@router.get("/training/study-pool")
+async def training_study_pool(
+    mode: str,
+    direction: str | None = None,
+    language: str | None = None,
+    tenses: str | None = None,
+    db: AsyncSession = Depends(get_db),
+    auth=Depends(require_auth_context),
+):
+    try:
+        if mode in {"words", "verbs"}:
+            if not direction or not re.fullmatch(r"[a-z]{2}_[a-z]{2}", direction.lower()):
+                raise ValueError("Choose a valid translation direction first.")
+            entries = await translation_study_pool(
+                db,
+                user_id=auth.user.id,
+                mode=_translation_mode_from_slug(mode),
+                direction=direction.lower(),
+            )
+        elif mode == "conjugation":
+            if not language:
+                raise ValueError("Choose a language first.")
+            entries = await conjugation_study_pool(
+                db,
+                user_id=auth.user.id,
+                language_code=language.upper(),
+                selected_tenses=[value for value in (tenses or "").split(",") if value],
+            )
+        else:
+            raise ValueError("Unsupported study mode.")
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(exc)) from exc
+
+    await db.commit()
+    return {"mode": mode, "entries": entries}
 
 
 @router.post("/training/words/start")

@@ -62,14 +62,23 @@ def conjugation_answer_is_correct(user_answer: str, expected: str, language_code
     )
 
 
-def average_multiplier_from_checks(checks: list[PronounCheck]) -> float:
+def average_multiplier_from_checks(
+    checks: list[PronounCheck],
+    *,
+    correct_multiplier: float = 0.7,
+) -> float:
     if not checks:
         return 1.0
-    values = [0.7 if check.is_correct else 1.5 for check in checks]
+    values = [correct_multiplier if check.is_correct else 1.5 for check in checks]
     return sum(values) / len(values)
 
 
-def update_tense_score(current_score: float, checks: list[PronounCheck]) -> TenseUpdateResult:
-    multiplier = average_multiplier_from_checks(checks)
+def update_tense_score(
+    current_score: float,
+    checks: list[PronounCheck],
+    *,
+    correct_multiplier: float = 0.7,
+) -> TenseUpdateResult:
+    multiplier = average_multiplier_from_checks(checks, correct_multiplier=correct_multiplier)
     new_score = clamp_probability(current_score * multiplier)
     return TenseUpdateResult(new_tense_score=new_score, multiplier=multiplier, checks=checks)

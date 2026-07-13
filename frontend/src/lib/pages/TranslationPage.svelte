@@ -11,7 +11,8 @@
   import PlayGrid from '../components/PlayGrid.svelte';
   import PlayMist from '../components/PlayMist.svelte';
   import StageClearRank from '../components/StageClearRank.svelte';
-  import type { LanguageEntry, RewardState, ThemeName, TranslationState, UserSettings, WordSetSummary } from '../types';
+  import StudyPoolBlock from '../components/StudyPoolBlock.svelte';
+  import type { LanguageEntry, RewardState, StudyPoolResponse, ThemeName, TranslationState, UserSettings, WordSetSummary } from '../types';
 
   export let mode: 'words' | 'verbs';
   export let csrfToken = '';
@@ -29,6 +30,11 @@
   let direction = mode === 'words' ? 'es_fr' : 'fr_es';
   let justFinished = false;
   let showSetupAfterFinish = false;
+  let studyExpanded = false;
+  let studyLoading = false;
+  let studyError = '';
+  let studyEntries: StudyPoolResponse['entries'] = [];
+  let loadedStudyKey = '';
 
   let finishSessionWarning = false;
   let escTimer: ReturnType<typeof setTimeout> | null = null;
@@ -365,6 +371,33 @@
       applySessionState(next);
     }
     await focusPrimaryControl();
+  }
+
+  async function loadStudyPool(): Promise<void> {
+    if (studyLoading) return;
+    studyLoading = true;
+    studyError = '';
+    const key = `${mode}:${direction}`;
+    try {
+      const response = await api.studyPool({ mode, direction });
+      studyEntries = response.entries;
+      loadedStudyKey = key;
+    } catch (err) {
+      studyError = err instanceof ApiError ? err.message : 'Unable to load the study pool';
+    } finally {
+      studyLoading = false;
+    }
+  }
+
+  function toggleStudyPool(): void {
+    studyExpanded = !studyExpanded;
+    if (studyExpanded && loadedStudyKey !== `${mode}:${direction}`) {
+      void loadStudyPool();
+    }
+  }
+
+  $: if (studyExpanded && loadedStudyKey && loadedStudyKey !== `${mode}:${direction}` && !studyLoading) {
+    void loadStudyPool();
   }
 
   function delay(ms: number): Promise<void> {
@@ -818,7 +851,7 @@
               <ul>
                 <li>You get <strong>two tries</strong> per {itemSingular}. After the first wrong answer a hint appears automatically.</li>
                 <li><strong>Hint</strong> reveals a clue; <strong>Skip and show</strong> reveals the answer.</li>
-                <li>Correct answers build your <strong>combo</strong> and earn XP.</li>
+                <li>Correct answers build your <strong>combo</strong> and accelerate mastery scoring.</li>
                 <li><strong>Finish session</strong> ends the round early.</li>
               </ul>
               <div class="keyboard-shortcut-help">
@@ -866,6 +899,15 @@
           />
 
           <p class="route-label">{languageByCode(sourceCode)?.name || sourceCode} → {languageByCode(targetCode)?.name || targetCode}</p>
+
+          <StudyPoolBlock
+            mode={mode}
+            expanded={studyExpanded}
+            loading={studyLoading}
+            error={studyError}
+            entries={studyEntries}
+            onToggle={toggleStudyPool}
+          />
 
           <div class="play-area">
             {#if isArcade}

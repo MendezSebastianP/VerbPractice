@@ -221,6 +221,31 @@ export interface TranslationState {
   } | null;
 }
 
+export interface StudyTranslationEntry {
+  item_id: number;
+  prompt: string;
+  answer: string;
+  group: 'newest' | 'focus';
+  score: number;
+}
+
+export interface StudyConjugationEntry {
+  item_id: number;
+  prompt: string;
+  group: 'newest' | 'focus';
+  score: number;
+  language: string;
+  tenses: Array<{
+    tense: string;
+    forms: Array<{ pronoun: string; form: string }>;
+  }>;
+}
+
+export interface StudyPoolResponse {
+  mode: 'words' | 'verbs' | 'conjugation';
+  entries: Array<StudyTranslationEntry | StudyConjugationEntry>;
+}
+
 export interface LanguageConfig {
   code: string;
   name: string;

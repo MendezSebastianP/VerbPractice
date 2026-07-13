@@ -55,6 +55,8 @@ ITEM_TYPE_BY_MODE: dict[TrainingMode, ProgressItemType] = {
     TrainingMode.CONJUGATION: ProgressItemType.CONJUGATION,
 }
 
+FIRST_CORRECT_MULTIPLIER = 0.2
+
 
 @dataclass(slots=True)
 class TranslationQuestion:
@@ -502,6 +504,112 @@ async def get_translation_question(
     return await _resolve_translation_question(db, mode=session.mode, item_id=item_id, direction=direction)
 
 
+async def translation_study_pool(
+    db: AsyncSession,
+    *,
+    user_id: int,
+    mode: TrainingMode,
+    direction: str,
+) -> list[dict[str, Any]]:
+    """Build six newest plus six highest-score translation items without duplicates."""
+    await ensure_initial_translation_unlocks(
+        db,
+        user_id=user_id,
+        mode=mode,
+        language_pair=direction,
+        initial_count=10,
+    )
+    await db.flush()
+
+    eligible_ids = set(await eligible_translation_item_ids(db, mode=mode, direction=direction))
+    if not eligible_ids:
+        return []
+
+    recent_ids: list[int] = []
+    if mode == TrainingMode.WORD_TRANSLATION:
+        added_rows = await db.execute(
+            select(UserAddedWord.word_id)
+            .where(
+                UserAddedWord.user_id == user_id,
+                UserAddedWord.language_pair == direction,
+                UserAddedWord.word_id.in_(eligible_ids),
+            )
+            .order_by(UserAddedWord.added_at.desc())
+            .limit(6)
+        )
+        recent_ids.extend(word_id for (word_id,) in added_rows.all())
+
+    newest_progress = await db.execute(
+        select(UserProgress)
+        .where(
+            UserProgress.user_id == user_id,
+            UserProgress.item_type == ITEM_TYPE_BY_MODE[mode],
+            UserProgress.language_pair == direction,
+            UserProgress.unlocked.is_(True),
+            UserProgress.item_id.in_(eligible_ids),
+        )
+        .order_by(UserProgress.id.desc())
+        .limit(12)
+    )
+    progress_rows = newest_progress.scalars().all()
+    for progress in progress_rows:
+        if progress.item_id not in recent_ids:
+            recent_ids.append(progress.item_id)
+        if len(recent_ids) == 6:
+            break
+
+    focus_query = (
+        select(UserProgress)
+        .where(
+            UserProgress.user_id == user_id,
+            UserProgress.item_type == ITEM_TYPE_BY_MODE[mode],
+            UserProgress.language_pair == direction,
+            UserProgress.unlocked.is_(True),
+            UserProgress.item_id.in_(eligible_ids),
+        )
+        .order_by(UserProgress.probability.desc(), UserProgress.id.desc())
+        .limit(12)
+    )
+    focus_rows = (await db.execute(focus_query)).scalars().all()
+    focus_ids = [row.item_id for row in focus_rows if row.item_id not in recent_ids][:6]
+    selected_ids = [*recent_ids[:6], *focus_ids]
+    selected_progress = (
+        await db.execute(
+            select(UserProgress).where(
+                UserProgress.user_id == user_id,
+                UserProgress.item_type == ITEM_TYPE_BY_MODE[mode],
+                UserProgress.language_pair == direction,
+                UserProgress.item_id.in_(selected_ids),
+            )
+        )
+    ).scalars().all()
+    progress_by_id = {row.item_id: row for row in selected_progress}
+
+    entries: list[dict[str, Any]] = []
+    for group, item_ids in (("newest", recent_ids[:6]), ("focus", focus_ids)):
+        for item_id in item_ids:
+            try:
+                question = await _resolve_translation_question(
+                    db,
+                    mode=mode,
+                    item_id=item_id,
+                    direction=direction,
+                )
+            except ValueError:
+                continue
+            progress = progress_by_id.get(item_id)
+            entries.append(
+                {
+                    "item_id": item_id,
+                    "prompt": question.prompt,
+                    "answer": question.expected_primary,
+                    "group": group,
+                    "score": round(float(progress.probability), 1) if progress else 1000.0,
+                }
+            )
+    return entries
+
+
 async def increment_hint(session: TrainingSession) -> None:
     config = dict(session.config or {})
     config["hint"] = int(config.get("hint", 0)) + 1
@@ -671,6 +779,14 @@ def _update_combo(config: dict[str, Any], *, succeeded: bool) -> RewardSummary:
     return RewardSummary(combo=combo, best_combo=best_combo)
 
 
+def _score_multiplier_with_combo(multiplier: float, combo: int) -> float:
+    """Accelerate mastery for consecutive correct answers, capped at 2x."""
+    if combo <= 0:
+        return multiplier
+    speed = min(2.0, 1.2 + 0.2 * combo)
+    return multiplier / speed
+
+
 def _int_set_from_config(config: dict[str, Any], key: str) -> set[int]:
     return {int(value) for value in config.get(key, [])}
 
@@ -732,6 +848,13 @@ async def submit_translation_answer(
         unlocked=True,
     )
 
+    first_correct_bonus = score_applied and progress.times_seen == 0 and grade.is_correct
+    if first_correct_bonus:
+        effective_multiplier = FIRST_CORRECT_MULTIPLIER
+    elif score_applied and grade.is_correct:
+        projected_combo = int(config.get("combo", 0)) + 1
+        effective_multiplier = _score_multiplier_with_combo(effective_multiplier, projected_combo)
+
     progress.times_seen += 1
     if grade.is_correct:
         progress.times_correct += 1
@@ -751,7 +874,12 @@ async def submit_translation_answer(
             expected=grade.expected_primary,
             correct=grade.is_correct,
             multiplier_applied=effective_multiplier,
-            meta={"direction": direction, "synonym": grade.is_synonym, "score_applied": score_applied},
+            meta={
+                "direction": direction,
+                "synonym": grade.is_synonym,
+                "score_applied": score_applied,
+                "first_correct_bonus": first_correct_bonus,
+            },
         )
     )
 
@@ -1068,6 +1196,108 @@ async def _conjugation_table_for_verb(
             for pronoun in (language.pronoun_set or [])
         }
     return table
+
+
+async def conjugation_study_pool(
+    db: AsyncSession,
+    *,
+    user_id: int,
+    language_code: str,
+    selected_tenses: list[str],
+) -> list[dict[str, Any]]:
+    """Build six newest plus six highest-score verb tables without duplicates."""
+    language = await get_language_by_code(db, language_code)
+    valid_tenses = [tense for tense in selected_tenses if tense in (language.tense_definitions or {})]
+    if not valid_tenses:
+        valid_tenses = [
+            tense
+            for tense in tenses_for_level(language.__dict__, "easy")
+            if tense in (language.tense_definitions or {})
+        ]
+    language_pair = f"{language.code.lower()}_conj"
+
+    await ensure_initial_conjugation_unlocks(
+        db,
+        user_id=user_id,
+        language_code=language.code,
+        language_pair=language_pair,
+        selected_tenses=valid_tenses,
+        initial_count=10,
+    )
+    await db.flush()
+
+    eligible_ids = set(await eligible_conjugation_verb_ids(
+        db,
+        language=language,
+        selected_tenses=valid_tenses,
+    ))
+    if not eligible_ids:
+        return []
+
+    base_filter = (
+        UserProgress.user_id == user_id,
+        UserProgress.item_type == ProgressItemType.CONJUGATION,
+        UserProgress.language_pair == language_pair,
+        UserProgress.unlocked.is_(True),
+        UserProgress.item_id.in_(eligible_ids),
+    )
+    newest_rows = (
+        await db.execute(
+            select(UserProgress)
+            .where(*base_filter)
+            .order_by(UserProgress.id.desc())
+            .limit(6)
+        )
+    ).scalars().all()
+    newest_ids = [row.item_id for row in newest_rows]
+
+    focus_rows = (
+        await db.execute(
+            select(UserProgress)
+            .where(*base_filter)
+            .order_by(UserProgress.probability.desc(), UserProgress.id.desc())
+            .limit(12)
+        )
+    ).scalars().all()
+    focus_ids = [row.item_id for row in focus_rows if row.item_id not in newest_ids][:6]
+    progress_by_id = {row.item_id: row for row in [*newest_rows, *focus_rows]}
+    selected_ids = [*newest_ids, *focus_ids]
+    verb_rows = await db.execute(select(Verb).where(Verb.id.in_(selected_ids)))
+    verbs_by_id = {verb.id: verb for verb in verb_rows.scalars().all()}
+
+    entries: list[dict[str, Any]] = []
+    for group, item_ids in (("newest", newest_ids), ("focus", focus_ids)):
+        for item_id in item_ids:
+            verb = verbs_by_id.get(item_id)
+            if verb is None:
+                continue
+            table = await _conjugation_table_for_verb(
+                db,
+                verb_id=item_id,
+                language=language,
+                selected_tenses=valid_tenses,
+            )
+            entries.append(
+                {
+                    "item_id": item_id,
+                    "prompt": verb.infinitive,
+                    "group": group,
+                    "score": round(float(progress_by_id[item_id].probability), 1),
+                    "language": language.code,
+                    "tenses": [
+                        {
+                            "tense": tense,
+                            "forms": [
+                                {"pronoun": pronoun, "form": form}
+                                for pronoun, form in table[tense].items()
+                                if form != "-"
+                            ],
+                        }
+                        for tense in valid_tenses
+                    ],
+                }
+            )
+    return entries
 
 
 def _conjugation_form_groups(
@@ -1456,18 +1686,30 @@ async def submit_conjugation_answers(
     total_answered = 0
     review_by_slot: dict[tuple[str, str], dict[str, Any]] = {}
 
+    preview_reviews = {
+        tense: _conjugation_tense_review(
+            question=question,
+            language_code=language_code,
+            tense=tense,
+            answers=answers.get(tense, {}),
+        )
+        for tense in question.selected_tenses
+    }
+    preview_cells = [
+        cell
+        for review in preview_reviews.values()
+        for cell in review["cells"]
+        if cell["kind"] == "answer"
+    ]
+    table_succeeded = bool(preview_cells) and all(bool(cell["correct"]) for cell in preview_cells)
+    projected_combo = int(config.get("combo", 0)) + 1 if table_succeeded else 0
+
     for tense in question.selected_tenses:
-        tense_answers = answers.get(tense, {})
         checks: list[PronounCheck] = []
         scored_checks: list[PronounCheck] = []
         applied_slot_keys: set[str] = set()
 
-        tense_review = _conjugation_tense_review(
-            question=question,
-            language_code=language_code,
-            tense=tense,
-            answers=tense_answers,
-        )
+        tense_review = preview_reviews[tense]
         for cell in tense_review["cells"]:
             pronoun = str(cell["pronoun"])
             review_by_slot[(tense, pronoun)] = {
@@ -1495,8 +1737,18 @@ async def submit_conjugation_answers(
 
         current_tense_score = float(tense_scores.get(tense, 1000.0))
         multiplier_applied = 1.0
+        first_correct_bonus = False
         if scored_checks:
-            result = update_tense_score(current_tense_score, scored_checks)
+            first_correct_bonus = tense not in tense_scores and all(check.is_correct for check in scored_checks)
+            result = update_tense_score(
+                current_tense_score,
+                scored_checks,
+                correct_multiplier=(
+                    FIRST_CORRECT_MULTIPLIER
+                    if first_correct_bonus
+                    else _score_multiplier_with_combo(0.7, projected_combo)
+                ),
+            )
             tense_scores[tense] = result.new_tense_score
             multiplier_applied = result.multiplier
             scored_conjugation_slots.update(applied_slot_keys)
@@ -1518,6 +1770,7 @@ async def submit_conjugation_answers(
                 meta={
                     "tense": tense,
                     "score_applied": bool(applied_slot_keys),
+                    "first_correct_bonus": first_correct_bonus,
                     "checks": [
                         {
                             **asdict(check),

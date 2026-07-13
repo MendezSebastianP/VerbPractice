@@ -24,7 +24,9 @@ from app.db.models import (
 )
 from app.routers.api import _conjugation_state, _translation_state
 from app.services.training_service import (
+    _score_multiplier_with_combo,
     check_conjugation_tense,
+    conjugation_study_pool,
     conjugation_tenses_for_level,
     eligible_conjugation_verb_ids,
     eligible_translation_item_ids,
@@ -33,7 +35,14 @@ from app.services.training_service import (
     start_translation_session,
     submit_conjugation_answers,
     submit_translation_answer,
+    translation_study_pool,
 )
+
+
+def test_fast_learner_combo_accelerates_score_reduction_and_caps_at_double():
+    assert [_score_multiplier_with_combo(0.7, combo) for combo in range(0, 6)] == pytest.approx(
+        [0.7, 0.5, 0.4375, 0.7 / 1.8, 0.35, 0.35]
+    )
 
 
 @pytest_asyncio.fixture()
@@ -190,7 +199,7 @@ async def test_word_score_changes_only_once_per_session(seeded_training_context)
 
 
 @pytest.mark.asyncio
-async def test_word_first_correct_still_scores_normally(seeded_training_context):
+async def test_word_first_correct_gets_fast_mastery_bonus(seeded_training_context):
     db = seeded_training_context["db"]
     user = seeded_training_context["user"]
     profile = seeded_training_context["profile"]
@@ -226,9 +235,35 @@ async def test_word_first_correct_still_scores_normally(seeded_training_context)
     ).scalar_one()
 
     assert result["finished"] is True
-    assert progress.probability == pytest.approx(700.0)
-    assert item.multiplier_applied == pytest.approx(0.7)
+    assert progress.probability == pytest.approx(200.0)
+    assert item.multiplier_applied == pytest.approx(0.2)
     assert item.meta["score_applied"] is True
+    assert item.meta["first_correct_bonus"] is True
+
+
+@pytest.mark.asyncio
+async def test_study_pools_return_unique_newest_items_with_answers(seeded_training_context):
+    db = seeded_training_context["db"]
+    user = seeded_training_context["user"]
+
+    words = await translation_study_pool(
+        db,
+        user_id=user.id,
+        mode=TrainingMode.WORD_TRANSLATION,
+        direction="es_fr",
+    )
+    conjugations = await conjugation_study_pool(
+        db,
+        user_id=user.id,
+        language_code="FR",
+        selected_tenses=["Présent"],
+    )
+
+    assert [(entry["prompt"], entry["answer"], entry["group"]) for entry in words] == [
+        ("hola", "bonjour", "newest")
+    ]
+    assert len({entry["item_id"] for entry in conjugations}) == len(conjugations)
+    assert conjugations[0]["tenses"][0]["forms"][0] == {"pronoun": "je", "form": "vais"}
 
 
 @pytest.mark.asyncio

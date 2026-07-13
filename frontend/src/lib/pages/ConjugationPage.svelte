@@ -7,7 +7,8 @@
   import { celebrateReward, flashMiss, popEl } from '../fx';
   import QuickShotIcon from '../components/QuickShotIcon.svelte';
   import StageClearRank from '../components/StageClearRank.svelte';
-  import type { ConjugationState, ConjugationTenseReview, LanguageConfig, RewardState } from '../types';
+  import StudyPoolBlock from '../components/StudyPoolBlock.svelte';
+  import type { ConjugationState, ConjugationTenseReview, LanguageConfig, RewardState, StudyPoolResponse } from '../types';
 
   export let csrfToken = '';
   export let soundEnabled = false;
@@ -30,6 +31,11 @@
   let activeCellKey = '';
   let justFinished = false;
   let showSetupAfterFinish = false;
+  let studyExpanded = false;
+  let studyLoading = false;
+  let studyError = '';
+  let studyEntries: StudyPoolResponse['entries'] = [];
+  let loadedStudyKey = '';
   let activeTenseIndex = 0;
   let tenseReview: ConjugationTenseReview | null = null;
   let checkedTenses = new Set<string>();
@@ -630,6 +636,37 @@
     }
   }
 
+  function currentStudyKey(): string {
+    return `${language}:${selectedTenses.join('|')}`;
+  }
+
+  async function loadStudyPool(): Promise<void> {
+    if (studyLoading) return;
+    studyLoading = true;
+    studyError = '';
+    const key = currentStudyKey();
+    try {
+      const response = await api.studyPool({ mode: 'conjugation', language, tenses: selectedTenses });
+      studyEntries = response.entries;
+      loadedStudyKey = key;
+    } catch (err) {
+      studyError = err instanceof ApiError ? err.message : 'Unable to load the study pool';
+    } finally {
+      studyLoading = false;
+    }
+  }
+
+  function toggleStudyPool(): void {
+    studyExpanded = !studyExpanded;
+    if (studyExpanded && loadedStudyKey !== currentStudyKey()) {
+      void loadStudyPool();
+    }
+  }
+
+  $: if (studyExpanded && loadedStudyKey && loadedStudyKey !== currentStudyKey() && !studyLoading) {
+    void loadStudyPool();
+  }
+
   async function submit(): Promise<void> {
     if (!state || state.setup) {
       return;
@@ -1127,6 +1164,15 @@
               </div>
             </div>
           </div>
+
+          <StudyPoolBlock
+            mode="conjugation"
+            expanded={studyExpanded}
+            loading={studyLoading}
+            error={studyError}
+            entries={studyEntries}
+            onToggle={toggleStudyPool}
+          />
 
           <div class="setup-launch-row">
             <div class="launch-summary">

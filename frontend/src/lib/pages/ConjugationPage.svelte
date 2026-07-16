@@ -26,6 +26,10 @@
   let nextTenseButton: HTMLButtonElement | null = null;
   let finishButton: HTMLButtonElement | null = null;
   let finishedCard: HTMLElement | null = null;
+  // Off-screen text field kept focused on mobile so the soft keyboard stays up
+  // through the tense-review and stage-clear screens — the user can press the
+  // keyboard's Enter/Send to continue or replay without re-tapping.
+  let kbdPrimer: HTMLInputElement | null = null;
   let selectedTenses: string[] = [];
   let answers: Record<string, Record<string, string>> = {};
   let activeCellKey = '';
@@ -230,6 +234,9 @@
   $: clusteredFormLayout = activeFormGroups.length > 1 && activeFormGroups.some((group) => group.pronouns.length > 1);
   $: currentInputCells = buildInputCells(state?.question, activeTense);
   $: currentActiveCell = currentInputCells.find((cell) => cell.key === activeCellKey) || currentInputCells[0] || null;
+  // Position of the active answer within the tense — drives the mobile "N/total"
+  // badge on the compact one-cell-at-a-time layout.
+  $: activeInputIndex = Math.max(0, currentInputCells.findIndex((cell) => cell.key === currentActiveCell?.key));
   $: quickShotReady = Boolean(
     currentActiveCell?.acceptedAnswers.length
     && !quickShotSpent.has(currentActiveCell.key),
@@ -295,6 +302,10 @@
     return window.matchMedia('(max-width: 760px) and (hover: none) and (pointer: coarse)').matches;
   }
 
+  // Deadzone scroll: only nudge when the active cell is actually clipped by the
+  // keyboard (or scrolled too high), and only far enough to sit back inside a
+  // comfortable band. A fixed-center target here oscillated on real phones —
+  // every scroll re-fired visualViewport events and toggled the URL bar.
   function centerFocusedCellInViewport(): void {
     if (!usesCompactViewport()) {
       return;
@@ -308,9 +319,15 @@
     const viewport = window.visualViewport;
     const visibleTop = viewport?.offsetTop ?? 0;
     const visibleHeight = viewport?.height ?? window.innerHeight;
-    const desiredCenter = visibleTop + visibleHeight * 0.48;
-    const delta = rect.top + rect.height / 2 - desiredCenter;
-    if (Math.abs(delta) > 6) {
+    const padTop = 40;   // the verb hero above the cell is short; keep a little headroom
+    const padBottom = 28;
+    let delta = 0;
+    if (rect.bottom > visibleTop + visibleHeight - padBottom) {
+      delta = rect.bottom - (visibleTop + visibleHeight - padBottom);
+    } else if (rect.top < visibleTop + padTop) {
+      delta = rect.top - (visibleTop + padTop);
+    }
+    if (Math.abs(delta) > 8) {
       window.scrollBy({ top: delta, behavior: 'auto' });
     }
   }
@@ -352,8 +369,9 @@
     void load();
     syncFullscreen();
     document.addEventListener('fullscreenchange', syncFullscreen);
+    // Only 'resize' (keyboard open/close) — reacting to 'scroll' created a
+    // scroll→scroll feedback loop that bounced the page between two positions.
     window.visualViewport?.addEventListener('resize', scheduleMobileViewportCenter);
-    window.visualViewport?.addEventListener('scroll', scheduleMobileViewportCenter);
     return () => {
       if (escTimer) {
         clearTimeout(escTimer);
@@ -364,7 +382,6 @@
       clearQuickShotTimers();
       document.removeEventListener('fullscreenchange', syncFullscreen);
       window.visualViewport?.removeEventListener('resize', scheduleMobileViewportCenter);
-      window.visualViewport?.removeEventListener('scroll', scheduleMobileViewportCenter);
       onSessionActiveChange(false);
     };
   });
@@ -407,13 +424,18 @@
 
   async function focusPrimaryControl(): Promise<void> {
     await tick();
+    const compact = usesCompactViewport();
     if (showFinishedPrompt()) {
-      finishedCard?.scrollIntoView({ block: 'center', behavior: 'smooth' });
-      retryButton?.focus();
+      finishedCard?.scrollIntoView({ block: 'center', behavior: compact ? 'auto' : 'smooth' });
+      // Keep the keyboard up on mobile so Enter/Send replays the run.
+      if (compact) kbdPrimer?.focus({ preventScroll: true });
+      else retryButton?.focus();
       return;
     }
     if (tenseReview) {
-      nextTenseButton?.focus();
+      // Keep the keyboard up on mobile so Enter/Send continues to the next tense.
+      if (compact) kbdPrimer?.focus({ preventScroll: true });
+      else nextTenseButton?.focus();
       return;
     }
     focusFirstInput();
@@ -604,6 +626,9 @@
       }
       return;
     }
+    // Runs inside the launch tap → opens the soft keyboard in-gesture; focus
+    // moves to the first cell once the table mounts.
+    if (usesCompactViewport()) kbdPrimer?.focus({ preventScroll: true });
     loading = true;
     error = '';
     try {
@@ -710,6 +735,9 @@
     if (!state?.question || !tense || tenseReview || loading) {
       return;
     }
+    // Transfer focus to the primer now, while the answer cell is still mounted
+    // and the keyboard is open, so the soft keyboard survives into the review.
+    if (usesCompactViewport()) kbdPrimer?.focus({ preventScroll: true });
     loading = true;
     error = '';
     try {
@@ -979,6 +1007,17 @@
 <svelte:window on:keydown={handleWindowKeydown} />
 
 <section class="trainer-shell">
+  <!-- Off-screen primer keeps the mobile keyboard up across the review / stage
+       clear so Enter/Send can continue or replay without re-tapping. -->
+  <input
+    bind:this={kbdPrimer}
+    class="kbd-primer"
+    type="text"
+    inputmode="text"
+    tabindex="-1"
+    aria-hidden="true"
+    autocomplete="off"
+  />
   {#if loading && !state}
     <div class="glass-panel skeleton-card tall-skeleton"></div>
   {:else if error && !state}
@@ -1004,7 +1043,8 @@
             unitLabel="verbs"
           >
             <button bind:this={retryButton} class="primary-button" type="button" on:click={() => { popEl(retryButton); void startSession(); }} disabled={loading}>
-              ▶ Replay <span class="kbd-chip">Enter</span>
+              <svg class="btn-play-glyph" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" /></svg>
+              Replay <span class="kbd-chip">Enter</span>
             </button>
             <button class="secondary-button" type="button" on:click={revealSetup} disabled={loading}>
               Menu <span class="kbd-chip">{isFullscreen ? 'Ctrl+Space' : 'Esc'}</span>
@@ -1255,6 +1295,12 @@
               </div>
 
               <div class="g1-hero">
+                {#if !tenseReview}
+                  <span class="g1-hero-tense" aria-hidden="true">{Math.min(activeTenseIndex + 1, state.question.selected_tenses.length)}/{state.question.selected_tenses.length} tense</span>
+                {/if}
+                {#if !tenseReview && currentInputCells.length > 1}
+                  <span class="g1-hero-count" aria-hidden="true">{activeInputIndex + 1}/{currentInputCells.length}</span>
+                {/if}
                 <span>Current verb</span>
                 <strong>{state.question.verb}</strong>
                 {#if tenseReview}
@@ -1311,14 +1357,10 @@
                         {:else if cell.kind === 'prefilled'}
                           <div class="g1-locked-guide"><span aria-hidden="true">◆</span><strong>{cell.value}</strong><small>GIVEN GUIDE</small></div>
                         {:else if tenseReview && feedbackCell}
-                          {#if feedbackCell.kind === 'linked'}
-                            <div class:g1-linked-correct={feedbackCell.correct} class:g1-linked-wrong={!feedbackCell.correct} class="g1-linked-form g1-linked-review">
-                              <span aria-hidden="true">=</span>
-                              <div><strong>{feedbackCell.answer || feedbackCell.expected}</strong><small>same checked answer as {feedbackCell.linked_to}</small></div>
-                              <em>{feedbackCell.correct ? 'LINKED · RIGHT' : 'FOLLOW CORRECTION ABOVE'}</em>
-                            </div>
-                          {:else if feedbackCell.correct}
-                            <div class="g1-inline-feedback g1-feedback-correct"><span aria-hidden="true">✓</span><strong>{feedbackCell.answer}</strong><small>RIGHT</small></div>
+                          <!-- Linked cells are shown like any other answer — the
+                               "same checked answer as X" note was redundant clutter. -->
+                          {#if feedbackCell.correct}
+                            <div class="g1-inline-feedback g1-feedback-correct"><span aria-hidden="true">✓</span><strong>{feedbackCell.answer || feedbackCell.expected}</strong><small>RIGHT</small></div>
                           {:else}
                             <div class="g1-inline-feedback g1-feedback-wrong"><span aria-hidden="true">×</span><div><del>{feedbackCell.answer || 'No answer'}</del><strong>{feedbackCell.expected}</strong></div><small>CORRECT</small></div>
                           {/if}
@@ -1944,6 +1986,33 @@
     animation: table-clear-in 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
   }
 
+  .btn-play-glyph {
+    width: 0.8em;
+    height: 0.8em;
+    margin-right: 0.1em;
+    vertical-align: -0.06em;
+  }
+
+  /* Focusable but visually hidden; font-size 16px avoids iOS focus-zoom, and it
+     is not display:none/visibility:hidden so focus can hold the keyboard open. */
+  .kbd-primer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    font-size: 16px;
+    opacity: 0;
+    background: transparent;
+    color: transparent;
+    caret-color: transparent;
+    pointer-events: none;
+    z-index: -1;
+  }
+
   @keyframes table-clear-in {
     from { opacity: 0; transform: translateY(1rem) scale(0.985); }
     to { opacity: 1; transform: translateY(0) scale(1); }
@@ -2077,6 +2146,7 @@
 
   /* ===== H1-B verb hero ===== */
   .g1-hero {
+    position: relative;
     display: grid;
     gap: 0.3rem;
     justify-items: center;
@@ -2114,6 +2184,28 @@
   .g1-hero > em b {
     color: #f6c84c;
     font-weight: 800;
+  }
+
+  /* Position badges for the compact mobile layout — hidden on wide screens where
+     the whole tense column is visible at once. */
+  .g1-hero-count,
+  .g1-hero-tense {
+    position: absolute;
+    top: 0.55rem;
+    display: none;
+    color: var(--accent-2);
+    font: 800 0.78rem/1 var(--mono);
+    letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .g1-hero-count {
+    right: 0.7rem;
+  }
+
+  .g1-hero-tense {
+    left: 0.7rem;
+    color: #f6c84c;
   }
 
   .g1-hero-review {
@@ -2610,18 +2702,6 @@
     background: color-mix(in srgb, #f6c84c 7%, rgba(6, 8, 24, 0.62));
   }
 
-  .g1-linked-correct {
-    border-color: color-mix(in srgb, #55ee9b 44%, transparent);
-    color: #55ee9b;
-    background: color-mix(in srgb, #55ee9b 7%, rgba(6, 8, 24, 0.62));
-  }
-
-  .g1-linked-wrong {
-    border-color: color-mix(in srgb, #ff7188 48%, transparent);
-    color: #ff91a3;
-    background: color-mix(in srgb, #ff7188 7%, rgba(6, 8, 24, 0.62));
-  }
-
   .g1-locked-guide,
   .g1-inline-feedback,
   .g1-missing-form {
@@ -2734,6 +2814,319 @@
     color: #f6c84c;
   }
 
+  /* Matcha Overdrive · Bio Pulse. The production table keeps its exact grid,
+     row heights, padding, and state machine; only the Clear skin changes. */
+  :global(html[data-theme='light']) .g1-session-frame {
+    border-color: var(--accent);
+    border-radius: 28px;
+    color: var(--text);
+    background:
+      radial-gradient(circle at 92% 0%, color-mix(in srgb, var(--accent-2) 11%, transparent), transparent 31%),
+      linear-gradient(rgba(19, 40, 30, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(19, 40, 30, 0.04) 1px, transparent 1px),
+      var(--matcha-panel);
+    background-size: auto, 24px 24px, 24px 24px, auto;
+    box-shadow: 0 24px 55px -34px rgba(19, 40, 30, 0.58);
+  }
+
+  :global(html[data-theme='light']) .g1-strip-count,
+  :global(html[data-theme='light']) .g1-utility-line,
+  :global(html[data-theme='light']) .g1-column-head small,
+  :global(html[data-theme='light']) .g1-hero > span,
+  :global(html[data-theme='light']) .g1-hero > em {
+    color: var(--muted);
+  }
+
+  :global(html[data-theme='light']) .g1-strip-count,
+  :global(html[data-theme='light']) .g1-hero > span {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+  :global(html[data-theme='light']) .g1-strip-name,
+  :global(html[data-theme='light']) .g1-hero > em b,
+  :global(html[data-theme='light']) .g1-hero-count,
+  :global(html[data-theme='light']) .g1-hero-tense,
+  :global(html[data-theme='light']) .g1-hero-review {
+    color: var(--accent) !important;
+    text-shadow: none;
+  }
+
+  :global(html[data-theme='light']) .g1-seg {
+    border-color: color-mix(in srgb, var(--accent) 28%, transparent);
+    border-radius: 999px;
+    color: var(--muted);
+    background: color-mix(in srgb, var(--matcha-field) 44%, transparent);
+  }
+
+  :global(html[data-theme='light']) .g1-seg-done {
+    border-color: color-mix(in srgb, var(--accent) 58%, transparent);
+    color: var(--accent-strong);
+    background: color-mix(in srgb, var(--accent) 10%, var(--matcha-panel));
+    box-shadow: none;
+  }
+
+  :global(html[data-theme='light']) .g1-seg-active {
+    border-color: var(--accent);
+    color: var(--matcha-panel);
+    background: var(--accent);
+    box-shadow: inset 0 -3px 0 var(--accent-2);
+    animation: g1-bio-seg-pulse 1.6s ease-in-out infinite;
+  }
+
+  :global(html[data-theme='light']) .g1-seg-review {
+    animation: none;
+  }
+
+  @keyframes g1-bio-seg-pulse {
+    0%, 100% { box-shadow: inset 0 -3px 0 var(--accent-2), 0 0 0 0 color-mix(in srgb, var(--accent) 0%, transparent); }
+    50% { box-shadow: inset 0 -3px 0 var(--accent-2), 0 0 0 4px color-mix(in srgb, var(--accent) 10%, transparent); }
+  }
+
+  :global(html[data-theme='light']) .g1-hero {
+    border-color: color-mix(in srgb, var(--accent) 26%, transparent);
+    border-radius: 20px;
+    background:
+      linear-gradient(rgba(19, 40, 30, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(19, 40, 30, 0.045) 1px, transparent 1px),
+      color-mix(in srgb, var(--matcha-field) 38%, var(--matcha-panel));
+    background-size: 24px 24px;
+  }
+
+  :global(html[data-theme='light']) .g1-hero > strong {
+    color: var(--text);
+    font-family: var(--display);
+    letter-spacing: -0.055em;
+  }
+
+  :global(html[data-theme='light']) .g1-utility-line b,
+  :global(html[data-theme='light']) .g1-column-head strong,
+  :global(html[data-theme='light']) .g1-column-row label strong,
+  :global(html[data-theme='light']) .u1-form-notice strong,
+  :global(html[data-theme='light']) .c1-form-key strong,
+  :global(html[data-theme='light']) .g1-linked-form strong,
+  :global(html[data-theme='light']) .g1-locked-guide strong,
+  :global(html[data-theme='light']) .g1-inline-feedback strong,
+  :global(html[data-theme='light']) .g1-quick-shot-note {
+    color: var(--text);
+  }
+
+  :global(html[data-theme='light']) .g1-utility-line i,
+  :global(html[data-theme='light']) .g1-column-rail {
+    background: color-mix(in srgb, var(--accent) 18%, transparent);
+  }
+
+  :global(html[data-theme='light']) .g1-column-head span,
+  :global(html[data-theme='light']) .g1-column-row label small,
+  :global(html[data-theme='light']) .g1-group-badge,
+  :global(html[data-theme='light']) .g1-row-marker {
+    color: var(--accent);
+  }
+
+  :global(html[data-theme='light']) .g1-active-column {
+    border-color: color-mix(in srgb, var(--accent) 34%, transparent);
+    border-radius: 20px;
+    background: color-mix(in srgb, var(--matcha-field) 24%, transparent);
+  }
+
+  :global(html[data-theme='light']) .g1-column-review {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-2) 12%, transparent);
+  }
+
+  :global(html[data-theme='light']) .g1-column-head {
+    border-bottom-color: color-mix(in srgb, var(--accent) 22%, transparent);
+    background: color-mix(in srgb, var(--matcha-field) 44%, transparent);
+  }
+
+  :global(html[data-theme='light']) .u1-form-notice {
+    border-color: color-mix(in srgb, var(--accent) 38%, transparent);
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--accent) 8%, var(--matcha-panel));
+  }
+
+  :global(html[data-theme='light']) .u1-form-notice > span,
+  :global(html[data-theme='light']) .u1-form-notice em,
+  :global(html[data-theme='light']) .g1-row-guide .g1-row-marker,
+  :global(html[data-theme='light']) .g1-linked-guide,
+  :global(html[data-theme='light']) .g1-locked-guide > span,
+  :global(html[data-theme='light']) .g1-locked-guide > small {
+    color: var(--accent);
+  }
+
+  :global(html[data-theme='light']) .u1-form-notice small,
+  :global(html[data-theme='light']) .c1-form-key > small,
+  :global(html[data-theme='light']) .g1-quick-shot-note p,
+  :global(html[data-theme='light']) .g1-linked-form .g1-linked-empty,
+  :global(html[data-theme='light']) .g1-linked-form em,
+  :global(html[data-theme='light']) .g1-missing-form,
+  :global(html[data-theme='light']) .g1-feedback-wrong del {
+    color: var(--muted);
+  }
+
+  :global(html[data-theme='light']) .c1-form-key > span {
+    border-color: color-mix(in srgb, var(--group-color) 50%, var(--accent));
+    color: color-mix(in srgb, var(--group-color) 58%, var(--matcha-ink));
+    background: color-mix(in srgb, var(--group-color) 7%, var(--matcha-panel));
+  }
+
+  :global(html[data-theme='light']) .g1-column-rail i {
+    background: linear-gradient(var(--accent-2), var(--accent));
+  }
+
+  :global(html[data-theme='light']) .g1-column-row {
+    border-color: color-mix(in srgb, var(--accent) 18%, transparent);
+    border-radius: 14px;
+    color: var(--text);
+    background: color-mix(in srgb, var(--matcha-field) 25%, transparent);
+  }
+
+  :global(html[data-theme='light']) .g1-row-active {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--matcha-field) 70%, transparent);
+    box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--accent-2) 34%, transparent);
+    transform: none;
+  }
+
+  :global(html[data-theme='light']) .g1-row-clustered {
+    border-color: color-mix(in srgb, var(--group-color) 48%, var(--accent));
+    border-left-color: color-mix(in srgb, var(--group-color) 62%, var(--matcha-ink));
+    background: color-mix(in srgb, var(--group-color) 6%, var(--matcha-panel));
+  }
+
+  :global(html[data-theme='light']) .g1-row-clustered.g1-row-active {
+    border-color: color-mix(in srgb, var(--group-color) 62%, var(--matcha-ink));
+    background: color-mix(in srgb, var(--group-color) 10%, var(--matcha-panel));
+    box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--accent-2) 34%, transparent);
+  }
+
+  :global(html[data-theme='light']) .g1-row-guide,
+  :global(html[data-theme='light']) .g1-row-linked {
+    border-color: color-mix(in srgb, var(--accent) 34%, transparent);
+    background: color-mix(in srgb, var(--accent) 7%, var(--matcha-panel));
+  }
+
+  :global(html[data-theme='light']) .g1-row-correct {
+    border-color: color-mix(in srgb, var(--success) 58%, transparent);
+    background: color-mix(in srgb, var(--success) 9%, var(--matcha-panel));
+  }
+
+  :global(html[data-theme='light']) .g1-row-wrong {
+    border-color: color-mix(in srgb, var(--accent-2) 76%, var(--danger));
+    background: color-mix(in srgb, var(--accent-2) 10%, var(--matcha-panel));
+  }
+
+  :global(html[data-theme='light']) .g1-row-clustered .g1-row-marker {
+    border-color: currentColor;
+    border-radius: 50%;
+    color: color-mix(in srgb, var(--group-color) 60%, var(--matcha-ink));
+    background: color-mix(in srgb, var(--group-color) 8%, var(--matcha-panel));
+  }
+
+  :global(html[data-theme='light']) .g1-row-correct .g1-row-marker {
+    border-color: var(--success);
+    color: var(--success);
+    background: color-mix(in srgb, var(--success) 8%, var(--matcha-panel));
+  }
+
+  :global(html[data-theme='light']) .g1-row-wrong .g1-row-marker {
+    border-color: var(--danger);
+    color: var(--danger);
+    background: color-mix(in srgb, var(--accent-2) 10%, var(--matcha-panel));
+  }
+
+  :global(html[data-theme='light']) .g1-conj-input {
+    border-color: color-mix(in srgb, var(--accent) 42%, transparent);
+    border-radius: 14px;
+    color: var(--text);
+    background: var(--matcha-panel);
+  }
+
+  :global(html[data-theme='light']) .g1-conj-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-2) 28%, transparent);
+  }
+
+  :global(html[data-theme='light']) .g1-row-clustered .g1-conj-input:focus {
+    border-color: color-mix(in srgb, var(--group-color) 58%, var(--matcha-ink));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-2) 28%, transparent);
+  }
+
+  :global(html[data-theme='light']) .g1-quick-shot-note,
+  :global(html[data-theme='light']) .g1-linked-form,
+  :global(html[data-theme='light']) .g1-locked-guide,
+  :global(html[data-theme='light']) .g1-inline-feedback,
+  :global(html[data-theme='light']) .g1-missing-form {
+    border-radius: 14px;
+  }
+
+  :global(html[data-theme='light']) .g1-quick-shot-note {
+    border-color: color-mix(in srgb, var(--accent) 42%, transparent);
+    background: var(--matcha-panel);
+    box-shadow: 0 10px 24px -18px rgba(19, 40, 30, 0.48);
+  }
+
+  :global(html[data-theme='light']) .g1-quick-shot-note > span,
+  :global(html[data-theme='light']) .g1-linked-form,
+  :global(html[data-theme='light']) .g1-linked-form small {
+    color: var(--accent);
+  }
+
+  :global(html[data-theme='light']) .g1-linked-form {
+    border-color: color-mix(in srgb, var(--accent) 34%, transparent);
+    background: color-mix(in srgb, var(--accent) 6%, var(--matcha-panel));
+  }
+
+  :global(html[data-theme='light']) .g1-row-clustered .g1-linked-form:not(.g1-linked-guide):not(.g1-linked-correct):not(.g1-linked-wrong) {
+    border-color: color-mix(in srgb, var(--group-color) 48%, var(--accent));
+    color: color-mix(in srgb, var(--group-color) 58%, var(--matcha-ink));
+    background: color-mix(in srgb, var(--group-color) 6%, var(--matcha-panel));
+  }
+
+  :global(html[data-theme='light']) .g1-row-clustered .g1-linked-form:not(.g1-linked-guide):not(.g1-linked-correct):not(.g1-linked-wrong) small {
+    color: color-mix(in srgb, var(--group-color) 58%, var(--matcha-ink));
+  }
+
+  :global(html[data-theme='light']) .g1-linked-guide,
+  :global(html[data-theme='light']) .g1-locked-guide {
+    border-color: color-mix(in srgb, var(--accent) 38%, transparent);
+    background: color-mix(in srgb, var(--accent) 7%, var(--matcha-panel));
+  }
+
+  :global(html[data-theme='light']) .g1-feedback-correct {
+    color: var(--success);
+    background: color-mix(in srgb, var(--success) 9%, var(--matcha-panel));
+  }
+
+  :global(html[data-theme='light']) .g1-feedback-wrong {
+    color: var(--danger);
+    background: color-mix(in srgb, var(--accent-2) 11%, var(--matcha-panel));
+  }
+
+  :global(html[data-theme='light']) .g1-feedback-wrong del {
+    text-decoration-color: var(--accent-2);
+  }
+
+  :global(html[data-theme='light']) .g1-feedback-wrong strong::before {
+    color: var(--danger);
+  }
+
+  :global(html[data-theme='light']) .g1-missing-form {
+    background: color-mix(in srgb, var(--matcha-field) 45%, transparent);
+  }
+
+  :global(html[data-theme='light']) .g1-shortcut-action.finish-warn {
+    border-color: var(--accent-2);
+    color: var(--danger);
+    background: color-mix(in srgb, var(--accent-2) 9%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-2) 8%, transparent);
+  }
+
+  :global(html[data-theme='light']) .g1-shortcut-action .kbd-chip-armed {
+    border-color: var(--accent-2);
+    color: var(--danger);
+  }
+
   :global(html[data-theme='arcade']) .step-number,
   :global(html[data-theme='arcade']) .language-code,
   :global(html[data-theme='arcade']) .launch-summary > span,
@@ -2822,6 +3215,11 @@
       border-radius: 18px;
     }
 
+    /* Fullscreen is a desktop affordance — no place for it on a phone. */
+    .table-fs-toggle {
+      display: none;
+    }
+
     .u1-form-notice {
       grid-template-columns: auto minmax(0, 1fr);
     }
@@ -2841,6 +3239,118 @@
 
     .g1-column-row label strong {
       font-size: 1.08rem;
+    }
+
+    /* Compact table (per the M1-9 mobile concept): while answering, collapse the
+       column to the single active pronoun so the verb hero stays on screen.
+       The full grid returns automatically for the tense-review feedback. */
+    .g1-hero-count,
+    .g1-hero-tense {
+      display: block;
+    }
+
+    /* Badges (1/N tense · N/6) now carry the context, so drop the "Current verb"
+       caption that otherwise collides with the top-left tense badge. */
+    .g1-hero > span:not(.g1-hero-count):not(.g1-hero-tense) {
+      display: none;
+    }
+
+    .g1-hero {
+      padding-top: 1.5rem;
+    }
+
+    /* Declutter the answering header: one big pixelated tense name; the tense
+       and cell positions live as badges on the verb hero. Drop the redundant
+       "Tense N/N" count, the segment strip, and the ACTIVE TENSE block. */
+    .g1-strip-count,
+    .g1-name-strip {
+      display: none;
+    }
+
+    .g1-strip-head {
+      justify-content: center;
+    }
+
+    .g1-strip-name {
+      font-size: 1.9rem;
+      text-align: center;
+    }
+
+    .g1-active-column:not(.g1-column-review) .g1-column-head {
+      display: none;
+    }
+
+    .g1-active-column:not(.g1-column-review) .g1-column-row:not(.g1-row-active) {
+      display: none;
+    }
+
+    .g1-active-column:not(.g1-column-review) .g1-column-rail {
+      display: none;
+    }
+
+    .g1-active-column:not(.g1-column-review) .g1-column-rows {
+      padding-left: 0.65rem;
+    }
+
+    .g1-active-column:not(.g1-column-review) .g1-row-active {
+      transform: none;
+    }
+
+    /* Compact tense-review feedback so it fits the half-screen above the
+       keyboard: correct/given answers shrink to small check chips that wrap
+       inline; only mistakes take a full-width row (crossed answer + correction). */
+    .g1-column-review .g1-column-rows {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;   /* chips size to content, no vertical stretch */
+      gap: 0.35rem;
+      padding: 0.5rem;
+    }
+
+    .g1-column-review .g1-column-rail {
+      display: none;
+    }
+
+    .g1-column-review .g1-column-row {
+      flex: 0 0 auto;
+      width: auto;
+      min-height: 0;
+      align-items: center;
+      grid-template-columns: auto auto;
+      gap: 0.4rem;
+      padding: 0.3rem 0.55rem;
+    }
+
+    .g1-column-review .g1-column-row label {
+      flex-direction: row;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    /* keep each pronoun on one line so chips never grow to 2–3 lines */
+    .g1-column-review .g1-column-row label small {
+      display: none;
+    }
+
+    .g1-column-review .g1-column-row label strong {
+      white-space: nowrap;
+    }
+
+    .g1-column-review .g1-inline-feedback,
+    .g1-column-review .g1-locked-guide,
+    .g1-column-review .g1-linked-form,
+    .g1-column-review .g1-missing-form {
+      display: none;
+    }
+
+    .g1-column-review .g1-row-wrong {
+      flex: 1 1 100%;
+      grid-template-columns: auto 1fr;
+    }
+
+    .g1-column-review .g1-row-wrong .g1-inline-feedback {
+      display: grid;
+      grid-column: 2;
     }
 
     .g1-input-shell,

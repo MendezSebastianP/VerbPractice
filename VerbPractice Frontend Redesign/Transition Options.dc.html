@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;family=VT323&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+html{background:#080114}
+body{margin:0;background:#080114;font-family:'Space Grotesk',system-ui,sans-serif}
+@keyframes fout11a{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(5px)}}
+@keyframes fout11b{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(5px)}}
+@keyframes fin11a{0%{opacity:0;transform:translateY(-5px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes fin11b{0%{opacity:0;transform:translateY(-5px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes wipe11a{0%{clip-path:inset(0 0 100% 0)}100%{clip-path:inset(0 0 0 0)}}
+@keyframes wipe11b{0%{clip-path:inset(0 0 100% 0)}100%{clip-path:inset(0 0 0 0)}}
+@keyframes wbar11a{0%{top:-2px;opacity:.5}85%{opacity:.5}100%{top:100%;opacity:0}}
+@keyframes wbar11b{0%{top:-2px;opacity:.5}85%{opacity:.5}100%{top:100%;opacity:0}}
+@keyframes glow11a{0%{opacity:.55;filter:brightness(1.7) saturate(1.4) blur(1.3px)}100%{opacity:1;filter:brightness(1) saturate(1) blur(0)}}
+@keyframes glow11b{0%{opacity:.55;filter:brightness(1.7) saturate(1.4) blur(1.3px)}100%{opacity:1;filter:brightness(1) saturate(1) blur(0)}}
+@keyframes xf12a{0%{opacity:0}100%{opacity:1}}
+@keyframes xf12b{0%{opacity:0}100%{opacity:1}}
+@keyframes dip12a{0%{opacity:1}45%{opacity:.72}100%{opacity:1}}
+@keyframes dip12b{0%{opacity:1}45%{opacity:.72}100%{opacity:1}}
+</style>
+</helmet>
+
+<section id="t12" style="padding:34px 38px 46px">
+  <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:22px">
+    <a href="#t12" style="font-family:'Press Start 2P';font-size:11px;color:#0a0118;background:#a78bfa;border-radius:7px;padding:7px 10px;text-decoration:none">12</a>
+    <span style="font-family:'VT323',monospace;font-size:22px;color:#cdbcff;letter-spacing:1px">Zero-fatigue transitions — no flash, no glow, nothing to get tired of. Click DASH / WORDS.</span>
+  </div>
+  <div style="display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start">
+
+    <!-- 12a PURE CROSSFADE -->
+    <div id="12a" style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;gap:9px;max-width:370px">
+        <a href="#12a" style="font-family:'Press Start 2P';font-size:8px;color:#0a0118;background:#a78bfa;border-radius:5px;padding:5px 7px;text-decoration:none">12a</a>
+        <span style="font-family:'VT323',monospace;font-size:17px;color:#9d8ec7;line-height:1.2">PURE CROSSFADE — 140ms opacity-only blend. No motion, no brightness. The invisible standard.</span>
+      </div>
+      <div style="width:370px;border:1px solid rgba(167,139,250,.35);border-radius:14px;overflow:hidden" data-screen-label="12a Pure crossfade">
+        <div style="background:linear-gradient(160deg,#241245,#120826 55%,#0a0118);padding:20px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <span style="font-family:'Press Start 2P';font-size:8px;color:#a78bfa">12A · CROSSFADE</span>
+            <div style="display:flex;gap:6px">
+              <button onClick="{{ a12GoH }}" style="cursor:pointer;font-family:'Press Start 2P';font-size:7px;padding:7px 10px;border-radius:6px;border:1px solid rgba(167,139,250,.5);background:{{ a12HBg }};color:{{ a12HFg }}">DASH</button>
+              <button onClick="{{ a12GoW }}" style="cursor:pointer;font-family:'Press Start 2P';font-size:7px;padding:7px 10px;border-radius:6px;border:1px solid rgba(167,139,250,.5);background:{{ a12WBg }};color:{{ a12WFg }}">WORDS</button>
+            </div>
+          </div>
+          <div style="position:relative;height:150px;border:1px solid rgba(167,139,250,.25);border-radius:10px;background:#0d0520;overflow:hidden">
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,#160b30,#0d0520)">
+              <sc-if value="{{ a12BaseHome }}" hint-placeholder-val="{{ true }}">
+                <div style="padding:14px">
+                  <div style="font-family:'Press Start 2P';font-size:8px;color:#a78bfa;margin-bottom:10px">DASHBOARD</div>
+                  <div style="display:flex;gap:8px">
+                    <div style="flex:1;height:42px;border:1px solid rgba(167,139,250,.4);border-radius:8px;background:rgba(124,58,237,.18)"></div>
+                    <div style="flex:1;height:42px;border:1px solid rgba(255,209,102,.4);border-radius:8px;background:rgba(255,209,102,.08)"></div>
+                  </div>
+                  <div style="margin-top:8px;height:26px;border:1px solid rgba(167,139,250,.2);border-radius:7px;background:rgba(13,5,32,.6)"></div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ a12BaseWords }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:14px;text-align:center">
+                  <div style="font-family:'Press Start 2P';font-size:8px;color:#ffd166;margin-bottom:12px">WORD TRAINING</div>
+                  <div style="font-size:26px;font-weight:700;color:#fff">verdad</div>
+                  <div style="width:130px;border-bottom:2px solid rgba(167,139,250,.5);margin:9px auto 0;font-family:'VT323',monospace;font-size:14px;color:#584a85;padding-bottom:4px">▊</div>
+                </div>
+              </sc-if>
+            </div>
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,#160b30,#0d0520);animation:{{ a12Anim }}">
+              <sc-if value="{{ a12Home }}" hint-placeholder-val="{{ true }}">
+                <div style="padding:14px">
+                  <div style="font-family:'Press Start 2P';font-size:8px;color:#a78bfa;margin-bottom:10px">DASHBOARD</div>
+                  <div style="display:flex;gap:8px">
+                    <div style="flex:1;height:42px;border:1px solid rgba(167,139,250,.4);border-radius:8px;background:rgba(124,58,237,.18)"></div>
+                    <div style="flex:1;height:42px;border:1px solid rgba(255,209,102,.4);border-radius:8px;background:rgba(255,209,102,.08)"></div>
+                  </div>
+                  <div style="margin-top:8px;height:26px;border:1px solid rgba(167,139,250,.2);border-radius:7px;background:rgba(13,5,32,.6)"></div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ a12Words }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:14px;text-align:center">
+                  <div style="font-family:'Press Start 2P';font-size:8px;color:#ffd166;margin-bottom:12px">WORD TRAINING</div>
+                  <div style="font-size:26px;font-weight:700;color:#fff">verdad</div>
+                  <div style="width:130px;border-bottom:2px solid rgba(167,139,250,.5);margin:9px auto 0;font-family:'VT323',monospace;font-size:14px;color:#584a85;padding-bottom:4px">▊</div>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+          <div style="text-align:center;font-family:'VT323',monospace;font-size:14px;color:#584a85;margin-top:12px">YOU STOP NOTICING IT EXISTS</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 12b HUD HANDOFF -->
+    <div id="12b" style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;gap:9px;max-width:370px">
+        <a href="#12b" style="font-family:'Press Start 2P';font-size:8px;color:#0a0118;background:#a78bfa;border-radius:5px;padding:5px 7px;text-decoration:none">12b</a>
+        <span style="font-family:'VT323',monospace;font-size:17px;color:#9d8ec7;line-height:1.2">HUD HANDOFF — page cuts instantly; only the nav pill slides. Motion lives where you clicked.</span>
+      </div>
+      <div style="width:370px;border:1px solid rgba(167,139,250,.35);border-radius:14px;overflow:hidden" data-screen-label="12b HUD handoff">
+        <div style="background:linear-gradient(160deg,#241245,#120826 55%,#0a0118);padding:20px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <span style="font-family:'Press Start 2P';font-size:8px;color:#a78bfa">12B · HUD PILL</span>
+            <div style="position:relative;display:flex;gap:6px">
+              <div style="position:absolute;top:0;bottom:0;left:0;width:calc((100% - 6px)/2);border-radius:6px;background:#a78bfa;box-shadow:0 0 14px rgba(167,139,250,.6);transform:{{ b12PillT }};transition:transform .28s cubic-bezier(.4,1.4,.5,1);pointer-events:none"></div>
+              <button onClick="{{ b12GoH }}" style="cursor:pointer;position:relative;font-family:'Press Start 2P';font-size:7px;padding:7px 10px;border-radius:6px;border:1px solid rgba(167,139,250,.5);background:transparent;color:{{ b12HFg }};transition:color .28s">DASH</button>
+              <button onClick="{{ b12GoW }}" style="cursor:pointer;position:relative;font-family:'Press Start 2P';font-size:7px;padding:7px 10px;border-radius:6px;border:1px solid rgba(167,139,250,.5);background:transparent;color:{{ b12WFg }};transition:color .28s">WORDS</button>
+            </div>
+          </div>
+          <div style="position:relative;height:150px;border:1px solid rgba(167,139,250,.25);border-radius:10px;background:#0d0520;overflow:hidden">
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,#160b30,#0d0520)">
+              <sc-if value="{{ b12Home }}" hint-placeholder-val="{{ true }}">
+                <div style="padding:14px">
+                  <div style="font-family:'Press Start 2P';font-size:8px;color:#a78bfa;margin-bottom:10px">DASHBOARD</div>
+                  <div style="display:flex;gap:8px">
+                    <div style="flex:1;height:42px;border:1px solid rgba(167,139,250,.4);border-radius:8px;background:rgba(124,58,237,.18)"></div>
+                    <div style="flex:1;height:42px;border:1px solid rgba(255,209,102,.4);border-radius:8px;background:rgba(255,209,102,.08)"></div>
+                  </div>
+                  <div style="margin-top:8px;height:26px;border:1px solid rgba(167,139,250,.2);border-radius:7px;background:rgba(13,5,32,.6)"></div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ b12Words }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:14px;text-align:center">
+                  <div style="font-family:'Press Start 2P';font-size:8px;color:#ffd166;margin-bottom:12px">WORD TRAINING</div>
+                  <div style="font-size:26px;font-weight:700;color:#fff">verdad</div>
+                  <div style="width:130px;border-bottom:2px solid rgba(167,139,250,.5);margin:9px auto 0;font-family:'VT323',monospace;font-size:14px;color:#584a85;padding-bottom:4px">▊</div>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+          <div style="text-align:center;font-family:'VT323',monospace;font-size:14px;color:#584a85;margin-top:12px">CONTENT NEVER ANIMATES · EVER</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 12c MICRO-DIM -->
+    <div id="12c" style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;gap:9px;max-width:370px">
+        <a href="#12c" style="font-family:'Press Start 2P';font-size:8px;color:#0a0118;background:#a78bfa;border-radius:5px;padding:5px 7px;text-decoration:none">12c</a>
+        <span style="font-family:'VT323',monospace;font-size:17px;color:#9d8ec7;line-height:1.2">MICRO-DIM — hard cut with a 180ms blink to 72% opacity. Subliminal punctuation, no flash.</span>
+      </div>
+      <div style="width:370px;border:1px solid rgba(167,139,250,.35);border-radius:14px;overflow:hidden" data-screen-label="12c Micro-dim">
+        <div style="background:linear-gradient(160deg,#241245,#120826 55%,#0a0118);padding:20px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <span style="font-family:'Press Start 2P';font-size:8px;color:#a78bfa">12C · MICRO-DIM</span>
+            <div style="display:flex;gap:6px">
+              <button onClick="{{ c12GoH }}" style="cursor:pointer;font-family:'Press Start 2P';font-size:7px;padding:7px 10px;border-radius:6px;border:1px solid rgba(167,139,250,.5);background:{{ c12HBg }};color:{{ c12HFg }}">DASH</button>
+              <button onClick="{{ c12GoW }}" style="cursor:pointer;font-family:'Press Start 2P';font-size:7px;padding:7px 10px;border-radius:6px;border:1px solid rgba(167,139,250,.5);background:{{ c12WBg }};color:{{ c12WFg }}">WORDS</button>
+            </div>
+          </div>
+          <div style="position:relative;height:150px;border:1px solid rgba(167,139,250,.25);border-radius:10px;background:#0d0520;overflow:hidden">
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,#160b30,#0d0520);animation:{{ c12Anim }}">
+              <sc-if value="{{ c12Home }}" hint-placeholder-val="{{ true }}">
+                <div style="padding:14px">
+                  <div style="font-family:'Press Start 2P';font-size:8px;color:#a78bfa;margin-bottom:10px">DASHBOARD</div>
+                  <div style="display:flex;gap:8px">
+                    <div style="flex:1;height:42px;border:1px solid rgba(167,139,250,.4);border-radius:8px;background:rgba(124,58,237,.18)"></div>
+                    <div style="flex:1;height:42px;border:1px solid rgba(255,209,102,.4);border-radius:8px;background:rgba(255,209,102,.08)"></div>
+                  </div>
+                  <div style="margin-top:8px;height:26px;border:1px solid rgba(167,139,250,.2);border-radius:7px;background:rgba(13,5,32,.6)"></div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ c12Words }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:14px;text-align:center">
+                  <div style="font-family:'Press Start 2P';font-size:8px;color:#ffd166;margin-bottom:12px">WORD TRAINING</div>
+                  <div style="font-size:26px;font-weight:700;color:#fff">verdad</div>
+                  <div style="width:130px;border-bottom:2px solid rgba(167,139,250,.5);margin:9px auto 0;font-family:'VT323',monospace;font-size:14px;color:#584a85;padding-bottom:4px">▊</div>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+          <div style="text-align:center;font-family:'VT323',monospace;font-size:14px;color:#584a85;margin-top:12px">A BLINK, NOT AN EVENT</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <p style="font-family:'VT323',monospace;font-size:18px;color:#7c6bad;margin:26px 0 0">Pick one — <a href="#12a" style="color:#cdbcff">12a</a>, <a href="#12b" style="color:#cdbcff">12b</a> or <a href="#12c" style="color:#cdbcff">12c</a> — and I'll swap it into the app. They also combine well (e.g. 12b + 12a).</p>
+</section>
+
+<section id="t11" style="padding:34px 38px 46px">
+  <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:22px">
+    <a href="#t11" style="font-family:'Press Start 2P';font-size:11px;color:#0a0118;background:#a78bfa;border-radius:7px;padding:7px 10px;text-decoration:none">11</a>
+    <span style="font-family:'VT323',monospace;font-size:22px;color:#cdbcff;letter-spacing:1px">Calmer page transitions — quick, low-motion, won't get old. Click DASH / WORDS on each.</span>
+  </div>
+  <div style="display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start">
+
+    <!-- 11a FADE-THROUGH -->
+    <div id="11a" style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;gap:9px;max-width:370px">
+        <a href="#11a" style="font-family:'Press Start 2P';font-size:8px;color:#0a0118;background:#a78bfa;border-radius:5px;padding:5px 7px;text-decoration:none">11a</a>
+        <span style="font-family:'VT323',monospace;font-size:17px;color:#9d8ec7;line-height:1.2">FADE-THROUGH — 300ms dip to dark, tiny vertical drift. Nearly invisible.</span>
+      </div>
+      <div style="width:370px;border:1px solid rgba(167,139,250,.35);border-radius:14px;overflow:hidden" data-screen-label="11a Fade-through">
+        <div style="background:linear-gradient(160deg,#241245,#120826 55%,#0a0118);padding:20px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <span style="font-family:'Press Start 2P';font-size:8px;color:#a78bfa">11A · FADE</span>
+            <div style="display:flex;gap:6px">
+              <button onClick="{{ a11GoH }}" style="cursor:pointer;font-family:'Press Start 2P';font-size:7px;padding:7px 10px;border-radius:6px;border:1px solid rgba(167,139,250,.5);background:{{ a11HBg }};color:{{ a11HFg }}">DASH</button>
+              <button onClick="{{ a11GoW }}" style="cursor:pointer;font-family:'Press Start 2P';font-size:7px;padding:7px 10px;border-radius:6px;border:1px solid rgba(167,139,250,.5);background:{{ a11WBg }};color:{{ a11WFg }}">WORDS</button>
+            </div>
+          </div>
+          <div style="position:relative;height:150px;border:1px solid rgba(167,139,250,.25);border-radius:10px;background:#0d0520;overflow:hidden">
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,#160b30,#0d0520);animation:{{ a11Anim }}">
+              <sc-if value="{{ a11Home }}" hint-placeholder-val="{{ true }}">
+                <div style="padding:14px">
+                  <div style="font-family:'Press Start 2P';font-size:8px;color:#a78bfa;margin-bottom:10px">DASHBOARD</div>
+                  <div style="display:flex;gap:8px">
+                    <div style="flex:1;height:42px;border:1px solid rgba(167,139,250,.4);border-radius:8px;background:rgba(124,58,237,.18)"></div>
+                    <div style="flex:1;height:42px;border:1px solid rgba(255,209,102,.4);border-radius:8px;background:rgba(255,209,102,.08)"></div>
+                  </div>
+                  <div style="margin-top:8px;height:26px;border:1px solid rgba(167,139,250,.2);border-radius:7px;background:rgba(13,5,32,.6)"></div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ a11Words }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:14px;text-align:center">
+                  <div style="font-family:'Press Start 2P';font-size:8px;color:#ffd166;margin-bottom:12px">WORD TRAINING</div>
+                  <div style="font-size:26px;font-weight:700;color:#fff">verdad</div>
+                  <div style="width:130px;border-bottom:2px solid rgba(167,139,250,.5);margin:9px auto 0;font-family:'VT323',monospace;font-size:14px;color:#584a85;padding-bottom:4px">▊</div>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+          <div style="text-align:center;font-family:'VT323',monospace;font-size:14px;color:#584a85;margin-top:12px">CALM DEFAULT · ZERO SPECTACLE</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 11b SOFT SCAN WIPE -->
+    <div id="11b" style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;gap:9px;max-width:370px">
+        <a href="#11b" style="font-family:'Press Start 2P';font-size:8px;color:#0a0118;background:#a78bfa;border-radius:5px;padding:5px 7px;text-decoration:none">11b</a>
+        <span style="font-family:'VT323',monospace;font-size:17px;color:#9d8ec7;line-height:1.2">SOFT SCAN WIPE — new page reveals top-to-bottom behind a faint line. Content never moves.</span>
+      </div>
+      <div style="width:370px;border:1px solid rgba(167,139,250,.35);border-radius:14px;overflow:hidden" data-screen-label="11b Soft scan wipe">
+        <div style="background:linear-gradient(160deg,#241245,#120826 55%,#0a0118);padding:20px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <span style="font-family:'Press Start 2P';font-size:8px;color:#a78bfa">11B · SCAN WIPE</span>
+            <div style="display:flex;gap:6px">
+              <button onClick="{{ b11GoH }}" style="cursor:pointer;font-family:'Press Start 2P';font-size:7px;padding:7px 10px;border-radius:6px;border:1px solid rgba(167,139,250,.5);background:{{ b11HBg }};color:{{ b11HFg }}">DASH</button>
+              <button onClick="{{ b11GoW }}" style="cursor:pointer;font-family:'Press Start 2P';font-size:7px;padding:7px 10px;border-radius:6px;border:1px solid rgba(167,139,250,.5);background:{{ b11WBg }};color:{{ b11WFg }}">WORDS</button>
+            </div>
+          </div>
+          <div style="position:relative;height:150px;border:1px solid rgba(167,139,250,.25);border-radius:10px;background:#0d0520;overflow:hidden">
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,#160b30,#0d0520)">
+              <sc-if value="{{ b11BaseHome }}" hint-placeholder-val="{{ true }}">
+                <div style="padding:14px">
+                  <div style="font-family:'Press Start 2P';font-size:8px;color:#a78bfa;margin-bottom:10px">DASHBOARD</div>
+                  <div style="display:flex;gap:8px">
+                    <div style="flex:1;height:42px;border:1px solid rgba(167,139,250,.4);border-radius:8px;background:rgba(124,58,237,.18)"></div>
+                    <div style="flex:1;height:42px;border:1px solid rgba(255,209,102,.4);border-radius:8px;background:rgba(255,209,102,.08)"></div>
+                  </div>
+                  <div style="margin-top:8px;height:26px;border:1px solid rgba(167,139,250,.2);border-radius:7px;background:rgba(13,5,32,.6)"></div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ b11BaseWords }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:14px;text-align:center">
+                  <div style="font-family:'Press Start 2P';font-size:8px;color:#ffd166;margin-bottom:12px">WORD TRAINING</div>
+                  <div style="font-size:26px;font-weight:700;color:#fff">verdad</div>
+                  <div style="width:130px;border-bottom:2px solid rgba(167,139,250,.5);margin:9px auto 0;font-family:'VT323',monospace;font-size:14px;color:#584a85;padding-bottom:4px">▊</div>
+                </div>
+              </sc-if>
+            </div>
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,#160b30,#0d0520);animation:{{ b11Anim }}">
+              <sc-if value="{{ b11Home }}" hint-placeholder-val="{{ true }}">
+                <div style="padding:14px">
+                  <div style="font-family:'Press Start 2P';font-size:8px;color:#a78bfa;margin-bottom:10px">DASHBOARD</div>
+                  <div style="display:flex;gap:8px">
+                    <div style="flex:1;height:42px;border:1px solid rgba(167,139,250,.4);border-radius:8px;background:rgba(124,58,237,.18)"></div>
+                    <div style="flex:1;height:42px;border:1px solid rgba(255,209,102,.4);border-radius:8px;background:rgba(255,209,102,.08)"></div>
+                  </div>
+                  <div style="margin-top:8px;height:26px;border:1px solid rgba(167,139,250,.2);border-radius:7px;background:rgba(13,5,32,.6)"></div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ b11Words }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:14px;text-align:center">
+                  <div style="font-family:'Press Start 2P';font-size:8px;color:#ffd166;margin-bottom:12px">WORD TRAINING</div>
+                  <div style="font-size:26px;font-weight:700;color:#fff">verdad</div>
+                  <div style="width:130px;border-bottom:2px solid rgba(167,139,250,.5);margin:9px auto 0;font-family:'VT323',monospace;font-size:14px;color:#584a85;padding-bottom:4px">▊</div>
+                </div>
+              </sc-if>
+            </div>
+            <sc-if value="{{ b11Bar }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;left:4px;right:4px;height:1px;background:#cdbcff;box-shadow:0 0 8px rgba(205,188,255,.6);animation:{{ b11BarAnim }}"></div>
+            </sc-if>
+          </div>
+          <div style="text-align:center;font-family:'VT323',monospace;font-size:14px;color:#584a85;margin-top:12px">STILL CRT · 1/4 THE DRAMA</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 11c PHOSPHOR SETTLE -->
+    <div id="11c" style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;gap:9px;max-width:370px">
+        <a href="#11c" style="font-family:'Press Start 2P';font-size:8px;color:#0a0118;background:#a78bfa;border-radius:5px;padding:5px 7px;text-decoration:none">11c</a>
+        <span style="font-family:'VT323',monospace;font-size:17px;color:#9d8ec7;line-height:1.2">PHOSPHOR SETTLE — instant cut; new page lands slightly hot &amp; settles. Fastest of all.</span>
+      </div>
+      <div style="width:370px;border:1px solid rgba(167,139,250,.35);border-radius:14px;overflow:hidden" data-screen-label="11c Phosphor settle">
+        <div style="background:linear-gradient(160deg,#241245,#120826 55%,#0a0118);padding:20px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <span style="font-family:'Press Start 2P';font-size:8px;color:#a78bfa">11C · PHOSPHOR</span>
+            <div style="display:flex;gap:6px">
+              <button onClick="{{ c11GoH }}" style="cursor:pointer;font-family:'Press Start 2P';font-size:7px;padding:7px 10px;border-radius:6px;border:1px solid rgba(167,139,250,.5);background:{{ c11HBg }};color:{{ c11HFg }}">DASH</button>
+              <button onClick="{{ c11GoW }}" style="cursor:pointer;font-family:'Press Start 2P';font-size:7px;padding:7px 10px;border-radius:6px;border:1px solid rgba(167,139,250,.5);background:{{ c11WBg }};color:{{ c11WFg }}">WORDS</button>
+            </div>
+          </div>
+          <div style="position:relative;height:150px;border:1px solid rgba(167,139,250,.25);border-radius:10px;background:#0d0520;overflow:hidden">
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,#160b30,#0d0520);animation:{{ c11Anim }}">
+              <sc-if value="{{ c11Home }}" hint-placeholder-val="{{ true }}">
+                <div style="padding:14px">
+                  <div style="font-family:'Press Start 2P';font-size:8px;color:#a78bfa;margin-bottom:10px">DASHBOARD</div>
+                  <div style="display:flex;gap:8px">
+                    <div style="flex:1;height:42px;border:1px solid rgba(167,139,250,.4);border-radius:8px;background:rgba(124,58,237,.18)"></div>
+                    <div style="flex:1;height:42px;border:1px solid rgba(255,209,102,.4);border-radius:8px;background:rgba(255,209,102,.08)"></div>
+                  </div>
+                  <div style="margin-top:8px;height:26px;border:1px solid rgba(167,139,250,.2);border-radius:7px;background:rgba(13,5,32,.6)"></div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ c11Words }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:14px;text-align:center">
+                  <div style="font-family:'Press Start 2P';font-size:8px;color:#ffd166;margin-bottom:12px">WORD TRAINING</div>
+                  <div style="font-size:26px;font-weight:700;color:#fff">verdad</div>
+                  <div style="width:130px;border-bottom:2px solid rgba(167,139,250,.5);margin:9px auto 0;font-family:'VT323',monospace;font-size:14px;color:#584a85;padding-bottom:4px">▊</div>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+          <div style="text-align:center;font-family:'VT323',monospace;font-size:14px;color:#584a85;margin-top:12px">SNAPPY · FEELS LIKE A HARD CUT</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <p style="font-family:'VT323',monospace;font-size:18px;color:#7c6bad;margin:26px 0 0">Pick one — <a href="#11a" style="color:#cdbcff">11a</a>, <a href="#11b" style="color:#cdbcff">11b</a> or <a href="#11c" style="color:#cdbcff">11c</a> — and I'll swap it into the app (replacing the CRT collapse).</p>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    a11: { page: 'h', phase: 'idle', n: 0 },
+    b11: { page: 'h', prev: 'h', on: false, n: 0 },
+    c11: { page: 'h', on: false, n: 0 },
+    a12: { page: 'h', prev: 'h', on: false, n: 0 },
+    b12: { page: 'h' },
+    c12: { page: 'h', on: false, n: 0 }
+  };
+
+  go12a = (p) => {
+    const st = this.state.a12;
+    if (st.page === p) return;
+    const n = st.n + 1;
+    this.setState({ a12: { page: p, prev: st.page, on: true, n } });
+    clearTimeout(this.a12T);
+    this.a12T = setTimeout(() => {
+      const cur = this.state.a12;
+      this.setState({ a12: { page: cur.page, prev: cur.page, on: false, n: cur.n } });
+    }, 160);
+  };
+
+  go12c = (p) => {
+    const st = this.state.c12;
+    if (st.page === p) return;
+    const n = st.n + 1;
+    this.setState({ c12: { page: p, on: true, n } });
+    clearTimeout(this.c12T);
+    this.c12T = setTimeout(() => {
+      const cur = this.state.c12;
+      this.setState({ c12: { page: cur.page, on: false, n: cur.n } });
+    }, 200);
+  };
+
+  go11a = (p) => {
+    const st = this.state.a11;
+    if (st.phase !== 'idle' || st.page === p) return;
+    const n = st.n + 1;
+    this.setState({ a11: { page: st.page, phase: 'out', n } });
+    clearTimeout(this.aT1); clearTimeout(this.aT2);
+    this.aT1 = setTimeout(() => this.setState({ a11: { page: p, phase: 'in', n } }), 130);
+    this.aT2 = setTimeout(() => this.setState({ a11: { page: p, phase: 'idle', n } }), 330);
+  };
+
+  go11b = (p) => {
+    const st = this.state.b11;
+    if (st.page === p) return;
+    const n = st.n + 1;
+    this.setState({ b11: { page: p, prev: st.page, on: true, n } });
+    clearTimeout(this.bT);
+    this.bT = setTimeout(() => {
+      const cur = this.state.b11;
+      this.setState({ b11: { page: cur.page, prev: cur.page, on: false, n: cur.n } });
+    }, 340);
+  };
+
+  go11c = (p) => {
+    const st = this.state.c11;
+    if (st.page === p) return;
+    const n = st.n + 1;
+    this.setState({ c11: { page: p, on: true, n } });
+    clearTimeout(this.cT);
+    this.cT = setTimeout(() => {
+      const cur = this.state.c11;
+      this.setState({ c11: { page: cur.page, on: false, n: cur.n } });
+    }, 300);
+  };
+
+  componentWillUnmount() {
+    clearTimeout(this.aT1); clearTimeout(this.aT2);
+    clearTimeout(this.bT); clearTimeout(this.cT);
+    clearTimeout(this.a12T); clearTimeout(this.c12T);
+  }
+
+  renderVals() {
+    const a = this.state.a11, b = this.state.b11, c = this.state.c11;
+    const v = (n) => n % 2 ? 'a' : 'b';
+    const btn = (active) => active
+      ? { bg: '#a78bfa', fg: '#0a0118' }
+      : { bg: 'transparent', fg: '#cdbcff' };
+    const aH = btn(a.page === 'h'), aW = btn(a.page === 'w');
+    const bH = btn(b.page === 'h'), bW = btn(b.page === 'w');
+    const cH = btn(c.page === 'h'), cW = btn(c.page === 'w');
+    const a2 = this.state.a12, b2 = this.state.b12, c2 = this.state.c12;
+    const a2H = btn(a2.page === 'h'), a2W = btn(a2.page === 'w');
+    const c2H = btn(c2.page === 'h'), c2W = btn(c2.page === 'w');
+    return {
+      a12Anim: a2.on ? ('xf12' + v(a2.n) + ' .14s ease-out both') : 'none',
+      a12Home: a2.page === 'h', a12Words: a2.page === 'w',
+      a12BaseHome: (a2.on ? a2.prev : a2.page) === 'h', a12BaseWords: (a2.on ? a2.prev : a2.page) === 'w',
+      a12GoH: () => this.go12a('h'), a12GoW: () => this.go12a('w'),
+      a12HBg: a2H.bg, a12HFg: a2H.fg, a12WBg: a2W.bg, a12WFg: a2W.fg,
+
+      b12Home: b2.page === 'h', b12Words: b2.page === 'w',
+      b12PillT: b2.page === 'h' ? 'translateX(0)' : 'translateX(calc(100% + 6px))',
+      b12HFg: b2.page === 'h' ? '#0a0118' : '#cdbcff',
+      b12WFg: b2.page === 'w' ? '#0a0118' : '#cdbcff',
+      b12GoH: () => this.setState({ b12: { page: 'h' } }),
+      b12GoW: () => this.setState({ b12: { page: 'w' } }),
+
+      c12Anim: c2.on ? ('dip12' + v(c2.n) + ' .18s ease-in-out both') : 'none',
+      c12Home: c2.page === 'h', c12Words: c2.page === 'w',
+      c12GoH: () => this.go12c('h'), c12GoW: () => this.go12c('w'),
+      c12HBg: c2H.bg, c12HFg: c2H.fg, c12WBg: c2W.bg, c12WFg: c2W.fg,
+
+      a11Anim: a.phase === 'out' ? ('fout11' + v(a.n) + ' .13s ease-in forwards') : a.phase === 'in' ? ('fin11' + v(a.n) + ' .2s ease-out') : 'none',
+      a11Home: a.page === 'h', a11Words: a.page === 'w',
+      a11GoH: () => this.go11a('h'), a11GoW: () => this.go11a('w'),
+      a11HBg: aH.bg, a11HFg: aH.fg, a11WBg: aW.bg, a11WFg: aW.fg,
+
+      b11Anim: b.on ? ('wipe11' + v(b.n) + ' .34s ease-in-out both') : 'none',
+      b11Home: b.page === 'h', b11Words: b.page === 'w',
+      b11BaseHome: (b.on ? b.prev : b.page) === 'h', b11BaseWords: (b.on ? b.prev : b.page) === 'w',
+      b11Bar: b.on, b11BarAnim: 'wbar11' + v(b.n) + ' .34s ease-in-out forwards',
+      b11GoH: () => this.go11b('h'), b11GoW: () => this.go11b('w'),
+      b11HBg: bH.bg, b11HFg: bH.fg, b11WBg: bW.bg, b11WFg: bW.fg,
+
+      c11Anim: c.on ? ('glow11' + v(c.n) + ' .28s ease-out both') : 'none',
+      c11Home: c.page === 'h', c11Words: c.page === 'w',
+      c11GoH: () => this.go11c('h'), c11GoW: () => this.go11c('w'),
+      c11HBg: cH.bg, c11HFg: cH.fg, c11WBg: cW.bg, c11WFg: cW.fg
+    };
+  }
+}
+</script>
+</body>
+</html>

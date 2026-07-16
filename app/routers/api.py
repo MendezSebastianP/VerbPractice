@@ -351,6 +351,11 @@ async def _translation_state(
         "question": {
             "item_id": question.item_id,
             "prompt": question.prompt,
+            # Sent so the client can run the quick-shot (auto-advance on a perfect
+            # first attempt) locally — mirrors how conjugation cells expose their
+            # accepted forms. Server-side grading remains authoritative.
+            "accepted_answers": list(question.accepted_answers),
+            "synonym_answers": list(question.synonym_answers),
         },
         "hint": await translation_hint_for_session(db, active),
     }

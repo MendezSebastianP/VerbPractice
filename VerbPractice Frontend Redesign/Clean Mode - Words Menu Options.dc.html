@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;family=VT323&amp;family=Space+Grotesk:wght@400;500;600;700&amp;family=Schibsted+Grotesk:wght@500;600;700;800&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+html{background:#e9edf2}
+body{margin:0;background:#e9edf2;font-family:'Figtree',system-ui,sans-serif}
+.arc-scroll::-webkit-scrollbar{width:8px}
+.arc-scroll::-webkit-scrollbar-thumb{background:#7c3aed;border-radius:4px}
+.arc-scroll::-webkit-scrollbar-track{background:#160b30;border-radius:4px}
+.cln-scroll::-webkit-scrollbar{width:8px}
+.cln-scroll::-webkit-scrollbar-thumb{background:#bcd8ec;border-radius:4px}
+.cln-scroll::-webkit-scrollbar-track{background:#f1f6fa;border-radius:4px}
+@keyframes ddopen{0%{opacity:0;transform:translateY(-8px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes cdopen{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes blinky{0%,49%{opacity:1}50%,100%{opacity:0}}
+@keyframes scanmove{0%{background-position:0 0}100%{background-position:0 6px}}
+@keyframes softpulse{0%,100%{opacity:.45}50%{opacity:1}}
+@keyframes waveSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes cpulse{0%,100%{transform:scale(.85);opacity:.3}50%{transform:scale(1.15);opacity:.85}}
+@keyframes blobA{0%{transform:translate(0,0) scale(1)}100%{transform:translate(90px,50px) scale(1.15)}}
+@keyframes blobB{0%{transform:translate(0,0) scale(1.1)}100%{transform:translate(-70px,-40px) scale(.95)}}
+@keyframes ringOut{0%{transform:scale(.98);opacity:.55}100%{transform:scale(1.45);opacity:0}}
+@keyframes streamDrift{0%{transform:translateX(-140%)}100%{transform:translateX(340%)}}
+@keyframes bubbleUp{0%{transform:translateY(0) translateX(0);opacity:0}12%{opacity:1}50%{transform:translateY(-34px) translateX(6px)}88%{opacity:.9}100%{transform:translateY(-70px) translateX(-4px);opacity:0}}
+@keyframes fillhead{0%,100%{opacity:.6}50%{opacity:1}}
+@keyframes sshake1{0%,100%{transform:translate(0,0)}20%{transform:translate(-4px,1px)}45%{transform:translate(4px,-1px)}70%{transform:translate(-2px,1px)}}
+@keyframes sshake2{0%,100%{transform:translate(0,0)}20%{transform:translate(-4px,1px)}45%{transform:translate(4px,-1px)}70%{transform:translate(-2px,1px)}}
+@keyframes ashake1{0%,100%{transform:translate(0,0)}15%{transform:translate(-9px,2px)}30%{transform:translate(8px,-3px)}45%{transform:translate(-6px,3px)}60%{transform:translate(5px,-2px)}80%{transform:translate(-3px,1px)}}
+@keyframes ashake2{0%,100%{transform:translate(0,0)}15%{transform:translate(-9px,2px)}30%{transform:translate(8px,-3px)}45%{transform:translate(-6px,3px)}60%{transform:translate(5px,-2px)}80%{transform:translate(-3px,1px)}}
+@keyframes cswell1{0%{transform:scale(1)}40%{transform:scale(1.18)}100%{transform:scale(1)}}
+@keyframes cswell2{0%{transform:scale(1)}40%{transform:scale(1.18)}100%{transform:scale(1)}}
+@keyframes arcPop1{0%{transform:scale(1)}40%{transform:scale(1.55)}100%{transform:scale(1)}}
+@keyframes arcPop2{0%{transform:scale(1)}40%{transform:scale(1.55)}100%{transform:scale(1)}}
+@keyframes promptBlur1{0%{opacity:0;filter:blur(10px)}100%{opacity:1;filter:blur(0)}}
+@keyframes promptBlur2{0%{opacity:0;filter:blur(10px)}100%{opacity:1;filter:blur(0)}}
+@keyframes promptRise1{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes promptRise2{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes arcDrop1{0%{transform:scale(1.6);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes arcDrop2{0%{transform:scale(1.6);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes dotWaveOk{0%{opacity:0;background:#bae6fd;transform:scale(.4)}45%{opacity:.95;background:#0ea5e9;transform:scale(1.5)}100%{opacity:0;background:#7dd3fc;transform:scale(.5)}}
+@keyframes cellWaveOk{0%{opacity:0;background:rgba(167,139,250,0)}35%{opacity:1;background:rgba(167,139,250,.5)}100%{opacity:0;background:rgba(167,139,250,0)}}
+@keyframes cellWaveBad{0%{opacity:0;background:rgba(255,46,99,0)}35%{opacity:1;background:rgba(255,46,99,.45)}100%{opacity:0;background:rgba(255,46,99,0)}}
+@keyframes washBad{0%{opacity:1}100%{opacity:0}}
+@keyframes arcFlashOk{0%{opacity:1}100%{opacity:0}}
+@keyframes arcFlashBad{0%{opacity:1}100%{opacity:0}}
+@keyframes clearIn{0%{opacity:0;transform:translateY(12px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes focusOut1{0%{opacity:1;filter:blur(0)}100%{opacity:0;filter:blur(14px)}}
+@keyframes focusOut2{0%{opacity:1;filter:blur(0)}100%{opacity:0;filter:blur(14px)}}
+@keyframes focusIn1{0%{opacity:0;filter:blur(14px)}100%{opacity:1;filter:blur(0)}}
+@keyframes focusIn2{0%{opacity:0;filter:blur(14px)}100%{opacity:1;filter:blur(0)}}
+@keyframes rippleIn1{0%{clip-path:circle(3.5% at 50% 66%)}100%{clip-path:circle(142% at 50% 66%)}}
+@keyframes rippleIn2{0%{clip-path:circle(3.5% at 50% 66%)}100%{clip-path:circle(142% at 50% 66%)}}
+@keyframes waveRing{0%{transform:translate(-50%,-50%) scale(.05);opacity:0}14%{opacity:1}100%{transform:translate(-50%,-50%) scale(1);opacity:0}}
+@keyframes liquidFade{0%{opacity:0}22%{opacity:1}100%{opacity:0}}
+@keyframes liquidSwellA{0%{opacity:0;transform:translate(-10%,22%) scale(.8)}28%{opacity:1}100%{opacity:0;transform:translate(8%,-10%) scale(1.18)}}
+@keyframes liquidSwellB{0%{opacity:0;transform:translate(10%,-22%) scale(.8)}28%{opacity:1}100%{opacity:0;transform:translate(-8%,10%) scale(1.18)}}
+</style>
+</helmet>
+
+<section style="padding:48px 48px 10px;display:flex;flex-direction:column;gap:26px;align-items:flex-start">
+
+  <div style="display:flex;flex-direction:column;gap:6px">
+    <div style="font-family:'Schibsted Grotesk',sans-serif;font-size:24px;font-weight:700;color:#142033">Mist, refined — darker PLAY + two click reveals</div>
+    <div style="font-size:15px;color:#61758a;max-width:760px">Both wipe like <a href="#4a" style="color:#0284c7">4a</a> and have the darker label. They differ in what the click does to the fog.</div>
+  </div>
+
+  <div style="display:flex;gap:32px;align-items:stretch;flex-wrap:wrap">
+
+    <!-- 5A · CLEARING WAVE -->
+    <div id="5a" style="width:480px;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <a href="#5a" style="font-family:'Schibsted Grotesk',sans-serif;font-size:13px;font-weight:800;color:#fff;background:#0ea5e9;border-radius:7px;padding:5px 11px;text-decoration:none">5a</a>
+        <span style="font-size:14px;font-weight:600;color:#3d4f63">Clearing wave — fog sweeps away from your click</span>
+      </div>
+      <div data-screen-label="Play button 5a Clearing wave" style="border-radius:20px;background:linear-gradient(155deg,#d8ecfa 0%,#f4fafe 48%,#e2f1fb 100%);border:1px solid #dceaf4;padding:56px 24px 40px;display:flex;flex-direction:column;align-items:center;gap:22px;flex:1">
+        <div onMouseMove="{{ m5aMove }}" style="position:relative;width:340px;height:84px">
+          <button onClick="{{ m5aFire }}" style="position:absolute;inset:0;cursor:pointer;border-radius:999px;background:rgba(255,255,255,.55);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.85);box-shadow:0 14px 30px -18px rgba(12,105,160,.45);display:grid;place-items:center" style-active="transform:scale(.98)">
+            <span style="font-family:'Schibsted Grotesk',sans-serif;font-size:18px;font-weight:800;letter-spacing:5px;color:#04202f">▶ PLAY</span>
+          </button>
+          <canvas ref="{{ m5aRef }}" style="position:absolute;inset:0;width:340px;height:84px;border-radius:999px;pointer-events:none"></canvas>
+        </div>
+        <div style="font-size:13px;font-weight:600;color:#7b8ca0">Click — one wavefront clears the glass from where you touched</div>
+      </div>
+      <div style="font-size:13px;color:#7b8ca0;line-height:1.5">A single expanding front wipes the condensation outward from the click point — same physics as the answer wave in the game — then the glass slowly mists back.</div>
+    </div>
+
+    <!-- 5B · DROPLETS -->
+    <div id="5b" style="width:480px;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <a href="#5b" style="font-family:'Schibsted Grotesk',sans-serif;font-size:13px;font-weight:800;color:#fff;background:#0ea5e9;border-radius:7px;padding:5px 11px;text-decoration:none">5b</a>
+        <span style="font-size:14px;font-weight:600;color:#3d4f63">Droplets — the condensation breaks and runs</span>
+      </div>
+      <div data-screen-label="Play button 5b Droplets" style="border-radius:20px;background:linear-gradient(155deg,#d8ecfa 0%,#f4fafe 48%,#e2f1fb 100%);border:1px solid #dceaf4;padding:56px 24px 40px;display:flex;flex-direction:column;align-items:center;gap:22px;flex:1">
+        <div onMouseMove="{{ m5bMove }}" style="position:relative;width:340px;height:84px">
+          <button onClick="{{ m5bFire }}" style="position:absolute;inset:0;cursor:pointer;border-radius:999px;background:rgba(255,255,255,.55);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.85);box-shadow:0 14px 30px -18px rgba(12,105,160,.45);display:grid;place-items:center" style-active="transform:scale(.98)">
+            <span style="font-family:'Schibsted Grotesk',sans-serif;font-size:18px;font-weight:800;letter-spacing:5px;color:#04202f">▶ PLAY</span>
+          </button>
+          <canvas ref="{{ m5bRef }}" style="position:absolute;inset:0;width:340px;height:84px;border-radius:999px;pointer-events:none"></canvas>
+        </div>
+        <div style="font-size:13px;font-weight:600;color:#7b8ca0">Click — the mist breaks into drops that streak down the glass</div>
+      </div>
+      <div style="font-size:13px;color:#7b8ca0;line-height:1.5">On click the condensation gives way: drops form and run down, carving clear trails like a cold window. Then the fog quietly re-forms.</div>
+    </div>
+
+  </div>
+</section>
+
+<section style="padding:46px 48px 10px;display:flex;flex-direction:column;gap:26px;align-items:flex-start">
+
+  <div style="display:flex;flex-direction:column;gap:6px">
+    <div style="font-family:'Schibsted Grotesk',sans-serif;font-size:24px;font-weight:700;color:#142033">Play button, take 3 — tactile, not generic · plus play → game transitions</div>
+    <div style="font-size:15px;color:#61758a;max-width:760px">No loops, no drifting shapes. <a href="#4a" style="color:#0284c7">4a</a> and <a href="#4b" style="color:#0284c7">4b</a> only move when YOU touch them. <a href="#4c" style="color:#0284c7">4c</a> and <a href="#4d" style="color:#0284c7">4d</a> are live transition demos — click PLAY inside each.</div>
+  </div>
+
+  <div style="display:flex;gap:32px;align-items:stretch;flex-wrap:wrap">
+
+    <!-- 4A · MIST -->
+    <div id="4a" style="width:480px;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <a href="#4a" style="font-family:'Schibsted Grotesk',sans-serif;font-size:13px;font-weight:800;color:#fff;background:#0ea5e9;border-radius:7px;padding:5px 11px;text-decoration:none">4a</a>
+        <span style="font-size:14px;font-weight:600;color:#3d4f63">Mist — wipe the condensation off the glass</span>
+      </div>
+      <div data-screen-label="Play button 4a Mist" style="border-radius:20px;background:linear-gradient(155deg,#d8ecfa 0%,#f4fafe 48%,#e2f1fb 100%);border:1px solid #dceaf4;padding:56px 24px 40px;display:flex;flex-direction:column;align-items:center;gap:22px;flex:1">
+        <div onMouseMove="{{ mistMove }}" style="position:relative;width:340px;height:84px">
+          <button onClick="{{ mistFire }}" style="position:absolute;inset:0;cursor:pointer;border-radius:999px;background:rgba(255,255,255,.55);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.85);box-shadow:0 14px 30px -18px rgba(12,105,160,.45);display:grid;place-items:center" style-active="transform:scale(.98)">
+            <span style="font-family:'Schibsted Grotesk',sans-serif;font-size:18px;font-weight:800;letter-spacing:5px;color:#04202f">▶ PLAY</span>
+          </button>
+          <canvas ref="{{ mistRef }}" style="position:absolute;inset:0;width:340px;height:84px;border-radius:999px;pointer-events:none;opacity:{{ mistOp }};transition:opacity .5s ease"></canvas>
+        </div>
+        <div style="font-size:13px;font-weight:600;color:#7b8ca0">Wipe the mist with your cursor — it slowly fogs back</div>
+      </div>
+      <div style="font-size:13px;color:#7b8ca0;line-height:1.5">The button sits behind real condensation you rub away, like a bathroom mirror. Nothing animates until you touch it. Click clears the glass and starts.</div>
+    </div>
+
+    <!-- 4B · STILL WATER -->
+    <div id="4b" style="width:480px;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <a href="#4b" style="font-family:'Schibsted Grotesk',sans-serif;font-size:13px;font-weight:800;color:#fff;background:#0ea5e9;border-radius:7px;padding:5px 11px;text-decoration:none">4b</a>
+        <span style="font-size:14px;font-weight:600;color:#3d4f63">Still water — refraction settles when you reach in</span>
+      </div>
+      <div data-screen-label="Play button 4b Still water" style="border-radius:20px;background:linear-gradient(155deg,#d8ecfa 0%,#f4fafe 48%,#e2f1fb 100%);border:1px solid #dceaf4;padding:56px 24px 40px;display:flex;flex-direction:column;align-items:center;gap:22px;flex:1">
+        <svg width="0" height="0" style="position:absolute"><filter id="waterRef4b" x="-20%" y="-40%" width="140%" height="180%"><feTurbulence id="waterTurb4b" type="fractalNoise" baseFrequency="0.011 0.028" numOctaves="2" seed="7" result="n"></feTurbulence><feDisplacementMap id="waterDisp4b" in="SourceGraphic" in2="n" scale="14" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap></filter></svg>
+        <button onMouseEnter="{{ refEnter }}" onMouseLeave="{{ refLeave }}" style="cursor:pointer;position:relative;width:340px;height:84px;border-radius:999px;border:1px solid rgba(255,255,255,.9);background:linear-gradient(180deg,rgba(255,255,255,.6),rgba(224,242,254,.5));backdrop-filter:blur(14px);box-shadow:0 14px 30px -18px rgba(12,105,160,.45);display:grid;place-items:center" style-active="transform:scale(.98)">
+          <span style="font-family:'Schibsted Grotesk',sans-serif;font-size:18px;font-weight:800;letter-spacing:5px;color:#0b3a56;padding:10px 16px;filter:url(#waterRef4b)">▶ PLAY</span>
+        </button>
+        <div style="font-size:13px;font-weight:600;color:#7b8ca0">The word wavers under water — hover and the surface stills</div>
+      </div>
+      <div style="font-size:13px;color:#7b8ca0;line-height:1.5">Real refraction: PLAY is distorted as if under a shallow water surface. When your cursor arrives the water calms and the word snaps into focus. No shapes flying around.</div>
+    </div>
+
+    <!-- 4C · FOCUS PULL -->
+    <div id="4c" style="width:480px;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <a href="#4c" style="font-family:'Schibsted Grotesk',sans-serif;font-size:13px;font-weight:800;color:#fff;background:#0ea5e9;border-radius:7px;padding:5px 11px;text-decoration:none">4c</a>
+        <span style="font-size:14px;font-weight:600;color:#3d4f63">Transition: Focus pull — through the fog</span>
+      </div>
+      <div data-screen-label="Transition 4c Focus pull" style="border-radius:20px;background:#fcfdfe;border:1px solid #dceaf4;padding:18px;flex:1">
+        <div style="position:relative;height:280px;border-radius:14px;overflow:hidden;border:1px solid #e2eef6">
+          <div style="position:absolute;inset:0;background:linear-gradient(155deg,#d8ecfa 0%,#f4fafe 48%,#e2f1fb 100%);animation:{{ t1Anim }}">
+            <sc-if value="{{ t1Menu }}" hint-placeholder-val="{{ true }}">
+              <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px">
+                <div style="font-size:10px;font-weight:700;letter-spacing:1.6px;color:#7b8ca0">DAILY STAGE · ES → EN</div>
+                <div style="font-family:'Schibsted Grotesk',sans-serif;font-size:24px;font-weight:800;color:#142033">Word Rush</div>
+                <div style="display:flex;gap:6px">
+                  <span style="font-size:11px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-radius:999px;padding:3px 12px;background:rgba(255,255,255,.6)">Easy</span>
+                  <span style="font-size:11px;font-weight:700;color:#0284c7;border:1px solid rgba(14,165,233,.45);border-radius:999px;padding:3px 12px;background:#fff">Normal</span>
+                  <span style="font-size:11px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-radius:999px;padding:3px 12px;background:rgba(255,255,255,.6)">Insane</span>
+                </div>
+                <button onClick="{{ t1Go }}" style="cursor:pointer;width:220px;height:54px;border-radius:999px;background:rgba(255,255,255,.6);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.9);box-shadow:0 12px 26px -16px rgba(12,105,160,.45);font-family:'Schibsted Grotesk',sans-serif;font-size:15px;font-weight:800;letter-spacing:4px;color:#0b3a56;margin-top:6px" style-active="transform:scale(.97)">▶ PLAY</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{ t1Session }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px">
+                <div style="font-size:10px;font-weight:700;letter-spacing:1.6px;color:#7b8ca0">WORD 1/4 · ES → EN</div>
+                <div style="font-family:'Schibsted Grotesk',sans-serif;font-size:34px;font-weight:700;color:#142033">verdad</div>
+                <div style="width:210px;border-bottom:2px solid rgba(14,165,233,.4);color:#98a7b8;font-size:13px;padding-bottom:7px;text-align:center">type your answer</div>
+                <button onClick="{{ t1Back }}" style="cursor:pointer;background:transparent;border:none;font-size:12px;font-weight:600;color:#7b8ca0;margin-top:8px" style-hover="color:#0284c7">◀ Back to menu</button>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:13px;color:#7b8ca0;line-height:1.5">The menu loses focus and dissolves like fog; the word sharpens in — same optics as the word entrance you already picked. ~700ms, opacity + blur only.</div>
+    </div>
+
+    <!-- 4D · POOL -->
+    <div id="4d" style="width:480px;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <a href="#4d" style="font-family:'Schibsted Grotesk',sans-serif;font-size:13px;font-weight:800;color:#fff;background:#0ea5e9;border-radius:7px;padding:5px 11px;text-decoration:none">4d</a>
+        <span style="font-size:14px;font-weight:600;color:#3d4f63">Transition: Pool — the game spreads from your click</span>
+      </div>
+      <div data-screen-label="Transition 4d Pool" style="border-radius:20px;background:#fcfdfe;border:1px solid #dceaf4;padding:18px;flex:1">
+        <div style="position:relative;height:280px;border-radius:14px;overflow:hidden;border:1px solid #e2eef6">
+          <div style="position:absolute;inset:0;background:linear-gradient(155deg,#d8ecfa 0%,#f4fafe 48%,#e2f1fb 100%)">
+            <sc-if value="{{ t2BaseMenu }}" hint-placeholder-val="{{ true }}">
+              <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px">
+                <div style="font-size:10px;font-weight:700;letter-spacing:1.6px;color:#7b8ca0">DAILY STAGE · ES → EN</div>
+                <div style="font-family:'Schibsted Grotesk',sans-serif;font-size:24px;font-weight:800;color:#142033">Word Rush</div>
+                <div style="display:flex;gap:6px">
+                  <span style="font-size:11px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-radius:999px;padding:3px 12px;background:rgba(255,255,255,.6)">Easy</span>
+                  <span style="font-size:11px;font-weight:700;color:#0284c7;border:1px solid rgba(14,165,233,.45);border-radius:999px;padding:3px 12px;background:#fff">Normal</span>
+                  <span style="font-size:11px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-radius:999px;padding:3px 12px;background:rgba(255,255,255,.6)">Insane</span>
+                </div>
+                <button style="cursor:default;width:220px;height:54px;border-radius:999px;background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.9);font-family:'Schibsted Grotesk',sans-serif;font-size:15px;font-weight:800;letter-spacing:4px;color:#0b3a56;margin-top:6px">▶ PLAY</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{ t2BaseSession }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px">
+                <div style="font-size:10px;font-weight:700;letter-spacing:1.6px;color:#7b8ca0">WORD 1/4 · ES → EN</div>
+                <div style="font-family:'Schibsted Grotesk',sans-serif;font-size:34px;font-weight:700;color:#142033">verdad</div>
+                <div style="width:210px;border-bottom:2px solid rgba(14,165,233,.4);color:#98a7b8;font-size:13px;padding-bottom:7px;text-align:center">type your answer</div>
+              </div>
+            </sc-if>
+          </div>
+          <div style="position:absolute;inset:0;background:linear-gradient(155deg,#d8ecfa 0%,#f4fafe 48%,#e2f1fb 100%);animation:{{ t2Anim }};display:{{ t2TopDisp }}">
+            <sc-if value="{{ t2Menu }}" hint-placeholder-val="{{ true }}">
+              <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px">
+                <div style="font-size:10px;font-weight:700;letter-spacing:1.6px;color:#7b8ca0">DAILY STAGE · ES → EN</div>
+                <div style="font-family:'Schibsted Grotesk',sans-serif;font-size:24px;font-weight:800;color:#142033">Word Rush</div>
+                <div style="display:flex;gap:6px">
+                  <span style="font-size:11px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-radius:999px;padding:3px 12px;background:rgba(255,255,255,.6)">Easy</span>
+                  <span style="font-size:11px;font-weight:700;color:#0284c7;border:1px solid rgba(14,165,233,.45);border-radius:999px;padding:3px 12px;background:#fff">Normal</span>
+                  <span style="font-size:11px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-radius:999px;padding:3px 12px;background:rgba(255,255,255,.6)">Insane</span>
+                </div>
+                <button onClick="{{ t2Go }}" style="cursor:pointer;width:220px;height:54px;border-radius:999px;background:rgba(255,255,255,.6);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.9);box-shadow:0 12px 26px -16px rgba(12,105,160,.45);font-family:'Schibsted Grotesk',sans-serif;font-size:15px;font-weight:800;letter-spacing:4px;color:#0b3a56;margin-top:6px" style-active="transform:scale(.97)">▶ PLAY</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{ t2Session }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px">
+                <div style="font-size:10px;font-weight:700;letter-spacing:1.6px;color:#7b8ca0">WORD 1/4 · ES → EN</div>
+                <div style="font-family:'Schibsted Grotesk',sans-serif;font-size:34px;font-weight:700;color:#142033">verdad</div>
+                <div style="width:210px;border-bottom:2px solid rgba(14,165,233,.4);color:#98a7b8;font-size:13px;padding-bottom:7px;text-align:center">type your answer</div>
+                <button onClick="{{ t2Back }}" style="cursor:pointer;background:transparent;border:none;font-size:12px;font-weight:600;color:#7b8ca0;margin-top:8px" style-hover="color:#0284c7">◀ Back to menu</button>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:13px;color:#7b8ca0;line-height:1.5">The game surface expands from the PLAY button as one circular wavefront — like a drop landing in a pool — until it fills the screen. One wave, one direction, then still.</div>
+    </div>
+
+  </div>
+</section>
+
+<section style="padding:44px 48px 10px;display:flex;flex-direction:column;gap:26px;align-items:flex-start">
+
+  <div style="display:flex;flex-direction:column;gap:6px">
+    <div style="font-family:'Schibsted Grotesk',sans-serif;font-size:24px;font-weight:700;color:#142033">Game screen — Frost session &amp; stage clear</div>
+    <div style="font-size:15px;color:#61758a;max-width:760px">All three are playable: type the English translation, Enter to submit (verdad · luego · ciudad · aquí). Answers now bloom as liquid glass color behind the panel — blue for right, red for wrong — with a vignette keeping the center clear so the word is always readable. The rails have a breathing light cap marking where the level ends. The two Frost options differ in word entrance and stage-clear layout.</div>
+  </div>
+
+  <div style="display:flex;gap:40px;align-items:flex-start;flex-wrap:wrap">
+
+    <!-- ARCADE SESSION REFERENCE -->
+    <sc-if value="{{ showArc }}" hint-placeholder-val="{{ true }}">
+      <div style="width:620px;flex:0 0 auto;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-family:'Press Start 2P';font-size:8px;color:#cdbcff;background:#160b30;border:1px solid #7c3aed;border-radius:7px;padding:6px 10px">ARCADE</span>
+          <span style="font-size:14px;font-weight:600;color:#3d4f63">Current game — reference (playable)</span>
+        </div>
+        <div data-screen-label="Arcade session (reference)" style="border-radius:20px;background:linear-gradient(160deg,#241245 0%,#120826 45%,#0a0118 100%);padding:22px">
+          <div style="position:relative;border:2px solid #a78bfa;border-radius:14px;background:linear-gradient(180deg,rgba(124,58,237,.16),rgba(10,1,24,.78));overflow:hidden;animation:{{ gar.shakeAnim }}">
+            <sc-if value="{{ gar.fbOk }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;inset:0;pointer-events:none;z-index:7;border-radius:12px;border:2px solid #cdbcff;box-shadow:inset 0 0 60px rgba(167,139,250,.8);animation:arcFlashOk .9s ease-out both"></div>
+              <div style="position:absolute;inset:0;pointer-events:none;display:grid;grid-template-columns:repeat(22,1fr);grid-auto-rows:1fr;gap:2px;padding:3px;opacity:.75">
+                <sc-for list="{{ arcCells }}" as="c" hint-placeholder-count="154">
+                  <div style="border-radius:1px;animation:cellWaveOk .7s ease-out {{ c.delay }} both"></div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <sc-if value="{{ gar.fbBad }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;inset:0;pointer-events:none;z-index:7;border-radius:12px;border:2px solid #ff2e63;box-shadow:inset 0 0 60px rgba(255,46,99,.5);animation:arcFlashBad .9s ease-out both"></div>
+              <div style="position:absolute;inset:0;pointer-events:none;display:grid;grid-template-columns:repeat(22,1fr);grid-auto-rows:1fr;gap:2px;padding:3px;opacity:.75">
+                <sc-for list="{{ arcCells }}" as="c" hint-placeholder-count="154">
+                  <div style="border-radius:1px;animation:cellWaveBad .7s ease-out {{ c.delay }} both"></div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <div style="position:absolute;left:6px;top:10px;bottom:10px;width:5px;border-radius:3px;background:rgba(167,139,250,.12)">
+              <div style="position:absolute;left:0;right:0;bottom:0;height:{{ gar.railH }};border-radius:3px;background:linear-gradient(180deg,#cdbcff,#7c3aed);box-shadow:0 0 12px rgba(205,188,255,.9);transition:height .5s ease">
+                <div style="position:absolute;top:-2px;left:-2px;right:-2px;height:7px;border-radius:3px;background:#fff;box-shadow:0 0 14px #cdbcff;animation:fillhead 1s ease-in-out infinite"></div>
+              </div>
+            </div>
+            <div style="position:absolute;right:6px;top:10px;bottom:10px;width:5px;border-radius:3px;background:rgba(167,139,250,.12)">
+              <div style="position:absolute;left:0;right:0;bottom:0;height:{{ gar.railH }};border-radius:3px;background:linear-gradient(180deg,#cdbcff,#7c3aed);box-shadow:0 0 12px rgba(205,188,255,.9);transition:height .5s ease">
+                <div style="position:absolute;top:-2px;left:-2px;right:-2px;height:7px;border-radius:3px;background:#fff;box-shadow:0 0 14px #cdbcff;animation:fillhead 1s ease-in-out infinite"></div>
+              </div>
+            </div>
+            <sc-if value="{{ gar.playing }}" hint-placeholder-val="{{ true }}">
+              <div style="position:relative;z-index:1;padding:22px 30px 24px;text-align:center">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+                  <span style="font-family:'VT323',monospace;font-size:17px;color:#7c6bad;letter-spacing:2px">{{ gar.count }}</span>
+                  <span style="font-family:'VT323',monospace;font-size:17px;color:#7c6bad;letter-spacing:2px">ES → EN</span>
+                  <span style="display:inline-block;font-family:'Press Start 2P';font-size:11px;color:#cdbcff;text-shadow:0 0 10px rgba(167,139,250,.9);animation:{{ gar.comboAnim }}">COMBO x{{ gar.combo }}</span>
+                </div>
+                <div style="display:inline-block;font-size:48px;font-weight:700;color:#fff;margin:16px 0 20px;font-family:'Space Grotesk',sans-serif;animation:{{ gar.promptAnim }}">{{ gar.prompt }}</div>
+                <div style="max-width:400px;margin:0 auto">
+                  <input value="{{ gar.val }}" onChange="{{ gar.onChange }}" onKeyDown="{{ gar.onKey }}" placeholder="▊ type your answer" style="width:100%;box-sizing:border-box;background:transparent;border:none;border-bottom:2px solid rgba(167,139,250,.5);padding:12px 4px;color:#cdbcff;font-size:24px;text-align:center;font-family:'VT323',monospace;letter-spacing:2px;outline:none" style-focus="border-bottom-color:#a78bfa;box-shadow:0 14px 24px -18px rgba(124,58,237,.9)">
+                </div>
+                <div style="min-height:24px;margin-top:14px">
+                  <sc-if value="{{ gar.msgShow }}" hint-placeholder-val="{{ false }}">
+                    <span style="font-family:'VT323',monospace;font-size:18px;color:#ff9fb5">{{ gar.msg }}</span>
+                  </sc-if>
+                </div>
+                <div style="display:flex;justify-content:center;gap:14px;align-items:center;margin-top:14px;padding-top:14px;border-top:1px solid rgba(167,139,250,.2);flex-wrap:wrap">
+                  <button onClick="{{ gar.submit }}" style="cursor:pointer;background:transparent;border:none;font-family:'VT323',monospace;font-size:16px;color:#7c6bad;padding:0" style-hover="color:#cdbcff"><span style="color:#cdbcff;border:1px solid rgba(167,139,250,.5);border-bottom-width:3px;border-radius:5px;padding:0 7px;background:rgba(13,5,32,.8)">Enter</span> SUBMIT</button>
+                  <button onClick="{{ gar.skip }}" style="cursor:pointer;background:transparent;border:none;font-family:'VT323',monospace;font-size:16px;color:#7c6bad;padding:0" style-hover="color:#cdbcff"><span style="color:#cdbcff;border:1px solid rgba(167,139,250,.5);border-bottom-width:3px;border-radius:5px;padding:0 7px;background:rgba(13,5,32,.8)">Alt+Enter</span> SKIP</button>
+                  <button onClick="{{ gar.finish }}" style="cursor:pointer;background:transparent;border:none;font-family:'VT323',monospace;font-size:16px;color:#7c6bad;padding:0" style-hover="color:#cdbcff"><span style="color:#cdbcff;border:1px solid rgba(167,139,250,.5);border-bottom-width:3px;border-radius:5px;padding:0 7px;background:rgba(13,5,32,.8)">Esc ×2</span> FINISH</button>
+                </div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ gar.done }}" hint-placeholder-val="{{ false }}">
+              <div style="position:relative;z-index:1;padding:40px 30px 34px;text-align:center;animation:clearIn .4s ease-out both">
+                <div style="font-family:'Press Start 2P';font-size:20px;color:#fff;text-shadow:0 0 18px rgba(124,58,237,1)">STAGE CLEAR ★</div>
+                <div style="font-family:'VT323',monospace;font-size:19px;color:#a78bfa;margin:14px 0 4px">SCORE {{ gar.score }} · {{ gar.okCount }}/4 WORDS · BEST COMBO x{{ gar.best }}</div>
+                <div style="font-family:'VT323',monospace;font-size:15px;color:#584a85;margin-bottom:22px">GG, WORDSMITH</div>
+                <button onClick="{{ gar.again }}" style="cursor:pointer;background:#a78bfa;border:none;border-radius:9px;padding:12px 24px;font-family:'Press Start 2P';font-size:9px;color:#0a0118" style-hover="background:#cdbcff;box-shadow:0 0 18px rgba(205,188,255,.6)">▶ PLAY AGAIN</button>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+        <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+          <div style="font-size:13px;color:#7b8ca0;line-height:1.5">Reference behavior: tile wave + border flash on answers, hard shake on miss, neon towers, combo pop, glitch-style entrances.</div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <!-- 3A · DROPLET -->
+    <div id="3a" style="width:620px;flex:0 0 auto;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <a href="#3a" style="font-family:'Schibsted Grotesk',sans-serif;font-size:13px;font-weight:800;color:#fff;background:#0ea5e9;border-radius:7px;padding:5px 11px;text-decoration:none">3a</a>
+        <span style="font-size:14px;font-weight:600;color:#3d4f63">Fog — liquid glass feedback · words blur into focus</span>
+      </div>
+      <div data-screen-label="Frost session 3a Droplet" style="border-radius:20px;overflow:hidden;background:linear-gradient(155deg,#d8ecfa 0%,#f4fafe 48%,#e2f1fb 100%);border:1px solid #dceaf4;padding:22px">
+        <div style="position:relative;border-radius:16px;background:rgba(255,255,255,.55);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.8);box-shadow:0 18px 40px -24px rgba(12,105,160,.35);overflow:hidden;animation:{{ gv1.shakeAnim }}">
+          <div style="position:absolute;left:8px;top:12px;bottom:12px;width:4px;border-radius:2px;background:rgba(14,165,233,.12)">
+            <div style="position:absolute;left:0;right:0;bottom:0;height:{{ gv1.railH }};border-radius:2px;background:linear-gradient(180deg,#7dd3fc,#0ea5e9);box-shadow:0 0 10px rgba(14,165,233,.5);transition:height .6s ease">
+              <div style="position:absolute;top:-2px;left:-2px;right:-2px;height:6px;opacity:{{ gv1.railCapOp }};transition:opacity .4s">
+                <div style="width:100%;height:100%;border-radius:3px;background:linear-gradient(180deg,#ffffff,#bae6fd);box-shadow:0 0 10px rgba(56,189,248,.95);animation:fillhead 1.6s ease-in-out infinite"></div>
+              </div>
+            </div>
+          </div>
+          <div style="position:absolute;right:8px;top:12px;bottom:12px;width:4px;border-radius:2px;background:rgba(14,165,233,.12)">
+            <div style="position:absolute;left:0;right:0;bottom:0;height:{{ gv1.railH }};border-radius:2px;background:linear-gradient(180deg,#7dd3fc,#0ea5e9);box-shadow:0 0 10px rgba(14,165,233,.5);transition:height .6s ease">
+              <div style="position:absolute;top:-2px;left:-2px;right:-2px;height:6px;opacity:{{ gv1.railCapOp }};transition:opacity .4s">
+                <div style="width:100%;height:100%;border-radius:3px;background:linear-gradient(180deg,#ffffff,#bae6fd);box-shadow:0 0 10px rgba(56,189,248,.95);animation:fillhead 1.6s ease-in-out infinite"></div>
+              </div>
+            </div>
+          </div>
+          <sc-if value="{{ gv1.fbOk }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;inset:0;pointer-events:none;z-index:6;overflow:hidden;border-radius:16px;-webkit-mask-image:radial-gradient(ellipse 62% 58% at 50% 46%,rgba(0,0,0,.12) 0%,rgba(0,0,0,.28) 34%,#000 64%);mask-image:radial-gradient(ellipse 62% 58% at 50% 46%,rgba(0,0,0,.12) 0%,rgba(0,0,0,.28) 34%,#000 64%)">
+              <div style="position:absolute;left:50%;top:50%;width:180%;aspect-ratio:1/1;border-radius:50%;background:radial-gradient(circle,rgba(14,165,233,0) 38%,rgba(14,165,233,.42) 54%,rgba(56,189,248,.2) 64%,rgba(14,165,233,0) 72%);filter:blur(4px);animation:waveRing .95s ease-out both"></div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ gv1.fbBad }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;inset:0;pointer-events:none;z-index:6;overflow:hidden;border-radius:16px;-webkit-mask-image:radial-gradient(ellipse 62% 58% at 50% 46%,rgba(0,0,0,.12) 0%,rgba(0,0,0,.28) 34%,#000 64%);mask-image:radial-gradient(ellipse 62% 58% at 50% 46%,rgba(0,0,0,.12) 0%,rgba(0,0,0,.28) 34%,#000 64%)">
+              <div style="position:absolute;left:50%;top:50%;width:180%;aspect-ratio:1/1;border-radius:50%;background:radial-gradient(circle,rgba(244,63,94,0) 38%,rgba(244,63,94,.36) 54%,rgba(251,113,133,.18) 64%,rgba(244,63,94,0) 72%);filter:blur(4px);animation:waveRing .95s ease-out both"></div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ gv1.playing }}" hint-placeholder-val="{{ true }}">
+            <div style="position:relative;z-index:1;padding:22px 34px 24px;text-align:center">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                <span style="font-size:12px;font-weight:700;letter-spacing:1.4px;color:#7b8ca0">{{ gv1.count }}</span>
+                <span style="font-size:12px;font-weight:700;letter-spacing:1.4px;color:#7b8ca0">ES → EN</span>
+                <span style="display:inline-block;font-size:13px;font-weight:700;color:#0284c7;animation:{{ gv1.comboAnim }}">combo ×{{ gv1.combo }}</span>
+              </div>
+              <div style="display:inline-block;font-family:'Schibsted Grotesk',sans-serif;font-size:42px;font-weight:700;color:#142033;margin:16px 0 20px;animation:{{ gv1.promptAnim }}">{{ gv1.prompt }}</div>
+              <div style="max-width:360px;margin:0 auto">
+                <input value="{{ gv1.val }}" onChange="{{ gv1.onChange }}" onKeyDown="{{ gv1.onKey }}" placeholder="type your answer" style="width:100%;box-sizing:border-box;background:transparent;border:none;border-bottom:2px solid rgba(14,165,233,.35);padding:10px 4px;color:#142033;font-size:19px;text-align:center;font-family:'Figtree',sans-serif;outline:none;transition:border-color .3s,box-shadow .3s" style-focus="border-bottom-color:#0ea5e9;box-shadow:0 12px 20px -16px rgba(14,165,233,.6)">
+              </div>
+              <div style="min-height:22px;margin-top:12px">
+                <sc-if value="{{ gv1.msgShow }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size:14px;font-weight:600;color:#e11d48">{{ gv1.msg }}</span>
+                </sc-if>
+              </div>
+              <div style="display:flex;justify-content:center;gap:18px;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid rgba(20,32,51,.08);flex-wrap:wrap">
+                <button onClick="{{ gv1.submit }}" style="cursor:pointer;background:transparent;border:none;font-size:13px;font-weight:600;color:#7b8ca0;padding:0;display:flex;gap:6px;align-items:center" style-hover="color:#0284c7"><span style="font-size:12px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">Enter</span> submit</button>
+                <button onClick="{{ gv1.skip }}" style="cursor:pointer;background:transparent;border:none;font-size:13px;font-weight:600;color:#7b8ca0;padding:0;display:flex;gap:6px;align-items:center" style-hover="color:#0284c7"><span style="font-size:12px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">Alt+Enter</span> skip</button>
+                <button onClick="{{ gv1.finish }}" style="cursor:pointer;background:transparent;border:none;font-size:13px;font-weight:600;color:#7b8ca0;padding:0;display:flex;gap:6px;align-items:center" style-hover="color:#0284c7"><span style="font-size:12px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">Esc ×2</span> finish</button>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ gv1.done }}" hint-placeholder-val="{{ false }}">
+            <div style="position:relative;z-index:1;padding:36px 34px 32px;text-align:center;animation:clearIn .45s ease-out both">
+              <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:16px;-webkit-mask-image:radial-gradient(ellipse 62% 58% at 50% 46%,rgba(0,0,0,.14) 0%,rgba(0,0,0,.3) 34%,#000 64%);mask-image:radial-gradient(ellipse 62% 58% at 50% 46%,rgba(0,0,0,.14) 0%,rgba(0,0,0,.3) 34%,#000 64%)">
+                <div style="position:absolute;left:50%;top:50%;width:180%;aspect-ratio:1/1;border-radius:50%;background:radial-gradient(circle,rgba(14,165,233,0) 38%,rgba(14,165,233,.4) 54%,rgba(56,189,248,.2) 64%,rgba(14,165,233,0) 72%);filter:blur(4px);animation:waveRing 1.4s ease-out both"></div>
+              </div>
+              <div style="position:relative;font-family:'Schibsted Grotesk',sans-serif;font-size:27px;font-weight:800;color:#142033">Stage clear</div>
+              <div style="position:relative;font-size:15px;font-weight:600;color:#51687f;margin-top:10px">{{ gv1.summary }}</div>
+              <div style="position:relative;display:flex;justify-content:center;gap:8px;margin-top:16px">
+                <sc-for list="{{ gv1.resultDots }}" as="rd" hint-placeholder-count="4">
+                  <div style="width:12px;height:12px;border-radius:50%;background:{{ rd.bg }};border:2px solid {{ rd.bd }}"></div>
+                </sc-for>
+              </div>
+              <button onClick="{{ gv1.again }}" style="position:relative;cursor:pointer;margin-top:22px;background:linear-gradient(180deg,#38bdf8,#0ea5e9);border:none;border-radius:999px;padding:13px 30px;font-family:'Schibsted Grotesk',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;color:#fff;box-shadow:0 10px 22px -12px rgba(12,105,160,.6);transition:transform .3s cubic-bezier(.25,.8,.3,1),box-shadow .3s" style-hover="transform:scale(1.04);box-shadow:0 14px 28px -12px rgba(12,105,160,.7)" style-active="transform:scale(.97)">▶ Play again</button>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+      <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+        <div style="font-size:13px;color:#7b8ca0;line-height:1.5">Right → blue liquid color swells in from the corners behind the glass and recedes; wrong → red. The vignette keeps the center white so the word stays sharp. Words come into focus like through fog; stage clear blooms blue once, one droplet per word.</div>
+      </sc-if>
+    </div>
+
+    <!-- 3B · TIDE -->
+    <div id="3b" style="width:620px;flex:0 0 auto;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <a href="#3b" style="font-family:'Schibsted Grotesk',sans-serif;font-size:13px;font-weight:800;color:#fff;background:#0ea5e9;border-radius:7px;padding:5px 11px;text-decoration:none">3b</a>
+        <span style="font-size:14px;font-weight:600;color:#3d4f63">Tide — liquid glass feedback · words rise in</span>
+      </div>
+      <div data-screen-label="Frost session 3b Tide" style="border-radius:20px;overflow:hidden;background:linear-gradient(155deg,#d8ecfa 0%,#f4fafe 48%,#e2f1fb 100%);border:1px solid #dceaf4;padding:22px">
+        <div style="position:relative;border-radius:16px;background:rgba(255,255,255,.55);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.8);box-shadow:0 18px 40px -24px rgba(12,105,160,.35);overflow:hidden;animation:{{ gv2.shakeAnim }}">
+          <div style="position:absolute;left:8px;top:12px;bottom:12px;width:4px;border-radius:2px;background:rgba(14,165,233,.12)">
+            <div style="position:absolute;left:0;right:0;bottom:0;height:{{ gv2.railH }};border-radius:2px;background:linear-gradient(180deg,#7dd3fc,#0ea5e9);box-shadow:0 0 10px rgba(14,165,233,.5);transition:height .6s ease">
+              <div style="position:absolute;top:-2px;left:-2px;right:-2px;height:6px;opacity:{{ gv2.railCapOp }};transition:opacity .4s">
+                <div style="width:100%;height:100%;border-radius:3px;background:linear-gradient(180deg,#ffffff,#bae6fd);box-shadow:0 0 10px rgba(56,189,248,.95);animation:fillhead 1.6s ease-in-out infinite"></div>
+              </div>
+            </div>
+          </div>
+          <div style="position:absolute;right:8px;top:12px;bottom:12px;width:4px;border-radius:2px;background:rgba(14,165,233,.12)">
+            <div style="position:absolute;left:0;right:0;bottom:0;height:{{ gv2.railH }};border-radius:2px;background:linear-gradient(180deg,#7dd3fc,#0ea5e9);box-shadow:0 0 10px rgba(14,165,233,.5);transition:height .6s ease">
+              <div style="position:absolute;top:-2px;left:-2px;right:-2px;height:6px;opacity:{{ gv2.railCapOp }};transition:opacity .4s">
+                <div style="width:100%;height:100%;border-radius:3px;background:linear-gradient(180deg,#ffffff,#bae6fd);box-shadow:0 0 10px rgba(56,189,248,.95);animation:fillhead 1.6s ease-in-out infinite"></div>
+              </div>
+            </div>
+          </div>
+          <sc-if value="{{ gv2.fbOk }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;inset:0;pointer-events:none;z-index:6;overflow:hidden;border-radius:16px;-webkit-mask-image:radial-gradient(ellipse 62% 58% at 50% 46%,rgba(0,0,0,.12) 0%,rgba(0,0,0,.28) 34%,#000 64%);mask-image:radial-gradient(ellipse 62% 58% at 50% 46%,rgba(0,0,0,.12) 0%,rgba(0,0,0,.28) 34%,#000 64%)">
+              <div style="position:absolute;left:50%;top:50%;width:180%;aspect-ratio:1/1;border-radius:50%;background:radial-gradient(circle,rgba(14,165,233,0) 38%,rgba(14,165,233,.42) 54%,rgba(56,189,248,.2) 64%,rgba(14,165,233,0) 72%);filter:blur(4px);animation:waveRing .95s ease-out both"></div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ gv2.fbBad }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;inset:0;pointer-events:none;z-index:6;overflow:hidden;border-radius:16px;-webkit-mask-image:radial-gradient(ellipse 62% 58% at 50% 46%,rgba(0,0,0,.12) 0%,rgba(0,0,0,.28) 34%,#000 64%);mask-image:radial-gradient(ellipse 62% 58% at 50% 46%,rgba(0,0,0,.12) 0%,rgba(0,0,0,.28) 34%,#000 64%)">
+              <div style="position:absolute;left:50%;top:50%;width:180%;aspect-ratio:1/1;border-radius:50%;background:radial-gradient(circle,rgba(244,63,94,0) 38%,rgba(244,63,94,.36) 54%,rgba(251,113,133,.18) 64%,rgba(244,63,94,0) 72%);filter:blur(4px);animation:waveRing .95s ease-out both"></div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ gv2.playing }}" hint-placeholder-val="{{ true }}">
+            <div style="position:relative;z-index:1;padding:22px 34px 24px;text-align:center">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                <span style="font-size:12px;font-weight:700;letter-spacing:1.4px;color:#7b8ca0">{{ gv2.count }}</span>
+                <span style="font-size:12px;font-weight:700;letter-spacing:1.4px;color:#7b8ca0">ES → EN</span>
+                <span style="display:inline-block;font-size:13px;font-weight:700;color:#0284c7;animation:{{ gv2.comboAnim }}">combo ×{{ gv2.combo }}</span>
+              </div>
+              <div style="display:inline-block;font-family:'Schibsted Grotesk',sans-serif;font-size:42px;font-weight:700;color:#142033;margin:16px 0 20px;animation:{{ gv2.promptAnim }}">{{ gv2.prompt }}</div>
+              <div style="max-width:360px;margin:0 auto">
+                <input value="{{ gv2.val }}" onChange="{{ gv2.onChange }}" onKeyDown="{{ gv2.onKey }}" placeholder="type your answer" style="width:100%;box-sizing:border-box;background:transparent;border:none;border-bottom:2px solid rgba(14,165,233,.35);padding:10px 4px;color:#142033;font-size:19px;text-align:center;font-family:'Figtree',sans-serif;outline:none;transition:border-color .3s,box-shadow .3s" style-focus="border-bottom-color:#0ea5e9;box-shadow:0 12px 20px -16px rgba(14,165,233,.6)">
+              </div>
+              <div style="min-height:22px;margin-top:12px">
+                <sc-if value="{{ gv2.msgShow }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size:14px;font-weight:600;color:#e11d48">{{ gv2.msg }}</span>
+                </sc-if>
+              </div>
+              <div style="display:flex;justify-content:center;gap:18px;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid rgba(20,32,51,.08);flex-wrap:wrap">
+                <button onClick="{{ gv2.submit }}" style="cursor:pointer;background:transparent;border:none;font-size:13px;font-weight:600;color:#7b8ca0;padding:0;display:flex;gap:6px;align-items:center" style-hover="color:#0284c7"><span style="font-size:12px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">Enter</span> submit</button>
+                <button onClick="{{ gv2.skip }}" style="cursor:pointer;background:transparent;border:none;font-size:13px;font-weight:600;color:#7b8ca0;padding:0;display:flex;gap:6px;align-items:center" style-hover="color:#0284c7"><span style="font-size:12px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">Alt+Enter</span> skip</button>
+                <button onClick="{{ gv2.finish }}" style="cursor:pointer;background:transparent;border:none;font-size:13px;font-weight:600;color:#7b8ca0;padding:0;display:flex;gap:6px;align-items:center" style-hover="color:#0284c7"><span style="font-size:12px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">Esc ×2</span> finish</button>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ gv2.done }}" hint-placeholder-val="{{ false }}">
+            <div style="position:relative;z-index:1;padding:34px 34px 30px;text-align:center;animation:clearIn .45s ease-out both">
+              <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:16px;-webkit-mask-image:radial-gradient(ellipse 62% 58% at 50% 46%,rgba(0,0,0,.14) 0%,rgba(0,0,0,.3) 34%,#000 64%);mask-image:radial-gradient(ellipse 62% 58% at 50% 46%,rgba(0,0,0,.14) 0%,rgba(0,0,0,.3) 34%,#000 64%)">
+                <div style="position:absolute;left:50%;top:50%;width:180%;aspect-ratio:1/1;border-radius:50%;background:radial-gradient(circle,rgba(14,165,233,0) 38%,rgba(14,165,233,.4) 54%,rgba(56,189,248,.2) 64%,rgba(14,165,233,0) 72%);filter:blur(4px);animation:waveRing 1.4s ease-out both"></div>
+              </div>
+              <div style="position:relative;font-size:12px;font-weight:700;letter-spacing:2.5px;color:#7b8ca0">STAGE CLEAR</div>
+              <div style="position:relative;font-family:'Schibsted Grotesk',sans-serif;font-size:54px;font-weight:800;color:#0ea5e9;line-height:1.1;margin-top:6px">{{ gv2.score }}</div>
+              <div style="position:relative;width:60px;height:3px;border-radius:2px;background:linear-gradient(90deg,#7dd3fc,#0ea5e9);margin:14px auto 12px"></div>
+              <div style="position:relative;font-size:14px;font-weight:600;color:#51687f">{{ gv2.okCount }}/4 words · best combo ×{{ gv2.best }}</div>
+              <button onClick="{{ gv2.again }}" style="position:relative;cursor:pointer;margin-top:20px;background:linear-gradient(180deg,#38bdf8,#0ea5e9);border:none;border-radius:999px;padding:13px 30px;font-family:'Schibsted Grotesk',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;color:#fff;box-shadow:0 10px 22px -12px rgba(12,105,160,.6);transition:transform .3s cubic-bezier(.25,.8,.3,1),box-shadow .3s" style-hover="transform:scale(1.04);box-shadow:0 14px 28px -12px rgba(12,105,160,.7)" style-active="transform:scale(.97)">▶ Play again</button>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+      <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+        <div style="font-size:13px;color:#7b8ca0;line-height:1.5">Same liquid glass feedback; words rise in gently instead. Quieter stage clear built around one big score number.</div>
+      </sc-if>
+    </div>
+
+  </div>
+</section>
+
+<section style="padding:34px 48px 10px;display:flex;flex-direction:column;gap:26px;align-items:flex-start">
+
+  <div style="display:flex;flex-direction:column;gap:6px">
+    <div style="font-family:'Schibsted Grotesk',sans-serif;font-size:24px;font-weight:700;color:#142033">Play button — air &amp; water alternatives for Frost</div>
+    <div style="font-size:15px;color:#61758a;max-width:720px">If arcade is tiles and pixels, Frost is air and water. Three live replacements for the play pad — hover and click each one.</div>
+  </div>
+
+  <div style="display:flex;gap:32px;align-items:stretch;flex-wrap:wrap">
+
+    <!-- 2A · RIPPLE -->
+    <div id="2a" style="width:480px;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <a href="#2a" style="font-family:'Schibsted Grotesk',sans-serif;font-size:13px;font-weight:800;color:#fff;background:#0ea5e9;border-radius:7px;padding:5px 11px;text-decoration:none">2a</a>
+        <span style="font-size:14px;font-weight:600;color:#3d4f63">Ripple — rings on still water</span>
+      </div>
+      <div data-screen-label="Play button 2a Ripple" style="position:relative;overflow:hidden;border-radius:20px;background:linear-gradient(155deg,#d8ecfa 0%,#f4fafe 48%,#e2f1fb 100%);border:1px solid #dceaf4;padding:56px 24px 40px;display:flex;flex-direction:column;align-items:center;gap:22px;flex:1">
+        <div onMouseEnter="{{ r2aIn }}" onMouseLeave="{{ r2aOut }}" onClick="{{ r2aFire }}" style="position:relative;width:340px;height:84px;cursor:pointer">
+          <div style="position:absolute;inset:0;border-radius:999px;border:1.5px solid rgba(14,165,233,.45);animation:{{ ring2aA0 }};pointer-events:none"></div>
+          <div style="position:absolute;inset:0;border-radius:999px;border:1.5px solid rgba(14,165,233,.45);animation:{{ ring2aA1 }};pointer-events:none"></div>
+          <div style="position:absolute;inset:0;border-radius:999px;border:1.5px solid rgba(14,165,233,.45);animation:{{ ring2aA2 }};pointer-events:none"></div>
+          <sc-if value="{{ ringFired }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;inset:0;border-radius:999px;border:2px solid rgba(14,165,233,.8);animation:ringOut .55s ease-out;pointer-events:none"></div>
+          </sc-if>
+          <div style="position:absolute;inset:0;border-radius:999px;background:rgba(255,255,255,.55);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.85);box-shadow:0 14px 30px -18px rgba(12,105,160,.45);display:grid;place-items:center;transition:transform .35s cubic-bezier(.25,.8,.3,1)" style-hover="transform:scale(1.03)" style-active="transform:scale(.97)">
+            <span style="font-family:'Schibsted Grotesk',sans-serif;font-size:18px;font-weight:800;letter-spacing:5px;color:#0b3a56">▶ PLAY</span>
+          </div>
+        </div>
+        <div style="font-size:13px;font-weight:600;color:#7b8ca0;animation:softpulse 2.6s ease-in-out infinite">Rings drift outward — click for a splash</div>
+      </div>
+      <div style="font-size:13px;color:#7b8ca0;line-height:1.5">Calm concentric ripples radiate from the button; hover quickens them, click fires a sharp splash ring.</div>
+    </div>
+
+    <!-- 2B · BREEZE -->
+    <div id="2b" style="width:480px;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <a href="#2b" style="font-family:'Schibsted Grotesk',sans-serif;font-size:13px;font-weight:800;color:#fff;background:#0ea5e9;border-radius:7px;padding:5px 11px;text-decoration:none">2b</a>
+        <span style="font-size:14px;font-weight:600;color:#3d4f63">Breeze — air currents through glass</span>
+      </div>
+      <div data-screen-label="Play button 2b Breeze" style="position:relative;overflow:hidden;border-radius:20px;background:linear-gradient(155deg,#d8ecfa 0%,#f4fafe 48%,#e2f1fb 100%);border:1px solid #dceaf4;padding:56px 24px 40px;display:flex;flex-direction:column;align-items:center;gap:22px;flex:1">
+        <button onMouseEnter="{{ r2bIn }}" onMouseLeave="{{ r2bOut }}" style="cursor:pointer;position:relative;width:340px;height:84px;border-radius:999px;border:1px solid rgba(255,255,255,.9);background:rgba(255,255,255,.55);backdrop-filter:blur(14px);overflow:hidden;box-shadow:0 14px 30px -18px rgba(12,105,160,.45);transition:transform .45s cubic-bezier(.3,.9,.3,1.4),box-shadow .45s" style-hover="transform:translateY(-6px);box-shadow:0 26px 42px -20px rgba(12,105,160,.55)" style-active="transform:translateY(-2px) scale(.98)">
+          <sc-for list="{{ streaks }}" as="st" hint-placeholder-count="4">
+            <div style="position:absolute;top:{{ st.top }};left:0;width:{{ st.w }};height:{{ st.h }};border-radius:999px;background:linear-gradient(90deg,rgba(14,165,233,0),rgba(14,165,233,.42),rgba(14,165,233,0));filter:blur(1.5px);animation:{{ st.anim }};pointer-events:none"></div>
+          </sc-for>
+          <span style="position:relative;z-index:1;font-family:'Schibsted Grotesk',sans-serif;font-size:18px;font-weight:800;letter-spacing:5px;color:#0b3a56">▶ PLAY</span>
+        </button>
+        <div style="font-size:13px;font-weight:600;color:#7b8ca0;animation:softpulse 2.6s ease-in-out infinite">Hover — the wind picks up and the button lifts</div>
+      </div>
+      <div style="font-size:13px;color:#7b8ca0;line-height:1.5">Soft air streams drift through the glass pill; on hover they rush and the button floats up on the current.</div>
+    </div>
+
+    <!-- 2C · FIZZ -->
+    <div id="2c" style="width:480px;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <a href="#2c" style="font-family:'Schibsted Grotesk',sans-serif;font-size:13px;font-weight:800;color:#fff;background:#0ea5e9;border-radius:7px;padding:5px 11px;text-decoration:none">2c</a>
+        <span style="font-size:14px;font-weight:600;color:#3d4f63">Fizz — bubbles rising in sparkling water</span>
+      </div>
+      <div data-screen-label="Play button 2c Fizz" style="position:relative;overflow:hidden;border-radius:20px;background:linear-gradient(155deg,#d8ecfa 0%,#f4fafe 48%,#e2f1fb 100%);border:1px solid #dceaf4;padding:56px 24px 40px;display:flex;flex-direction:column;align-items:center;gap:22px;flex:1">
+        <button onMouseEnter="{{ r2cIn }}" onMouseLeave="{{ r2cOut }}" style="cursor:pointer;position:relative;width:340px;height:84px;border-radius:999px;border:1px solid rgba(255,255,255,.9);background:linear-gradient(180deg,rgba(255,255,255,.65),rgba(224,242,254,.55));backdrop-filter:blur(14px);overflow:hidden;box-shadow:0 14px 30px -18px rgba(12,105,160,.45);transition:transform .35s cubic-bezier(.25,.8,.3,1)" style-hover="transform:scale(1.03)" style-active="transform:scale(.97)">
+          <div style="position:absolute;inset:0;opacity:{{ bubOp }};transition:opacity .5s;pointer-events:none">
+            <sc-for list="{{ bubbles }}" as="bu" hint-placeholder-count="7">
+              <div style="position:absolute;bottom:-14px;left:{{ bu.left }};width:{{ bu.size }};height:{{ bu.size }};border-radius:50%;background:rgba(14,165,233,.18);border:1px solid rgba(14,165,233,.4);animation:bubbleUp {{ bu.dur }} linear {{ bu.delay }} infinite"></div>
+            </sc-for>
+          </div>
+          <span style="position:relative;z-index:1;font-family:'Schibsted Grotesk',sans-serif;font-size:18px;font-weight:800;letter-spacing:5px;color:#0b3a56">▶ PLAY</span>
+        </button>
+        <div style="font-size:13px;font-weight:600;color:#7b8ca0;animation:softpulse 2.6s ease-in-out infinite">Hover — the water starts to sparkle</div>
+      </div>
+      <div style="font-size:13px;color:#7b8ca0;line-height:1.5">Faint bubbles always drift up inside; hovering wakes them to full fizz, like a glass of sparkling water.</div>
+    </div>
+
+  </div>
+</section>
+
+<section style="padding:34px 48px 72px;display:flex;flex-direction:column;gap:26px;align-items:flex-start">
+
+  <div style="display:flex;flex-direction:column;gap:6px">
+    <div style="font-family:'Schibsted Grotesk',sans-serif;font-size:24px;font-weight:700;color:#142033">Words menu — Arcade vs. Clean light mode</div>
+    <div style="font-size:15px;color:#61758a;max-width:720px">Same structure, same placement, same game concepts — restyled. Each clean option also tries a different background treatment. Everything is live: difficulty, language pickers, swap, and the play pad.</div>
+  </div>
+
+  <sc-if value="{{ anyDD }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeDD }}" style="position:fixed;inset:0;z-index:25"></div>
+  </sc-if>
+
+  <div style="display:flex;gap:40px;align-items:flex-start">
+
+    <!-- ================= ARCADE REFERENCE ================= -->
+    <sc-if value="{{ showArc }}" hint-placeholder-val="{{ true }}">
+      <div style="width:740px;flex:0 0 auto;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-family:'Press Start 2P';font-size:8px;color:#cdbcff;background:#160b30;border:1px solid #7c3aed;border-radius:7px;padding:6px 10px">ARCADE</span>
+          <span style="font-size:14px;font-weight:600;color:#3d4f63">Current mode — reference</span>
+        </div>
+        <div data-screen-label="Arcade words menu (reference)" style="position:relative;border-radius:20px;overflow:hidden;background:linear-gradient(160deg,#241245 0%,#120826 45%,#0a0118 100%);padding:22px">
+          <div style="position:absolute;inset:0;pointer-events:none;z-index:12;background:repeating-linear-gradient(0deg, rgba(0,0,0,.12) 0px, rgba(0,0,0,.12) 1px, transparent 1px, transparent 3px);animation:scanmove .4s linear infinite"></div>
+          <div style="position:relative;border:1px solid rgba(167,139,250,.35);border-radius:16px;background:linear-gradient(180deg,rgba(36,18,69,.6),rgba(10,1,24,.75));padding:24px 36px 22px">
+            <div style="position:absolute;top:44px;right:56px;width:16px;height:16px;background:rgba(167,139,250,.5);animation:floaty 4s ease-in-out infinite"></div>
+            <div style="position:relative;border:1px solid rgba(167,139,250,.45);border-radius:14px;background:linear-gradient(180deg,rgba(124,58,237,.18),rgba(10,1,24,.6));padding:24px 28px;margin-bottom:18px">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px">
+                <div>
+                  <div style="font-family:'Press Start 2P';font-size:8px;color:#a78bfa;margin-bottom:10px">DAILY STAGE · {{ oar.code }}</div>
+                  <div style="font-family:'Press Start 2P';font-size:20px;color:#fff;text-shadow:0 0 14px rgba(124,58,237,.95),0 0 3px #a78bfa;line-height:1.5">WORD RUSH</div>
+                </div>
+                <div style="text-align:right">
+                  <div style="font-family:'Press Start 2P';font-size:9px;color:#e8e4f4;letter-spacing:3px">{{ oar.stars }}</div>
+                  <div style="font-family:'VT323',monospace;font-size:15px;color:#7c6bad;margin-top:6px">{{ oar.diffNameUp }}</div>
+                </div>
+              </div>
+              <div style="position:relative;margin-bottom:20px">
+                <div style="position:absolute;top:0;bottom:0;left:0;width:calc((100% - 28px)/3);border:2px solid #a78bfa;border-radius:10px;box-shadow:0 0 18px rgba(124,58,237,.55),inset 0 0 14px rgba(124,58,237,.3);pointer-events:none;transform:{{ oar.diffT }};transition:transform .38s cubic-bezier(.34,1.56,.64,1)"></div>
+                <div style="display:flex;gap:14px">
+                  <button onClick="{{ oar.d0 }}" style="cursor:pointer;flex:1;background:transparent;border:1px solid rgba(167,139,250,.3);border-radius:10px;padding:13px 0 12px;text-align:center" style-hover="background:rgba(124,58,237,.14)">
+                    <div style="display:flex;justify-content:center;gap:8px;align-items:center"><span style="font-family:'Press Start 2P';font-size:8px;color:#9d8ec7">EASY</span><span style="font-family:'VT323',monospace;font-size:14px;color:#cdbcff;border:1px solid rgba(167,139,250,.5);border-bottom-width:3px;border-radius:5px;padding:0 7px;background:rgba(13,5,32,.8)">1</span></div>
+                    <div style="font-size:21px;font-weight:700;color:#e8e4f4;margin-top:6px;font-family:'Space Grotesk',sans-serif">5 words</div>
+                  </button>
+                  <button onClick="{{ oar.d1 }}" style="cursor:pointer;flex:1;background:transparent;border:1px solid rgba(167,139,250,.3);border-radius:10px;padding:13px 0 12px;text-align:center" style-hover="background:rgba(124,58,237,.14)">
+                    <div style="display:flex;justify-content:center;gap:8px;align-items:center"><span style="font-family:'Press Start 2P';font-size:8px;color:#9d8ec7">NORMAL</span><span style="font-family:'VT323',monospace;font-size:14px;color:#cdbcff;border:1px solid rgba(167,139,250,.5);border-bottom-width:3px;border-radius:5px;padding:0 7px;background:rgba(13,5,32,.8)">2</span></div>
+                    <div style="font-size:21px;font-weight:700;color:#e8e4f4;margin-top:6px;font-family:'Space Grotesk',sans-serif">10 words</div>
+                  </button>
+                  <button onClick="{{ oar.d2 }}" style="cursor:pointer;flex:1;background:transparent;border:1px solid rgba(167,139,250,.3);border-radius:10px;padding:13px 0 12px;text-align:center" style-hover="background:rgba(124,58,237,.14)">
+                    <div style="display:flex;justify-content:center;gap:8px;align-items:center"><span style="font-family:'Press Start 2P';font-size:8px;color:#9d8ec7">INSANE</span><span style="font-family:'VT323',monospace;font-size:14px;color:#cdbcff;border:1px solid rgba(167,139,250,.5);border-bottom-width:3px;border-radius:5px;padding:0 7px;background:rgba(13,5,32,.8)">3</span></div>
+                    <div style="font-size:21px;font-weight:700;color:#e8e4f4;margin-top:6px;font-family:'Space Grotesk',sans-serif">20 words</div>
+                  </button>
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:end;margin-bottom:14px">
+                <div>
+                  <div style="font-family:'Press Start 2P';font-size:7px;color:#7c6bad;margin-bottom:8px">PROMPT LANGUAGE</div>
+                  <div style="position:relative">
+                    <button onClick="{{ oar.pToggle }}" style="cursor:pointer;width:100%;display:flex;justify-content:space-between;align-items:center;background:rgba(13,5,32,.7);border:1px solid rgba(167,139,250,.4);border-radius:9px;padding:12px 14px;color:#e8e4f4;font-size:17px;font-family:'Space Grotesk',sans-serif" style-hover="border-color:#a78bfa;box-shadow:0 0 12px rgba(124,58,237,.4)">
+                      <span style="display:flex;align-items:center;gap:9px"><span>{{ oar.pName }}</span><span style="font-family:'VT323',monospace;font-size:14px;color:#cdbcff;border:1px solid rgba(167,139,250,.5);border-bottom-width:3px;border-radius:5px;padding:0 7px;background:rgba(13,5,32,.8)">{{ oar.pKey }}</span></span><span style="color:#a78bfa;font-size:12px;transform:{{ oar.pChev }};transition:transform .25s">▼</span>
+                    </button>
+                    <sc-if value="{{ oar.pOpen }}" hint-placeholder-val="{{ false }}">
+                      <div class="arc-scroll" style="position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;background:#160b30;border:1px solid #a78bfa;border-radius:10px;box-shadow:0 12px 30px rgba(0,0,0,.6),0 0 20px rgba(124,58,237,.4);max-height:138px;overflow-y:auto;animation:ddopen .18s ease-out">
+                        <sc-for list="{{ oar.pOpts }}" as="o" hint-placeholder-count="4">
+                          <button onClick="{{ o.go }}" style="cursor:pointer;width:100%;display:flex;justify-content:space-between;align-items:center;background:transparent;border:none;padding:11px 14px;color:#e8e4f4;font-size:16px;font-family:'Space Grotesk',sans-serif" style-hover="background:rgba(124,58,237,.28)"><span>{{ o.name }}</span><span style="font-family:'VT323',monospace;font-size:14px;color:#cdbcff;border:1px solid rgba(167,139,250,.5);border-bottom-width:3px;border-radius:5px;padding:0 7px;background:rgba(13,5,32,.8)">{{ o.chip }}</span></button>
+                        </sc-for>
+                      </div>
+                    </sc-if>
+                  </div>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding-bottom:2px">
+                  <button onClick="{{ oar.swap }}" style="cursor:pointer;width:44px;height:44px;border-radius:50%;border:1px solid rgba(167,139,250,.5);background:transparent;color:#a78bfa;font-size:17px" style-hover="background:#7c3aed;color:#fff;transform:rotate(180deg)">⇄</button>
+                  <span style="font-family:'VT323',monospace;font-size:13px;color:#cdbcff;border:1px solid rgba(167,139,250,.5);border-bottom-width:3px;border-radius:5px;padding:0 6px;background:rgba(13,5,32,.8);white-space:nowrap">Ctrl+Space</span>
+                </div>
+                <div>
+                  <div style="font-family:'Press Start 2P';font-size:7px;color:#7c6bad;margin-bottom:8px">ANSWER LANGUAGE</div>
+                  <div style="position:relative">
+                    <button onClick="{{ oar.aToggle }}" style="cursor:pointer;width:100%;display:flex;justify-content:space-between;align-items:center;background:rgba(13,5,32,.7);border:1px solid rgba(167,139,250,.4);border-radius:9px;padding:12px 14px;color:#e8e4f4;font-size:17px;font-family:'Space Grotesk',sans-serif" style-hover="border-color:#a78bfa;box-shadow:0 0 12px rgba(124,58,237,.4)">
+                      <span style="display:flex;align-items:center;gap:9px"><span>{{ oar.aName }}</span><span style="font-family:'VT323',monospace;font-size:14px;color:#cdbcff;border:1px solid rgba(167,139,250,.5);border-bottom-width:3px;border-radius:5px;padding:0 7px;background:rgba(13,5,32,.8)">{{ oar.aKey }}</span></span><span style="color:#a78bfa;font-size:12px;transform:{{ oar.aChev }};transition:transform .25s">▼</span>
+                    </button>
+                    <sc-if value="{{ oar.aOpen }}" hint-placeholder-val="{{ false }}">
+                      <div class="arc-scroll" style="position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;background:#160b30;border:1px solid #a78bfa;border-radius:10px;box-shadow:0 12px 30px rgba(0,0,0,.6),0 0 20px rgba(124,58,237,.4);max-height:138px;overflow-y:auto;animation:ddopen .18s ease-out">
+                        <sc-for list="{{ oar.aOpts }}" as="o" hint-placeholder-count="4">
+                          <button onClick="{{ o.go }}" style="cursor:pointer;width:100%;display:flex;justify-content:space-between;align-items:center;background:transparent;border:none;padding:11px 14px;color:#e8e4f4;font-size:16px;font-family:'Space Grotesk',sans-serif" style-hover="background:rgba(124,58,237,.28)"><span>{{ o.name }}</span><span style="font-family:'VT323',monospace;font-size:14px;color:#cdbcff;border:1px solid rgba(167,139,250,.5);border-bottom-width:3px;border-radius:5px;padding:0 7px;background:rgba(13,5,32,.8)">{{ o.chip }}</span></button>
+                        </sc-for>
+                      </div>
+                    </sc-if>
+                  </div>
+                </div>
+              </div>
+              <div style="text-align:center;font-family:'VT323',monospace;font-size:18px;color:#a78bfa;letter-spacing:2px">{{ oar.route }}</div>
+            </div>
+            <div style="display:flex;justify-content:center;margin-top:6px">
+              <div style="position:relative;cursor:pointer" onClick="{{ padArFire }}">
+                <div style="transform:perspective(420px) rotateX(30deg)">
+                  <div ref="{{ padArRef }}" onMouseMove="{{ padArMove }}" onMouseLeave="{{ padArLeave }}" style="display:grid;grid-template-columns:repeat(10,22px);gap:6px">
+                    <sc-for list="{{ arDots }}" as="p" hint-placeholder-count="40">
+                      <div style="width:22px;height:22px;border-radius:3px;background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.22)"></div>
+                    </sc-for>
+                  </div>
+                </div>
+                <div style="position:absolute;inset:0;display:grid;place-items:center;pointer-events:none">
+                  <span style="font-family:'Press Start 2P';font-size:15px;color:#fff;text-shadow:0 0 14px rgba(124,58,237,1),0 2px 0 rgba(0,0,0,.6)">▶ PLAY</span>
+                </div>
+              </div>
+            </div>
+            <div style="text-align:center;font-family:'Press Start 2P';font-size:8px;color:#7c6bad;margin-top:14px;animation:blinky 1.4s step-end infinite">CLICK THE GRID TO START</div>
+            <div style="display:flex;justify-content:center;gap:20px;align-items:center;margin-top:16px;padding-top:14px;border-top:1px solid rgba(167,139,250,.2);flex-wrap:wrap">
+              <span style="font-family:'VT323',monospace;font-size:16px;color:#7c6bad"><span style="color:#cdbcff;border:1px solid rgba(167,139,250,.5);border-bottom-width:3px;border-radius:5px;padding:0 7px;background:rgba(13,5,32,.8)">1</span> <span style="color:#cdbcff;border:1px solid rgba(167,139,250,.5);border-bottom-width:3px;border-radius:5px;padding:0 7px;background:rgba(13,5,32,.8)">2</span> <span style="color:#cdbcff;border:1px solid rgba(167,139,250,.5);border-bottom-width:3px;border-radius:5px;padding:0 7px;background:rgba(13,5,32,.8)">3</span> LENGTH</span>
+              <span style="font-family:'VT323',monospace;font-size:16px;color:#7c6bad"><span style="color:#cdbcff;border:1px solid rgba(167,139,250,.5);border-bottom-width:3px;border-radius:5px;padding:0 7px;background:rgba(13,5,32,.8)">Enter</span> START</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ================= 1A · FROST ================= -->
+    <div id="1a" style="width:740px;flex:0 0 auto;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <a href="#1a" style="font-family:'Schibsted Grotesk',sans-serif;font-size:13px;font-weight:800;color:#fff;background:#0ea5e9;border-radius:7px;padding:5px 11px;text-decoration:none">1a</a>
+        <span style="font-size:14px;font-weight:600;color:#3d4f63">Frost — frosted glass over a blue wash</span>
+      </div>
+      <div data-screen-label="Clean words menu 1a Frost" style="position:relative;border-radius:20px;overflow:hidden;background:linear-gradient(155deg,#d8ecfa 0%,#f4fafe 48%,#e2f1fb 100%);border:1px solid #dceaf4;padding:22px">
+        <div style="position:absolute;top:38px;right:52px;width:15px;height:15px;border-radius:50%;background:rgba(14,165,233,.3);animation:floaty 5s ease-in-out infinite"></div>
+        <div style="position:relative;border-radius:18px;background:rgba(255,255,255,.55);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.8);box-shadow:0 18px 40px -24px rgba(12,105,160,.35);padding:26px 32px 24px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">
+            <div>
+              <div style="font-size:11px;font-weight:700;letter-spacing:1.6px;color:#7b8ca0;margin-bottom:8px">DAILY STAGE · {{ oa.code }}</div>
+              <div style="font-family:'Schibsted Grotesk',sans-serif;font-size:28px;font-weight:700;color:#142033;line-height:1.2">Word Rush</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:15px;letter-spacing:3px;color:#0ea5e9">{{ oa.stars }}</div>
+              <div style="font-size:13px;font-weight:600;color:#7b8ca0;margin-top:5px">{{ oa.diffName }}</div>
+            </div>
+          </div>
+          <div style="position:relative;background:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.9);border-radius:14px;padding:6px;margin-bottom:20px">
+            <div style="position:absolute;top:6px;bottom:6px;left:6px;width:calc((100% - 32px)/3);background:#ffffff;border:1px solid rgba(14,165,233,.3);border-radius:10px;box-shadow:0 3px 10px -3px rgba(12,105,160,.25);pointer-events:none;transform:{{ oa.diffT }};transition:transform .35s cubic-bezier(.25,.8,.3,1)"></div>
+            <div style="display:flex;gap:10px">
+              <button onClick="{{ oa.d0 }}" style="cursor:pointer;flex:1;position:relative;background:transparent;border:none;border-radius:10px;padding:11px 0 10px;text-align:center">
+                <div style="display:flex;justify-content:center;gap:8px;align-items:center"><span style="font-size:12px;font-weight:700;letter-spacing:.8px;color:#51687f">Easy</span><span style="font-size:12px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">1</span></div>
+                <div style="font-size:19px;font-weight:700;color:#142033;margin-top:5px;font-family:'Schibsted Grotesk',sans-serif">5 words</div>
+              </button>
+              <button onClick="{{ oa.d1 }}" style="cursor:pointer;flex:1;position:relative;background:transparent;border:none;border-radius:10px;padding:11px 0 10px;text-align:center">
+                <div style="display:flex;justify-content:center;gap:8px;align-items:center"><span style="font-size:12px;font-weight:700;letter-spacing:.8px;color:#51687f">Normal</span><span style="font-size:12px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">2</span></div>
+                <div style="font-size:19px;font-weight:700;color:#142033;margin-top:5px;font-family:'Schibsted Grotesk',sans-serif">10 words</div>
+              </button>
+              <button onClick="{{ oa.d2 }}" style="cursor:pointer;flex:1;position:relative;background:transparent;border:none;border-radius:10px;padding:11px 0 10px;text-align:center">
+                <div style="display:flex;justify-content:center;gap:8px;align-items:center"><span style="font-size:12px;font-weight:700;letter-spacing:.8px;color:#51687f">Insane</span><span style="font-size:12px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">3</span></div>
+                <div style="font-size:19px;font-weight:700;color:#142033;margin-top:5px;font-family:'Schibsted Grotesk',sans-serif">20 words</div>
+              </button>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:end;margin-bottom:16px">
+            <div>
+              <div style="font-size:11px;font-weight:700;letter-spacing:1.4px;color:#7b8ca0;margin-bottom:8px">PROMPT LANGUAGE</div>
+              <div style="position:relative">
+                <button onClick="{{ oa.pToggle }}" style="cursor:pointer;width:100%;display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.75);border:1px solid #d7e3ee;border-radius:12px;padding:12px 14px;color:#142033;font-size:16px;font-weight:500;font-family:'Figtree',sans-serif;transition:border-color .25s,box-shadow .25s" style-hover="border-color:#7dd3fc;box-shadow:0 4px 14px -6px rgba(12,105,160,.3)">
+                  <span style="display:flex;align-items:center;gap:9px"><span>{{ oa.pName }}</span><span style="font-size:12px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">{{ oa.pKey }}</span></span><span style="color:#0ea5e9;font-size:11px;transform:{{ oa.pChev }};transition:transform .25s">▼</span>
+                </button>
+                <sc-if value="{{ oa.pOpen }}" hint-placeholder-val="{{ false }}">
+                  <div class="cln-scroll" style="position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;background:#fff;border:1px solid #e2eaf2;border-radius:12px;box-shadow:0 18px 44px -18px rgba(20,32,51,.3);max-height:150px;overflow-y:auto;animation:cdopen .18s ease-out">
+                    <sc-for list="{{ oa.pOpts }}" as="o" hint-placeholder-count="4">
+                      <button onClick="{{ o.go }}" style="cursor:pointer;width:100%;display:flex;justify-content:space-between;align-items:center;background:transparent;border:none;padding:11px 14px;color:#142033;font-size:15px;font-family:'Figtree',sans-serif" style-hover="background:#f0f8fd"><span>{{ o.name }}</span><span style="font-size:12px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">{{ o.chip }}</span></button>
+                    </sc-for>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding-bottom:2px">
+              <button onClick="{{ oa.swap }}" style="cursor:pointer;width:44px;height:44px;border-radius:50%;border:1px solid #d7e3ee;background:rgba(255,255,255,.8);color:#0ea5e9;font-size:17px;transition:background .3s,color .3s,transform .4s" style-hover="background:#0ea5e9;color:#fff;transform:rotate(180deg)">⇄</button>
+              <span style="font-size:11px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:1px 6px;background:#fff;white-space:nowrap">Ctrl+Space</span>
+            </div>
+            <div>
+              <div style="font-size:11px;font-weight:700;letter-spacing:1.4px;color:#7b8ca0;margin-bottom:8px">ANSWER LANGUAGE</div>
+              <div style="position:relative">
+                <button onClick="{{ oa.aToggle }}" style="cursor:pointer;width:100%;display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.75);border:1px solid #d7e3ee;border-radius:12px;padding:12px 14px;color:#142033;font-size:16px;font-weight:500;font-family:'Figtree',sans-serif;transition:border-color .25s,box-shadow .25s" style-hover="border-color:#7dd3fc;box-shadow:0 4px 14px -6px rgba(12,105,160,.3)">
+                  <span style="display:flex;align-items:center;gap:9px"><span>{{ oa.aName }}</span><span style="font-size:12px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">{{ oa.aKey }}</span></span><span style="color:#0ea5e9;font-size:11px;transform:{{ oa.aChev }};transition:transform .25s">▼</span>
+                </button>
+                <sc-if value="{{ oa.aOpen }}" hint-placeholder-val="{{ false }}">
+                  <div class="cln-scroll" style="position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;background:#fff;border:1px solid #e2eaf2;border-radius:12px;box-shadow:0 18px 44px -18px rgba(20,32,51,.3);max-height:150px;overflow-y:auto;animation:cdopen .18s ease-out">
+                    <sc-for list="{{ oa.aOpts }}" as="o" hint-placeholder-count="4">
+                      <button onClick="{{ o.go }}" style="cursor:pointer;width:100%;display:flex;justify-content:space-between;align-items:center;background:transparent;border:none;padding:11px 14px;color:#142033;font-size:15px;font-family:'Figtree',sans-serif" style-hover="background:#f0f8fd"><span>{{ o.name }}</span><span style="font-size:12px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">{{ o.chip }}</span></button>
+                    </sc-for>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+          </div>
+          <div style="text-align:center;font-size:15px;font-weight:600;color:#0284c7;letter-spacing:.4px;margin-bottom:22px">{{ oa.route }}</div>
+          <div style="display:flex;justify-content:center">
+            <div onClick="{{ padAClick }}" style="position:relative;cursor:pointer">
+              <div ref="{{ padARef }}" onMouseMove="{{ padAMove }}" onMouseLeave="{{ padALeave }}" style="display:grid;grid-template-columns:repeat(10,24px);gap:9px">
+                <sc-for list="{{ aDots }}" as="p" hint-placeholder-count="40">
+                  <div style="width:24px;height:24px;border-radius:50%;background:rgba(14,165,233,.16);transition:background .3s,transform .3s"></div>
+                </sc-for>
+              </div>
+              <div style="position:absolute;inset:0;display:grid;place-items:center;pointer-events:none">
+                <span style="font-family:'Schibsted Grotesk',sans-serif;font-size:18px;font-weight:800;letter-spacing:5px;color:#0b3a56">▶ PLAY</span>
+              </div>
+            </div>
+          </div>
+          <div style="text-align:center;font-size:13px;font-weight:600;color:#7b8ca0;margin-top:16px;animation:softpulse 2.6s ease-in-out infinite">Click the pad to start</div>
+          <div style="display:flex;justify-content:center;gap:22px;align-items:center;margin-top:16px;padding-top:14px;border-top:1px solid rgba(20,32,51,.08);flex-wrap:wrap">
+            <span style="font-size:13px;font-weight:500;color:#7b8ca0"><span style="font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">1</span> <span style="font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">2</span> <span style="font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">3</span> length</span>
+            <span style="font-size:13px;font-weight:500;color:#7b8ca0"><span style="font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">Enter</span> start</span>
+          </div>
+        </div>
+      </div>
+      <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+        <div style="font-size:13px;color:#7b8ca0;line-height:1.5">Blue-wash gradient background · one frosted panel · dot pad reacts to cursor proximity and ripples outward on click.</div>
+      </sc-if>
+    </div>
+
+    <!-- ================= 1B · PAPER ================= -->
+    <div id="1b" style="width:740px;flex:0 0 auto;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <a href="#1b" style="font-family:'Schibsted Grotesk',sans-serif;font-size:13px;font-weight:800;color:#fff;background:#0ea5e9;border-radius:7px;padding:5px 11px;text-decoration:none">1b</a>
+        <span style="font-size:14px;font-weight:600;color:#3d4f63">Paper — airy minimal, liquid play button</span>
+      </div>
+      <div data-screen-label="Clean words menu 1b Paper" style="position:relative;border-radius:20px;overflow:hidden;background:#fcfdfe;border:1px solid #e8eef4;padding:22px">
+        <div style="position:relative;border-radius:18px;background:#ffffff;border:1px solid #e6edf3;box-shadow:0 1px 2px rgba(20,32,51,.04),0 12px 32px -26px rgba(20,32,51,.18);padding:26px 32px 24px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">
+            <div>
+              <div style="font-size:11px;font-weight:700;letter-spacing:1.6px;color:#98a7b8;margin-bottom:8px">DAILY STAGE · {{ ob.code }}</div>
+              <div style="font-family:'Schibsted Grotesk',sans-serif;font-size:28px;font-weight:700;color:#142033;line-height:1.2">Word Rush</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:15px;letter-spacing:3px;color:#0ea5e9">{{ ob.stars }}</div>
+              <div style="font-size:13px;font-weight:600;color:#98a7b8;margin-top:5px">{{ ob.diffName }}</div>
+            </div>
+          </div>
+          <div style="position:relative;background:#f3f7fa;border:1px solid #eaf0f5;border-radius:14px;padding:6px;margin-bottom:20px">
+            <div style="position:absolute;top:6px;bottom:6px;left:6px;width:calc((100% - 32px)/3);background:#ffffff;border-radius:10px;box-shadow:0 2px 8px rgba(20,32,51,.09);pointer-events:none;transform:{{ ob.diffT }};transition:transform .35s cubic-bezier(.25,.8,.3,1)"></div>
+            <div style="display:flex;gap:10px">
+              <button onClick="{{ ob.d0 }}" style="cursor:pointer;flex:1;position:relative;background:transparent;border:none;border-radius:10px;padding:11px 0 10px;text-align:center">
+                <div style="display:flex;justify-content:center;gap:8px;align-items:center"><span style="font-size:12px;font-weight:700;letter-spacing:.8px;color:#51687f">Easy</span><span style="font-size:12px;font-weight:600;color:#51687f;border:1px solid #dde7ef;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">1</span></div>
+                <div style="font-size:19px;font-weight:700;color:#142033;margin-top:5px;font-family:'Schibsted Grotesk',sans-serif">5 words</div>
+              </button>
+              <button onClick="{{ ob.d1 }}" style="cursor:pointer;flex:1;position:relative;background:transparent;border:none;border-radius:10px;padding:11px 0 10px;text-align:center">
+                <div style="display:flex;justify-content:center;gap:8px;align-items:center"><span style="font-size:12px;font-weight:700;letter-spacing:.8px;color:#51687f">Normal</span><span style="font-size:12px;font-weight:600;color:#51687f;border:1px solid #dde7ef;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">2</span></div>
+                <div style="font-size:19px;font-weight:700;color:#142033;margin-top:5px;font-family:'Schibsted Grotesk',sans-serif">10 words</div>
+              </button>
+              <button onClick="{{ ob.d2 }}" style="cursor:pointer;flex:1;position:relative;background:transparent;border:none;border-radius:10px;padding:11px 0 10px;text-align:center">
+                <div style="display:flex;justify-content:center;gap:8px;align-items:center"><span style="font-size:12px;font-weight:700;letter-spacing:.8px;color:#51687f">Insane</span><span style="font-size:12px;font-weight:600;color:#51687f;border:1px solid #dde7ef;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">3</span></div>
+                <div style="font-size:19px;font-weight:700;color:#142033;margin-top:5px;font-family:'Schibsted Grotesk',sans-serif">20 words</div>
+              </button>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:end;margin-bottom:16px">
+            <div>
+              <div style="font-size:11px;font-weight:700;letter-spacing:1.4px;color:#98a7b8;margin-bottom:8px">PROMPT LANGUAGE</div>
+              <div style="position:relative">
+                <button onClick="{{ ob.pToggle }}" style="cursor:pointer;width:100%;display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px solid #dde7ef;border-radius:12px;padding:12px 14px;color:#142033;font-size:16px;font-weight:500;font-family:'Figtree',sans-serif;transition:border-color .25s,box-shadow .25s" style-hover="border-color:#7dd3fc;box-shadow:0 4px 14px -8px rgba(12,105,160,.35)">
+                  <span style="display:flex;align-items:center;gap:9px"><span>{{ ob.pName }}</span><span style="font-size:12px;font-weight:600;color:#51687f;border:1px solid #dde7ef;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">{{ ob.pKey }}</span></span><span style="color:#0ea5e9;font-size:11px;transform:{{ ob.pChev }};transition:transform .25s">▼</span>
+                </button>
+                <sc-if value="{{ ob.pOpen }}" hint-placeholder-val="{{ false }}">
+                  <div class="cln-scroll" style="position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;background:#fff;border:1px solid #e2eaf2;border-radius:12px;box-shadow:0 18px 44px -18px rgba(20,32,51,.3);max-height:150px;overflow-y:auto;animation:cdopen .18s ease-out">
+                    <sc-for list="{{ ob.pOpts }}" as="o" hint-placeholder-count="4">
+                      <button onClick="{{ o.go }}" style="cursor:pointer;width:100%;display:flex;justify-content:space-between;align-items:center;background:transparent;border:none;padding:11px 14px;color:#142033;font-size:15px;font-family:'Figtree',sans-serif" style-hover="background:#f0f8fd"><span>{{ o.name }}</span><span style="font-size:12px;font-weight:600;color:#51687f;border:1px solid #dde7ef;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">{{ o.chip }}</span></button>
+                    </sc-for>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding-bottom:2px">
+              <button onClick="{{ ob.swap }}" style="cursor:pointer;width:44px;height:44px;border-radius:50%;border:1px solid #dde7ef;background:#fff;color:#0ea5e9;font-size:17px;transition:background .3s,color .3s,transform .4s" style-hover="background:#0ea5e9;color:#fff;transform:rotate(180deg)">⇄</button>
+              <span style="font-size:11px;font-weight:600;color:#51687f;border:1px solid #dde7ef;border-bottom-width:3px;border-radius:6px;padding:1px 6px;background:#fff;white-space:nowrap">Ctrl+Space</span>
+            </div>
+            <div>
+              <div style="font-size:11px;font-weight:700;letter-spacing:1.4px;color:#98a7b8;margin-bottom:8px">ANSWER LANGUAGE</div>
+              <div style="position:relative">
+                <button onClick="{{ ob.aToggle }}" style="cursor:pointer;width:100%;display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px solid #dde7ef;border-radius:12px;padding:12px 14px;color:#142033;font-size:16px;font-weight:500;font-family:'Figtree',sans-serif;transition:border-color .25s,box-shadow .25s" style-hover="border-color:#7dd3fc;box-shadow:0 4px 14px -8px rgba(12,105,160,.35)">
+                  <span style="display:flex;align-items:center;gap:9px"><span>{{ ob.aName }}</span><span style="font-size:12px;font-weight:600;color:#51687f;border:1px solid #dde7ef;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">{{ ob.aKey }}</span></span><span style="color:#0ea5e9;font-size:11px;transform:{{ ob.aChev }};transition:transform .25s">▼</span>
+                </button>
+                <sc-if value="{{ ob.aOpen }}" hint-placeholder-val="{{ false }}">
+                  <div class="cln-scroll" style="position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;background:#fff;border:1px solid #e2eaf2;border-radius:12px;box-shadow:0 18px 44px -18px rgba(20,32,51,.3);max-height:150px;overflow-y:auto;animation:cdopen .18s ease-out">
+                    <sc-for list="{{ ob.aOpts }}" as="o" hint-placeholder-count="4">
+                      <button onClick="{{ o.go }}" style="cursor:pointer;width:100%;display:flex;justify-content:space-between;align-items:center;background:transparent;border:none;padding:11px 14px;color:#142033;font-size:15px;font-family:'Figtree',sans-serif" style-hover="background:#f0f8fd"><span>{{ o.name }}</span><span style="font-size:12px;font-weight:600;color:#51687f;border:1px solid #dde7ef;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">{{ o.chip }}</span></button>
+                    </sc-for>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+          </div>
+          <div style="text-align:center;font-size:15px;font-weight:600;color:#0284c7;letter-spacing:.4px;margin-bottom:22px">{{ ob.route }}</div>
+          <div style="display:flex;justify-content:center">
+            <button onMouseEnter="{{ playBEnter }}" onMouseLeave="{{ playBLeave }}" style="cursor:pointer;position:relative;width:340px;height:76px;border-radius:999px;border:1px solid #dde7ef;background:#fff;overflow:hidden;box-shadow:0 6px 20px -12px rgba(12,105,160,.3)">
+              <div style="position:absolute;left:-30%;top:{{ waveTop }};width:160%;height:230%;transition:top .7s cubic-bezier(.3,.9,.3,1);pointer-events:none">
+                <div style="width:100%;height:100%;background:linear-gradient(180deg,#38bdf8,#0ea5e9);border-radius:43%;animation:waveSpin 8s linear infinite"></div>
+              </div>
+              <span style="position:relative;z-index:1;font-family:'Schibsted Grotesk',sans-serif;font-size:18px;font-weight:800;letter-spacing:5px;color:{{ playBFg }};transition:color .45s">▶ PLAY</span>
+            </button>
+          </div>
+          <div style="text-align:center;font-size:13px;font-weight:600;color:#98a7b8;margin-top:16px;animation:softpulse 2.6s ease-in-out infinite">The tide rises on hover — click to start</div>
+          <div style="display:flex;justify-content:center;gap:22px;align-items:center;margin-top:16px;padding-top:14px;border-top:1px solid #eef3f7;flex-wrap:wrap">
+            <span style="font-size:13px;font-weight:500;color:#98a7b8"><span style="font-weight:600;color:#51687f;border:1px solid #dde7ef;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">1</span> <span style="font-weight:600;color:#51687f;border:1px solid #dde7ef;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">2</span> <span style="font-weight:600;color:#51687f;border:1px solid #dde7ef;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">3</span> length</span>
+            <span style="font-size:13px;font-weight:500;color:#98a7b8"><span style="font-weight:600;color:#51687f;border:1px solid #dde7ef;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">Enter</span> start</span>
+          </div>
+        </div>
+      </div>
+      <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+        <div style="font-size:13px;color:#7b8ca0;line-height:1.5">Pure soft-white background · flat cards with hairline borders · play button fills with a slowly rotating liquid wave on hover.</div>
+      </sc-if>
+    </div>
+
+    <!-- ================= 1C · AMBIENT ================= -->
+    <div id="1c" style="width:740px;flex:0 0 auto;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <a href="#1c" style="font-family:'Schibsted Grotesk',sans-serif;font-size:13px;font-weight:800;color:#fff;background:#0ea5e9;border-radius:7px;padding:5px 11px;text-decoration:none">1c</a>
+        <span style="font-size:14px;font-weight:600;color:#3d4f63">Ambient — glass floating over moving light</span>
+      </div>
+      <div data-screen-label="Clean words menu 1c Ambient" style="position:relative;border-radius:20px;overflow:hidden;background:#f6fbfe;border:1px solid #e2eef6;padding:22px">
+        <div style="position:absolute;top:-60px;left:-40px;width:360px;height:360px;background:radial-gradient(circle,#b9e2fa 0%,rgba(185,226,250,0) 68%);filter:blur(38px);animation:blobA 16s ease-in-out infinite alternate;pointer-events:none"></div>
+        <div style="position:absolute;bottom:-80px;right:-50px;width:420px;height:420px;background:radial-gradient(circle,#d4ebfb 0%,rgba(212,235,251,0) 68%);filter:blur(42px);animation:blobB 20s ease-in-out infinite alternate;pointer-events:none"></div>
+        <div style="position:relative;border-radius:18px;background:rgba(255,255,255,.5);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.7);box-shadow:0 24px 50px -30px rgba(12,105,160,.4);padding:26px 32px 24px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">
+            <div>
+              <div style="font-size:11px;font-weight:700;letter-spacing:1.6px;color:#7b8ca0;margin-bottom:8px">DAILY STAGE · {{ oc.code }}</div>
+              <div style="font-family:'Schibsted Grotesk',sans-serif;font-size:28px;font-weight:700;color:#142033;line-height:1.2">Word Rush</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:15px;letter-spacing:3px;color:#0ea5e9">{{ oc.stars }}</div>
+              <div style="font-size:13px;font-weight:600;color:#7b8ca0;margin-top:5px">{{ oc.diffName }}</div>
+            </div>
+          </div>
+          <div style="position:relative;background:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.85);border-radius:14px;padding:6px;margin-bottom:20px">
+            <div style="position:absolute;top:6px;bottom:6px;left:6px;width:calc((100% - 32px)/3);background:rgba(255,255,255,.9);border:1px solid rgba(14,165,233,.28);border-radius:10px;box-shadow:0 3px 12px -4px rgba(12,105,160,.28);pointer-events:none;transform:{{ oc.diffT }};transition:transform .35s cubic-bezier(.25,.8,.3,1)"></div>
+            <div style="display:flex;gap:10px">
+              <button onClick="{{ oc.d0 }}" style="cursor:pointer;flex:1;position:relative;background:transparent;border:none;border-radius:10px;padding:11px 0 10px;text-align:center">
+                <div style="display:flex;justify-content:center;gap:8px;align-items:center"><span style="font-size:12px;font-weight:700;letter-spacing:.8px;color:#51687f">Easy</span><span style="font-size:12px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">1</span></div>
+                <div style="font-size:19px;font-weight:700;color:#142033;margin-top:5px;font-family:'Schibsted Grotesk',sans-serif">5 words</div>
+              </button>
+              <button onClick="{{ oc.d1 }}" style="cursor:pointer;flex:1;position:relative;background:transparent;border:none;border-radius:10px;padding:11px 0 10px;text-align:center">
+                <div style="display:flex;justify-content:center;gap:8px;align-items:center"><span style="font-size:12px;font-weight:700;letter-spacing:.8px;color:#51687f">Normal</span><span style="font-size:12px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">2</span></div>
+                <div style="font-size:19px;font-weight:700;color:#142033;margin-top:5px;font-family:'Schibsted Grotesk',sans-serif">10 words</div>
+              </button>
+              <button onClick="{{ oc.d2 }}" style="cursor:pointer;flex:1;position:relative;background:transparent;border:none;border-radius:10px;padding:11px 0 10px;text-align:center">
+                <div style="display:flex;justify-content:center;gap:8px;align-items:center"><span style="font-size:12px;font-weight:700;letter-spacing:.8px;color:#51687f">Insane</span><span style="font-size:12px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">3</span></div>
+                <div style="font-size:19px;font-weight:700;color:#142033;margin-top:5px;font-family:'Schibsted Grotesk',sans-serif">20 words</div>
+              </button>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:end;margin-bottom:16px">
+            <div>
+              <div style="font-size:11px;font-weight:700;letter-spacing:1.4px;color:#7b8ca0;margin-bottom:8px">PROMPT LANGUAGE</div>
+              <div style="position:relative">
+                <button onClick="{{ oc.pToggle }}" style="cursor:pointer;width:100%;display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.95);border-radius:12px;padding:12px 14px;color:#142033;font-size:16px;font-weight:500;font-family:'Figtree',sans-serif;box-shadow:0 2px 8px -4px rgba(12,105,160,.2);transition:box-shadow .25s,background .25s" style-hover="background:rgba(255,255,255,.9);box-shadow:0 6px 18px -8px rgba(12,105,160,.35)">
+                  <span style="display:flex;align-items:center;gap:9px"><span>{{ oc.pName }}</span><span style="font-size:12px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">{{ oc.pKey }}</span></span><span style="color:#0ea5e9;font-size:11px;transform:{{ oc.pChev }};transition:transform .25s">▼</span>
+                </button>
+                <sc-if value="{{ oc.pOpen }}" hint-placeholder-val="{{ false }}">
+                  <div class="cln-scroll" style="position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;background:#fff;border:1px solid #e2eaf2;border-radius:12px;box-shadow:0 18px 44px -18px rgba(20,32,51,.3);max-height:150px;overflow-y:auto;animation:cdopen .18s ease-out">
+                    <sc-for list="{{ oc.pOpts }}" as="o" hint-placeholder-count="4">
+                      <button onClick="{{ o.go }}" style="cursor:pointer;width:100%;display:flex;justify-content:space-between;align-items:center;background:transparent;border:none;padding:11px 14px;color:#142033;font-size:15px;font-family:'Figtree',sans-serif" style-hover="background:#f0f8fd"><span>{{ o.name }}</span><span style="font-size:12px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">{{ o.chip }}</span></button>
+                    </sc-for>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding-bottom:2px">
+              <button onClick="{{ oc.swap }}" style="cursor:pointer;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.95);background:rgba(255,255,255,.65);color:#0ea5e9;font-size:17px;transition:background .3s,color .3s,transform .4s" style-hover="background:#0ea5e9;color:#fff;transform:rotate(180deg)">⇄</button>
+              <span style="font-size:11px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:1px 6px;background:#fff;white-space:nowrap">Ctrl+Space</span>
+            </div>
+            <div>
+              <div style="font-size:11px;font-weight:700;letter-spacing:1.4px;color:#7b8ca0;margin-bottom:8px">ANSWER LANGUAGE</div>
+              <div style="position:relative">
+                <button onClick="{{ oc.aToggle }}" style="cursor:pointer;width:100%;display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.95);border-radius:12px;padding:12px 14px;color:#142033;font-size:16px;font-weight:500;font-family:'Figtree',sans-serif;box-shadow:0 2px 8px -4px rgba(12,105,160,.2);transition:box-shadow .25s,background .25s" style-hover="background:rgba(255,255,255,.9);box-shadow:0 6px 18px -8px rgba(12,105,160,.35)">
+                  <span style="display:flex;align-items:center;gap:9px"><span>{{ oc.aName }}</span><span style="font-size:12px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">{{ oc.aKey }}</span></span><span style="color:#0ea5e9;font-size:11px;transform:{{ oc.aChev }};transition:transform .25s">▼</span>
+                </button>
+                <sc-if value="{{ oc.aOpen }}" hint-placeholder-val="{{ false }}">
+                  <div class="cln-scroll" style="position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;background:#fff;border:1px solid #e2eaf2;border-radius:12px;box-shadow:0 18px 44px -18px rgba(20,32,51,.3);max-height:150px;overflow-y:auto;animation:cdopen .18s ease-out">
+                    <sc-for list="{{ oc.aOpts }}" as="o" hint-placeholder-count="4">
+                      <button onClick="{{ o.go }}" style="cursor:pointer;width:100%;display:flex;justify-content:space-between;align-items:center;background:transparent;border:none;padding:11px 14px;color:#142033;font-size:15px;font-family:'Figtree',sans-serif" style-hover="background:#f0f8fd"><span>{{ o.name }}</span><span style="font-size:12px;font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">{{ o.chip }}</span></button>
+                    </sc-for>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+          </div>
+          <div style="text-align:center;font-size:15px;font-weight:600;color:#0284c7;letter-spacing:.4px;margin-bottom:22px">{{ oc.route }}</div>
+          <div style="display:flex;justify-content:center">
+            <div onClick="{{ padCClick }}" style="position:relative;cursor:pointer">
+              <div ref="{{ padCRef }}" style="display:grid;grid-template-columns:repeat(10,24px);gap:9px">
+                <sc-for list="{{ cDots }}" as="d" hint-placeholder-count="40">
+                  <div style="width:24px;height:24px;border-radius:50%;background:rgba(14,165,233,.24);transition:background .3s;animation:cpulse 3s ease-in-out {{ d.delay }} infinite"></div>
+                </sc-for>
+              </div>
+              <div style="position:absolute;inset:0;display:grid;place-items:center;pointer-events:none">
+                <span style="font-family:'Schibsted Grotesk',sans-serif;font-size:18px;font-weight:800;letter-spacing:5px;color:#0b3a56">▶ PLAY</span>
+              </div>
+            </div>
+          </div>
+          <div style="text-align:center;font-size:13px;font-weight:600;color:#7b8ca0;margin-top:16px;animation:softpulse 2.6s ease-in-out infinite">The pad breathes — click to start</div>
+          <div style="display:flex;justify-content:center;gap:22px;align-items:center;margin-top:16px;padding-top:14px;border-top:1px solid rgba(20,32,51,.08);flex-wrap:wrap">
+            <span style="font-size:13px;font-weight:500;color:#7b8ca0"><span style="font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">1</span> <span style="font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">2</span> <span style="font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">3</span> length</span>
+            <span style="font-size:13px;font-weight:500;color:#7b8ca0"><span style="font-weight:600;color:#51687f;border:1px solid #d7e3ee;border-bottom-width:3px;border-radius:6px;padding:0 7px;background:#fff">Enter</span> start</span>
+          </div>
+        </div>
+      </div>
+      <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+        <div style="font-size:13px;color:#7b8ca0;line-height:1.5">Slow-drifting light blobs behind heavy glass · dot pad breathes in a radial wave continuously and ripples on click.</div>
+      </sc-if>
+    </div>
+
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;showArcadeReference&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Canvas&quot; },
+  &quot;showNotes&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Canvas&quot; }
+}">
+class Component extends DCLogic {
+  state = {
+    diffs: { ar: 1, a: 1, b: 1, c: 1 },
+    langs: { ar: [0, 1], a: [0, 1], b: [0, 1], c: [0, 1] },
+    open: null,
+    hovB: false,
+    hov2a: false,
+    hov2b: false,
+    hov2c: false,
+    ringFired: false,
+    mistGone: false,
+    t1: { view: 'menu', phase: 'idle', n: 0 },
+    t2: { page: 'menu', prev: 'menu', on: false, n: 0 },
+    games: { gar: this.initGame(), g1: this.initGame(), g2: this.initGame() }
+  };
+
+  fbTimers = {};
+
+  WORDS = [['verdad', 'truth'], ['luego', 'later'], ['ciudad', 'city'], ['aquí', 'here']];
+
+  initGame() {
+    return { idx: 0, val: '', combo: 0, best: 0, score: 0, fb: null, seed: 0, msg: '', results: [], done: false };
+  }
+
+  mutG(k, patch) {
+    const games = Object.assign({}, this.state.games);
+    games[k] = Object.assign({}, games[k], patch);
+    this.setState({ games: games });
+  }
+
+  answerG(k, ok, ans) {
+    const g = this.state.games[k];
+    const combo = ok ? g.combo + 1 : 0;
+    const idx = g.idx + 1;
+    this.mutG(k, {
+      idx: idx, val: '', fb: ok ? 'ok' : 'bad', seed: g.seed + 1,
+      combo: combo, best: Math.max(g.best, combo),
+      score: g.score + (ok ? 100 * combo : 0),
+      msg: ok ? '' : 'Answer: ' + ans,
+      results: g.results.concat([ok]),
+      done: idx >= this.WORDS.length
+    });
+    clearTimeout(this.fbTimers[k]);
+    this.fbTimers[k] = setTimeout(() => this.mutG(k, { fb: null }), 1400);
+  }
+
+  submitG(k) {
+    const g = this.state.games[k];
+    if (g.done || !g.val.trim()) return;
+    const ans = this.WORDS[g.idx][1];
+    this.answerG(k, g.val.trim().toLowerCase() === ans, ans);
+  }
+
+  skipG(k) {
+    const g = this.state.games[k];
+    if (g.done) return;
+    this.answerG(k, false, this.WORDS[g.idx][1]);
+  }
+
+  finishG(k) {
+    const g = this.state.games[k];
+    if (g.done) return;
+    const pad = [];
+    for (let i = g.results.length; i < this.WORDS.length; i++) pad.push(false);
+    this.mutG(k, { done: true, idx: this.WORDS.length, results: g.results.concat(pad), fb: null, msg: '' });
+  }
+
+  gameVals(k, variant) {
+    const g = this.state.games[k];
+    const p = g.seed % 2;
+    const idxSafe = Math.min(g.idx, this.WORDS.length - 1);
+    const ent = {
+      blur: ['promptBlur1 .55s ease-out both', 'promptBlur2 .55s ease-out both'],
+      rise: ['promptRise1 .45s ease-out both', 'promptRise2 .45s ease-out both'],
+      arc: ['arcDrop1 .4s ease-out both', 'arcDrop2 .4s ease-out both']
+    }[variant];
+    const shakeK = variant === 'arc' ? ['ashake1 .5s', 'ashake2 .5s'] : ['sshake1 .45s', 'sshake2 .45s'];
+    const comboK = variant === 'arc' ? ['arcPop1 .5s', 'arcPop2 .5s'] : ['cswell1 .5s ease-out', 'cswell2 .5s ease-out'];
+    const comboOn = variant === 'arc' ? g.fb === 'ok' : (g.fb === 'ok' && g.combo > 1);
+    const okCount = g.results.filter(Boolean).length;
+    return {
+      prompt: this.WORDS[idxSafe][0],
+      promptAnim: ent[g.idx % 2],
+      count: 'WORD ' + Math.min(g.idx + 1, this.WORDS.length) + '/4',
+      combo: g.combo,
+      comboAnim: comboOn ? comboK[p] : 'none',
+      shakeAnim: g.fb === 'bad' ? shakeK[p] : 'none',
+      railH: (g.results.length / this.WORDS.length * 100) + '%',
+      railCapOp: g.results.length ? 1 : 0,
+      val: g.val,
+      onChange: (e) => this.mutG(k, { val: e.target.value }),
+      onKey: (e) => { if (e.key === 'Enter') this.submitG(k); },
+      submit: () => this.submitG(k),
+      skip: () => this.skipG(k),
+      finish: () => this.finishG(k),
+      again: () => { clearTimeout(this.fbTimers[k]); this.mutG(k, this.initGame()); },
+      fbOk: g.fb === 'ok',
+      fbBad: g.fb === 'bad',
+      msgShow: g.fb === 'bad' && !!g.msg,
+      msg: g.msg,
+      playing: !g.done,
+      done: g.done,
+      score: g.score,
+      best: g.best,
+      okCount: okCount,
+      summary: 'Score ' + g.score + ' · ' + okCount + '/4 words · Best combo ×' + g.best,
+      resultDots: g.results.map((r) => (r ? { bg: '#0ea5e9', bd: '#0ea5e9' } : { bg: 'transparent', bd: '#fda4af' }))
+    };
+  }
+
+  fDots(mode) {
+    const key = '_fd' + mode;
+    if (!this[key]) {
+      const out = [];
+      for (let r = 0; r < 6; r++) for (let c = 0; c < 18; c++) {
+        const d = mode === 'radial' ? Math.hypot(c - 8.5, (r - 2.5) * 2.6) * 26 : c * 30 + r * 6;
+        out.push({ delay: Math.round(d) + 'ms' });
+      }
+      this[key] = out;
+    }
+    return this[key];
+  }
+
+  arcCellsData() {
+    if (!this._ac) {
+      const out = [];
+      for (let r = 0; r < 7; r++) for (let c = 0; c < 22; c++) {
+        out.push({ delay: Math.round(Math.hypot(c - 10.5, (r - 3) * 2.6) * 16) + 'ms' });
+      }
+      this._ac = out;
+    }
+    return this._ac;
+  }
+
+  STREAKS = [
+    { top: '24%', w: '46%', h: '4px', dur: 3.6, delay: 0 },
+    { top: '46%', w: '60%', h: '5px', dur: 4.4, delay: 1.1 },
+    { top: '66%', w: '40%', h: '4px', dur: 3.1, delay: 2 },
+    { top: '34%', w: '30%', h: '3px', dur: 5, delay: 0.4 }
+  ];
+
+  BUBBLES = [
+    { left: '12%', size: '10px', dur: '2.6s', delay: '0s' },
+    { left: '26%', size: '7px', dur: '3.4s', delay: '1.2s' },
+    { left: '40%', size: '12px', dur: '2.9s', delay: '.6s' },
+    { left: '55%', size: '8px', dur: '3.8s', delay: '2s' },
+    { left: '68%', size: '11px', dur: '2.7s', delay: '1.6s' },
+    { left: '82%', size: '7px', dur: '3.2s', delay: '.3s' },
+    { left: '90%', size: '9px', dur: '2.5s', delay: '2.4s' }
+  ];
+
+  ringAnim(i) {
+    const fast = this.state.hov2a;
+    const dur = fast ? 1.6 : 3.2;
+    return 'ringOut ' + dur + 's ease-out ' + (-i * dur / 3).toFixed(2) + 's infinite';
+  }
+
+  LANGS = ['es', 'en', 'fr', 'ru'];
+  NAMES = { es: 'Spanish', en: 'English', fr: 'French', ru: 'Russian' };
+  KEYS = ['S', 'E', 'F', 'R'];
+
+  padRefs = { ar: React.createRef(), a: React.createRef(), c: React.createRef() };
+  mistRef = React.createRef();
+
+  initMist(cv) {
+    if (cv.__init) return;
+    cv.__init = true;
+    cv.width = 680; cv.height = 168;
+    this.mistCtx = cv.getContext('2d');
+    this.mistCtx.scale(2, 2);
+    this.fillFog();
+  }
+
+  fillFog() {
+    const ctx = this.mistCtx;
+    if (!ctx) return;
+    ctx.globalCompositeOperation = 'source-over';
+    const g = ctx.createLinearGradient(0, 0, 0, 84);
+    g.addColorStop(0, 'rgba(246,251,254,.96)');
+    g.addColorStop(1, 'rgba(212,235,250,.93)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, 340, 84);
+  }
+
+  mistMoveH = (e) => {
+    const cv = this.mistRef.current;
+    if (!cv || !this.mistCtx || this.state.mistGone) return;
+    const r = cv.getBoundingClientRect();
+    const x = e.clientX - r.left, y = e.clientY - r.top;
+    const ctx = this.mistCtx;
+    ctx.globalCompositeOperation = 'destination-out';
+    const g = ctx.createRadialGradient(x, y, 0, x, y, 30);
+    g.addColorStop(0, 'rgba(0,0,0,.55)');
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(x, y, 30, 0, 7);
+    ctx.fill();
+  };
+
+  mistFireH = () => {
+    if (this.state.mistGone) return;
+    this.setState({ mistGone: true });
+    clearTimeout(this.mistT);
+    this.mistT = setTimeout(() => {
+      this.fillFog();
+      this.setState({ mistGone: false });
+    }, 1400);
+  };
+
+  mist5aRef = React.createRef();
+  mist5bRef = React.createRef();
+
+  initMistCv(cv, key) {
+    if (cv.__init) return;
+    cv.__init = true;
+    cv.width = 680; cv.height = 168;
+    const ctx = cv.getContext('2d');
+    ctx.scale(2, 2);
+    this[key] = ctx;
+    this.fogFillCtx(ctx);
+  }
+
+  fogFillCtx(ctx) {
+    ctx.globalCompositeOperation = 'source-over';
+    const g = ctx.createLinearGradient(0, 0, 0, 84);
+    g.addColorStop(0, 'rgba(246,251,254,.94)');
+    g.addColorStop(1, 'rgba(212,235,250,.9)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, 340, 84);
+  }
+
+  eraseAt(ctx, x, y, r, a) {
+    ctx.globalCompositeOperation = 'destination-out';
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, 'rgba(0,0,0,' + a + ')');
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, 7);
+    ctx.fill();
+  }
+
+  wipeMoveFor(refKey, ctxKey) {
+    return (e) => {
+      const cv = this[refKey].current;
+      const ctx = this[ctxKey];
+      if (!cv || !ctx) return;
+      const r = cv.getBoundingClientRect();
+      this.eraseAt(ctx, e.clientX - r.left, e.clientY - r.top, 30, 0.55);
+    };
+  }
+
+  move5a = this.wipeMoveFor('mist5aRef', 'ctx5a');
+  move5b = this.wipeMoveFor('mist5bRef', 'ctx5b');
+
+  fire5a = (e) => {
+    const cv = this.mist5aRef.current;
+    if (!cv || this.wipe5a) return;
+    const r = cv.getBoundingClientRect();
+    this.wipe5a = { x: e.clientX - r.left, y: e.clientY - r.top, start: performance.now() };
+  };
+
+  fire5b = () => {
+    if (this.drops5b && this.drops5b.length) return;
+    const arr = [];
+    for (let i = 0; i < 16; i++) {
+      arr.push({ x: 12 + Math.random() * 316, y: Math.random() * 18, v: 1 + Math.random() * 2.2, r: 6 + Math.random() * 6 });
+    }
+    this.drops5b = arr;
+  };
+
+  regenFog(ctx) {
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = 'rgba(228,242,251,0.007)';
+    ctx.fillRect(0, 0, 340, 84);
+  }
+
+  tick = (t) => {
+    const cv = this.mistRef.current;
+    if (cv) {
+      this.initMist(cv);
+      if (!this.state.mistGone) {
+        const ctx = this.mistCtx;
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.fillStyle = 'rgba(228,242,251,0.007)';
+        ctx.fillRect(0, 0, 340, 84);
+      }
+    }
+    const cvA5 = this.mist5aRef.current;
+    if (cvA5) {
+      this.initMistCv(cvA5, 'ctx5a');
+      const ctx = this.ctx5a;
+      if (this.wipe5a) {
+        const p = (t - this.wipe5a.start) / 480;
+        if (p >= 1) this.wipe5a = null;
+        else {
+          const r = 30 + p * 410;
+          ctx.globalCompositeOperation = 'destination-out';
+          const g = ctx.createRadialGradient(this.wipe5a.x, this.wipe5a.y, Math.max(0, r - 60), this.wipe5a.x, this.wipe5a.y, r);
+          g.addColorStop(0, 'rgba(0,0,0,0)');
+          g.addColorStop(0.55, 'rgba(0,0,0,.9)');
+          g.addColorStop(1, 'rgba(0,0,0,0)');
+          ctx.fillStyle = g;
+          ctx.fillRect(0, 0, 340, 84);
+        }
+      } else {
+        this.regenFog(ctx);
+      }
+    }
+    const cvB5 = this.mist5bRef.current;
+    if (cvB5) {
+      this.initMistCv(cvB5, 'ctx5b');
+      const ctx = this.ctx5b;
+      if (this.drops5b && this.drops5b.length) {
+        this.drops5b = this.drops5b.filter((d) => {
+          d.y += d.v;
+          d.v += 0.45;
+          this.eraseAt(ctx, d.x, d.y, d.r, 0.8);
+          return d.y < 100;
+        });
+      } else {
+        this.regenFog(ctx);
+      }
+    }
+    const turb = document.getElementById('waterTurb4b');
+    const disp = document.getElementById('waterDisp4b');
+    if (turb && disp) {
+      const target = this.refHover ? 1.5 : 14;
+      this._refScale = this._refScale == null ? 14 : this._refScale + (target - this._refScale) * 0.07;
+      disp.setAttribute('scale', this._refScale.toFixed(2));
+      const bfx = 0.011 + Math.cos(t * 0.00032) * 0.003;
+      const bfy = 0.028 + Math.sin(t * 0.00045) * 0.007;
+      turb.setAttribute('baseFrequency', bfx.toFixed(4) + ' ' + bfy.toFixed(4));
+    }
+    this.raf = requestAnimationFrame(this.tick);
+  };
+
+  componentDidMount() {
+    this.raf = requestAnimationFrame(this.tick);
+  }
+
+  t1Nav(to) {
+    const t = this.state.t1;
+    if (t.phase !== 'idle') return;
+    const n = t.n + 1;
+    this.setState({ t1: { view: t.view, phase: 'out', n } });
+    clearTimeout(this.t1A); clearTimeout(this.t1B);
+    this.t1A = setTimeout(() => this.setState({ t1: { view: to, phase: 'in', n } }), 270);
+    this.t1B = setTimeout(() => this.setState({ t1: { view: to, phase: 'idle', n } }), 760);
+  }
+
+  t2Nav(to) {
+    const t = this.state.t2;
+    if (t.page === to) return;
+    const n = t.n + 1;
+    this.setState({ t2: { page: to, prev: t.page, on: true, n } });
+    clearTimeout(this.t2T);
+    this.t2T = setTimeout(() => {
+      const c = this.state.t2;
+      this.setState({ t2: { page: c.page, prev: c.page, on: false, n: c.n } });
+    }, 700);
+  }
+
+  setDiff(k, i) {
+    const d = Object.assign({}, this.state.diffs); d[k] = i;
+    this.setState({ diffs: d });
+  }
+
+  swapL(k) {
+    const L = this.state.langs[k];
+    const langs = Object.assign({}, this.state.langs); langs[k] = [L[1], L[0]];
+    this.setState({ langs: langs, open: null });
+  }
+
+  pick(k, side, i) {
+    const cur = this.state.langs[k].slice();
+    if (side === 'p') { if (i === cur[1]) cur[1] = cur[0]; cur[0] = i; }
+    else { if (i === cur[0]) cur[0] = cur[1]; cur[1] = i; }
+    const langs = Object.assign({}, this.state.langs); langs[k] = cur;
+    this.setState({ langs: langs, open: null });
+  }
+
+  toggle(k, side) {
+    const id = k + side;
+    this.setState({ open: this.state.open === id ? null : id });
+  }
+
+  dots(key) {
+    const el = this.padRefs[key].current;
+    return el ? Array.prototype.slice.call(el.children) : [];
+  }
+
+  // arcade pad: instant neon proximity (original behavior)
+  arMove = (e) => {
+    const mx = e.clientX, my = e.clientY;
+    this.dots('ar').forEach((k) => {
+      const r = k.getBoundingClientRect();
+      const d = Math.hypot(r.left + r.width / 2 - mx, r.top + r.height / 2 - my);
+      const t = Math.max(0, 1 - d / 90);
+      k.style.background = 'rgba(167,139,250,' + (0.12 + t * 0.88).toFixed(3) + ')';
+      k.style.boxShadow = t > 0.05 ? '0 0 ' + Math.round(14 * t) + 'px rgba(167,139,250,' + t.toFixed(2) + ')' : 'none';
+    });
+  };
+  arLeave = () => {
+    this.dots('ar').forEach((k) => { k.style.background = 'rgba(167,139,250,0.12)'; k.style.boxShadow = 'none'; });
+  };
+  arFire = () => {
+    this.dots('ar').forEach((k) => { k.style.background = '#cdbcff'; k.style.boxShadow = '0 0 16px rgba(205,188,255,.95)'; });
+    clearTimeout(this.arT);
+    this.arT = setTimeout(this.arLeave, 600);
+  };
+
+  // clean pad 1a: smooth proximity (CSS-transitioned)
+  aMove = (e) => {
+    const mx = e.clientX, my = e.clientY;
+    this.dots('a').forEach((k) => {
+      const r = k.getBoundingClientRect();
+      const d = Math.hypot(r.left + r.width / 2 - mx, r.top + r.height / 2 - my);
+      const t = Math.max(0, 1 - d / 110);
+      k.style.background = 'rgba(14,165,233,' + (0.16 + t * 0.7).toFixed(3) + ')';
+      k.style.transform = 'scale(' + (1 + t * 0.35).toFixed(3) + ')';
+    });
+  };
+  aLeave = () => {
+    this.dots('a').forEach((k) => { k.style.background = 'rgba(14,165,233,0.16)'; k.style.transform = 'scale(1)'; });
+  };
+
+  ripple(key, baseBg, e) {
+    const list = this.dots(key);
+    if (!list.length) return;
+    const mx = e.clientX, my = e.clientY;
+    list.forEach((k) => {
+      const r = k.getBoundingClientRect();
+      const d = Math.hypot(r.left + r.width / 2 - mx, r.top + r.height / 2 - my);
+      k.style.transitionDelay = Math.round(d * 0.9) + 'ms';
+      k.style.background = '#0ea5e9';
+      if (key === 'a') k.style.transform = 'scale(1.3)';
+    });
+    clearTimeout(this.ripT1); clearTimeout(this.ripT2);
+    this.ripT1 = setTimeout(() => {
+      list.forEach((k) => { k.style.background = baseBg; if (key === 'a') k.style.transform = 'scale(1)'; });
+    }, 430);
+    this.ripT2 = setTimeout(() => {
+      list.forEach((k) => { k.style.transitionDelay = '0ms'; });
+    }, 1400);
+  }
+
+  cDotData() {
+    if (!this._cd) {
+      const out = [];
+      for (let r = 0; r < 4; r++) for (let c = 0; c < 10; c++) {
+        const dx = c - 4.5, dy = (r - 1.5) * 2.2;
+        out.push({ delay: (Math.sqrt(dx * dx + dy * dy) * 0.16).toFixed(2) + 's' });
+      }
+      this._cd = out;
+    }
+    return this._cd;
+  }
+
+  opt(k, gap) {
+    const s = this.state;
+    const d = s.diffs[k];
+    const p = s.langs[k][0], a = s.langs[k][1];
+    const L = this.LANGS, N = this.NAMES, K = this.KEYS;
+    const names = ['Easy', 'Normal', 'Insane'];
+    return {
+      diffT: 'translateX(calc(' + (d * 100) + '% + ' + (d * gap) + 'px))',
+      diffName: names[d],
+      diffNameUp: names[d].toUpperCase(),
+      stars: ['★★☆☆☆', '★★★☆☆', '★★★★★'][d],
+      d0: () => this.setDiff(k, 0),
+      d1: () => this.setDiff(k, 1),
+      d2: () => this.setDiff(k, 2),
+      pName: N[L[p]], aName: N[L[a]],
+      pKey: K[p], aKey: '⇧' + K[a],
+      pOpen: s.open === k + 'p', aOpen: s.open === k + 'a',
+      pChev: s.open === k + 'p' ? 'rotate(180deg)' : 'rotate(0deg)',
+      aChev: s.open === k + 'a' ? 'rotate(180deg)' : 'rotate(0deg)',
+      pToggle: () => this.toggle(k, 'p'),
+      aToggle: () => this.toggle(k, 'a'),
+      pOpts: L.map((c, i) => ({ name: N[c], chip: K[i], go: () => this.pick(k, 'p', i) })),
+      aOpts: L.map((c, i) => ({ name: N[c], chip: '⇧' + K[i], go: () => this.pick(k, 'a', i) })),
+      swap: () => this.swapL(k),
+      route: N[L[p]] + '  →  ' + N[L[a]],
+      code: L[p].toUpperCase() + ' → ' + L[a].toUpperCase()
+    };
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.arT); clearTimeout(this.ripT1); clearTimeout(this.ripT2); clearTimeout(this.ringT);
+    clearTimeout(this.mistT); clearTimeout(this.t1A); clearTimeout(this.t1B); clearTimeout(this.t2T);
+    cancelAnimationFrame(this.raf);
+    Object.keys(this.fbTimers).forEach((k) => clearTimeout(this.fbTimers[k]));
+  }
+
+  renderVals() {
+    const s = this.state;
+    return {
+      showArc: this.props.showArcadeReference != null ? this.props.showArcadeReference : true,
+      showNotes: this.props.showNotes != null ? this.props.showNotes : true,
+      anyDD: s.open !== null,
+      closeDD: () => this.setState({ open: null }),
+      oar: this.opt('ar', 14),
+      oa: this.opt('a', 10),
+      ob: this.opt('b', 10),
+      oc: this.opt('c', 10),
+      arDots: Array.from({ length: 40 }, () => ({})),
+      aDots: Array.from({ length: 40 }, () => ({})),
+      cDots: this.cDotData(),
+      padArRef: this.padRefs.ar,
+      padARef: this.padRefs.a,
+      padCRef: this.padRefs.c,
+      padArMove: this.arMove,
+      padArLeave: this.arLeave,
+      padArFire: this.arFire,
+      padAMove: this.aMove,
+      padALeave: this.aLeave,
+      padAClick: (e) => this.ripple('a', 'rgba(14,165,233,0.16)', e),
+      padCClick: (e) => this.ripple('c', 'rgba(14,165,233,0.24)', e),
+      playBEnter: () => this.setState({ hovB: true }),
+      playBLeave: () => this.setState({ hovB: false }),
+      waveTop: s.hovB ? '-115%' : '82%',
+      playBFg: s.hovB ? '#ffffff' : '#0b3a56',
+      r2aIn: () => this.setState({ hov2a: true }),
+      r2aOut: () => this.setState({ hov2a: false }),
+      r2aFire: () => {
+        this.setState({ ringFired: false }, () => {
+          requestAnimationFrame(() => this.setState({ ringFired: true }));
+        });
+        clearTimeout(this.ringT);
+        this.ringT = setTimeout(() => this.setState({ ringFired: false }), 620);
+      },
+      ring2aA0: this.ringAnim(0),
+      ring2aA1: this.ringAnim(1),
+      ring2aA2: this.ringAnim(2),
+      ringFired: s.ringFired,
+      r2bIn: () => this.setState({ hov2b: true }),
+      r2bOut: () => this.setState({ hov2b: false }),
+      streaks: this.STREAKS.map((t) => ({
+        top: t.top, w: t.w, h: t.h,
+        anim: 'streamDrift ' + (s.hov2b ? (t.dur * 0.35).toFixed(2) : t.dur) + 's linear ' + (-t.delay) + 's infinite'
+      })),
+      r2cIn: () => this.setState({ hov2c: true }),
+      r2cOut: () => this.setState({ hov2c: false }),
+      bubbles: this.BUBBLES,
+      bubOp: s.hov2c ? 1 : 0.3,
+      gar: this.gameVals('gar', 'arc'),
+      gv1: this.gameVals('g1', 'blur'),
+      gv2: this.gameVals('g2', 'rise'),
+      fDotsA: this.fDots('radial'),
+      fDotsB: this.fDots('sweep'),
+      arcCells: this.arcCellsData(),
+      mistRef: this.mistRef,
+      mistMove: this.mistMoveH,
+      mistFire: this.mistFireH,
+      mistOp: s.mistGone ? 0 : 1,
+      m5aRef: this.mist5aRef,
+      m5bRef: this.mist5bRef,
+      m5aMove: this.move5a,
+      m5bMove: this.move5b,
+      m5aFire: this.fire5a,
+      m5bFire: this.fire5b,
+      refEnter: () => { this.refHover = true; },
+      refLeave: () => { this.refHover = false; },
+      t1Menu: s.t1.view === 'menu',
+      t1Session: s.t1.view === 'session',
+      t1Anim: s.t1.phase === 'out'
+        ? 'focusOut' + (s.t1.n % 2 ? '1' : '2') + ' .27s ease-in both'
+        : s.t1.phase === 'in'
+          ? 'focusIn' + (s.t1.n % 2 ? '1' : '2') + ' .48s ease-out both'
+          : 'none',
+      t1Go: () => this.t1Nav('session'),
+      t1Back: () => this.t1Nav('menu'),
+      t2BaseMenu: (s.t2.on ? s.t2.prev : s.t2.page) === 'menu',
+      t2BaseSession: (s.t2.on ? s.t2.prev : s.t2.page) === 'session',
+      t2Menu: s.t2.page === 'menu',
+      t2Session: s.t2.page === 'session',
+      t2Anim: s.t2.on ? 'rippleIn' + (s.t2.n % 2 ? '1' : '2') + ' .65s cubic-bezier(.3,.7,.25,1) both' : 'none',
+      t2TopDisp: 'block',
+      t2Go: () => this.t2Nav('session'),
+      t2Back: () => this.t2Nav('menu')
+    };
+  }
+}
+</script>
+</body>
+</html>

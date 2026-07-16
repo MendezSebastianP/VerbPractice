@@ -210,6 +210,10 @@ export interface TranslationState {
   question?: {
     item_id: number;
     prompt: string;
+    // Present so the client can run the quick-shot locally (auto-advance on a
+    // perfect first attempt). Server grading stays authoritative.
+    accepted_answers?: string[];
+    synonym_answers?: string[];
   };
   hint?: string;
   result?: {

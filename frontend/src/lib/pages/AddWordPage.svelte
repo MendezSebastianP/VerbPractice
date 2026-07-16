@@ -4,6 +4,7 @@
   import { api, ApiError } from '../api';
   import DirectionPicker from '../components/DirectionPicker.svelte';
   import HelpTip from '../components/HelpTip.svelte';
+  import PlayClear from '../components/PlayClear.svelte';
   import PlayGrid from '../components/PlayGrid.svelte';
   import PlayMist from '../components/PlayMist.svelte';
   import type {
@@ -22,6 +23,7 @@
   export let notify: (message: string, tone?: 'info' | 'success' | 'error') => void;
 
   let translateMistRef: PlayMist | null = null;
+  let translateClearRef: PlayClear | null = null;
   let translateGridRef: PlayGrid | null = null;
 
   let loading = true;
@@ -236,6 +238,8 @@
     }
     if (theme === 'arcade') {
       translateGridRef?.fire();
+    } else if (theme === 'light') {
+      translateClearRef?.fire();
     } else {
       translateMistRef?.fire();
     }
@@ -833,6 +837,18 @@
             {#if theme === 'arcade'}
               <PlayGrid
                 bind:this={translateGridRef}
+                label="TRANSLATE"
+                rows={3}
+                cell={18}
+                gap={5}
+                fontSize={11}
+                resetAfterFire
+                disabled={adding || !inputText.trim() || !sourceCode || !targetCode || sourceCode === targetCode}
+                on:fire={() => void addWord()}
+              />
+            {:else if theme === 'light'}
+              <PlayClear
+                bind:this={translateClearRef}
                 label="TRANSLATE"
                 rows={3}
                 cell={18}

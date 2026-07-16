@@ -105,6 +105,16 @@
     --rank-color: var(--xp);
   }
 
+  :global(html[data-theme='light']) .rank-s {
+    --rank-color: var(--accent-2);
+    background: color-mix(in srgb, var(--matcha-panel) 40%, white);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, white 72%, transparent);
+  }
+
+  :global(html[data-theme='light']) .rank-s strong {
+    text-shadow: none;
+  }
+
   .rank-b {
     --rank-color: var(--accent);
   }

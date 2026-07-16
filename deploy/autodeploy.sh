@@ -53,10 +53,15 @@ fi
 make migrate
 
 if changed '^(app/data/curated_conjugations/|app/services/curated_conjugations\.py|scripts/import_curated_conjugations\.py)'; then
-    echo "Syncing reviewed English and Russian verb tables..."
+    echo "Syncing curated verb inventory (cross-language translations) + English/Russian tables..."
+    # NOTE: do NOT pass --skip-inventory here. The inventory import is what
+    # creates the EN/RU verbs and every cross-language verb translation
+    # (fr_en, es_ru, en_fr, ...). Skipping it left prod with only the legacy
+    # FR<->ES verb translations, so any other verb direction failed with
+    # "No translations are available for that language pair." The import is
+    # idempotent (get-or-create verb + ensure-translation), so re-running is safe.
     .venv/bin/python scripts/import_curated_conjugations.py \
         --allow-reviewed \
-        --skip-inventory \
         --language EN \
         --language RU
 fi

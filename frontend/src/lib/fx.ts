@@ -49,9 +49,12 @@ export function celebrateReward(reward: RewardState | null | undefined): void {
   if (reward.leveled_up) {
     overlays.push({ id: nextId++, kind: 'level', level: reward.new_level });
   }
-  if (reward.unlocked_badges?.length) {
-    overlays.push({ id: nextId++, kind: 'badges', badges: reward.unlocked_badges });
-  }
+  // Badge unlock overlays are suspended for now — they popped mid-game and
+  // distracted play. Badges still unlock silently (nav XP/profile updates);
+  // re-enable by restoring the push below.
+  // if (reward.unlocked_badges?.length) {
+  //   overlays.push({ id: nextId++, kind: 'badges', badges: reward.unlocked_badges });
+  // }
   if (overlays.length) {
     fxQueue.update((queue) => [...queue, ...overlays]);
   }

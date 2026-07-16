@@ -4,6 +4,7 @@
   import { api, ApiError } from '../api';
   import { navigate } from '../router';
   import { setProfile } from '../profile';
+  import PlayClear from '../components/PlayClear.svelte';
   import PlayGrid from '../components/PlayGrid.svelte';
   import PlayMist from '../components/PlayMist.svelte';
   import type {
@@ -246,9 +247,11 @@
           </div>
           <div class="stage-play">
             {#if isArcade}
-              <PlayGrid label="▶ PLAY" rows={3} cell={16} gap={5} fontSize={11} resetAfterFire on:fire={() => queueNav(card.href)} />
+              <PlayGrid label="PLAY" rows={3} cell={16} gap={5} fontSize={11} resetAfterFire on:fire={() => queueNav(card.href)} />
+            {:else if theme === 'light'}
+              <PlayClear label="PLAY" rows={3} cell={16} gap={5} fontSize={11} resetAfterFire on:fire={() => queueNav(card.href)} />
             {:else}
-              <PlayMist {theme} label="▶ PLAY" width={280} height={62} fontSize={15} resetAfterFire on:fire={() => queueNav(card.href)} />
+              <PlayMist {theme} label="PLAY" width={280} height={62} fontSize={15} resetAfterFire on:fire={() => queueNav(card.href)} />
             {/if}
           </div>
         </article>
@@ -319,7 +322,7 @@
         <div class="settings-row" style="margin-top: 0.85rem;">
           <p class="eyebrow">Theme</p>
           <div class="theme-switcher" role="group" aria-label="Theme switcher">
-            <button class:theme-on={theme === 'light'} type="button" aria-label="Sun mode" title="Sun mode" on:click={() => onTheme('light')}>
+            <button class:theme-on={theme === 'light'} type="button" aria-label="Clear mode" title="Clear mode" on:click={() => onTheme('light')}>
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <circle cx="12" cy="12" r="4.25" fill="none" stroke="currentColor" stroke-width="1.8"></circle>
                 <path d="M12 2.75v2.5M12 18.75v2.5M21.25 12h-2.5M5.25 12h-2.5M18.55 5.45l-1.8 1.8M7.25 16.75l-1.8 1.8M18.55 18.55l-1.8-1.8M7.25 7.25l-1.8-1.8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"></path>

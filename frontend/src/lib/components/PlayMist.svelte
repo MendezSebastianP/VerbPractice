@@ -6,7 +6,9 @@
 
   export let theme: 'light' | 'dark' | 'arcade' = 'light';
   export let disabled = false;
-  export let label = '▶ PLAY';
+  export let label = 'PLAY';
+  // Render the custom play glyph before the label. Off for non-launch actions.
+  export let icon = true;
   export let width = 340;
   export let height = 84;
   export let fontSize = 18;
@@ -122,7 +124,12 @@
   role="presentation"
 >
   <button class="mist-button" type="button" on:click={fire} {disabled} aria-label={label}>
-    <span class="mist-label" style={`font-size: ${fontSize}px;`}>{label}</span>
+    <span class="mist-label" style={`font-size: ${fontSize}px;`}>
+      {#if icon}
+        <svg class="play-glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" /></svg>
+      {/if}
+      {label}
+    </span>
   </button>
   <canvas bind:this={canvasEl} class="mist-canvas" style={`width: ${width}px; height: ${height}px;`} aria-hidden="true"></canvas>
 </div>
@@ -159,11 +166,25 @@
   }
 
   .mist-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
     font-family: var(--display);
     font-weight: 800;
     letter-spacing: 5px;
     color: var(--text);
     white-space: nowrap;
+  }
+
+  .play-glyph {
+    width: 0.85em;
+    height: 0.85em;
+    flex: 0 0 auto;
+    fill: var(--accent-strong, currentColor);
+    /* offset the trailing letter-spacing so the glyph+label read as centered */
+    margin-left: 5px;
+    filter: drop-shadow(0 1px 2px color-mix(in srgb, var(--accent) 40%, transparent));
   }
 
   .mist-canvas {

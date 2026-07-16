@@ -19,10 +19,15 @@
     : 'translation';
   let lastRoutePath = routePath;
   let tableSessionActive = false;
+  let translateSessionActive = false;
+  // Hide the lab chrome while either drill is mid-session so the game sits at
+  // the top of the viewport (matching the Words route) and centers correctly.
+  $: drillSessionActive = tableSessionActive || translateSessionActive;
 
   $: if (routePath !== lastRoutePath) {
     lastRoutePath = routePath;
     tableSessionActive = false;
+    translateSessionActive = false;
     view = routePath === '/training/conjugation' || routePath.startsWith('/training/verbs/conjugation')
       ? 'conjugation'
       : 'translation';
@@ -31,6 +36,7 @@
   function openView(nextView: VerbView): void {
     view = nextView;
     tableSessionActive = false;
+    translateSessionActive = false;
     const query = nextView === 'conjugation' ? '?mode=tables' : '';
     window.history.replaceState({}, '', `${href('/training/verbs')}${query}`);
   }
@@ -51,7 +57,7 @@
 <svelte:window on:keydown={handleModeShortcut} />
 
 <section class="verb-lab-shell">
-  {#if !tableSessionActive}
+  {#if !drillSessionActive}
     <header class="glass-panel verb-lab-header">
     <div class="verb-lab-copy">
       <p class="eyebrow">Verb lab</p>
@@ -101,7 +107,7 @@
   {/if}
 
   {#if view === 'translation'}
-    <TranslationPage mode="verbs" {csrfToken} {soundEnabled} {theme} {notify} />
+    <TranslationPage mode="verbs" {csrfToken} {soundEnabled} {theme} {notify} onSessionActiveChange={(active) => (translateSessionActive = active)} />
   {:else}
     <ConjugationPage {csrfToken} {soundEnabled} {notify} onSessionActiveChange={(active) => (tableSessionActive = active)} />
   {/if}

@@ -8,6 +8,8 @@
   import { celebrateReward, flashMiss, fxQueue, popEl } from '../fx';
   import DirectionPicker from '../components/DirectionPicker.svelte';
   import HelpTip from '../components/HelpTip.svelte';
+  import QuickShotIcon from '../components/QuickShotIcon.svelte';
+  import PlayClear from '../components/PlayClear.svelte';
   import PlayGrid from '../components/PlayGrid.svelte';
   import PlayMist from '../components/PlayMist.svelte';
   import StageClearRank from '../components/StageClearRank.svelte';
@@ -19,12 +21,18 @@
   export let soundEnabled = false;
   export let theme: ThemeName = 'light';
   export let notify: (message: string, tone?: 'info' | 'success' | 'error') => void;
+  // Lets a host (VerbLab) collapse its own chrome while a session is running so
+  // the game sits at the top of the viewport (as it does for the Words route).
+  export let onSessionActiveChange: (active: boolean) => void = () => {};
 
   let loading = true;
   let error = '';
   let state: TranslationState | null = null;
   let answer = '';
   let answerInput: HTMLInputElement | null = null;
+  // Hidden text field focused inside the Play tap so the mobile soft keyboard
+  // opens within the user gesture and stays up until the real input mounts.
+  let kbdPrimer: HTMLInputElement | null = null;
   let retryButton: HTMLButtonElement | null = null;
   let length = 10;
   let direction = mode === 'words' ? 'es_fr' : 'fr_es';
@@ -72,6 +80,7 @@
 
   // Themed PLAY controls + launch transition state (per the .dc.html designs)
   let playMistRef: PlayMist | null = null;
+  let playClearRef: PlayClear | null = null;
   let playGridRef: PlayGrid | null = null;
   let launching = false;
   let pixelOverlay = false;
@@ -83,20 +92,25 @@
   const LENGTH_TIERS: string[] = ['Easy', 'Normal', 'Insane'];
   const DIFF_STARS: string[] = ['★★☆☆☆', '★★★☆☆', '★★★★★'];
 
-  // Pixel-dissolve overlay cells (launch transition from VerbPractice App.dc.html,
-  // tinted per theme). Tiles propagate radially from the center of the screen.
+  // Full-screen launch cells keep the same 16 × 10 transition contract in every
+  // mode. Clear runs as a left-to-right vector shutter; Dark and Arcade retain
+  // their radial dissolve.
   const PIX_PALETTES: Record<string, string[]> = {
     arcade: ['#7c3aed', '#5b21b6', '#8f52f5'],
-    light: ['#0ea5e9', '#0284c7', '#38bdf8'],
+    light: ['#236249', '#13281e', '#ff4c91'],
     dark: ['#2563eb', '#1d4ed8', '#3b82f6'],
   };
   const PIX_CELLS = (() => {
-    const cells: Array<{ ci: number; delay: string }> = [];
+    const cells: Array<{ ci: number; radialDelay: string; vectorDelay: string }> = [];
     for (let r = 0; r < 10; r++) {
       for (let c = 0; c < 16; c++) {
         const dx = c - 7.5;
         const dy = (r - 4.5) * 1.6;
-        cells.push({ ci: (c + r) % 3, delay: (Math.sqrt(dx * dx + dy * dy) * 0.045).toFixed(2) });
+        cells.push({
+          ci: (c + r) % 3,
+          radialDelay: (Math.sqrt(dx * dx + dy * dy) * 0.045).toFixed(3),
+          vectorDelay: (c * 0.022 + Math.abs(r - 4.5) * 0.012).toFixed(3),
+        });
       }
     }
     return cells;
@@ -124,6 +138,33 @@
   // Wrong-attempt tracking for the two-strike flow
   let wrongAttempts = 0;
   let currentQuestionId: number | null = null;
+
+  // ===== Quick-shot: a perfect answer auto-advances without pressing Enter,
+  // mirroring the conjugation table. Spent (must press Enter) once an
+  // impossible letter is typed for the current prompt. =====
+  // Spent is tracked by the item_id it was spent on and DERIVED from the current
+  // question, so it re-arms automatically when the prompt changes (a manual
+  // reset in a reactive block didn't reliably re-light the icon).
+  let quickShotSpentFor: number | null = null;
+  let quickShotGuarding = false;
+  let quickShotAccepted = false;
+  let quickShotExplanationOpen = false;
+  let quickShotAdvanceInFlight = false;
+  let quickShotComposing = false;
+  let quickShotGuardTimer: ReturnType<typeof setTimeout> | null = null;
+  let quickShotAcceptedTimer: ReturnType<typeof setTimeout> | null = null;
+
+  // Answers the quick-shot can fire on. Synonyms only count in words mode —
+  // the grader ignores them for verbs (see submit_translation_answer).
+  $: quickShotAnswers = [
+    ...(state?.question?.accepted_answers ?? []),
+    ...(mode === 'words' ? (state?.question?.synonym_answers ?? []) : []),
+  ];
+  $: quickShotSpent = state?.question?.item_id != null && quickShotSpentFor === state.question.item_id;
+  $: quickShotReady = Boolean(sessionView && quickShotAnswers.length && !quickShotSpent);
+
+  // Mobile viewport re-centering (keep the prompt + input above the keyboard)
+  let mobileCenterFrame: number | null = null;
 
   // Correct answers this run (drives the Stage Clear score + dots)
   let okRun = 0;
@@ -179,6 +220,7 @@
     if (qid !== currentQuestionId) {
       currentQuestionId = qid;
       wrongAttempts = 0;
+      resetQuickShot();
     }
   }
 
@@ -252,20 +294,139 @@
   $: sessionDone = justFinished && !showSetupAfterFinish;
   $: menuView = Boolean(state?.setup && (!justFinished || showSetupAfterFinish));
   $: sessionView = Boolean(state?.question && state?.session && !sessionDone);
+  // Report "in a drill" (session or stage-clear, not the setup menu) so the host
+  // can hide its chrome and keep the game/clear screen full-height on mobile.
+  $: onSessionActiveChange(sessionView || sessionDone);
   $: ds = state?.session ?? prevSession;
   $: routeCode = (ds?.direction ?? direction).replace('_', ' → ').toUpperCase();
   $: progressPct = ds?.progress_total ? (Math.min(ds.progress_current, ds.progress_total) / ds.progress_total) * 100 : 0;
   $: clearTotal = prevSession?.progress_total ?? 0;
   $: clearScore = clearTotal ? Math.round((okRun / clearTotal) * 100) : 0;
 
+  // ===== Quick-shot helpers =====
+  function clearQuickShotTimers(): void {
+    if (quickShotGuardTimer) { clearTimeout(quickShotGuardTimer); quickShotGuardTimer = null; }
+    if (quickShotAcceptedTimer) { clearTimeout(quickShotAcceptedTimer); quickShotAcceptedTimer = null; }
+  }
+
+  function resetQuickShot(): void {
+    clearQuickShotTimers();
+    quickShotSpentFor = null;
+    quickShotGuarding = false;
+    quickShotAccepted = false;
+    quickShotExplanationOpen = false;
+    quickShotAdvanceInFlight = false;
+    quickShotComposing = false;
+  }
+
+  function normalizeQuickShotAnswer(value: string): string {
+    return value
+      .trim()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/\p{M}/gu, '')
+      .replaceAll('œ', 'oe')
+      .replaceAll('æ', 'ae');
+  }
+
+  function armQuickShotGuard(): void {
+    quickShotGuarding = true;
+    if (quickShotGuardTimer) clearTimeout(quickShotGuardTimer);
+    quickShotGuardTimer = setTimeout(() => { quickShotGuarding = false; quickShotGuardTimer = null; }, 600);
+  }
+
+  function animateQuickShotAccepted(): void {
+    quickShotAccepted = true;
+    if (quickShotAcceptedTimer) clearTimeout(quickShotAcceptedTimer);
+    quickShotAcceptedTimer = setTimeout(() => { quickShotAccepted = false; quickShotAcceptedTimer = null; }, 520);
+  }
+
+  async function autoFireQuickShot(): Promise<void> {
+    await tick();
+    await submitAnswer(false);
+    quickShotAdvanceInFlight = false;
+  }
+
+  function processQuickShot(value: string): void {
+    if (quickShotComposing || quickShotAdvanceInFlight || quickShotSpent || loading || launching) {
+      return;
+    }
+    const accepted = quickShotAnswers.map(normalizeQuickShotAnswer).filter(Boolean);
+    if (!accepted.length) return;
+    const draft = normalizeQuickShotAnswer(value);
+    if (!draft) return;
+    if (accepted.includes(draft)) {
+      quickShotExplanationOpen = false;
+      quickShotAdvanceInFlight = true;
+      armQuickShotGuard();
+      animateQuickShotAccepted();
+      void autoFireQuickShot();
+      return;
+    }
+    if (!accepted.some((entry) => entry.startsWith(draft))) {
+      quickShotSpentFor = state?.question?.item_id ?? null;
+    }
+  }
+
+  function handleAnswerInput(event: Event): void {
+    processQuickShot((event.currentTarget as HTMLInputElement).value);
+  }
+
+  function handleAnswerCompositionEnd(event: CompositionEvent): void {
+    quickShotComposing = false;
+    processQuickShot((event.currentTarget as HTMLInputElement).value);
+  }
+
+  // ===== Mobile: keep the prompt + input centered above the keyboard =====
+  function usesCompactViewport(): boolean {
+    return window.matchMedia('(max-width: 760px) and (hover: none) and (pointer: coarse)').matches;
+  }
+
+  // Deadzone scroll: only nudge when the input is actually clipped by the
+  // keyboard (or scrolled too high), and only far enough to sit back inside a
+  // comfortable band. A fixed-center target here oscillated on real phones —
+  // every scroll re-fired visualViewport events and toggled the URL bar.
+  function centerGameInViewport(): void {
+    if (!usesCompactViewport() || !answerInput || document.activeElement !== answerInput) {
+      return;
+    }
+    const rect = answerInput.getBoundingClientRect();
+    const viewport = window.visualViewport;
+    const visibleTop = viewport?.offsetTop ?? 0;
+    const visibleHeight = viewport?.height ?? window.innerHeight;
+    const padTop = 96;   // keep the prompt word above the input on screen
+    const padBottom = 28;
+    let delta = 0;
+    if (rect.bottom > visibleTop + visibleHeight - padBottom) {
+      delta = rect.bottom - (visibleTop + visibleHeight - padBottom);
+    } else if (rect.top < visibleTop + padTop) {
+      delta = rect.top - (visibleTop + padTop);
+    }
+    if (Math.abs(delta) > 8) {
+      window.scrollBy({ top: delta, behavior: 'auto' });
+    }
+  }
+
+  function scheduleMobileViewportCenter(): void {
+    if (mobileCenterFrame !== null) cancelAnimationFrame(mobileCenterFrame);
+    mobileCenterFrame = requestAnimationFrame(() => {
+      mobileCenterFrame = null;
+      centerGameInViewport();
+    });
+  }
+
   async function focusPrimaryControl(): Promise<void> {
     await tick();
     if (sessionDone) {
-      retryButton?.focus();
+      // Keep the mobile keyboard up on the Stage Clear so Enter/Send replays.
+      if (usesCompactViewport()) kbdPrimer?.focus({ preventScroll: true });
+      else retryButton?.focus();
       return;
     }
     if (state?.session && state.question) {
-      answerInput?.focus();
+      const compact = usesCompactViewport();
+      answerInput?.focus({ preventScroll: compact });
+      if (compact) scheduleMobileViewportCenter();
     }
   }
 
@@ -320,7 +481,16 @@
   onMount(() => {
     syncFullscreen();
     document.addEventListener('fullscreenchange', syncFullscreen);
-    return () => document.removeEventListener('fullscreenchange', syncFullscreen);
+    // Only 'resize' (keyboard open/close) — reacting to 'scroll' created a
+    // scroll→scroll feedback loop that bounced the page between two positions.
+    window.visualViewport?.addEventListener('resize', scheduleMobileViewportCenter);
+    return () => {
+      document.removeEventListener('fullscreenchange', syncFullscreen);
+      window.visualViewport?.removeEventListener('resize', scheduleMobileViewportCenter);
+      if (mobileCenterFrame !== null) cancelAnimationFrame(mobileCenterFrame);
+      clearQuickShotTimers();
+      onSessionActiveChange(false);
+    };
   });
 
   // Fetch a fresh session but let the caller decide when to swap it in — the
@@ -351,6 +521,7 @@
     showSetupAfterFinish = false;
     wrongAttempts = 0;
     okRun = 0;
+    resetQuickShot();
     inlineMsg = '';
     inlineTone = '';
     syncControlsFromState(next);
@@ -409,6 +580,9 @@
   // fades to reveal the session. The API call runs behind the effect.
   async function firePlay(): Promise<void> {
     if (launching || loading) return;
+    // Runs synchronously inside the Play tap → opens the soft keyboard in-gesture.
+    // Focus transfers to the real answer input once the session mounts.
+    if (usesCompactViewport()) kbdPrimer?.focus({ preventScroll: true });
     launching = true;
     try {
       pixelOverlay = true;
@@ -425,6 +599,7 @@
       if (!state?.session) {
         // launch failed — restore the menu controls
         playMistRef?.reset();
+        playClearRef?.reset();
         playGridRef?.reset();
         pixelOverlay = false;
         pixelFade = false;
@@ -440,6 +615,10 @@
       playGridRef.fire();
       return;
     }
+    if (theme === 'light' && playClearRef) {
+      playClearRef.fire();
+      return;
+    }
     if (playMistRef) {
       playMistRef.fire?.();
       return;
@@ -448,7 +627,14 @@
   }
 
   async function submitAnswer(reveal = false): Promise<void> {
-    if (!state || state.setup) {
+    if (!state || state.setup || loading) {
+      return;
+    }
+    // Keep validation inside the game UI. Native `required` bubbles can appear
+    // after quick-shot clears the field while the same Enter gesture is still
+    // resolving; an empty submit should simply keep focus and do nothing.
+    if (!reveal && !answer.trim()) {
+      answerInput?.focus({ preventScroll: true });
       return;
     }
     loading = true;
@@ -536,6 +722,9 @@
       showSetupAfterFinish = false;
       syncControlsFromState(state);
       answer = '';
+      // Session just ended: transfer focus to the primer now, while the answer
+      // input is still mounted, so the mobile keyboard survives into Stage Clear.
+      if (justFinished && usesCompactViewport()) kbdPrimer?.focus({ preventScroll: true });
     } catch (err) {
       error = err instanceof ApiError ? err.message : 'Unable to grade answer';
     } finally {
@@ -745,6 +934,17 @@
 <svelte:window on:keydown={handleKeydown} />
 
 <section class="trainer-shell">
+  <!-- Off-screen primer: focused during the Play tap to raise the mobile
+       keyboard in-gesture, then focus moves to the real answer input. -->
+  <input
+    bind:this={kbdPrimer}
+    class="kbd-primer"
+    type="text"
+    inputmode="text"
+    tabindex="-1"
+    aria-hidden="true"
+    autocomplete="off"
+  />
   {#if loading && !state}
     <div class="glass-panel skeleton-card tall-skeleton"></div>
   {:else if error && !state}
@@ -912,12 +1112,14 @@
           <div class="play-area">
             {#if isArcade}
               <PlayGrid bind:this={playGridRef} disabled={launching || loading} on:fire={() => void firePlay()} />
+            {:else if theme === 'light'}
+              <PlayClear bind:this={playClearRef} disabled={launching || loading} on:fire={() => void firePlay()} />
             {:else}
               <PlayMist bind:this={playMistRef} {theme} disabled={launching || loading} on:fire={() => void firePlay()} />
             {/if}
           </div>
           <p class="play-caption" class:blinky={isArcade}>
-            {isArcade ? 'CLICK THE GRID TO START' : 'Wipe the mist · click to start'}
+            {isArcade ? 'CLICK THE GRID TO START' : theme === 'light' ? 'VECTOR GRID · CLICK TO START' : 'Wipe the mist · click to start'}
           </p>
 
           <div class="kbd-footer">
@@ -984,7 +1186,7 @@
             {#if feedbackPulse}
               <div class="cell-wave" aria-hidden="true">
                 {#each WAVE_CELLS as c, i (i)}
-                  <div style={`animation: cellw-${feedbackPulse} .45s ease-out ${c.delay}s both;`}></div>
+                  <div style={`animation: ${theme === 'light' ? 'matcha-cellw' : 'cellw'}-${feedbackPulse} .45s ease-out ${c.delay}s both;`}></div>
                 {/each}
               </div>
               {#if isArcade}
@@ -1020,36 +1222,62 @@
             </div>
 
             {#key dq?.item_id}
-              <div class="prompt-word" bind:this={promptEl}>{dq?.prompt ?? ''}</div>
+              <div
+                class="prompt-word"
+                class:clear-vector-jolt={feedbackPulse === 'error' && theme === 'light'}
+                bind:this={promptEl}
+              >{dq?.prompt ?? ''}</div>
             {/key}
 
-            <form class="answer-line-form" on:submit|preventDefault={() => submitAnswer(false)}>
+            <form class="answer-line-form" novalidate on:submit|preventDefault={() => submitAnswer(false)}>
               <div class="line-input-wrap">
-                <input
-                  bind:this={answerInput}
-                  bind:value={answer}
-                  class="line-input"
-                  placeholder={isArcade ? '▊ type your answer' : 'type your answer'}
-                  autocomplete="off"
-                  autocapitalize="off"
-                  spellcheck="false"
-                  disabled={loading}
-                  required
-                />
-                {#key pulseSeq}
-                  {#if feedbackPulse === 'success'}
-                    <!-- Check draw (chosen in /playground): underline surges,
-                         a checkmark draws itself at the end of the line -->
-                    <span class="line-surge" aria-hidden="true"></span>
-                    <svg class="check-draw" viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M4 12.5 L10 18 L20 6" />
-                    </svg>
-                    {#if isArcade}
-                      <div class="input-burst" aria-hidden="true"></div>
+                <div class="line-input-field">
+                  <input
+                    bind:this={answerInput}
+                    bind:value={answer}
+                    class="line-input"
+                    placeholder={isArcade ? '▊ type your answer' : 'type your answer'}
+                    autocomplete="off"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    inputmode="text"
+                    enterkeyhint="send"
+                    readonly={loading}
+                    on:input={handleAnswerInput}
+                    on:compositionstart={() => (quickShotComposing = true)}
+                    on:compositionend={handleAnswerCompositionEnd}
+                    on:focus={() => { quickShotExplanationOpen = false; scheduleMobileViewportCenter(); }}
+                  />
+                  {#key pulseSeq}
+                    {#if feedbackPulse === 'success'}
+                      <!-- Check draw (chosen in /playground): underline surges,
+                           a checkmark draws itself at the end of the line -->
+                      <span class="line-surge" aria-hidden="true"></span>
+                      <svg class="check-draw" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M4 12.5 L10 18 L20 6" />
+                      </svg>
+                      {#if isArcade}
+                        <div class="input-burst" aria-hidden="true"></div>
+                      {/if}
                     {/if}
-                  {/if}
-                {/key}
+                  {/key}
+                </div>
+                <QuickShotIcon
+                  ready={quickShotReady}
+                  guarding={quickShotGuarding}
+                  accepted={quickShotAccepted}
+                  explanationOpen={quickShotExplanationOpen}
+                  controls="translation-quick-shot-note"
+                  onToggle={() => (quickShotExplanationOpen = !quickShotExplanationOpen)}
+                />
               </div>
+
+              {#if quickShotExplanationOpen}
+                <div class="quick-shot-note" id="translation-quick-shot-note" role="note">
+                  <span>{quickShotReady ? 'QUICK-SHOT ARMED' : 'QUICK-SHOT SPENT'}</span>
+                  <strong>{quickShotReady ? 'A perfect answer fires instantly — no Enter needed.' : 'Impossible letter typed — this one now waits for Enter.'}</strong>
+                </div>
+              {/if}
 
               <div class="session-msg" class:msg-success={inlineTone === 'success'} class:msg-error={inlineTone === 'error'} class:msg-info={inlineTone === 'info'}>
                 {#if inlineMsg}<span>{inlineMsg}</span>{/if}
@@ -1094,7 +1322,8 @@
             unitLabel={itemPlural}
           >
             <button bind:this={retryButton} class="primary-button" type="button" on:click={() => { popEl(retryButton); void startSession(); }} disabled={loading}>
-              ▶ Replay <span class="kbd-chip">Enter</span>
+              <svg class="btn-play-glyph" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" /></svg>
+              Replay <span class="kbd-chip">Enter</span>
             </button>
             <button class="secondary-button" type="button" on:click={revealSetup} disabled={loading}>
               Menu <span class="kbd-chip">{isFullscreen ? 'Ctrl+Space' : 'Esc'}</span>
@@ -1107,9 +1336,9 @@
 
   <!-- Arcade launch: full-screen pixel dissolve -->
   {#if pixelOverlay}
-    <div class="pixel-overlay" class:pixel-fade={pixelFade} aria-hidden="true">
+    <div class="pixel-overlay" class:pixel-fade={pixelFade} class:vector-overlay={theme === 'light'} aria-hidden="true">
       {#each PIX_CELLS as c, i (i)}
-        <div style={`background: ${pixPalette[c.ci]}; animation: cellon .32s ease-out ${c.delay}s both;`}></div>
+        <div style={`background: ${pixPalette[c.ci]}; animation: ${theme === 'light' ? 'vector-cellon' : 'cellon'} .32s cubic-bezier(.2,.8,.2,1) ${theme === 'light' ? c.vectorDelay : c.radialDelay}s both;`}></div>
       {/each}
     </div>
   {/if}
@@ -1120,6 +1349,26 @@
     max-width: 720px;
     margin-inline: auto;
     width: 100%;
+  }
+
+  /* Focusable but visually hidden. font-size 16px prevents iOS zoom; not
+     display:none/visibility:hidden so focusing it can still raise the keyboard. */
+  .kbd-primer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    font-size: 16px;
+    opacity: 0;
+    background: transparent;
+    color: transparent;
+    caret-color: transparent;
+    pointer-events: none;
+    z-index: -1;
   }
 
   .card-help-row {
@@ -1466,6 +1715,15 @@
     animation: focus-in 0.48s ease-out both;
   }
 
+  :global(html[data-theme='light']) .session-in-clean {
+    animation: clear-vector-session-in 0.48s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  @keyframes clear-vector-session-in {
+    0% { opacity: 0; clip-path: inset(0 100% 0 0); transform: translateX(-8px); }
+    100% { opacity: 1; clip-path: inset(0 0 0 0); transform: translateX(0); }
+  }
+
   @keyframes focus-in {
     0% { opacity: 0; filter: blur(14px); }
     100% { opacity: 1; filter: blur(0); }
@@ -1501,6 +1759,17 @@
 
   .rail-left { left: 9px; }
   .rail-right { right: 9px; }
+
+  :global(html[data-theme='light']) .session-card {
+    border-radius: 10px;
+    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+  }
+
+  :global(html[data-theme='light']) .rail,
+  :global(html[data-theme='light']) .rail-fill,
+  :global(html[data-theme='light']) .rail-cap {
+    border-radius: 0;
+  }
 
   .rail-fill {
     position: absolute;
@@ -1602,6 +1871,21 @@
     100% { opacity: 1; filter: blur(0); }
   }
 
+  :global(html[data-theme='light']) .prompt-word {
+    letter-spacing: -0.055em;
+  }
+
+  .clear-vector-jolt {
+    animation: clear-vector-jolt 420ms ease-out both !important;
+  }
+
+  @keyframes clear-vector-jolt {
+    0%, 100% { transform: translateX(0) skewX(0); }
+    24% { transform: translateX(-8px) skewX(-7deg); }
+    52% { transform: translateX(7px) skewX(5deg); }
+    74% { transform: translateX(-3px) skewX(-2deg); }
+  }
+
   :global(.prompt-glitch) {
     animation: glitchy 0.5s ease-out !important;
   }
@@ -1620,10 +1904,20 @@
   }
 
   .line-input-wrap {
-    position: relative;
-    max-width: 420px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 440px;
     margin: 0 auto;
     width: 100%;
+  }
+
+  /* Holds the underline input + its success flourishes; the quick-shot icon
+     sits beside it (a flex sibling) so it never covers the typed answer. */
+  .line-input-field {
+    position: relative;
+    flex: 1 1 auto;
+    min-width: 0;
   }
 
   .line-input {
@@ -1641,6 +1935,35 @@
     border-radius: 0;
   }
 
+  .quick-shot-note {
+    max-width: 440px;
+    margin: 0.6rem auto 0;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid color-mix(in srgb, var(--accent-2) 40%, transparent);
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--accent-soft) 60%, transparent);
+    display: grid;
+    gap: 0.15rem;
+    text-align: center;
+  }
+
+  .quick-shot-note > span {
+    font: 700 0.68rem/1 var(--mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+  }
+
+  :global(html[data-theme='light']) .quick-shot-note > span {
+    color: var(--danger);
+  }
+
+  .quick-shot-note > strong {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
   :global(html[data-theme='arcade']) .line-input {
     font-family: var(--mono);
     font-size: 1.5rem;
@@ -1651,6 +1974,17 @@
   .line-input:focus {
     border-bottom-color: var(--accent);
     box-shadow: 0 12px 20px -16px color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+
+  :global(html[data-theme='light']) .line-input {
+    background: color-mix(in srgb, var(--matcha-field) 34%, transparent);
+    border-bottom-color: var(--accent);
+    font-weight: 650;
+  }
+
+  :global(html[data-theme='light']) .line-input:focus {
+    border-bottom-color: var(--accent-2);
+    box-shadow: inset 0 -3px 0 color-mix(in srgb, var(--accent-2) 55%, transparent);
   }
 
   /* Check draw — the chosen correct-answer feedback (playground option A) */
@@ -1673,7 +2007,7 @@
 
   .check-draw {
     position: absolute;
-    right: -34px;
+    right: 2px;
     top: 50%;
     margin-top: -11px;
     width: 22px;
@@ -1700,7 +2034,7 @@
 
   @media (max-width: 560px) {
     .check-draw {
-      right: -26px;
+      right: 2px;
       width: 18px;
       height: 18px;
       margin-top: -9px;
@@ -1837,6 +2171,12 @@
     border-radius: 1px;
   }
 
+  :global(html[data-theme='light']) .cell-wave > div {
+    border-radius: 0;
+    clip-path: polygon(0 0, 78% 0, 100% 25%, 100% 100%, 22% 100%, 0 75%);
+    transform-origin: center;
+  }
+
   /* Tile colors ride the theme tokens: violet in arcade, sky in light,
      blue in dark; wrong is always the theme's danger red.
      -global- keeps the names unscoped: the cells reference them from inline
@@ -1851,6 +2191,16 @@
     0% { background: color-mix(in srgb, var(--accent) 5%, transparent); }
     35% { background: color-mix(in srgb, var(--danger) 58%, transparent); }
     100% { background: color-mix(in srgb, var(--accent) 5%, transparent); }
+  }
+
+  @keyframes -global-matcha-cellw-success {
+    0%, 100% { opacity: 0; background: var(--accent); transform: scaleX(0.25); }
+    42% { opacity: 0.66; background: var(--accent); transform: scaleX(1); }
+  }
+
+  @keyframes -global-matcha-cellw-error {
+    0%, 100% { opacity: 0; background: var(--accent-2); transform: scaleX(0.25); }
+    42% { opacity: 0.62; background: var(--accent-2); transform: scaleX(1); }
   }
 
   .edge-flash {
@@ -1890,6 +2240,10 @@
     animation: shake-anim 0.45s ease-out;
   }
 
+  :global(html[data-theme='light']) .shake-anim {
+    animation: none;
+  }
+
   :global(html[data-theme='arcade']) .shake-anim {
     animation-name: shake-arcade;
   }
@@ -1907,6 +2261,13 @@
   .clear-card {
     padding-top: 2.5rem;
     padding-bottom: 2.25rem;
+  }
+
+  .btn-play-glyph {
+    width: 0.8em;
+    height: 0.8em;
+    margin-right: 0.1em;
+    vertical-align: -0.06em;
   }
 
   /* Keep the rank content above the clear-sweep overlay (z-index 4) */
@@ -1938,6 +2299,15 @@
     100% { transform: scale(1); opacity: 1; }
   }
 
+  .vector-overlay > div {
+    transform-origin: left center;
+  }
+
+  @keyframes -global-vector-cellon {
+    0% { transform: scaleX(0); opacity: 0; }
+    100% { transform: scaleX(1); opacity: 1; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .session-in-clean,
     .session-in-arcade,
@@ -1952,6 +2322,11 @@
     .input-burst,
     .floaty-dot {
       display: none;
+    }
+
+    .pixel-overlay > div {
+      animation-duration: 1ms !important;
+      animation-delay: 0ms !important;
     }
   }
 

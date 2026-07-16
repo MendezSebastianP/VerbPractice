@@ -4,7 +4,9 @@
   import { createEventDispatcher, onDestroy } from 'svelte';
 
   export let disabled = false;
-  export let label = '▶ PLAY';
+  export let label = 'PLAY';
+  // Render the custom play glyph before the label. Off for non-launch actions.
+  export let icon = true;
   export let cols = 10;
   export let rows = 4;
   export let cell = 22;
@@ -88,7 +90,12 @@
       {/each}
     </span>
   </span>
-  <span class="pg-label" style={`font-size: ${fontSize}px;`}>{label}</span>
+  <span class="pg-label" style={`font-size: ${fontSize}px;`}>
+    {#if icon}
+      <svg class="pg-play-glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" /></svg>
+    {/if}
+    {label}
+  </span>
 </button>
 
 <style>
@@ -124,12 +131,22 @@
   .pg-label {
     position: absolute;
     inset: 0;
-    display: grid;
-    place-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45em;
     pointer-events: none;
     font-family: var(--display);
     color: #fff;
     text-shadow: 0 0 14px rgba(124, 58, 237, 1), 0 2px 0 rgba(0, 0, 0, 0.6);
     letter-spacing: 0.04em;
+  }
+
+  .pg-play-glyph {
+    width: 0.9em;
+    height: 0.9em;
+    flex: 0 0 auto;
+    fill: #fff;
+    filter: drop-shadow(0 0 10px rgba(124, 58, 237, 0.9));
   }
 </style>

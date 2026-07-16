@@ -129,6 +129,31 @@
     animation: guard-window 600ms ease-out both;
   }
 
+  :global(html[data-theme='dark']) .quick-shot-icon {
+    border-color: color-mix(in srgb, var(--accent) 62%, transparent);
+    color: var(--accent);
+    background: var(--ink-panel);
+    box-shadow: inset 0 -2px 0 var(--accent-2);
+    animation: shot-breathe-ink 1.8s steps(2, end) infinite;
+  }
+
+  :global(html[data-theme='dark']) .quick-shot-icon > span {
+    background: var(--accent-2);
+    box-shadow: none;
+  }
+
+  :global(html[data-theme='dark']) .quick-shot-icon.accepted {
+    animation: shot-accepted-ink 480ms steps(3, end) both;
+  }
+
+  @keyframes shot-breathe-ink {
+    50% { border-color: var(--accent-strong); transform: translateY(-1px); }
+  }
+
+  @keyframes shot-accepted-ink {
+    42% { color: var(--success); transform: scale(1.12); box-shadow: inset 0 -3px 0 var(--success); }
+  }
+
   @keyframes shot-breathe {
     50% {
       box-shadow:

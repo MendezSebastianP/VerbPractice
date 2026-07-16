@@ -251,7 +251,7 @@
             {:else if theme === 'light'}
               <PlayClear label="PLAY" rows={3} cell={16} gap={5} fontSize={11} resetAfterFire on:fire={() => queueNav(card.href)} />
             {:else}
-              <PlayMist {theme} label="PLAY" width={280} height={62} fontSize={15} resetAfterFire on:fire={() => queueNav(card.href)} />
+              <PlayMist {theme} label="PLAY" width={205} height={58} fontSize={11} resetAfterFire on:fire={() => queueNav(card.href)} />
             {/if}
           </div>
         </article>

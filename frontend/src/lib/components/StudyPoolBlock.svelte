@@ -103,6 +103,7 @@
 <style>
   .study-pool-block { --study-violet: #7065e8; --study-coral: #e56f52; display: grid; overflow: hidden; border: 1px solid color-mix(in srgb, var(--study-violet) 36%, var(--line)); border-radius: 14px; background: color-mix(in srgb, var(--surface-strong) 88%, var(--study-violet) 4%); }
   :global(html[data-theme='light']) .study-pool-block { --study-violet: var(--accent); --study-coral: var(--accent-2); border-radius: 9px; }
+  :global(html[data-theme='dark']) .study-pool-block { --study-violet: var(--accent); --study-coral: var(--accent-2); border-radius: 0 14px 0 14px; background: color-mix(in srgb, var(--ink-panel) 92%, var(--accent) 3%); }
   .study-pool-trigger { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 0.8rem; align-items: center; width: 100%; min-height: 4.5rem; padding: 0.8rem 1rem; border: 0; color: var(--text); text-align: left; background: linear-gradient(90deg, color-mix(in srgb, var(--study-violet) 10%, var(--surface)), color-mix(in srgb, var(--study-coral) 5%, var(--surface))); }
   .study-pool-trigger:hover { background: linear-gradient(90deg, color-mix(in srgb, var(--study-violet) 15%, var(--surface)), color-mix(in srgb, var(--study-coral) 8%, var(--surface))); }
   .study-pool-icon { display: grid; width: 2.5rem; height: 2.5rem; place-items: center; border-radius: 10px; color: var(--study-violet); background: color-mix(in srgb, var(--study-violet) 13%, transparent); font-size: 1.25rem; }

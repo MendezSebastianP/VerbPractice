@@ -98,7 +98,7 @@
   const PIX_PALETTES: Record<string, string[]> = {
     arcade: ['#7c3aed', '#5b21b6', '#8f52f5'],
     light: ['#236249', '#13281e', '#ff4c91'],
-    dark: ['#2563eb', '#1d4ed8', '#3b82f6'],
+    dark: ['#0b0906', '#211a11', '#e6a528'],
   };
   const PIX_CELLS = (() => {
     const cells: Array<{ ci: number; radialDelay: string; vectorDelay: string }> = [];
@@ -1115,7 +1115,7 @@
             {:else if theme === 'light'}
               <PlayClear bind:this={playClearRef} disabled={launching || loading} on:fire={() => void firePlay()} />
             {:else}
-              <PlayMist bind:this={playMistRef} {theme} disabled={launching || loading} on:fire={() => void firePlay()} />
+              <PlayMist bind:this={playMistRef} {theme} width={274} height={106} fontSize={15} disabled={launching || loading} on:fire={() => void firePlay()} />
             {/if}
           </div>
           <p class="play-caption" class:blinky={isArcade}>
@@ -2177,8 +2177,8 @@
     transform-origin: center;
   }
 
-  /* Tile colors ride the theme tokens: violet in arcade, sky in light,
-     blue in dark; wrong is always the theme's danger red.
+  /* Tile colors ride the theme tokens: violet in Arcade, Matcha in Clear,
+     saffron in Moon; wrong is always the theme's danger red.
      -global- keeps the names unscoped: the cells reference them from inline
      styles (per-cell radial delays), which Svelte's scoping can't rewrite. */
   @keyframes -global-cellw-success {
@@ -2246,6 +2246,70 @@
 
   :global(html[data-theme='arcade']) .shake-anim {
     animation-name: shake-arcade;
+  }
+
+  /* Ink Saffron · Moon session. Same rails, input and grading grid, now with
+     the dry, high-contrast motion language selected in the palette study. */
+  :global(html[data-theme='dark']) .session-in-clean {
+    animation: ink-session-in 440ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  @keyframes ink-session-in {
+    0% { opacity: 0; clip-path: inset(0 0 100% 0); transform: translateY(8px); }
+    100% { opacity: 1; clip-path: inset(0 0 0 0); transform: translateY(0); }
+  }
+
+  :global(html[data-theme='dark']) .session-card,
+  :global(html[data-theme='dark']) .clear-card {
+    border-radius: 0 18px 0 18px;
+  }
+
+  :global(html[data-theme='dark']) .rail,
+  :global(html[data-theme='dark']) .rail-fill,
+  :global(html[data-theme='dark']) .rail-cap {
+    border-radius: 0;
+  }
+
+  :global(html[data-theme='dark']) .rail {
+    background: color-mix(in srgb, var(--accent) 10%, var(--ink-field));
+  }
+
+  :global(html[data-theme='dark']) .rail-fill {
+    background: linear-gradient(180deg, var(--accent-2), var(--accent));
+    box-shadow: none;
+  }
+
+  :global(html[data-theme='dark']) .rail-cap {
+    background: var(--accent);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-2) 46%, transparent);
+  }
+
+  :global(html[data-theme='dark']) .prompt-word {
+    letter-spacing: -0.055em;
+  }
+
+  :global(html[data-theme='dark']) .line-input {
+    border-bottom-color: color-mix(in srgb, var(--accent) 56%, transparent);
+    font-weight: 650;
+  }
+
+  :global(html[data-theme='dark']) .line-input:focus {
+    border-bottom-color: var(--accent);
+    box-shadow: inset 0 -2px 0 var(--accent-2);
+  }
+
+  :global(html[data-theme='dark']) .check-draw path {
+    filter: none;
+  }
+
+  :global(html[data-theme='dark']) .quick-shot-note {
+    border-radius: 0 9px 0 9px;
+    background: color-mix(in srgb, var(--accent) 5%, var(--ink-panel));
+  }
+
+  :global(html[data-theme='dark']) .cell-wave > div {
+    border-radius: 0;
+    transform-origin: center;
   }
 
   @keyframes shake-arcade {

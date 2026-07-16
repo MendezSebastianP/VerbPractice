@@ -34,28 +34,41 @@
 }
 
 html[data-theme='dark'] {
-  --bg: #0f172a;
-  --bg-mid: #0b1220;
-  --bg-soft: #111a2c;
-  --surface: rgba(30, 41, 59, 0.75);
-  --surface-strong: rgba(30, 41, 59, 0.9);
-  --surface-dark: rgba(15, 23, 42, 0.92);
-  --line: rgba(148, 163, 184, 0.16);
-  --line-strong: rgba(148, 163, 184, 0.3);
-  --text: #f1f5f9;
-  --muted: #94a3b8;
-  --accent: #3b82f6;
-  --accent-strong: #60a5fa;
-  --accent-soft: rgba(59, 130, 246, 0.14);
-  --accent-2: #facc15;
-  --success: #22c55e;
-  --danger: #ef4444;
-  --xp: #facc15;
-  --shadow: 0 28px 60px rgba(0, 0, 0, 0.45);
-  --button-shadow: 0 10px 24px -14px rgba(59, 130, 246, 0.55);
-  --ui: "Space Grotesk", sans-serif;
-  --display: "Space Grotesk", sans-serif;
-  --marquee: "Space Grotesk", sans-serif;
+  /* Ink Saffron — Moon mode primitives. */
+  --ink-field: #0b0906;
+  --ink-panel: #16110c;
+  --ink-raised: #211a11;
+  --ink-ivory: #f0e7d8;
+  --ink-muted: #9e9181;
+  --ink-saffron: #e6a528;
+  --ink-saffron-bright: #f0bd52;
+  --ink-vermilion: #d75b4b;
+  --ink-sage: #89b879;
+
+  /* Semantic theme layer. Components keep using the shared aliases below. */
+  --bg: var(--ink-field);
+  --bg-mid: #100c08;
+  --bg-soft: #19130d;
+  --surface: rgba(22, 17, 12, 0.78);
+  --surface-strong: rgba(33, 26, 17, 0.92);
+  --surface-dark: rgba(11, 9, 6, 0.96);
+  --line: rgba(240, 231, 216, 0.11);
+  --line-strong: rgba(230, 165, 40, 0.32);
+  --text: var(--ink-ivory);
+  --muted: var(--ink-muted);
+  --accent: var(--ink-saffron);
+  --accent-strong: var(--ink-saffron-bright);
+  --accent-soft: rgba(230, 165, 40, 0.12);
+  --accent-2: var(--ink-vermilion);
+  --success: var(--ink-sage);
+  --danger: #e26352;
+  --xp: var(--ink-saffron);
+  --shadow: 0 28px 64px -34px rgba(0, 0, 0, 0.86);
+  --button-shadow: 0 14px 28px -18px rgba(230, 165, 40, 0.62);
+  --ui: "Schibsted Grotesk", sans-serif;
+  --display: "Syne", sans-serif;
+  --marquee: "Syne", sans-serif;
+  --mono: "IBM Plex Mono", monospace;
 }
 
 html[data-theme='arcade'] {
@@ -115,6 +128,29 @@ html[data-theme='arcade'] {
       linear-gradient(155deg, var(--bg-mid) 0%, var(--bg-soft) 48%, var(--bg) 100%);
     background-attachment: fixed;
     transition: background-color 220ms ease, color 220ms ease;
+  }
+
+  html[data-theme='dark'] body {
+    background:
+      radial-gradient(circle at 8% -8%, rgba(215, 91, 75, 0.12), transparent 30rem),
+      radial-gradient(circle at 92% 4%, rgba(230, 165, 40, 0.11), transparent 32rem),
+      linear-gradient(148deg, var(--bg-soft) 0%, var(--bg-mid) 34%, var(--bg) 76%);
+    background-attachment: fixed;
+  }
+
+  html[data-theme='dark'] body::before {
+    position: fixed;
+    z-index: 0;
+    inset: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      rgba(240, 231, 216, 0.012) 0,
+      rgba(240, 231, 216, 0.012) 1px,
+      transparent 1px,
+      transparent 8px
+    );
+    content: '';
+    pointer-events: none;
   }
 
   html[data-theme='arcade'] body::after {
@@ -1651,6 +1687,209 @@ html[data-theme='light'] .page-floor {
 
 html[data-theme='light'] :is(.badge-tile, .badge-flip-card).rarity-epic :is(.badge-tile-rarity, .badge-rarity) {
   color: var(--danger);
+}
+
+/* Ink Saffron Moon mode. This layer changes material, color, type and motion
+   only; component dimensions and route structure remain shared with the app. */
+html[data-theme='dark'] {
+  scrollbar-color: color-mix(in srgb, var(--accent) 42%, transparent) var(--bg);
+}
+
+html[data-theme='dark'] ::selection {
+  color: var(--ink-field);
+  background: var(--ink-saffron);
+}
+
+html[data-theme='dark'] .topbar-shell {
+  border-bottom-color: color-mix(in srgb, var(--accent) 24%, transparent);
+  background: color-mix(in srgb, var(--ink-field) 88%, transparent);
+  box-shadow: 0 16px 38px -30px rgba(0, 0, 0, 0.94);
+}
+
+html[data-theme='dark'] .glass-panel {
+  border-color: color-mix(in srgb, var(--ink-ivory) 13%, transparent);
+  border-radius: 0 18px 0 18px;
+  background:
+    linear-gradient(142deg, color-mix(in srgb, var(--ink-raised) 86%, transparent), color-mix(in srgb, var(--ink-panel) 94%, transparent));
+  box-shadow: var(--shadow), inset 0 1px 0 rgba(240, 231, 216, 0.025);
+  backdrop-filter: blur(16px);
+}
+
+html[data-theme='dark'] .strong-panel {
+  border-color: color-mix(in srgb, var(--accent) 27%, transparent);
+  background:
+    linear-gradient(90deg, var(--accent-2) 0 3px, transparent 3px),
+    linear-gradient(142deg, color-mix(in srgb, var(--ink-raised) 96%, transparent), color-mix(in srgb, var(--ink-panel) 97%, transparent));
+}
+
+html[data-theme='dark'] :is(.nav-rail, .theme-switcher, .profile-cluster, .user-chip) {
+  border-color: color-mix(in srgb, var(--ink-ivory) 12%, transparent);
+  background: color-mix(in srgb, var(--ink-panel) 91%, transparent);
+  box-shadow: inset 0 1px 0 rgba(240, 231, 216, 0.025);
+}
+
+html[data-theme='dark'] .nav-pill-indicator {
+  border-color: color-mix(in srgb, var(--accent) 48%, transparent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--ink-raised));
+  box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--accent-2) 82%, transparent);
+}
+
+html[data-theme='dark'] .theme-on {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  color: var(--accent-strong) !important;
+  background: color-mix(in srgb, var(--accent) 12%, var(--ink-raised));
+  box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--accent-2) 82%, transparent);
+}
+
+html[data-theme='dark'] .vp-badge {
+  border-color: color-mix(in srgb, var(--accent) 72%, transparent);
+  border-radius: 9px;
+  background: var(--ink-panel);
+  box-shadow: none;
+  font-family: "Press Start 2P", monospace;
+  font-size: 0.7rem;
+}
+
+html[data-theme='dark'] .brand-button:hover .vp-badge {
+  border-color: var(--accent-strong);
+  box-shadow: 3px 3px 0 color-mix(in srgb, var(--accent-2) 58%, transparent);
+}
+
+html[data-theme='dark'] .vp-v { color: var(--ink-ivory); }
+html[data-theme='dark'] .vp-p { color: var(--accent); }
+html[data-theme='dark'] .vp-notch { background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+html[data-theme='dark'] .brand-word { color: var(--ink-ivory); }
+
+html[data-theme='dark'] .primary-button {
+  border-color: var(--accent);
+  border-radius: 0 10px 0 10px;
+  color: var(--ink-field);
+  background: var(--accent);
+  box-shadow: inset 0 -3px 0 var(--accent-2), var(--button-shadow);
+}
+
+html[data-theme='dark'] .primary-button:hover {
+  border-color: var(--accent-strong);
+  color: var(--ink-field);
+  background: var(--accent-strong);
+  box-shadow: inset 0 -3px 0 var(--accent-2), 0 16px 28px -20px rgba(230, 165, 40, 0.72);
+}
+
+html[data-theme='dark'] .primary-button:active {
+  background: color-mix(in srgb, var(--accent) 82%, var(--ink-panel));
+  box-shadow: inset 0 2px 0 color-mix(in srgb, var(--ink-field) 28%, transparent);
+}
+
+html[data-theme='dark'] :is(.secondary-button, .ghost-button, .home-button) {
+  border-color: color-mix(in srgb, var(--ink-ivory) 14%, transparent);
+  color: var(--ink-ivory);
+  background: color-mix(in srgb, var(--ink-raised) 84%, transparent);
+}
+
+html[data-theme='dark'] :is(.secondary-button, .ghost-button, .home-button):hover {
+  border-color: color-mix(in srgb, var(--accent) 58%, transparent);
+  color: var(--accent-strong);
+  box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--accent-2) 58%, transparent);
+}
+
+html[data-theme='dark'] :is(.stat-card, .list-row, .story-item, .resume-card, .message-card, .bubble, .table-scroll, .chat-log, .admin-check) {
+  border-color: color-mix(in srgb, var(--ink-ivory) 11%, transparent);
+  background: color-mix(in srgb, var(--ink-panel) 82%, transparent);
+}
+
+html[data-theme='dark'] :is(.stat-card, .list-row, .story-item, .resume-card, .message-card, .bubble, .admin-check) {
+  border-radius: 0 12px 0 12px;
+}
+
+html[data-theme='dark'] :is(.mode-card, .resume-card, .story-item, .list-row):hover {
+  border-color: color-mix(in srgb, var(--accent) 36%, transparent);
+  background: color-mix(in srgb, var(--accent) 5%, var(--ink-panel));
+}
+
+html[data-theme='dark'] :is(.pill-chip, .mini-tag, .demo-chip, .hint-chip, .prefilled-chip, .guide-chip) {
+  border-color: color-mix(in srgb, var(--accent) 24%, transparent);
+  border-radius: 0 7px 0 7px;
+  background: color-mix(in srgb, var(--ink-raised) 76%, transparent);
+}
+
+html[data-theme='dark'] :is(.auth-form input, .answer-input, .chat-form textarea, .conj-input) {
+  border-color: color-mix(in srgb, var(--ink-ivory) 14%, transparent);
+  border-radius: 0 9px 0 9px;
+  color: var(--ink-ivory);
+  background: color-mix(in srgb, var(--ink-field) 86%, transparent);
+  box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+html[data-theme='dark'] :is(.auth-form input, .answer-input, .chat-form textarea, .conj-input):focus {
+  border-color: color-mix(in srgb, var(--accent) 72%, transparent);
+  outline-color: color-mix(in srgb, var(--accent) 72%, transparent);
+  box-shadow: inset 0 -3px 0 var(--accent);
+}
+
+html[data-theme='dark'] :is(input, textarea)::placeholder {
+  color: color-mix(in srgb, var(--ink-muted) 72%, transparent);
+}
+
+html[data-theme='dark'] .message-card.user,
+html[data-theme='dark'] .bubble.user {
+  border-left: 3px solid var(--accent-2);
+  background: color-mix(in srgb, var(--accent-2) 7%, var(--ink-panel));
+}
+
+html[data-theme='dark'] .message-card.assistant,
+html[data-theme='dark'] .bubble.assistant {
+  border-left: 3px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 6%, var(--ink-panel));
+}
+
+html[data-theme='dark'] .progress-track {
+  background: color-mix(in srgb, var(--ink-ivory) 9%, var(--ink-field));
+}
+
+html[data-theme='dark'] .progress-bar {
+  background: linear-gradient(90deg, var(--accent-2), var(--accent) 32%, var(--accent-strong));
+}
+
+html[data-theme='dark'] :is(.feedback-banner, .toast-card, .info-banner) {
+  border-radius: 0 8px 0 8px;
+}
+
+html[data-theme='dark'] :is(button, input, textarea, select):focus-visible {
+  outline-color: var(--accent);
+}
+
+html[data-theme='dark'] .kbd-chip {
+  border-color: color-mix(in srgb, var(--accent) 38%, transparent);
+  border-radius: 4px;
+  color: var(--accent-strong);
+  background: var(--ink-field);
+  box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--accent-2) 52%, transparent);
+}
+
+html[data-theme='dark'] .data-table th {
+  color: color-mix(in srgb, var(--accent) 78%, var(--ink-ivory));
+  background: color-mix(in srgb, var(--accent) 5%, var(--ink-panel));
+}
+
+html[data-theme='dark'] :is(.admin-check input, input[type='checkbox'], input[type='radio']) {
+  accent-color: var(--accent);
+}
+
+html[data-theme='dark'] .skeleton-card {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--ink-panel) 92%, transparent),
+    color-mix(in srgb, var(--accent) 9%, var(--ink-raised)),
+    color-mix(in srgb, var(--ink-panel) 92%, transparent)
+  );
+}
+
+html[data-theme='dark'] .page-floor {
+  border-top-color: color-mix(in srgb, var(--accent) 26%, transparent);
+  background:
+    linear-gradient(90deg, transparent 0 9%, color-mix(in srgb, var(--accent-2) 32%, transparent) 9% 9.2%, transparent 9.2% 100%),
+    repeating-linear-gradient(90deg, color-mix(in srgb, var(--accent) 16%, transparent) 0 1px, transparent 1px 46px),
+    linear-gradient(180deg, transparent, color-mix(in srgb, var(--ink-panel) 76%, transparent));
 }
 
 @media (max-width: 900px) {

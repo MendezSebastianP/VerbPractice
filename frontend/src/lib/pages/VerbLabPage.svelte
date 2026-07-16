@@ -109,6 +109,6 @@
   {#if view === 'translation'}
     <TranslationPage mode="verbs" {csrfToken} {soundEnabled} {theme} {notify} onSessionActiveChange={(active) => (translateSessionActive = active)} />
   {:else}
-    <ConjugationPage {csrfToken} {soundEnabled} {notify} onSessionActiveChange={(active) => (tableSessionActive = active)} />
+    <ConjugationPage {csrfToken} {soundEnabled} {theme} {notify} onSessionActiveChange={(active) => (tableSessionActive = active)} />
   {/if}
 </section>

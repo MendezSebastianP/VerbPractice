@@ -863,9 +863,10 @@
                 bind:this={translateMistRef}
                 {theme}
                 label="⌕ TRANSLATE"
-                width={300}
+                icon={false}
+                width={225}
                 height={64}
-                fontSize={14}
+                fontSize={11}
                 resetAfterFire
                 disabled={adding || !inputText.trim() || !sourceCode || !targetCode || sourceCode === targetCode}
                 on:fire={() => void addWord()}

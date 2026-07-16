@@ -8,10 +8,11 @@
   import QuickShotIcon from '../components/QuickShotIcon.svelte';
   import StageClearRank from '../components/StageClearRank.svelte';
   import StudyPoolBlock from '../components/StudyPoolBlock.svelte';
-  import type { ConjugationState, ConjugationTenseReview, LanguageConfig, RewardState, StudyPoolResponse } from '../types';
+  import type { ConjugationState, ConjugationTenseReview, LanguageConfig, RewardState, StudyPoolResponse, ThemeName } from '../types';
 
   export let csrfToken = '';
   export let soundEnabled = false;
+  export let theme: ThemeName = 'light';
   export let notify: (message: string, tone?: 'info' | 'success' | 'error') => void;
   export let onSessionActiveChange: (active: boolean) => void = () => {};
 
@@ -79,7 +80,11 @@
     pronouns: string[];
   };
 
-  const GROUP_COLORS = ['#76ddff', '#f8cc63', '#7ee7a8', '#ff8da1', '#b7a0ff', '#f0a1d6'];
+  const GROUP_COLORS: Record<ThemeName, string[]> = {
+    light: ['#76ddff', '#f8cc63', '#7ee7a8', '#ff8da1', '#b7a0ff', '#f0a1d6'],
+    arcade: ['#76ddff', '#f8cc63', '#7ee7a8', '#ff8da1', '#b7a0ff', '#f0a1d6'],
+    dark: ['#e6a528', '#d75b4b', '#d8b56c', '#c87846', '#b79972', '#b9695c'],
+  };
 
   let activeTense = '';
   let currentInputCells: InputCell[] = [];
@@ -569,7 +574,8 @@
   }
 
   function formGroupColor(index: number): string {
-    return GROUP_COLORS[index % GROUP_COLORS.length];
+    const palette = GROUP_COLORS[theme] ?? GROUP_COLORS.light;
+    return palette[index % palette.length];
   }
 
   function toggleTense(tense: string): void {
@@ -3124,6 +3130,281 @@
 
   :global(html[data-theme='light']) .g1-shortcut-action .kbd-chip-armed {
     border-color: var(--accent-2);
+    color: var(--danger);
+  }
+
+  /* Ink Saffron · Moon tables. Structure, row heights and keyboard flow stay
+     untouched; this replaces the old blue-black instrument skin. */
+  :global(html[data-theme='dark']) :is(
+    .language-card,
+    .stair-step,
+    .stair-level,
+    .stair-tense-row button,
+    .custom-route,
+    .length-card,
+    .support-row button,
+    .setup-launch-row
+  ) {
+    border-radius: 0 12px 0 12px;
+  }
+
+  :global(html[data-theme='dark']) .step-number,
+  :global(html[data-theme='dark']) .language-code {
+    border-radius: 0 9px 0 9px;
+    box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--accent-2) 52%, transparent);
+  }
+
+  :global(html[data-theme='dark']) .stair-on .stair-level {
+    box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--accent-2) 52%, transparent);
+  }
+
+  :global(html[data-theme='dark']) .setup-launch-row {
+    background: linear-gradient(90deg, color-mix(in srgb, var(--accent-2) 8%, var(--ink-panel)), color-mix(in srgb, var(--accent) 7%, var(--ink-panel)));
+  }
+
+  :global(html[data-theme='dark']) .g1-session-frame {
+    border-color: color-mix(in srgb, var(--accent) 46%, transparent);
+    border-radius: 0 20px 0 20px;
+    color: var(--text);
+    background:
+      linear-gradient(90deg, var(--accent-2) 0 3px, transparent 3px),
+      linear-gradient(rgba(240, 231, 216, 0.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(240, 231, 216, 0.022) 1px, transparent 1px),
+      linear-gradient(145deg, var(--ink-raised), var(--ink-panel));
+    background-size: auto, 24px 24px, 24px 24px, auto;
+    box-shadow: 0 28px 58px -38px rgba(0, 0, 0, 0.92);
+  }
+
+  :global(html[data-theme='dark']) .g1-strip-count,
+  :global(html[data-theme='dark']) .g1-utility-line,
+  :global(html[data-theme='dark']) .g1-column-head small,
+  :global(html[data-theme='dark']) .g1-hero > span,
+  :global(html[data-theme='dark']) .g1-hero > em,
+  :global(html[data-theme='dark']) .u1-form-notice small,
+  :global(html[data-theme='dark']) .c1-form-key > small,
+  :global(html[data-theme='dark']) .g1-quick-shot-note p,
+  :global(html[data-theme='dark']) .g1-linked-form .g1-linked-empty,
+  :global(html[data-theme='dark']) .g1-linked-form em,
+  :global(html[data-theme='dark']) .g1-missing-form,
+  :global(html[data-theme='dark']) .g1-feedback-wrong del {
+    color: var(--muted);
+  }
+
+  :global(html[data-theme='dark']) .g1-strip-name,
+  :global(html[data-theme='dark']) .g1-hero > em b,
+  :global(html[data-theme='dark']) .g1-hero-count,
+  :global(html[data-theme='dark']) .g1-hero-tense,
+  :global(html[data-theme='dark']) .g1-hero-review {
+    color: var(--accent) !important;
+    text-shadow: none;
+  }
+
+  :global(html[data-theme='dark']) .g1-seg {
+    border-color: color-mix(in srgb, var(--ink-ivory) 13%, transparent);
+    border-radius: 0 7px 0 7px;
+    color: var(--muted);
+    background: color-mix(in srgb, var(--ink-field) 58%, transparent);
+  }
+
+  :global(html[data-theme='dark']) .g1-seg-done {
+    border-color: color-mix(in srgb, var(--success) 62%, transparent);
+    color: var(--success);
+    background: color-mix(in srgb, var(--success) 9%, var(--ink-panel));
+    box-shadow: none;
+  }
+
+  :global(html[data-theme='dark']) .g1-seg-active {
+    border-color: var(--accent);
+    color: var(--ink-field);
+    background: var(--accent);
+    box-shadow: inset 0 -3px 0 var(--accent-2);
+  }
+
+  :global(html[data-theme='dark']) .g1-hero {
+    border-color: color-mix(in srgb, var(--accent) 24%, transparent);
+    border-radius: 0 15px 0 15px;
+    background:
+      linear-gradient(rgba(240, 231, 216, 0.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(240, 231, 216, 0.018) 1px, transparent 1px),
+      color-mix(in srgb, var(--ink-field) 72%, var(--ink-panel));
+    background-size: 24px 24px;
+  }
+
+  :global(html[data-theme='dark']) .g1-hero > strong {
+    color: var(--text);
+    font-family: var(--display);
+    letter-spacing: -0.045em;
+  }
+
+  :global(html[data-theme='dark']) .g1-utility-line b,
+  :global(html[data-theme='dark']) .g1-column-head strong,
+  :global(html[data-theme='dark']) .g1-column-row label strong,
+  :global(html[data-theme='dark']) .u1-form-notice strong,
+  :global(html[data-theme='dark']) .c1-form-key strong,
+  :global(html[data-theme='dark']) .g1-linked-form strong,
+  :global(html[data-theme='dark']) .g1-locked-guide strong,
+  :global(html[data-theme='dark']) .g1-inline-feedback strong,
+  :global(html[data-theme='dark']) .g1-quick-shot-note {
+    color: var(--text);
+  }
+
+  :global(html[data-theme='dark']) .g1-utility-line i,
+  :global(html[data-theme='dark']) .g1-column-rail {
+    background: color-mix(in srgb, var(--accent) 17%, transparent);
+  }
+
+  :global(html[data-theme='dark']) .g1-active-column {
+    border-color: color-mix(in srgb, var(--accent) 29%, transparent);
+    border-radius: 0 14px 0 14px;
+    background: color-mix(in srgb, var(--ink-field) 48%, transparent);
+  }
+
+  :global(html[data-theme='dark']) .g1-column-review {
+    border-color: var(--accent);
+    box-shadow: inset 0 -2px 0 var(--accent-2);
+  }
+
+  :global(html[data-theme='dark']) .g1-column-head {
+    border-bottom-color: color-mix(in srgb, var(--accent) 18%, transparent);
+    background: color-mix(in srgb, var(--accent) 4%, var(--ink-panel));
+  }
+
+  :global(html[data-theme='dark']) .u1-form-notice {
+    border-color: color-mix(in srgb, var(--accent) 37%, transparent);
+    border-radius: 0 9px 0 9px;
+    background: color-mix(in srgb, var(--accent) 6%, var(--ink-panel));
+  }
+
+  :global(html[data-theme='dark']) .u1-form-notice > span,
+  :global(html[data-theme='dark']) .u1-form-notice em,
+  :global(html[data-theme='dark']) .g1-row-guide .g1-row-marker,
+  :global(html[data-theme='dark']) .g1-linked-guide,
+  :global(html[data-theme='dark']) .g1-locked-guide > span,
+  :global(html[data-theme='dark']) .g1-locked-guide > small {
+    color: var(--accent);
+  }
+
+  :global(html[data-theme='dark']) .c1-form-key > span {
+    background: color-mix(in srgb, var(--group-color) 6%, var(--ink-panel));
+  }
+
+  :global(html[data-theme='dark']) .g1-column-row {
+    border-color: color-mix(in srgb, var(--ink-ivory) 10%, transparent);
+    color: var(--text);
+    background: color-mix(in srgb, var(--ink-field) 58%, transparent);
+  }
+
+  :global(html[data-theme='dark']) .g1-row-active {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 8%, var(--ink-panel));
+    box-shadow: inset 3px 0 0 var(--accent-2);
+    transform: translateX(0.2rem);
+  }
+
+  :global(html[data-theme='dark']) .g1-row-clustered {
+    background: color-mix(in srgb, var(--group-color) 5%, var(--ink-panel));
+  }
+
+  :global(html[data-theme='dark']) .g1-row-clustered.g1-row-active {
+    background: color-mix(in srgb, var(--group-color) 9%, var(--ink-panel));
+    box-shadow: inset 3px 0 0 var(--group-color);
+  }
+
+  :global(html[data-theme='dark']) .g1-row-correct {
+    border-color: color-mix(in srgb, var(--success) 62%, transparent);
+    background: color-mix(in srgb, var(--success) 9%, var(--ink-panel));
+  }
+
+  :global(html[data-theme='dark']) .g1-row-wrong {
+    border-color: color-mix(in srgb, var(--danger) 68%, transparent);
+    background: color-mix(in srgb, var(--danger) 9%, var(--ink-panel));
+  }
+
+  :global(html[data-theme='dark']) .g1-row-correct .g1-row-marker {
+    border-color: var(--success);
+    color: var(--success);
+    background: color-mix(in srgb, var(--success) 8%, var(--ink-panel));
+  }
+
+  :global(html[data-theme='dark']) .g1-row-wrong .g1-row-marker {
+    border-color: var(--danger);
+    color: var(--danger);
+    background: color-mix(in srgb, var(--danger) 8%, var(--ink-panel));
+  }
+
+  :global(html[data-theme='dark']) .g1-conj-input {
+    border-color: color-mix(in srgb, var(--ink-ivory) 14%, transparent);
+    border-radius: 0 8px 0 8px;
+    color: var(--text);
+    background: var(--ink-field);
+  }
+
+  :global(html[data-theme='dark']) .g1-conj-input:focus {
+    border-color: var(--accent);
+    box-shadow: inset 0 -2px 0 var(--accent-2);
+  }
+
+  :global(html[data-theme='dark']) .g1-quick-shot-note,
+  :global(html[data-theme='dark']) .g1-linked-form,
+  :global(html[data-theme='dark']) .g1-locked-guide,
+  :global(html[data-theme='dark']) .g1-inline-feedback,
+  :global(html[data-theme='dark']) .g1-missing-form {
+    border-radius: 0 9px 0 9px;
+  }
+
+  :global(html[data-theme='dark']) .g1-quick-shot-note {
+    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+    background: var(--ink-panel);
+    box-shadow: 0 12px 24px -18px rgba(0, 0, 0, 0.92);
+  }
+
+  :global(html[data-theme='dark']) .g1-linked-form {
+    border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+    color: var(--accent-strong);
+    background: color-mix(in srgb, var(--accent) 5%, var(--ink-field));
+  }
+
+  :global(html[data-theme='dark']) .g1-row-clustered .g1-linked-form:not(.g1-linked-guide):not(.g1-linked-correct):not(.g1-linked-wrong) {
+    background: color-mix(in srgb, var(--group-color) 5%, var(--ink-field));
+  }
+
+  :global(html[data-theme='dark']) .g1-linked-guide,
+  :global(html[data-theme='dark']) .g1-locked-guide {
+    border-color: color-mix(in srgb, var(--accent) 38%, transparent);
+    background: color-mix(in srgb, var(--accent) 7%, var(--ink-field));
+  }
+
+  :global(html[data-theme='dark']) .g1-feedback-correct {
+    color: var(--success);
+    background: color-mix(in srgb, var(--success) 8%, var(--ink-field));
+  }
+
+  :global(html[data-theme='dark']) .g1-feedback-wrong {
+    color: var(--danger);
+    background: color-mix(in srgb, var(--danger) 9%, var(--ink-field));
+  }
+
+  :global(html[data-theme='dark']) .g1-feedback-wrong del {
+    text-decoration-color: var(--danger);
+  }
+
+  :global(html[data-theme='dark']) .g1-feedback-wrong strong::before {
+    color: var(--danger);
+  }
+
+  :global(html[data-theme='dark']) .g1-missing-form {
+    background: color-mix(in srgb, var(--ink-field) 72%, transparent);
+  }
+
+  :global(html[data-theme='dark']) .g1-shortcut-action.finish-warn {
+    border-color: var(--danger);
+    color: var(--danger);
+    background: color-mix(in srgb, var(--danger) 8%, transparent);
+    box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--accent) 44%, transparent);
+  }
+
+  :global(html[data-theme='dark']) .g1-shortcut-action .kbd-chip-armed {
+    border-color: var(--danger);
     color: var(--danger);
   }
 

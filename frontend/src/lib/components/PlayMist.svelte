@@ -20,7 +20,7 @@
 
   const FROST: Record<string, { top: string; bottom: string; regrow: string }> = {
     light: { top: 'rgba(246,251,254,.94)', bottom: 'rgba(212,235,250,.9)', regrow: 'rgba(228,242,251,0.007)' },
-    dark: { top: 'rgba(51,65,85,.94)', bottom: 'rgba(15,23,42,.92)', regrow: 'rgba(30,41,59,0.008)' },
+    dark: { top: 'rgba(230,165,40,.16)', bottom: 'rgba(11,9,6,.28)', regrow: 'rgba(230,165,40,0.002)' },
   };
 
   let canvasEl: HTMLCanvasElement | null = null;
@@ -124,6 +124,7 @@
   role="presentation"
 >
   <button class="mist-button" type="button" on:click={fire} {disabled} aria-label={label}>
+    <canvas bind:this={canvasEl} class="mist-canvas" style={`width: ${width}px; height: ${height}px;`} aria-hidden="true"></canvas>
     <span class="mist-label" style={`font-size: ${fontSize}px;`}>
       {#if icon}
         <svg class="play-glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" /></svg>
@@ -131,7 +132,6 @@
       {label}
     </span>
   </button>
-  <canvas bind:this={canvasEl} class="mist-canvas" style={`width: ${width}px; height: ${height}px;`} aria-hidden="true"></canvas>
 </div>
 
 <style>
@@ -166,6 +166,8 @@
   }
 
   .mist-label {
+    position: relative;
+    z-index: 2;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -189,9 +191,35 @@
 
   .mist-canvas {
     position: absolute;
+    z-index: 1;
     inset: 0;
     max-width: 100%;
     border-radius: 999px;
     pointer-events: none;
+  }
+
+  :global(html[data-theme='dark']) .mist-button {
+    border-color: color-mix(in srgb, var(--accent) 42%, transparent);
+    border-radius: 0 14px 0 14px;
+    background:
+      linear-gradient(90deg, var(--accent-2) 0 3px, transparent 3px),
+      var(--accent);
+    box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--accent) 28%, transparent), var(--shadow);
+  }
+
+  :global(html[data-theme='dark']) .mist-label {
+    color: var(--ink-field);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+  }
+
+  :global(html[data-theme='dark']) .play-glyph {
+    fill: var(--ink-field);
+    filter: none;
+  }
+
+  :global(html[data-theme='dark']) .mist-canvas {
+    border-radius: 0 14px 0 14px;
+    opacity: 0.52;
   }
 </style>

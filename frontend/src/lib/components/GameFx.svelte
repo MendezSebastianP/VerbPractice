@@ -323,6 +323,31 @@
     color: var(--muted);
   }
 
+  :global(html[data-theme='dark']) .level-up-title {
+    padding-bottom: 0.25rem;
+    border-bottom: 3px solid var(--accent-2);
+    font-family: var(--display);
+    font-size: clamp(2.4rem, 7vw, 4.8rem);
+    letter-spacing: -0.055em;
+    text-shadow: none;
+  }
+
+  :global(html[data-theme='dark']) .badge-flip-card {
+    border-radius: 0 16px 0 16px;
+    background:
+      linear-gradient(90deg, var(--accent-2) 0 3px, transparent 3px),
+      var(--ink-panel);
+    box-shadow: var(--shadow);
+  }
+
+  :global(html[data-theme='dark']) :is(
+    .badge-flip-card.rarity-rare,
+    .badge-flip-card.rarity-epic,
+    .badge-flip-card.rarity-legendary
+  ) {
+    box-shadow: var(--shadow);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .level-up-title,
     .badge-flip-card {

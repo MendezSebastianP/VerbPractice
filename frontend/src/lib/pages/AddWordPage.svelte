@@ -6,7 +6,7 @@
   import HelpTip from '../components/HelpTip.svelte';
   import PlayClear from '../components/PlayClear.svelte';
   import PlayGrid from '../components/PlayGrid.svelte';
-  import PlayMist from '../components/PlayMist.svelte';
+  import PlaySaffronRelay from '../components/PlaySaffronRelay.svelte';
   import type {
     AddWordResponse,
     AddedWordNotFound,
@@ -22,7 +22,7 @@
   export let theme: ThemeName = 'light';
   export let notify: (message: string, tone?: 'info' | 'success' | 'error') => void;
 
-  let translateMistRef: PlayMist | null = null;
+  let translateRelayRef: PlaySaffronRelay | null = null;
   let translateClearRef: PlayClear | null = null;
   let translateGridRef: PlayGrid | null = null;
 
@@ -241,7 +241,7 @@
     } else if (theme === 'light') {
       translateClearRef?.fire();
     } else {
-      translateMistRef?.fire();
+      translateRelayRef?.fire();
     }
   }
 
@@ -859,9 +859,8 @@
                 on:fire={() => void addWord()}
               />
             {:else}
-              <PlayMist
-                bind:this={translateMistRef}
-                {theme}
+              <PlaySaffronRelay
+                bind:this={translateRelayRef}
                 label="⌕ TRANSLATE"
                 icon={false}
                 width={225}

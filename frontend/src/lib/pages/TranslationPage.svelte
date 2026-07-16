@@ -11,7 +11,7 @@
   import QuickShotIcon from '../components/QuickShotIcon.svelte';
   import PlayClear from '../components/PlayClear.svelte';
   import PlayGrid from '../components/PlayGrid.svelte';
-  import PlayMist from '../components/PlayMist.svelte';
+  import PlaySaffronRelay from '../components/PlaySaffronRelay.svelte';
   import StageClearRank from '../components/StageClearRank.svelte';
   import StudyPoolBlock from '../components/StudyPoolBlock.svelte';
   import type { LanguageEntry, RewardState, StudyPoolResponse, ThemeName, TranslationState, UserSettings, WordSetSummary } from '../types';
@@ -79,7 +79,7 @@
   let finishButton: HTMLButtonElement | null = null;
 
   // Themed PLAY controls + launch transition state (per the .dc.html designs)
-  let playMistRef: PlayMist | null = null;
+  let playRelayRef: PlaySaffronRelay | null = null;
   let playClearRef: PlayClear | null = null;
   let playGridRef: PlayGrid | null = null;
   let launching = false;
@@ -598,7 +598,7 @@
       launching = false;
       if (!state?.session) {
         // launch failed — restore the menu controls
-        playMistRef?.reset();
+        playRelayRef?.reset();
         playClearRef?.reset();
         playGridRef?.reset();
         pixelOverlay = false;
@@ -619,8 +619,8 @@
       playClearRef.fire();
       return;
     }
-    if (playMistRef) {
-      playMistRef.fire?.();
+    if (playRelayRef) {
+      playRelayRef.fire();
       return;
     }
     void firePlay();
@@ -1115,11 +1115,11 @@
             {:else if theme === 'light'}
               <PlayClear bind:this={playClearRef} disabled={launching || loading} on:fire={() => void firePlay()} />
             {:else}
-              <PlayMist bind:this={playMistRef} {theme} width={274} height={106} fontSize={15} disabled={launching || loading} on:fire={() => void firePlay()} />
+              <PlaySaffronRelay bind:this={playRelayRef} width={274} height={106} fontSize={15} disabled={launching || loading} on:fire={() => void firePlay()} />
             {/if}
           </div>
           <p class="play-caption" class:blinky={isArcade}>
-            {isArcade ? 'CLICK THE GRID TO START' : theme === 'light' ? 'VECTOR GRID · CLICK TO START' : 'Wipe the mist · click to start'}
+            {isArcade ? 'CLICK THE GRID TO START' : theme === 'light' ? 'VECTOR GRID · CLICK TO START' : 'SAFFRON RELAY · CLICK TO START'}
           </p>
 
           <div class="kbd-footer">
@@ -1181,14 +1181,23 @@
             </div>
           </div>
 
-          <!-- grading feedback: vignette-masked tile wave propagating from center -->
+          <!-- Grading feedback. Moon uses the selected B1 Reed Wave behind the
+               stable Razor Line foreground; Clear and Arcade keep their own waves. -->
           {#key pulseSeq}
             {#if feedbackPulse}
-              <div class="cell-wave" aria-hidden="true">
-                {#each WAVE_CELLS as c, i (i)}
-                  <div style={`animation: ${theme === 'light' ? 'matcha-cellw' : 'cellw'}-${feedbackPulse} .45s ease-out ${c.delay}s both;`}></div>
-                {/each}
-              </div>
+              {#if theme === 'dark'}
+                <div class={`ink-reed-wave ${feedbackPulse}`} aria-hidden="true">
+                  {#each Array(21) as _, reedIndex (reedIndex)}
+                    <i style={`--i:${reedIndex};--distance:${Math.abs(reedIndex - 10)};--reed-height:${24 + ((reedIndex * 13) % 58)}px`}></i>
+                  {/each}
+                </div>
+              {:else}
+                <div class="cell-wave" aria-hidden="true">
+                  {#each WAVE_CELLS as c, i (i)}
+                    <div style={`animation: ${theme === 'light' ? 'matcha-cellw' : 'cellw'}-${feedbackPulse} .45s ease-out ${c.delay}s both;`}></div>
+                  {/each}
+                </div>
+              {/if}
               {#if isArcade}
                 <div class={`edge-flash ${feedbackPulse}`} aria-hidden="true"></div>
               {/if}
@@ -1259,6 +1268,14 @@
                       {#if isArcade}
                         <div class="input-burst" aria-hidden="true"></div>
                       {/if}
+                    {/if}
+                    {#if theme === 'dark' && feedbackPulse}
+                      {#if feedbackPulse === 'error'}
+                        <span class="ink-razor-cut" aria-hidden="true"></span>
+                      {/if}
+                      <span class={`ink-razor-verdict ${feedbackPulse}`} aria-hidden="true">
+                        {feedbackPulse === 'success' ? 'LOCKED ✓' : 'CUT / AGAIN'}
+                      </span>
                     {/if}
                   {/key}
                 </div>
@@ -2171,6 +2188,56 @@
     border-radius: 1px;
   }
 
+  /* B1 · Reed Wave. It lives behind the session content (z3) and rails (z2),
+     so the answer stays readable while the field carries the grading force. */
+  .ink-reed-wave {
+    position: absolute;
+    z-index: 1;
+    inset: 40px 20px 58px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding-inline: 18px;
+    overflow: hidden;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  }
+
+  .ink-reed-wave i {
+    display: block;
+    width: 2px;
+    height: var(--reed-height);
+    flex: 1 1 2px;
+    max-width: 3px;
+    opacity: 0;
+    transform: scaleY(.08);
+    background: var(--accent);
+  }
+
+  .ink-reed-wave.success i {
+    animation: ink-reeds-right 1s cubic-bezier(.2,.8,.2,1) calc(var(--distance) * 28ms) both;
+  }
+
+  .ink-reed-wave.error i {
+    animation: ink-reeds-wrong 780ms cubic-bezier(.7,0,.2,1) calc(var(--i) * 14ms) both;
+  }
+
+  @keyframes ink-reeds-right {
+    0% { opacity: 0; transform: scaleY(.08); background: var(--accent); }
+    38% { opacity: .32; transform: scaleY(1.2); background: var(--accent-strong); }
+    66% { opacity: .2; transform: scaleY(.72); background: var(--success); }
+    100% { opacity: 0; transform: scaleY(.18); background: var(--success); }
+  }
+
+  @keyframes ink-reeds-wrong {
+    0% { opacity: 0; transform: translateX(-12px) scaleY(.18) skewX(0); background: var(--danger); }
+    34% { opacity: .34; transform: translateX(6px) scaleY(1.15) skewX(-24deg); background: var(--danger); }
+    58% { opacity: .22; transform: translateX(-4px) scaleY(.65) skewX(18deg); background: var(--accent-2); }
+    100% { opacity: 0; transform: translateX(14px) scaleY(.24) skewX(-9deg); background: var(--accent-2); }
+  }
+
   :global(html[data-theme='light']) .cell-wave > div {
     border-radius: 0;
     clip-path: polygon(0 0, 78% 0, 100% 25%, 100% 100%, 22% 100%, 0 75%);
@@ -2299,7 +2366,60 @@
   }
 
   :global(html[data-theme='dark']) .check-draw path {
+    stroke: var(--success);
     filter: none;
+  }
+
+  :global(html[data-theme='dark']) .line-surge {
+    transform-origin: left;
+    background: var(--success);
+    animation: ink-razor-lock 760ms cubic-bezier(.2,.8,.2,1) both;
+  }
+
+  .ink-razor-cut {
+    position: absolute;
+    z-index: 3;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    transform-origin: right;
+    background: var(--danger);
+    pointer-events: none;
+    animation: ink-razor-cut 620ms cubic-bezier(.8,0,.2,1) both;
+  }
+
+  .ink-razor-verdict {
+    position: absolute;
+    z-index: 4;
+    top: -7px;
+    right: 3px;
+    opacity: 0;
+    font: 700 .52rem/1 var(--mono);
+    letter-spacing: .08em;
+    pointer-events: none;
+    animation: ink-verdict-in 430ms steps(4) 500ms both;
+  }
+
+  .ink-razor-verdict.success { color: var(--success); }
+  .ink-razor-verdict.error { color: var(--danger); }
+
+  @keyframes ink-razor-lock {
+    0% { opacity: 0; transform: scaleX(0); height: 2px; }
+    48% { opacity: 1; transform: scaleX(1); height: 2px; }
+    70% { opacity: 1; transform: scaleX(1); height: 7px; }
+    100% { opacity: .85; transform: scaleX(1); height: 2px; }
+  }
+
+  @keyframes ink-razor-cut {
+    0% { opacity: 0; transform: translateX(105%) scaleX(.1); }
+    52% { opacity: 1; transform: translateX(0) scaleX(1); height: 4px; }
+    100% { opacity: .85; transform: translateX(-8%) scaleX(.84); height: 2px; }
+  }
+
+  @keyframes ink-verdict-in {
+    0% { opacity: 0; transform: translateY(4px); }
+    100% { opacity: 1; transform: translateY(0); }
   }
 
   :global(html[data-theme='dark']) .quick-shot-note {
@@ -2382,10 +2502,18 @@
     }
 
     .cell-wave,
+    .ink-reed-wave,
     .wave-mask,
     .input-burst,
     .floaty-dot {
       display: none;
+    }
+
+    .ink-razor-cut,
+    .ink-razor-verdict,
+    :global(html[data-theme='dark']) .line-surge {
+      animation-duration: 1ms;
+      animation-delay: 0ms;
     }
 
     .pixel-overlay > div {

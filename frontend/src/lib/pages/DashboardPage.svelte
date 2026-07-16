@@ -6,7 +6,7 @@
   import { setProfile } from '../profile';
   import PlayClear from '../components/PlayClear.svelte';
   import PlayGrid from '../components/PlayGrid.svelte';
-  import PlayMist from '../components/PlayMist.svelte';
+  import PlaySaffronRelay from '../components/PlaySaffronRelay.svelte';
   import type {
     DashboardPayload,
     LanguageEntry,
@@ -251,7 +251,7 @@
             {:else if theme === 'light'}
               <PlayClear label="PLAY" rows={3} cell={16} gap={5} fontSize={11} resetAfterFire on:fire={() => queueNav(card.href)} />
             {:else}
-              <PlayMist {theme} label="PLAY" width={205} height={58} fontSize={11} resetAfterFire on:fire={() => queueNav(card.href)} />
+              <PlaySaffronRelay label="PLAY" width={205} height={58} fontSize={11} resetAfterFire on:fire={() => queueNav(card.href)} />
             {/if}
           </div>
         </article>

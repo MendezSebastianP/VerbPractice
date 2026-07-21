@@ -124,6 +124,9 @@ class UserPreference(Base):
     force_unlock_added_words: Mapped[bool] = mapped_column(Boolean, default=False)
     last_practice_pair: Mapped[str | None] = mapped_column(String(16), nullable=True)
     last_practice_mode: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    # Last-used setup per trainer (keyed by practice mode, e.g. "conjugation" →
+    # {language, level, selected_tenses, ...}) so a session starts pre-configured.
+    trainer_setups: Mapped[dict] = mapped_column(JSON, default=dict)
 
     user: Mapped[User] = relationship("User", back_populates="preferences")
 
@@ -487,6 +490,11 @@ class UserAddedWord(Base):
     language_pair: Mapped[str] = mapped_column(String(16), index=True)
     context_hint: Mapped[str | None] = mapped_column(Text, nullable=True)
     added_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    # Refreshed on every lookup (unlike added_at, which orders the unlock queue),
+    # so "Recent searches" surfaces re-searched words too.
+    last_searched_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
 
     __table_args__ = (
         UniqueConstraint("user_id", "word_id", "language_pair", name="uq_user_added_word"),

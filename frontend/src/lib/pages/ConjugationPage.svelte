@@ -4,11 +4,11 @@
   import { api, ApiError } from '../api';
   import { playCue } from '../sound';
   import { applyReward } from '../profile';
-  import { celebrateReward, flashMiss, popEl } from '../fx';
+  import { celebrateReward, flashMiss, popEl, releaseCelebrations } from '../fx';
   import QuickShotIcon from '../components/QuickShotIcon.svelte';
   import StageClearRank from '../components/StageClearRank.svelte';
   import StudyPoolBlock from '../components/StudyPoolBlock.svelte';
-  import type { ConjugationState, ConjugationTenseReview, LanguageConfig, RewardState, StudyPoolResponse, ThemeName } from '../types';
+  import type { ConjugationState, ConjugationTenseReview, ConjugationTrainerSetup, LanguageConfig, RewardState, StudyPoolResponse, ThemeName } from '../types';
 
   export let csrfToken = '';
   export let soundEnabled = false;
@@ -56,6 +56,8 @@
   let quickShotExplanationOpen = false;
   let quickShotAdvanceInFlight = false;
   let quickShotComposing = false;
+  let autoAdvanceTimer: ReturnType<typeof setTimeout> | null = null;
+  let autoAdvancing = false;
   let quickShotGuardTimer: ReturnType<typeof setTimeout> | null = null;
   let quickShotAcceptedTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -266,6 +268,18 @@
     resetQuickShotProgress();
   }
 
+  // A flawless tense shows its review for a beat and moves on by itself; a tense
+  // with any miss stays put so the user can read the corrections before Enter.
+  const AUTO_ADVANCE_MS = 1000;
+
+  function clearAutoAdvance(): void {
+    if (autoAdvanceTimer) {
+      clearTimeout(autoAdvanceTimer);
+      autoAdvanceTimer = null;
+    }
+    autoAdvancing = false;
+  }
+
   function clearQuickShotTimers(): void {
     if (quickShotGuardTimer) {
       clearTimeout(quickShotGuardTimer);
@@ -279,6 +293,7 @@
 
   function resetQuickShotProgress(): void {
     clearQuickShotTimers();
+    clearAutoAdvance();
     quickShotSpent = new Set<string>();
     quickShotGuarding = false;
     quickShotAccepted = false;
@@ -347,16 +362,52 @@
     });
   }
 
+  // Re-apply the setup saved on the last session start (server-side), so a
+  // recurring drill — e.g. "only past tenses in EN" — needs no reconfiguring.
+  function applySavedSetup(saved: ConjugationTrainerSetup | undefined | null): void {
+    if (!state || state.session || !saved) {
+      return;
+    }
+    const savedLanguage = state.languages.find((entry) => entry.code === saved.language && entry.available);
+    if (savedLanguage) {
+      language = savedLanguage.code;
+    }
+    if (saved.level && (saved.level === 'custom' || LEVELS.some((item) => item.value === saved.level))) {
+      level = saved.level;
+    }
+    if (saved.fill_level && ['easy', 'medium', 'hard'].includes(saved.fill_level)) {
+      fillLevel = saved.fill_level;
+    }
+    if (saved.length && LENGTH_OPTIONS.includes(saved.length)) {
+      length = saved.length;
+    }
+    if (level === 'custom' && Array.isArray(saved.selected_tenses)) {
+      const available = new Set(currentLanguage()?.available_tenses || []);
+      const restored = saved.selected_tenses.filter((tense) => available.has(tense));
+      if (restored.length) {
+        selectedTenses = restored;
+        return;
+      }
+      level = 'easy'; // saved tenses no longer exist — fall back to Core
+    }
+    syncSelection();
+  }
+
   async function load(): Promise<void> {
     loading = true;
     error = '';
     try {
-      state = await api.conjugationState();
+      const [stateResult, settingsResult] = await Promise.all([
+        api.conjugationState(),
+        api.getSettings().catch(() => null),
+      ]);
+      state = stateResult;
       // Stage Clear belongs only to the immediate final-submit response. A
       // fresh visit always recovers to setup when no session is active.
       justFinished = false;
       showSetupAfterFinish = false;
       syncControlsFromState(state, true);
+      applySavedSetup(settingsResult?.trainer_setups?.conjugation);
       answers = {};
       resetQuestionProgress(state);
       if (state.feedback && state.result) {
@@ -385,6 +436,7 @@
         cancelAnimationFrame(mobileCenterFrame);
       }
       clearQuickShotTimers();
+      clearAutoAdvance();
       document.removeEventListener('fullscreenchange', syncFullscreen);
       window.visualViewport?.removeEventListener('resize', scheduleMobileViewportCenter);
       onSessionActiveChange(false);
@@ -654,6 +706,10 @@
       void api.patchSettings({
         csrf_token: csrfToken,
         last_practice_mode: 'conjugation',
+        trainer_setup: {
+          mode: 'conjugation',
+          setup: { language, level, fill_level: fillLevel, length, selected_tenses: selectedTenses },
+        },
       }).catch(() => {});
     } catch (err) {
       error = err instanceof ApiError ? err.message : 'Unable to start conjugation session';
@@ -716,6 +772,9 @@
       const rewardState = state.result?.gamification;
       applyReward(rewardState);
       celebrateReward(rewardState);
+      // Run over: surface any level-up buffered during play as a toast on the
+      // results screen — never mid-run, where it would eat the next Enter.
+      if (justFinished) releaseCelebrations();
       if (state.result?.accuracy !== undefined && state.result.accuracy < 100) {
         flashMiss();
       }
@@ -763,6 +822,13 @@
       }
       if (review.accuracy < 100) {
         flashMiss();
+      } else {
+        autoAdvancing = true;
+        autoAdvanceTimer = setTimeout(() => {
+          autoAdvanceTimer = null;
+          autoAdvancing = false;
+          void continueAfterTense();
+        }, AUTO_ADVANCE_MS);
       }
     } catch (err) {
       error = err instanceof ApiError ? err.message : 'Unable to check this tense';
@@ -776,6 +842,8 @@
     if (!tenseReview || !state?.question || loading) {
       return;
     }
+    // Enter during the auto-advance window should skip the wait, not double-advance.
+    clearAutoAdvance();
     if (activeTenseIndex < state.question.selected_tenses.length - 1) {
       activeTenseIndex += 1;
       activeCellKey = '';
@@ -859,6 +927,7 @@
       activeCellKey = '';
       justFinished = false;
       showSetupAfterFinish = true;
+      releaseCelebrations();
       finishSessionWarning = false;
       answers = {};
       resetQuestionProgress(state);
@@ -1277,8 +1346,10 @@
               <!-- H1-B1 (chosen in /playground2): named segment strip + one
                    big active-tense marquee instead of three shrunken cards -->
               <div class="g1-strip-block">
+                <!-- Desktop shows the tense once: as the big active segment in the
+                     strip below. The marquee name only surfaces on mobile, where
+                     the strip itself is hidden. -->
                 <div class="g1-strip-head">
-                  <span class="g1-strip-count">Tense {Math.min(activeTenseIndex + 1, state.question.selected_tenses.length)}/{state.question.selected_tenses.length}</span>
                   <strong class="g1-strip-name">{activeTense}</strong>
                 </div>
                 <div
@@ -1293,7 +1364,6 @@
                       class="g1-seg"
                       class:g1-seg-done={checkedTenses.has(tense) && tenseIndex !== activeTenseIndex}
                       class:g1-seg-active={tenseIndex === activeTenseIndex}
-                      class:g1-seg-review={tenseIndex === activeTenseIndex && Boolean(tenseReview)}
                       title={score ? `${tense} — ${score.correct}/${score.total} correct` : tense}
                     >{tense}</span>
                   {/each}
@@ -1318,7 +1388,7 @@
 
               <div class:g1-column-review={tenseReview} class:g1-layout-u1={uniformFormLayout} class:g1-layout-c1={clusteredFormLayout} class="g1-active-column">
                 <div class="g1-column-head">
-                  <div><span>{tenseReview ? 'TENSE FEEDBACK' : 'ACTIVE TENSE'} {Math.min(activeTenseIndex + 1, state.question.selected_tenses.length)}/{state.question.selected_tenses.length}</span><strong>{activeTense}</strong></div>
+                  <div><span>{tenseReview ? 'TENSE FEEDBACK' : 'ACTIVE TENSE'} {Math.min(activeTenseIndex + 1, state.question.selected_tenses.length)}/{state.question.selected_tenses.length}</span></div>
                   <div><strong>{tenseReview ? `${tenseReview.correct}/${tenseReview.total} correct` : `${currentInputCells.length} unique ${currentInputCells.length === 1 ? 'answer' : 'answers'}`}</strong><small>{tenseReview ? 'all feedback shown' : uniformFormLayout ? 'one form · type once for the whole tense' : clusteredFormLayout ? 'color-linked form groups' : 'fill top to bottom'}</small></div>
                 </div>
 
@@ -1439,7 +1509,11 @@
 
               <div class="g1-utility-line">
                 {#if tenseReview}
-                  <span><b>Enter</b> continue</span>
+                  {#if autoAdvancing}
+                    <span class="auto-adv-note">clean sweep · advancing</span><i aria-hidden="true"></i><span><b>Enter</b> skip ahead</span>
+                  {:else}
+                    <span><b>Enter</b> continue</span>
+                  {/if}
                 {:else}
                   <span><b>Enter</b> next · empty repeats · last row checks</span><i aria-hidden="true"></i><span><b>Backspace</b> back</span>
                 {/if}
@@ -1450,7 +1524,7 @@
 
             <div class="trainer-actions g1-actions">
               {#if tenseReview}
-                <button bind:this={nextTenseButton} class="primary-button g1-shortcut-action" type="button" on:click={continueAfterTense} disabled={loading}>
+                <button bind:this={nextTenseButton} class="primary-button g1-shortcut-action" class:auto-adv-pending={autoAdvancing} type="button" on:click={continueAfterTense} disabled={loading}>
                   {activeTenseIndex < state.question.selected_tenses.length - 1 ? `Next: ${state.question.selected_tenses[activeTenseIndex + 1]}` : 'Finish verb'} <span class="kbd-chip">Enter</span>
                 </button>
               {:else}
@@ -2072,21 +2146,16 @@
   .g1-strip-block {
     display: grid;
     gap: 0.45rem;
+    margin-bottom: -0.6rem; /* pull the hero closer to the tense text */
   }
 
+  /* Hidden on desktop — the enlarged active segment below is the single tense
+     reference. The mobile media query re-enables this as the big title. */
   .g1-strip-head {
-    display: flex;
+    display: none;
     align-items: baseline;
-    justify-content: space-between;
+    justify-content: center;
     gap: 1rem;
-  }
-
-  .g1-strip-count {
-    color: rgba(255, 255, 255, 0.72);
-    font: 700 0.78rem/1 var(--mono);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    font-variant-numeric: tabular-nums;
   }
 
   .g1-strip-name {
@@ -2101,6 +2170,7 @@
 
   .g1-name-strip {
     display: flex;
+    align-items: center; /* inactive segs stay compact pills beside the big active one */
     flex-wrap: wrap;
     gap: 0.4rem;
   }
@@ -2133,21 +2203,15 @@
     box-shadow: 0 0 8px color-mix(in srgb, #55ee9b 25%, transparent);
   }
 
+  /* The active segment doubles as the big in-game tense reference: plain
+     glowing text (no pill, no pulse) in the marquee-name gold, enlarged. */
   .g1-seg-active {
-    border-color: #f6c84c;
-    color: #191300;
-    background: color-mix(in srgb, #f6c84c 88%, transparent);
-    font-weight: 800;
-    box-shadow: 0 0 12px color-mix(in srgb, #f6c84c 55%, transparent);
-    animation: g1-seg-pulse 1.3s ease-in-out infinite;
-  }
-
-  .g1-seg-review {
-    animation: none;
-  }
-
-  @keyframes g1-seg-pulse {
-    50% { opacity: 0.62; }
+    border-color: transparent;
+    color: #f6c84c;
+    background: none;
+    font: 800 2rem/1.05 var(--display);
+    padding: 0 0.4rem;
+    text-shadow: 0 0 16px color-mix(in srgb, #f6c84c 45%, transparent);
   }
 
   /* ===== H1-B verb hero ===== */
@@ -2240,6 +2304,28 @@
     width: 1px;
     height: 0.9rem;
     background: rgba(255, 255, 255, 0.18);
+  }
+
+  /* Auto-advance after a flawless tense: a quiet pulse marks the ~1s wait. */
+  .auto-adv-note {
+    color: var(--success);
+    font-weight: 650;
+    animation: auto-adv-breathe 1s ease-in-out infinite;
+  }
+
+  .auto-adv-pending {
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--success) 45%, transparent);
+  }
+
+  @keyframes auto-adv-breathe {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .auto-adv-note {
+      animation: none;
+    }
   }
 
   .g1-column-head span {
@@ -2461,6 +2547,16 @@
   .g1-row-linked {
     border-color: color-mix(in srgb, var(--accent-2) 24%, rgba(255, 255, 255, 0.09));
     background: color-mix(in srgb, var(--accent) 5%, rgba(255, 255, 255, 0.018));
+  }
+
+  /* U1 (one graded answer — every pronoun shares the form): the mirror rows
+     only echo what's being typed, so they recede — gray and slightly out of
+     focus — leaving the input row as the only sharp element in the column.
+     Review mode is excluded: feedback rows must stay fully legible. */
+  .g1-layout-u1:not(.g1-column-review) .g1-column-row.g1-row-linked {
+    opacity: 0.45;
+    filter: grayscale(0.9) blur(0.7px);
+    transition: opacity 160ms ease, filter 160ms ease;
   }
 
   .g1-row-representative {
@@ -2835,7 +2931,6 @@
     box-shadow: 0 24px 55px -34px rgba(19, 40, 30, 0.58);
   }
 
-  :global(html[data-theme='light']) .g1-strip-count,
   :global(html[data-theme='light']) .g1-utility-line,
   :global(html[data-theme='light']) .g1-column-head small,
   :global(html[data-theme='light']) .g1-hero > span,
@@ -2843,7 +2938,6 @@
     color: var(--muted);
   }
 
-  :global(html[data-theme='light']) .g1-strip-count,
   :global(html[data-theme='light']) .g1-hero > span {
     font-size: 1rem;
     font-weight: 400;
@@ -2873,20 +2967,11 @@
   }
 
   :global(html[data-theme='light']) .g1-seg-active {
-    border-color: var(--accent);
-    color: var(--matcha-panel);
-    background: var(--accent);
-    box-shadow: inset 0 -3px 0 var(--accent-2);
-    animation: g1-bio-seg-pulse 1.6s ease-in-out infinite;
-  }
-
-  :global(html[data-theme='light']) .g1-seg-review {
-    animation: none;
-  }
-
-  @keyframes g1-bio-seg-pulse {
-    0%, 100% { box-shadow: inset 0 -3px 0 var(--accent-2), 0 0 0 0 color-mix(in srgb, var(--accent) 0%, transparent); }
-    50% { box-shadow: inset 0 -3px 0 var(--accent-2), 0 0 0 4px color-mix(in srgb, var(--accent) 10%, transparent); }
+    border-color: transparent;
+    color: var(--accent);
+    background: none;
+    box-shadow: none;
+    text-shadow: none;
   }
 
   :global(html[data-theme='light']) .g1-hero {
@@ -3175,7 +3260,6 @@
     box-shadow: 0 28px 58px -38px rgba(0, 0, 0, 0.92);
   }
 
-  :global(html[data-theme='dark']) .g1-strip-count,
   :global(html[data-theme='dark']) .g1-utility-line,
   :global(html[data-theme='dark']) .g1-column-head small,
   :global(html[data-theme='dark']) .g1-hero > span,
@@ -3214,10 +3298,11 @@
   }
 
   :global(html[data-theme='dark']) .g1-seg-active {
-    border-color: var(--accent);
-    color: var(--ink-field);
-    background: var(--accent);
-    box-shadow: inset 0 -3px 0 var(--accent-2);
+    border-color: transparent;
+    color: var(--accent);
+    background: none;
+    box-shadow: none;
+    text-shadow: none;
   }
 
   :global(html[data-theme='dark']) .g1-hero {
@@ -3422,8 +3507,13 @@
     line-height: 1.5;
   }
 
+  :global(html[data-theme='arcade']) .g1-seg-active {
+    font-family: var(--marquee);
+    font-size: 1.6rem;
+    line-height: 1.3;
+  }
+
   /* VT323 optical compensation for the in-game mono chrome */
-  :global(html[data-theme='arcade']) .g1-strip-count,
   :global(html[data-theme='arcade']) .g1-hero > span {
     font-size: 1.05rem;
   }
@@ -3541,14 +3631,14 @@
     }
 
     /* Declutter the answering header: one big pixelated tense name; the tense
-       and cell positions live as badges on the verb hero. Drop the redundant
-       "Tense N/N" count, the segment strip, and the ACTIVE TENSE block. */
-    .g1-strip-count,
+       and cell positions live as badges on the verb hero. Drop the segment
+       strip and the ACTIVE TENSE block. */
     .g1-name-strip {
       display: none;
     }
 
     .g1-strip-head {
+      display: flex;
       justify-content: center;
     }
 
@@ -3685,7 +3775,6 @@
     .g1-production-card,
     .g1-column-review .g1-column-row,
     .g1-row-active .g1-row-marker,
-    .g1-seg-active,
     .g1-quick-shot-note,
     .table-clear-card {
       animation: none;

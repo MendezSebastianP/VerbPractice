@@ -563,6 +563,27 @@ export interface WordSetDetail extends WordSetSummary {
 
 export type TranslationDisplayMode = 'mother_full' | 'partial' | 'learning_full';
 
+// Last-used game setup per trainer, restored on the next visit. Keys are
+// practice modes ('word_translation' | 'verb_translation' | 'conjugation');
+// values are trainer-specific (length, tenses, …).
+export interface TranslationTrainerSetup {
+  length?: number;
+}
+
+export interface ConjugationTrainerSetup {
+  language?: string;
+  level?: string;
+  fill_level?: string;
+  length?: number;
+  selected_tenses?: string[];
+}
+
+export interface TrainerSetups {
+  word_translation?: TranslationTrainerSetup;
+  verb_translation?: TranslationTrainerSetup;
+  conjugation?: ConjugationTrainerSetup;
+}
+
 export interface UserSettings {
   sound_enabled: boolean;
   show_shortcuts: boolean;
@@ -572,6 +593,7 @@ export interface UserSettings {
   force_unlock_added_words: boolean;
   last_practice_pair: string | null;
   last_practice_mode: string | null;
+  trainer_setups: TrainerSetups | null;
 }
 
 export interface UserSettingsPatch {
@@ -582,6 +604,10 @@ export interface UserSettingsPatch {
   show_shortcuts: boolean;
   last_practice_pair: string;
   last_practice_mode: string;
+  trainer_setup: {
+    mode: 'word_translation' | 'verb_translation' | 'conjugation';
+    setup: TranslationTrainerSetup | ConjugationTrainerSetup;
+  };
 }
 
 export interface LexicalEntry {

@@ -28,6 +28,7 @@ def _serialize_preference(pref: UserPreference, languages: dict[int, Language]) 
         "force_unlock_added_words": pref.force_unlock_added_words,
         "last_practice_pair": pref.last_practice_pair,
         "last_practice_mode": pref.last_practice_mode,
+        "trainer_setups": pref.trainer_setups or {},
     }
 
 
@@ -102,6 +103,17 @@ async def patch_settings(
                 detail=f"Invalid practice mode. Must be one of: {sorted(VALID_PRACTICE_MODES)}",
             )
         preference.last_practice_mode = payload.last_practice_mode
+
+    if payload.trainer_setup is not None:
+        if payload.trainer_setup.mode not in VALID_PRACTICE_MODES:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Invalid trainer mode. Must be one of: {sorted(VALID_PRACTICE_MODES)}",
+            )
+        # Reassign (not mutate) so SQLAlchemy detects the JSON column change.
+        setups = dict(preference.trainer_setups or {})
+        setups[payload.trainer_setup.mode] = payload.trainer_setup.setup
+        preference.trainer_setups = setups
 
     await db.commit()
     await db.refresh(preference)

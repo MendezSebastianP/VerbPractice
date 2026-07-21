@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+from datetime import datetime, timezone
+
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile, status
-from sqlalchemy import delete, select
+from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.csrf import validate_csrf
@@ -114,12 +116,18 @@ async def add_word(
 ):
     validate_csrf(request, payload.csrf_token)
     preference = await ensure_user_preference(db, auth.user.id)
-    learning, mother = await _require_lang_prefs(db, preference)
 
-    if payload.learning_lang_code:
+    # An explicit pair in the payload stands on its own; settings prefs are only
+    # a fallback when a code is missing.
+    if payload.learning_lang_code and payload.mother_lang_code:
         learning = await _lang_by_code(db, payload.learning_lang_code)
-    if payload.mother_lang_code:
         mother = await _lang_by_code(db, payload.mother_lang_code)
+    else:
+        learning, mother = await _require_lang_prefs(db, preference)
+        if payload.learning_lang_code:
+            learning = await _lang_by_code(db, payload.learning_lang_code)
+        if payload.mother_lang_code:
+            mother = await _lang_by_code(db, payload.mother_lang_code)
     if learning.id == mother.id:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -168,7 +176,10 @@ async def add_word(
             context_hint=payload.context,
         )
         db.add(added)
-        await db.flush()
+    # Bump even when the word was already in the pool, so it resurfaces at the
+    # top of "Recent searches"; added_at stays untouched for the unlock queue.
+    added.last_searched_at = datetime.now(timezone.utc)
+    await db.flush()
 
     force_unlocked = False
     if preference.force_unlock_added_words:
@@ -276,7 +287,9 @@ async def word_history(
     added_rows = await db.execute(
         select(UserAddedWord)
         .where(UserAddedWord.user_id == auth.user.id)
-        .order_by(UserAddedWord.added_at.desc())
+        .order_by(
+            func.coalesce(UserAddedWord.last_searched_at, UserAddedWord.added_at).desc()
+        )
         .limit(limit)
     )
     added_list = list(added_rows.scalars().all())
@@ -287,8 +300,9 @@ async def word_history(
     words_lookup = await db.execute(select(Word).where(Word.id.in_(word_ids)))
     words_by_id = {w.id: w for w in words_lookup.scalars().all()}
 
-    lang_ids = {w.language_id for w in words_by_id.values()}
-    lang_lookup = await db.execute(select(Language).where(Language.id.in_(lang_ids)))
+    # All languages, not just the words' own: the mother tongue of a pair need
+    # not be the learning language of any listed word.
+    lang_lookup = await db.execute(select(Language))
     lang_by_id = {l.id: l for l in lang_lookup.scalars().all()}
 
     lex_lookup = await db.execute(

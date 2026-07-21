@@ -1,69 +1,24 @@
 <script lang="ts">
-  import { fade } from 'svelte/transition';
+  import { fly } from 'svelte/transition';
   import { iconEmoji } from '../badges';
   import { dismissOverlay, fxQueue, missFlash } from '../fx';
   import type { FxOverlay } from '../fx';
 
-  interface Particle {
-    dx: number;
-    dy: number;
-    delay: number;
-    size: number;
-    color: string;
-  }
-
-  const PARTICLE_COLORS = ['var(--xp)', 'var(--accent)', 'var(--accent-2)', 'var(--success)'];
-
-  function makeParticles(count: number): Particle[] {
-    return Array.from({ length: count }, (_, i) => {
-      const angle = (Math.PI * 2 * i) / count + Math.random() * 0.6;
-      const distance = 90 + Math.random() * 140;
-      return {
-        dx: Math.cos(angle) * distance,
-        dy: Math.sin(angle) * distance,
-        delay: Math.random() * 180,
-        size: 5 + Math.random() * 7,
-        color: PARTICLE_COLORS[i % PARTICLE_COLORS.length],
-      };
-    });
-  }
+  // Rendered as a small self-dismissing toast — never a blocking overlay.
+  // No key/click handlers on purpose: a mid-typing Enter must always reach
+  // the trainer, not a celebration screen.
+  const TOAST_MS = 2000;
 
   let current: FxOverlay | null = null;
-  let particles: Particle[] = [];
   let autoTimer: ReturnType<typeof setTimeout> | null = null;
   let lastOverlayId = 0;
 
   $: current = $fxQueue[0] ?? null;
   $: if (current && current.id !== lastOverlayId) {
     lastOverlayId = current.id;
-    particles = current.kind === 'level' ? makeParticles(26) : [];
     if (autoTimer) clearTimeout(autoTimer);
     const overlayId = current.id;
-    autoTimer = setTimeout(() => dismissOverlay(overlayId), current.kind === 'level' ? 2600 : 8000);
-  }
-
-  function dismissCurrent(): void {
-    if (!current) return;
-    if (autoTimer) {
-      clearTimeout(autoTimer);
-      autoTimer = null;
-    }
-    dismissOverlay(current.id);
-  }
-
-  function handleKeydown(event: KeyboardEvent): void {
-    if (current && (event.key === 'Escape' || event.key === 'Enter' || event.key === ' ')) {
-      event.preventDefault();
-      dismissCurrent();
-    }
-  }
-
-  // Tap anywhere to continue — the overlay covers the screen, so a window
-  // listener keeps the element itself non-interactive for assistive tech.
-  function handleWindowClick(): void {
-    if (current) {
-      dismissCurrent();
-    }
+    autoTimer = setTimeout(() => dismissOverlay(overlayId), TOAST_MS);
   }
 
   function rarityClass(rarity: string): string {
@@ -74,8 +29,6 @@
   }
 </script>
 
-<svelte:window on:keydown={handleKeydown} on:click={handleWindowClick} />
-
 <!-- Arcade-only 'miss' screen flash on wrong answers -->
 {#key $missFlash}
   {#if $missFlash > 0}
@@ -85,25 +38,21 @@
 
 {#if current}
   <div
-    class="fx-overlay"
+    class="fx-toast-layer"
     role="status"
     aria-live="polite"
-    transition:fade={{ duration: 150 }}
+    transition:fly={{ y: -14, duration: 180 }}
   >
     {#if current.kind === 'level'}
-      <div class="fx-center">
-        {#each particles as particle, i (i)}
-          <span
-            class="fx-particle"
-            style={`--dx: ${particle.dx}px; --dy: ${particle.dy}px; width: ${particle.size}px; height: ${particle.size}px; background: ${particle.color}; animation-delay: ${particle.delay}ms;`}
-          ></span>
-        {/each}
-        <p class="level-up-title">LEVEL UP!</p>
-        <p class="level-up-number">Level {current.level}</p>
-        <p class="fx-dismiss-hint">Tap to continue</p>
+      <div class="fx-toast level-toast">
+        <span class="level-toast-burst" aria-hidden="true">✦</span>
+        <div class="level-toast-copy">
+          <p class="level-up-title">LEVEL UP!</p>
+          <p class="level-up-number">Level {current.level}</p>
+        </div>
       </div>
     {:else}
-      <div class="fx-center badge-stack">
+      <div class="fx-toast badge-stack">
         <p class="badge-headline">Badge unlocked</p>
         {#each current.badges as badge, i (badge.code)}
           <div class={`badge-flip-card ${rarityClass(badge.rarity)}`} style={`animation-delay: ${i * 180}ms;`}>
@@ -115,7 +64,6 @@
             <span class="badge-rarity">{badge.rarity}</span>
           </div>
         {/each}
-        <p class="fx-dismiss-hint">Tap to continue</p>
       </div>
     {/if}
   </div>
@@ -142,58 +90,58 @@
     100% { opacity: 0; }
   }
 
-  .fx-overlay {
+  /* Non-blocking celebration toast: fixed near the top, ignores the pointer,
+     and auto-dismisses — play (and Enter) always stays with the trainer. */
+  .fx-toast-layer {
     position: fixed;
-    inset: 0;
+    top: 4.25rem;
+    left: 0;
+    right: 0;
     z-index: 50;
     display: flex;
-    align-items: center;
     justify-content: center;
-    background: color-mix(in srgb, var(--bg) 55%, transparent);
-    backdrop-filter: blur(4px);
-    cursor: pointer;
+    pointer-events: none;
   }
 
-  .fx-center {
-    position: relative;
+  .fx-toast {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.7rem 1.25rem;
+    border-radius: 14px;
+    border: 1px solid color-mix(in srgb, var(--xp) 45%, var(--line-strong));
+    background: var(--surface-strong);
+    box-shadow: var(--shadow), 0 0 22px color-mix(in srgb, var(--xp) 22%, transparent);
+  }
+
+  .level-toast-burst {
+    font-size: 1.5rem;
+    color: var(--xp);
+    animation: level-pop 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .level-toast-copy {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-    text-align: center;
-    padding: 2rem;
-  }
-
-  .fx-particle {
-    position: absolute;
-    left: 50%;
-    top: 45%;
-    border-radius: 999px;
-    opacity: 0;
-    animation: particle-burst 950ms cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
-  }
-
-  @keyframes particle-burst {
-    0% { opacity: 1; transform: translate(0, 0) scale(1); }
-    100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0); }
+    text-align: left;
   }
 
   .level-up-title {
     font-family: var(--marquee);
     font-weight: 800;
-    font-size: clamp(1.8rem, 5vw, 3rem);
+    font-size: 1rem;
     letter-spacing: 0.04em;
     margin: 0;
     color: var(--xp);
-    text-shadow: 0 0 24px color-mix(in srgb, var(--xp) 45%, transparent);
+    text-shadow: 0 0 14px color-mix(in srgb, var(--xp) 40%, transparent);
     animation: level-pop 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   :global(html[data-theme='arcade']) .level-up-title {
-    font-size: clamp(1.2rem, 4vw, 2rem);
+    font-size: 0.85rem;
     text-shadow:
-      0 0 18px color-mix(in srgb, var(--xp) 75%, transparent),
-      0 0 48px color-mix(in srgb, var(--xp) 35%, transparent);
+      0 0 12px color-mix(in srgb, var(--xp) 75%, transparent),
+      0 0 30px color-mix(in srgb, var(--xp) 35%, transparent);
   }
 
   @keyframes level-pop {
@@ -204,27 +152,20 @@
 
   .level-up-number {
     font-family: var(--display);
-    font-size: 1.25rem;
+    font-size: 0.95rem;
     font-weight: 600;
     margin: 0;
     color: var(--text);
   }
 
-  .fx-dismiss-hint {
-    margin: 0.5rem 0 0;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    font-family: var(--mono);
-    color: var(--muted);
-  }
-
-  :global(html[data-theme='arcade']) .fx-dismiss-hint,
   :global(html[data-theme='arcade']) .badge-headline {
     font-size: 1.05rem;
   }
 
   .badge-stack {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
     max-width: 420px;
     width: min(420px, 92vw);
   }
@@ -324,11 +265,8 @@
   }
 
   :global(html[data-theme='dark']) .level-up-title {
-    padding-bottom: 0.25rem;
-    border-bottom: 3px solid var(--accent-2);
     font-family: var(--display);
-    font-size: clamp(2.4rem, 7vw, 4.8rem);
-    letter-spacing: -0.055em;
+    letter-spacing: -0.02em;
     text-shadow: none;
   }
 
@@ -354,7 +292,6 @@
       animation-duration: 1ms;
     }
 
-    .fx-particle,
     .miss-flash {
       display: none !important;
     }

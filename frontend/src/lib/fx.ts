@@ -38,24 +38,30 @@ export function dismissOverlay(id: number): void {
   fxQueue.update((queue) => queue.filter((overlay) => overlay.id !== id));
 }
 
-// One call per graded reward: level-up and badge overlays queued so they
-// never fight for the screen. (The nav-bar XP counter ticks separately via
-// the profile store — no floating XP text in the play area.)
+// One call per graded reward. Level-ups are NOT shown immediately: a mid-game
+// popup steals the Enter keystroke (which then grades a half-typed answer), so
+// the level is buffered here and released as a short toast once the session
+// ends. (The nav-bar XP counter still ticks live via the profile store.)
+let pendingLevel: number | null = null;
+
 export function celebrateReward(reward: RewardState | null | undefined): void {
   if (!reward) {
     return;
   }
-  const overlays: FxOverlay[] = [];
   if (reward.leveled_up) {
-    overlays.push({ id: nextId++, kind: 'level', level: reward.new_level });
+    pendingLevel = reward.new_level;
   }
   // Badge unlock overlays are suspended for now — they popped mid-game and
   // distracted play. Badges still unlock silently (nav XP/profile updates);
-  // re-enable by restoring the push below.
-  // if (reward.unlocked_badges?.length) {
-  //   overlays.push({ id: nextId++, kind: 'badges', badges: reward.unlocked_badges });
-  // }
-  if (overlays.length) {
-    fxQueue.update((queue) => [...queue, ...overlays]);
+  // re-enable by buffering them like pendingLevel above.
+}
+
+// Called by trainers when a session finishes (completed or ended early).
+export function releaseCelebrations(): void {
+  if (pendingLevel === null) {
+    return;
   }
+  const level = pendingLevel;
+  pendingLevel = null;
+  fxQueue.update((queue) => [...queue, { id: nextId++, kind: 'level', level }]);
 }

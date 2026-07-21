@@ -80,6 +80,11 @@ class CircleFriendPayload(CsrfPayload):
     username: str = Field(min_length=1, max_length=128)
 
 
+class TrainerSetupPayload(BaseModel):
+    mode: str = Field(min_length=1, max_length=32)
+    setup: dict = Field(default_factory=dict)
+
+
 class SettingsPatchPayload(CsrfPayload):
     mother_tongue_code: str | None = None
     learning_language_code: str | None = None
@@ -88,6 +93,7 @@ class SettingsPatchPayload(CsrfPayload):
     show_shortcuts: bool | None = None
     last_practice_pair: str | None = None
     last_practice_mode: str | None = None
+    trainer_setup: TrainerSetupPayload | None = None
 
 
 class AddWordPayload(CsrfPayload):

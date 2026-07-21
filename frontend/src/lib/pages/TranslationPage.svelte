@@ -5,7 +5,7 @@
   import { navigate } from '../router';
   import { playCue } from '../sound';
   import { applyReward } from '../profile';
-  import { celebrateReward, flashMiss, fxQueue, popEl } from '../fx';
+  import { celebrateReward, flashMiss, popEl, releaseCelebrations } from '../fx';
   import DirectionPicker from '../components/DirectionPicker.svelte';
   import HelpTip from '../components/HelpTip.svelte';
   import QuickShotIcon from '../components/QuickShotIcon.svelte';
@@ -240,12 +240,6 @@
     direction = `${sourceCode.toLowerCase()}_${targetCode.toLowerCase()}`;
   }
 
-  // Top weak words for the current direction (max 4); empty slots are padded so the
-  // card keeps a stable height even when a direction has no data yet.
-  $: weakItems = state
-    ? state.overview.focus_items.filter((i) => i.language_pair === direction).slice(0, 4)
-    : [];
-
   function languageByCode(code: string): LanguageEntry | undefined {
     return languages.find((l) => l.code === code.toUpperCase());
   }
@@ -462,6 +456,14 @@
       justFinished = Boolean(state?.finished || state?.result?.finished);
       showSetupAfterFinish = false;
       syncControlsFromState(state);
+      // Restore the last-used session length (an active session's own length,
+      // applied by syncControlsFromState above, wins over the saved setup).
+      if (!state?.session) {
+        const savedSetup = userSettings?.trainer_setups?.[mode === 'words' ? 'word_translation' : 'verb_translation'];
+        if (savedSetup?.length && LENGTH_OPTS.includes(savedSetup.length)) {
+          length = savedSetup.length;
+        }
+      }
       answer = '';
       inlineMsg = '';
       inlineTone = '';
@@ -530,6 +532,10 @@
       csrf_token: csrfToken,
       last_practice_pair: direction,
       last_practice_mode: mode === 'words' ? 'word_translation' : 'verb_translation',
+      trainer_setup: {
+        mode: mode === 'words' ? 'word_translation' : 'verb_translation',
+        setup: { length },
+      },
     }).catch(() => {});
     void focusPrimaryControl();
   }
@@ -722,6 +728,9 @@
       showSetupAfterFinish = false;
       syncControlsFromState(state);
       answer = '';
+      // Session over: any level-up buffered during play shows now, as a toast
+      // over the Stage Clear screen instead of interrupting mid-run.
+      if (justFinished) releaseCelebrations();
       // Session just ended: transfer focus to the primer now, while the answer
       // input is still mounted, so the mobile keyboard survives into Stage Clear.
       if (justFinished && usesCompactViewport()) kbdPrimer?.focus({ preventScroll: true });
@@ -766,6 +775,7 @@
       state = mode === 'words' ? await api.finishWords(csrfToken) : await api.finishVerbs(csrfToken);
       justFinished = false;
       showSetupAfterFinish = true;
+      releaseCelebrations();
       wrongAttempts = 0;
       inlineMsg = '';
       inlineTone = '';
@@ -797,8 +807,6 @@
 
   function handleKeydown(event: KeyboardEvent): void {
     if (loading || launching) return;
-    // A reward overlay (level-up / badge reveal) owns the keyboard until dismissed
-    if ($fxQueue.length) return;
 
     // Enter on setup screen: fire the play control unless typing in a real text field
     if (event.key === 'Enter' && menuView && !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
@@ -1128,35 +1136,13 @@
           </div>
         </article>
 
-        {#if weakItems.length || (mode === 'words' && !setScope)}
+        {#if mode === 'words' && !setScope}
           <article class="glass-panel aux-card">
-            <p class="eyebrow" style="margin-bottom: 0.5rem;">Top weak {itemPlural}</p>
-            <div class="weak-words-area">
-              <div class="metric-grid tight-grid">
-                {#each weakItems as item}
-                  <div class="stat-card compact-stat">
-                    <span>{item.language_pair.replace('_', ' → ').toUpperCase()}</span>
-                    <strong style="font-size: 0.95rem; letter-spacing: normal; line-height: 1.3;">{item.label}</strong>
-                    {#if item.translation}
-                      <span style="font-size: 0.78rem; color: var(--muted); margin-top: 0.1rem;">{item.translation}</span>
-                    {/if}
-                  </div>
-                {/each}
-                {#each Array(4 - weakItems.length) as _}
-                  <div class="stat-card compact-stat ghost-stat" aria-hidden="true"></div>
-                {/each}
-              </div>
-              {#if weakItems.length === 0}
-                <p class="section-copy weak-empty">No data yet — start a session!</p>
-              {/if}
+            <div class="sets-teaser">
+              <span class="eyebrow">Sets</span>
+              <p class="section-copy" style="margin-top: 0.25rem; margin-bottom: 0;">Group words into themed sets and practice them separately.</p>
+              <button type="button" class="text-switch sets-teaser-link" on:click={() => navigate('/sets')}>Browse your sets →</button>
             </div>
-            {#if mode === 'words' && !setScope}
-              <div class="sets-teaser">
-                <span class="eyebrow">Sets</span>
-                <p class="section-copy" style="margin-top: 0.25rem; margin-bottom: 0;">Group words into themed sets and practice them separately.</p>
-                <button type="button" class="text-switch sets-teaser-link" on:click={() => navigate('/sets')}>Browse your sets →</button>
-              </div>
-            {/if}
           </article>
         {/if}
       {:else if sessionView}
@@ -1664,40 +1650,6 @@
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-  }
-
-  /* Top weak words: reserve a stable footprint so the empty state never
-     shifts the rest of the card when switching direction/language. */
-  .weak-words-area {
-    position: relative;
-  }
-
-  .weak-words-area .stat-card {
-    height: 6.5rem;
-    justify-content: center;
-    overflow: hidden;
-  }
-
-  .weak-words-area .stat-card > span,
-  .weak-words-area .stat-card > strong {
-    max-width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .ghost-stat {
-    visibility: hidden;
-  }
-
-  .weak-empty {
-    position: absolute;
-    inset: 0;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
   }
 
   .sets-teaser {

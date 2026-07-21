@@ -438,6 +438,44 @@ def test_training_finish_endpoints(client: TestClient, smoke_user: dict[str, str
     assert shortcuts_on.status_code == 200
     assert shortcuts_on.json()["show_shortcuts"] is True
 
+    conjugation_setup = {
+        "language": "EN",
+        "level": "custom",
+        "fill_level": "hard",
+        "length": 5,
+        "selected_tenses": ["Past Simple"],
+    }
+    saved_setup = client.patch(
+        "/api/settings",
+        json={
+            "trainer_setup": {"mode": "conjugation", "setup": conjugation_setup},
+            "csrf_token": csrf_token,
+        },
+    )
+    assert saved_setup.status_code == 200
+    assert saved_setup.json()["trainer_setups"]["conjugation"] == conjugation_setup
+
+    # Saving another trainer's setup merges instead of replacing.
+    saved_words = client.patch(
+        "/api/settings",
+        json={
+            "trainer_setup": {"mode": "word_translation", "setup": {"length": 20}},
+            "csrf_token": csrf_token,
+        },
+    )
+    assert saved_words.status_code == 200
+    assert saved_words.json()["trainer_setups"]["conjugation"] == conjugation_setup
+    assert saved_words.json()["trainer_setups"]["word_translation"] == {"length": 20}
+
+    bad_mode = client.patch(
+        "/api/settings",
+        json={
+            "trainer_setup": {"mode": "not_a_trainer", "setup": {}},
+            "csrf_token": csrf_token,
+        },
+    )
+    assert bad_mode.status_code == 400
+
 
 def test_training_and_chat_flows(client: TestClient, smoke_user: dict[str, str]):
     _login(client, smoke_user)

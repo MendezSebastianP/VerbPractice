@@ -13,7 +13,6 @@
     AddedWordResult,
     LanguageEntry,
     ThemeName,
-    UserSettings,
     UserWordEntry,
     WordHistoryEntry,
   } from '../types';
@@ -29,7 +28,6 @@
   let loading = true;
   let error = '';
   let languages: LanguageEntry[] = [];
-  let settings: UserSettings | null = null;
 
   let inputText = '';
   let contextHint = '';
@@ -77,6 +75,7 @@
   // surrounding sentence rides along as context. ---
   const MAX_UPLOAD_DIMENSION = 1600;
   const CONTEXT_MAX_CHARS = 512;
+  const CONTEXT_WINDOW_WORDS = 15;
   const WORD_MAX_CHARS = 128;
   const MIN_CROP = 0.08;
 
@@ -213,11 +212,17 @@
         api.wordHistory(20).catch(() => ({ entries: [] as WordHistoryEntry[] })),
       ]);
       languages = langs.languages;
-      settings = s;
-      // Default: from learning language → native (mother tongue), with a graceful
-      // fallback to the first two available languages if prefs are unset.
-      sourceCode = s.learning_language?.code ?? languages[0]?.code ?? '';
-      targetCode = s.mother_tongue?.code ?? languages.find((l) => l.code !== sourceCode)?.code ?? '';
+      // Default direction: the pair of the most recent translation, since people
+      // usually keep translating between the same two languages. Fall back to the
+      // settings prefs, then to the first two available languages.
+      const last = hist.entries[0];
+      if (last?.learning_language_code && last?.mother_tongue_code) {
+        sourceCode = last.learning_language_code.toUpperCase();
+        targetCode = last.mother_tongue_code.toUpperCase();
+      } else {
+        sourceCode = s.learning_language?.code ?? languages[0]?.code ?? '';
+        targetCode = s.mother_tongue?.code ?? languages.find((l) => l.code !== sourceCode)?.code ?? '';
+      }
       history = hist.entries;
       manageLearning = s.learning_language?.code ?? '';
       manageMother = s.mother_tongue?.code ?? '';
@@ -248,10 +253,6 @@
   async function addWord(textOverride?: string): Promise<void> {
     const text = (textOverride ?? inputText).trim();
     if (!text) {
-      return;
-    }
-    if (!settings?.mother_tongue) {
-      notify('Set your mother tongue in Settings first.', 'error');
       return;
     }
     if (!sourceCode || !targetCode) {
@@ -629,6 +630,23 @@
     photoCards = photoCards.map((c) => (c.id === id ? { ...c, ...patch } : c));
   }
 
+  // Consecutive selected tokens form one phrase ("composed word"), so tapping
+  // "salle", "de", "bain" looks up "salle de bain" as a single entry.
+  function groupSelection(selection: Set<number>): number[][] {
+    const groups: number[][] = [];
+    for (const i of [...selection].sort((a, b) => a - b)) {
+      const last = groups[groups.length - 1];
+      if (last && i === last[last.length - 1] + 1) {
+        last.push(i);
+      } else {
+        groups.push([i]);
+      }
+    }
+    return groups;
+  }
+
+  $: selectedPhraseCount = groupSelection(selectedTokens).length;
+
   async function submitSelected(): Promise<void> {
     if (selectedTokens.size === 0 || photoSubmitting) return;
     if (!sourceCode || !targetCode || sourceCode === targetCode) {
@@ -636,16 +654,29 @@
       return;
     }
 
-    const context = extractedText.trim().replace(/\s+/g, ' ').slice(0, CONTEXT_MAX_CHARS);
-    const words = [...selectedTokens].sort((a, b) => a - b).map((i) => tokens[i]?.word ?? '').filter(Boolean);
+    // Only the words around the selection ride along as context — up to
+    // CONTEXT_WINDOW_WORDS on each side — so the AI disambiguates from the
+    // sentence without receiving the whole capture.
+    const lookups = groupSelection(selectedTokens).map((group) => {
+      const start = Math.max(0, group[0] - CONTEXT_WINDOW_WORDS);
+      const end = Math.min(tokens.length - 1, group[group.length - 1] + CONTEXT_WINDOW_WORDS);
+      return {
+        word: group.map((i) => tokens[i]?.word ?? '').filter(Boolean).join(' '),
+        context: tokens
+          .slice(start, end + 1)
+          .map((t) => t.raw)
+          .join(' ')
+          .slice(0, CONTEXT_MAX_CHARS),
+      };
+    }).filter((l) => l.word.length > 0);
     photoSubmitting = true;
     selectedTokens = new Set();
 
-    for (const word of words) {
+    for (const { word, context } of lookups) {
       const id = nextCardId++;
       photoCards = [...photoCards, { id, word, state: 'loading' }];
       if (word.length > WORD_MAX_CHARS) {
-        patchCard(id, { state: 'error', detail: 'Too long for a single word.' });
+        patchCard(id, { state: 'error', detail: 'Too long for a single entry.' });
         continue;
       }
       try {
@@ -677,7 +708,7 @@
     photoSubmitting = false;
     const added = photoCards.filter((c) => c.state === 'done').length;
     if (added > 0) {
-      notify(`${added} word${added === 1 ? '' : 's'} defined and added to your pool.`, 'success');
+      notify(`${added} ${added === 1 ? 'entry' : 'entries'} defined and added to your pool.`, 'success');
       try {
         const hist = await api.wordHistory(20);
         history = hist.entries;
@@ -764,17 +795,12 @@
           </p>
           <p>
             <strong>Take a photo</strong> reads printed text on your own server (nothing leaves it): crop to the
-            text, tap the words you don't know, and the surrounding sentence is sent as context so the AI picks
-            the right meaning. Fix any misread letters first — the word chips follow your edits.
+            text, then tap the word you don't know — tap neighbouring words to look them up as one phrase. The
+            words around your selection (up to 15 on each side) are sent as context so the AI picks the right
+            meaning. Fix any misread letters first — the word chips follow your edits.
           </p>
         </HelpTip>
       </div>
-
-      {#if !settings?.mother_tongue}
-        <div class="feedback-banner info-banner" style="margin-top: 0.75rem;">
-          Set your mother tongue on the home page first.
-        </div>
-      {/if}
 
       <form class="answer-form" on:submit|preventDefault={fireTranslate} style="margin-top: 0.5rem;">
         <div class="toggle-group">
@@ -956,7 +982,7 @@
             disabled={photoSubmitting}
           ></textarea>
 
-          <p class="eyebrow" style="margin-top: 0.75rem;">Tap the words you want to learn</p>
+          <p class="eyebrow" style="margin-top: 0.75rem;">Tap the word to translate — neighbouring taps form one phrase</p>
           <p class="word-flow" role="group" aria-label="Tap words to select them">
             {#each tokens as token, i}
               <button
@@ -978,7 +1004,7 @@
             >
               {photoSubmitting
                 ? 'Looking up…'
-                : `Define & add ${selectedTokens.size || ''} word${selectedTokens.size === 1 ? '' : 's'}`}
+                : `Define & add ${selectedPhraseCount || ''} ${selectedPhraseCount === 1 ? 'entry' : 'entries'}`}
             </button>
             <button class="ghost-button" type="button" disabled={photoSubmitting} on:click={resetPhoto}>
               Done — back to typing
@@ -1064,11 +1090,22 @@
             {#if card.result.lexical.synonyms?.length}
               <div>
                 <p class="eyebrow">Synonyms</p>
-                <div class="tag-row">
-                  {#each card.result.lexical.synonyms as syn}
-                    <span class="mini-tag" title={syn.gloss || ''}>{syn.text}</span>
-                  {/each}
-                </div>
+                <table class="syn-table">
+                  <thead>
+                    <tr>
+                      <th>{languageName(card.result.mother_tongue_code)}</th>
+                      <th>{languageName(card.result.learning_language_code)}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {#each card.result.lexical.synonyms as syn}
+                      <tr>
+                        <td>{syn.gloss || '—'}</td>
+                        <td>{syn.text}</td>
+                      </tr>
+                    {/each}
+                  </tbody>
+                </table>
               </div>
             {/if}
 
@@ -1196,11 +1233,22 @@
           {#if result.lexical.synonyms?.length}
             <div>
               <p class="eyebrow">Synonyms</p>
-              <div class="tag-row">
-                {#each result.lexical.synonyms as syn}
-                  <span class="mini-tag" title={syn.gloss || ''}>{syn.text}</span>
-                {/each}
-              </div>
+              <table class="syn-table">
+                <thead>
+                  <tr>
+                    <th>{languageName(result.mother_tongue_code)}</th>
+                    <th>{languageName(result.learning_language_code)}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {#each result.lexical.synonyms as syn}
+                    <tr>
+                      <td>{syn.gloss || '—'}</td>
+                      <td>{syn.text}</td>
+                    </tr>
+                  {/each}
+                </tbody>
+              </table>
             </div>
           {/if}
 
@@ -1335,11 +1383,22 @@
                   {#if entry.lexical.synonyms?.length}
                     <div>
                       <p class="eyebrow">Synonyms</p>
-                      <div class="tag-row">
-                        {#each entry.lexical.synonyms as syn}
-                          <span class="mini-tag" title={syn.gloss || ''}>{syn.text}</span>
-                        {/each}
-                      </div>
+                      <table class="syn-table">
+                        <thead>
+                          <tr>
+                            <th>{languageName(entry.mother_tongue_code)}</th>
+                            <th>{languageName(entry.learning_language_code)}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {#each entry.lexical.synonyms as syn}
+                            <tr>
+                              <td>{syn.gloss || '—'}</td>
+                              <td>{syn.text}</td>
+                            </tr>
+                          {/each}
+                        </tbody>
+                      </table>
                     </div>
                   {/if}
                   {#if entry.lexical.examples?.length}
@@ -1498,6 +1557,34 @@
 {/if}
 
 <style>
+  /* Synonyms as a two-column table: target language | source language. */
+  .syn-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.35rem;
+    font-size: 0.95rem;
+  }
+
+  .syn-table th {
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    padding: 0.3rem 0.6rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .syn-table td {
+    padding: 0.35rem 0.6rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--line) 55%, transparent);
+  }
+
+  .syn-table tr:last-child td {
+    border-bottom: none;
+  }
+
   .card-help-row {
     display: flex;
     justify-content: flex-end;

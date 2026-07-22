@@ -274,6 +274,19 @@ async def ocr_extract(
         lines=result.lines,
         mean_confidence=result.mean_confidence,
         ocr_lang=lang_code,
+        words=[
+            {
+                "text": word.text,
+                "confidence": word.confidence,
+                "box": {
+                    "x": word.box.x,
+                    "y": word.box.y,
+                    "width": word.box.width,
+                    "height": word.box.height,
+                },
+            }
+            for word in result.words
+        ],
     )
 
 

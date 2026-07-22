@@ -111,11 +111,25 @@ class AddWordOfflinePayload(CsrfPayload):
     note: str | None = Field(default=None, max_length=256)
 
 
+class OcrWordBox(BaseModel):
+    x: float = Field(ge=0, le=1)
+    y: float = Field(ge=0, le=1)
+    width: float = Field(gt=0, le=1)
+    height: float = Field(gt=0, le=1)
+
+
+class OcrWordResult(BaseModel):
+    text: str
+    confidence: float = Field(ge=0, le=100)
+    box: OcrWordBox
+
+
 class OcrExtractResponse(BaseModel):
     text: str
     lines: list[str]
     mean_confidence: float | None = None
     ocr_lang: str
+    words: list[OcrWordResult] = Field(default_factory=list)
 
 
 class DeleteUserWordPayload(CsrfPayload):

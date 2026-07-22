@@ -40,8 +40,12 @@ def _text_image(text: str) -> bytes:
 
 
 class _FakeEngine:
-    def __init__(self, txts, scores):
-        self._output = SimpleNamespace(txts=txts, scores=scores)
+    def __init__(self, txts, scores, word_results=None):
+        self._output = SimpleNamespace(
+            txts=txts,
+            scores=scores,
+            word_results=word_results,
+        )
 
     def __call__(self, img):
         return self._output
@@ -84,6 +88,29 @@ def test_run_handles_empty_output():
     assert result.text == ""
     assert result.lines == []
     assert result.mean_confidence is None
+
+
+def test_run_returns_normalized_word_boxes_in_reading_order():
+    engine = _FakeEngine(
+        ["l'homme est ici"],
+        [0.94],
+        word_results=(
+            (
+                ("“l'homme", 0.93, [[20, 10], [90, 10], [90, 30], [20, 30]]),
+                ("est", 0.91, [[100, 10], [130, 10], [130, 30], [100, 30]]),
+                ("ici!", 0.89, [[140, 10], [180, 10], [180, 30], [140, 30]]),
+            ),
+        ),
+    )
+
+    result = _run(engine, np.zeros((100, 200, 3), dtype=np.uint8))
+
+    assert [word.text for word in result.words] == ["l'homme", "est", "ici"]
+    assert [word.confidence for word in result.words] == [93.0, 91.0, 89.0]
+    assert result.words[0].box.x == 0.1
+    assert result.words[0].box.y == 0.1
+    assert result.words[0].box.width == 0.35
+    assert result.words[0].box.height == 0.2
 
 
 def test_extract_unknown_language_raises():

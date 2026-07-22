@@ -12,6 +12,7 @@
     AddedWordNotFound,
     AddedWordResult,
     LanguageEntry,
+    OcrWordResult,
     ThemeName,
     UserWordEntry,
     WordHistoryEntry,
@@ -70,9 +71,9 @@
   let offlineMotherLang = '';
   let offlineSaving = false;
 
-  // --- Photo capture (Playground Experiment 05, option A: photo row under the
-  // input). Photograph text → crop → server OCR → tap the words to add; the
-  // surrounding sentence rides along as context. ---
+  // --- Photo capture. Photograph text → local server OCR → select words on
+  // the photo itself. Adjacent selections form one compound word; the nearby
+  // text rides along only as translation context. ---
   const MAX_UPLOAD_DIMENSION = 1600;
   const CONTEXT_MAX_CHARS = 512;
   const CONTEXT_WINDOW_WORDS = 15;
@@ -95,6 +96,12 @@
     word: string;
   }
 
+  interface SelectionPreview {
+    key: string;
+    indices: number[];
+    value: string;
+  }
+
   let photoPhase: PhotoPhase = 'idle';
   let photoSubmitting = false;
   let cameraInput: HTMLInputElement | null = null;
@@ -102,9 +109,10 @@
   let pickedFile: File | null = null;
   let previewUrl = '';
   let croppedUrl = '';
-  let extractedText = '';
   let ocrConfidence: number | null = null;
+  let ocrWords: OcrWordResult[] = [];
   let selectedTokens = new Set<number>();
+  let selectionDrafts: Record<string, string> = {};
   let photoCards: PhotoCard[] = [];
   let nextCardId = 1;
 
@@ -119,11 +127,7 @@
     bounds: DOMRect;
   } | null = null;
 
-  // Chips derive from the *edited* text so OCR fixes flow straight into them.
-  $: tokens = extractedText
-    .split(/\s+/)
-    .map((raw): Token => ({ raw, word: raw.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, '') }))
-    .filter((t) => t.word.length > 0);
+  $: tokens = ocrWords.map((word): Token => ({ raw: word.text, word: word.text }));
 
   $: managePair = manageLearning && manageMother
     ? `${manageLearning.toLowerCase()}_${manageMother.toLowerCase()}`
@@ -501,9 +505,17 @@
     }
     pickedFile = file;
     if (previewUrl) URL.revokeObjectURL(previewUrl);
+    if (croppedUrl) URL.revokeObjectURL(croppedUrl);
     previewUrl = URL.createObjectURL(file);
-    crop = { x: 0.03, y: 0.03, w: 0.94, h: 0.94 };
-    photoPhase = 'crop';
+    croppedUrl = '';
+    ocrConfidence = null;
+    ocrWords = [];
+    selectedTokens = new Set();
+    selectionDrafts = {};
+    crop = { x: 0, y: 0, w: 1, h: 1 };
+    // The happy path goes straight from capture to selectable word boxes.
+    // Cropping remains available after recognition, or automatically on a miss.
+    void readText();
   }
 
   // crop interactions (pointer events cover mouse + touch)
@@ -592,6 +604,7 @@
   async function readText(): Promise<void> {
     photoPhase = 'reading';
     selectedTokens = new Set();
+    selectionDrafts = {};
     try {
       const blob = await cropAndScale();
       if (croppedUrl) URL.revokeObjectURL(croppedUrl);
@@ -602,8 +615,13 @@
         photoPhase = 'crop';
         return;
       }
-      extractedText = response.text;
+      if (!response.words.length) {
+        notify('No selectable words found — try a closer shot or a tighter crop.', 'error');
+        photoPhase = 'crop';
+        return;
+      }
       ocrConfidence = response.mean_confidence;
+      ocrWords = response.words;
       photoPhase = 'review';
     } catch (err) {
       notify(err instanceof ApiError ? err.message : 'Unable to read the photo', 'error');
@@ -618,19 +636,51 @@
     } else {
       next.add(index);
     }
+    const activeKeys = new Set(groupSelection(next).map(selectionKey));
+    selectionDrafts = Object.fromEntries(
+      Object.entries(selectionDrafts).filter(([key]) => activeKeys.has(key)),
+    );
     selectedTokens = next;
   }
 
-  function handleTextEdited(): void {
-    // Token indices shift when the text changes; a stale selection would tag the wrong words.
-    if (selectedTokens.size > 0) selectedTokens = new Set();
+  function updateSelectionDraft(key: string, event: Event): void {
+    selectionDrafts = {
+      ...selectionDrafts,
+      [key]: (event.currentTarget as HTMLInputElement).value,
+    };
+  }
+
+  function openCrop(): void {
+    selectedTokens = new Set();
+    selectionDrafts = {};
+    photoPhase = 'crop';
+  }
+
+  function cancelCrop(): void {
+    if (ocrWords.length > 0) {
+      photoPhase = 'review';
+      return;
+    }
+    resetPhoto();
+  }
+
+  function wordBoxStyle(word: OcrWordResult): string {
+    // Give the OCR bounds a small optical cushion without allowing the box to
+    // escape the photograph.
+    const padX = Math.min(0.004, word.box.width * 0.08);
+    const padY = Math.min(0.006, word.box.height * 0.12);
+    const left = clamp(word.box.x - padX, 0, 1);
+    const top = clamp(word.box.y - padY, 0, 1);
+    const width = clamp(word.box.width + padX * 2, 0, 1 - left);
+    const height = clamp(word.box.height + padY * 2, 0, 1 - top);
+    return `left:${left * 100}%;top:${top * 100}%;width:${width * 100}%;height:${height * 100}%;`;
   }
 
   function patchCard(id: number, patch: Partial<PhotoCard>): void {
     photoCards = photoCards.map((c) => (c.id === id ? { ...c, ...patch } : c));
   }
 
-  // Consecutive selected tokens form one phrase ("composed word"), so tapping
+  // Consecutive selected tokens form one compound word, so tapping
   // "salle", "de", "bain" looks up "salle de bain" as a single entry.
   function groupSelection(selection: Set<number>): number[][] {
     const groups: number[][] = [];
@@ -645,10 +695,38 @@
     return groups;
   }
 
-  $: selectedPhraseCount = groupSelection(selectedTokens).length;
+  function selectionKey(group: number[]): string {
+    return group.join(':');
+  }
+
+  function detectedSelectionText(group: number[]): string {
+    return group.map((index) => tokens[index]?.word ?? '').filter(Boolean).join(' ');
+  }
+
+  $: selectedGroups = groupSelection(selectedTokens);
+  $: selectionPreviews = selectedGroups.map((indices): SelectionPreview => {
+    const key = selectionKey(indices);
+    return {
+      key,
+      indices,
+      value: selectionDrafts[key] ?? detectedSelectionText(indices),
+    };
+  });
+  $: selectionPreviewInvalid = selectionPreviews.some((preview) => !preview.value.trim());
+  $: selectedEntryLabel = selectedGroups.length === 0
+    ? 'No words selected'
+    : selectedGroups.length === 1
+      ? selectedGroups[0].length === 1
+        ? '1 word selected'
+        : '1 compound word selected'
+      : `${selectedGroups.length} word entries selected`;
 
   async function submitSelected(): Promise<void> {
     if (selectedTokens.size === 0 || photoSubmitting) return;
+    if (selectionPreviewInvalid) {
+      notify('Each selected word needs text.', 'error');
+      return;
+    }
     if (!sourceCode || !targetCode || sourceCode === targetCode) {
       notify('Text and translation languages must differ.', 'error');
       return;
@@ -656,12 +734,15 @@
 
     // Only the words around the selection ride along as context — up to
     // CONTEXT_WINDOW_WORDS on each side — so the AI disambiguates from the
-    // sentence without receiving the whole capture.
-    const lookups = groupSelection(selectedTokens).map((group) => {
+    // nearby text without receiving the whole capture.
+    const lookups = selectionPreviews.map((preview) => {
+      const group = preview.indices;
       const start = Math.max(0, group[0] - CONTEXT_WINDOW_WORDS);
       const end = Math.min(tokens.length - 1, group[group.length - 1] + CONTEXT_WINDOW_WORDS);
       return {
-        word: group.map((i) => tokens[i]?.word ?? '').filter(Boolean).join(' '),
+        // The editable preview is the exact translation input. Surrounding OCR
+        // text is included separately and silently as disambiguating context.
+        word: preview.value.trim(),
         context: tokens
           .slice(start, end + 1)
           .map((t) => t.raw)
@@ -671,6 +752,7 @@
     }).filter((l) => l.word.length > 0);
     photoSubmitting = true;
     selectedTokens = new Set();
+    selectionDrafts = {};
 
     for (const { word, context } of lookups) {
       const id = nextCardId++;
@@ -737,9 +819,10 @@
     previewUrl = '';
     croppedUrl = '';
     pickedFile = null;
-    extractedText = '';
     ocrConfidence = null;
+    ocrWords = [];
     selectedTokens = new Set();
+    selectionDrafts = {};
     photoPhase = 'idle';
   }
 
@@ -794,10 +877,10 @@
             manage saved words, or add a pair manually without the AI.
           </p>
           <p>
-            <strong>Take a photo</strong> reads printed text on your own server (nothing leaves it): crop to the
-            text, then tap the word you don't know — tap neighbouring words to look them up as one phrase. The
-            words around your selection (up to 15 on each side) are sent as context so the AI picks the right
-            meaning. Fix any misread letters first — the word chips follow your edits.
+            <strong>Take a photo</strong> reads printed text on your own server (nothing leaves it), then places
+            selectable boxes directly over the words. Tap one word, or tap neighbouring words to translate one
+            compound word. Nearby text is used only as context so the AI picks the right meaning. If recognition
+            misses a letter, correct the editable selection preview before translating.
           </p>
         </HelpTip>
       </div>
@@ -819,7 +902,7 @@
 
         {#if photoPhase === 'idle'}
           <div class="question-stage" style="margin-top: 1.25rem;">
-            <p class="eyebrow">Word or short phrase</p>
+            <p class="eyebrow">Word or compound word</p>
             <input
               class="answer-input"
               bind:value={inputText}
@@ -949,65 +1032,122 @@
           </div>
           <div class="review-actions">
             <button class="primary-button" type="button" on:click={() => void readText()}>
-              Read the text
+              Scan this area
             </button>
-            <button class="ghost-button" type="button" on:click={resetPhoto}>Cancel</button>
+            <button class="ghost-button" type="button" on:click={cancelCrop}>Cancel</button>
           </div>
         </div>
       {:else if photoPhase === 'reading'}
         <div class="reading-stage">
           {#if croppedUrl || previewUrl}
-            <img class="photo-preview" src={croppedUrl || previewUrl} alt="Captured text" />
+            <div class="reading-photo">
+              <img class="photo-preview" src={croppedUrl || previewUrl} alt="Captured text" />
+              <span class="photo-scan-line" aria-hidden="true"></span>
+            </div>
           {/if}
           <p class="translate-note translating">Reading the text…</p>
         </div>
       {:else if photoPhase === 'review'}
         <div class="review-stage" in:fly={{ y: 20, duration: 200 }}>
+          <div class="photo-review-heading">
+            <div>
+              <p class="eyebrow">Select from the photo</p>
+              <p class="photo-instruction">Tap a word. Select neighbours for one compound word.</p>
+            </div>
+            {#if ocrWords.length > 0}
+              <span class="detected-count">{ocrWords.length} detected</span>
+            {/if}
+          </div>
+
           {#if croppedUrl || previewUrl}
-            <img class="photo-preview" src={croppedUrl || previewUrl} alt="Captured text" />
+            <div class="photo-word-stage" class:photo-busy={photoSubmitting}>
+              <img class="photo-select-image" src={croppedUrl || previewUrl} alt="Captured text with selectable words" />
+              {#if ocrWords.length > 0}
+                <div class="word-box-layer" role="group" aria-label="Detected words on the photo">
+                  {#each ocrWords as word, i}
+                    <button
+                      type="button"
+                      class="photo-word-box"
+                      class:photo-word-box-on={selectedTokens.has(i)}
+                      class:photo-word-box-uncertain={word.confidence < 60}
+                      style={wordBoxStyle(word)}
+                      aria-label={`${selectedTokens.has(i) ? 'Deselect' : 'Select'} ${word.text}${word.confidence < 60 ? ', recognition uncertain' : ''}`}
+                      aria-pressed={selectedTokens.has(i)}
+                      title={word.text}
+                      disabled={photoSubmitting}
+                      on:click={() => toggleToken(i)}
+                    ></button>
+                  {/each}
+                </div>
+              {/if}
+            </div>
           {/if}
 
           {#if ocrConfidence !== null && ocrConfidence < 60}
             <div class="feedback-banner info-banner">
-              Low OCR confidence — double-check the text below before adding words.
+              Some text was hard to read. Check dashed selections in the editable preview before translating.
             </div>
           {/if}
 
-          <p class="eyebrow" style="margin-top: 0.75rem;">Extracted text (editable)</p>
-          <textarea
-            class="answer-input ocr-textarea"
-            rows="3"
-            bind:value={extractedText}
-            on:input={handleTextEdited}
-            disabled={photoSubmitting}
-          ></textarea>
+          <div class="photo-tool-row">
+            <button class="photo-tool-button" type="button" disabled={photoSubmitting} on:click={openCrop}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path d="M6 2v14a2 2 0 0 0 2 2h14M2 6h14a2 2 0 0 1 2 2v14" />
+              </svg>
+              Crop & rescan
+            </button>
+            <button class="photo-tool-button" type="button" disabled={photoSubmitting} on:click={resetPhoto}>
+              Done
+            </button>
+          </div>
 
-          <p class="eyebrow" style="margin-top: 0.75rem;">Tap the word to translate — neighbouring taps form one phrase</p>
-          <p class="word-flow" role="group" aria-label="Tap words to select them">
-            {#each tokens as token, i}
-              <button
-                type="button"
-                class="flow-word"
-                class:flow-on={selectedTokens.has(i)}
-                disabled={photoSubmitting}
-                on:click={() => toggleToken(i)}
-              >{token.raw}</button>
-            {/each}
-          </p>
+          {#if selectionPreviews.length > 0}
+            <div class="selection-preview-panel" in:fade={{ duration: 140 }}>
+              <div class="selection-preview-heading">
+                <p class="eyebrow">Selected word preview</p>
+                <span>Editable</span>
+              </div>
+              <div class="selection-preview-list">
+                {#each selectionPreviews as preview, i (preview.key)}
+                  <label class="selection-preview-row">
+                    <span>
+                      {preview.indices.length > 1
+                        ? 'Compound word'
+                        : selectionPreviews.length > 1
+                          ? `Word ${i + 1}`
+                          : 'Selected word'}
+                    </span>
+                    <input
+                      class="selection-preview-input"
+                      type="text"
+                      dir="auto"
+                      value={preview.value}
+                      maxlength={WORD_MAX_CHARS}
+                      autocomplete="off"
+                      spellcheck="true"
+                      disabled={photoSubmitting}
+                      aria-label={`Edit ${preview.indices.length > 1 ? 'compound word' : `selected word ${i + 1}`}`}
+                      on:input={(event) => updateSelectionDraft(preview.key, event)}
+                    />
+                  </label>
+                {/each}
+              </div>
+              <p class="selection-preview-note">This exact text will be translated. Nearby text is used separately as context and is not shown here.</p>
+            </div>
+          {/if}
 
-          <div class="review-actions">
+          <div class="photo-commit-bar">
+            <div class="selection-summary" aria-live="polite">
+              <strong>{selectedEntryLabel}</strong>
+              <span>{selectedTokens.size > 0 ? 'Edit the preview if OCR missed a letter.' : 'Choose directly on the photo.'}</span>
+            </div>
             <button
-              class="primary-button"
+              class="primary-button photo-translate-button"
               type="button"
-              disabled={selectedTokens.size === 0 || photoSubmitting}
+              disabled={selectedTokens.size === 0 || selectionPreviewInvalid || photoSubmitting}
               on:click={() => void submitSelected()}
             >
-              {photoSubmitting
-                ? 'Looking up…'
-                : `Define & add ${selectedPhraseCount || ''} ${selectedPhraseCount === 1 ? 'entry' : 'entries'}`}
-            </button>
-            <button class="ghost-button" type="button" disabled={photoSubmitting} on:click={resetPhoto}>
-              Done — back to typing
+              {photoSubmitting ? 'Translating…' : 'Translate & add'}
             </button>
           </div>
         </div>
@@ -1671,6 +1811,34 @@
     margin-top: 1rem;
   }
 
+  .reading-photo {
+    position: relative;
+    max-width: 100%;
+    overflow: hidden;
+    border-radius: 12px;
+  }
+
+  .reading-photo .photo-preview {
+    margin: 0;
+  }
+
+  .photo-scan-line {
+    position: absolute;
+    z-index: 1;
+    inset-inline: 4%;
+    top: 0;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.92) 24%, var(--accent) 50%, rgba(255, 255, 255, 0.92) 76%, transparent);
+    box-shadow: 0 0 18px 3px color-mix(in srgb, var(--accent) 62%, transparent);
+    animation: photo-scan 1.45s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+  }
+
+  @keyframes photo-scan {
+    from { top: 4%; }
+    to { top: 96%; }
+  }
+
   /* --- crop --- */
   .crop-wrap {
     display: flex;
@@ -1735,68 +1903,362 @@
     margin-top: 1rem;
   }
 
-  .ocr-textarea {
-    width: 100%;
-    resize: vertical;
-    font-size: 1.05rem;
-    line-height: 1.4;
-  }
-
-  /* Ink-underline word selection (Playground experiment 03, option B). */
-  .word-flow {
-    margin: 0.35rem 0 0;
-    padding: 0.85rem 1rem;
-    border: 1px dashed var(--line);
-    border-radius: 12px;
-    background: color-mix(in srgb, var(--surface-strong) 55%, transparent);
+  .photo-review-heading {
     display: flex;
-    flex-wrap: wrap;
-    row-gap: 0.5rem;
-    column-gap: 0;
-    line-height: 1.5;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.65rem;
   }
 
-  .flow-word {
+  .photo-review-heading .eyebrow,
+  .photo-instruction {
+    margin: 0;
+  }
+
+  .photo-instruction {
+    margin-top: 0.18rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.35;
+  }
+
+  .detected-count {
+    flex: 0 0 auto;
+    border: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
+    border-radius: 999px;
+    padding: 0.22rem 0.52rem;
+    background: color-mix(in srgb, var(--surface-strong) 72%, transparent);
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 650;
+    letter-spacing: 0.025em;
+  }
+
+  .photo-word-stage {
     position: relative;
-    border: none;
-    background: transparent;
-    color: var(--text);
-    font: inherit;
-    font-size: 1.08rem;
-    padding: 0.18rem 0.3rem;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--line-strong) 72%, transparent);
+    border-radius: 16px;
+    background: #08111f;
+    box-shadow:
+      0 20px 44px -30px rgba(3, 9, 18, 0.88),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    line-height: 0;
+    isolation: isolate;
+    touch-action: pan-x pan-y pinch-zoom;
+  }
+
+  .photo-select-image {
+    display: block;
+    width: 100%;
+    height: auto;
     user-select: none;
     -webkit-user-select: none;
-    transition: color 0.2s;
   }
 
-  .flow-word::after {
+  .word-box-layer {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    pointer-events: none;
+    transition: opacity 160ms ease;
+  }
+
+  .photo-busy .word-box-layer {
+    opacity: 0.48;
+  }
+
+  .photo-word-box {
+    position: absolute;
+    z-index: 1;
+    min-width: 2px;
+    min-height: 2px;
+    margin: 0;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.82);
+    border-radius: 5px;
+    background: rgba(8, 17, 31, 0.035);
+    box-shadow:
+      0 0 0 1px rgba(5, 12, 24, 0.38),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    pointer-events: auto;
+    -webkit-tap-highlight-color: transparent;
+    transform: scale(1);
+    transition:
+      transform 150ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      border-color 150ms ease,
+      background 150ms ease,
+      box-shadow 150ms ease;
+  }
+
+  .photo-word-box::after {
     content: '';
     position: absolute;
-    left: 0.25rem;
-    right: 0.25rem;
-    bottom: 0.05rem;
-    height: 2.5px;
-    border-radius: 2px;
-    background: var(--accent);
-    box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 60%, transparent);
-    transform: scaleX(0);
-    transform-origin: left center;
-    transition: transform 0.3s cubic-bezier(0.3, 1, 0.4, 1);
+    inset: 1px 2px auto;
+    height: 1px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.38);
+    opacity: 0;
+    transition: opacity 150ms ease;
   }
 
-  .flow-word.flow-on {
-    color: var(--accent-strong);
+  .photo-word-box-on {
+    z-index: 3;
+    border-color: color-mix(in srgb, var(--accent) 80%, white);
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.24), color-mix(in srgb, var(--accent) 25%, rgba(255, 255, 255, 0.08)));
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--accent) 56%, rgba(255, 255, 255, 0.35)),
+      0 5px 16px -7px color-mix(in srgb, var(--accent) 86%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.72);
+    -webkit-backdrop-filter: saturate(145%) contrast(108%);
+    backdrop-filter: saturate(145%) contrast(108%);
+    transform: scale(1.045);
   }
 
-  .flow-word.flow-on::after {
-    transform: scaleX(1);
+  .photo-word-box-on::after {
+    opacity: 1;
   }
 
-  .flow-word:disabled {
+  .photo-word-box-uncertain:not(.photo-word-box-on) {
+    border-color: #f5a524;
+    border-style: dashed;
+  }
+
+  .photo-word-box:focus-visible {
+    z-index: 4;
+    outline: 3px solid color-mix(in srgb, var(--accent) 78%, white);
+    outline-offset: 2px;
+  }
+
+  @media (hover: hover) {
+    .photo-word-box:not(:disabled):hover {
+      z-index: 3;
+      border-color: color-mix(in srgb, var(--accent) 64%, white);
+      background: rgba(255, 255, 255, 0.14);
+      transform: scale(1.035);
+    }
+  }
+
+  .photo-tool-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.45rem;
+  }
+
+  .photo-tool-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border: 0;
+    border-radius: 8px;
+    padding: 0.4rem 0.52rem;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 140ms ease, background 140ms ease;
+  }
+
+  .photo-tool-button svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .photo-tool-button:last-child {
+    margin-left: auto;
+  }
+
+  .photo-tool-button:hover {
+    color: var(--text);
+    background: color-mix(in srgb, var(--surface-strong) 72%, transparent);
+  }
+
+  .photo-tool-button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+
+  .photo-tool-button:disabled {
+    opacity: 0.5;
     cursor: default;
-    opacity: 0.6;
+  }
+
+  .selection-preview-panel {
+    margin-top: 0.55rem;
+    padding: 0.75rem 0.8rem;
+    border: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+    border-radius: 12px;
+    background:
+      linear-gradient(90deg, color-mix(in srgb, var(--accent) 72%, transparent) 0 2px, transparent 2px),
+      color-mix(in srgb, var(--surface-strong) 62%, transparent);
+  }
+
+  .selection-preview-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .selection-preview-heading .eyebrow {
+    margin: 0;
+  }
+
+  .selection-preview-heading > span {
+    border-radius: 999px;
+    padding: 0.14rem 0.45rem;
+    background: color-mix(in srgb, var(--accent-soft) 78%, transparent);
+    color: var(--accent-strong);
+    font-size: 0.67rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .selection-preview-list {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 0.55rem;
+  }
+
+  .selection-preview-row {
+    display: grid;
+    grid-template-columns: minmax(6.8rem, 0.38fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .selection-preview-row > span {
+    color: var(--muted);
+    font-size: 0.76rem;
+    font-weight: 650;
+  }
+
+  .selection-preview-input {
+    min-width: 0;
+    width: 100%;
+    border: 1px solid color-mix(in srgb, var(--line-strong) 82%, transparent);
+    border-radius: 9px;
+    padding: 0.52rem 0.65rem;
+    background: color-mix(in srgb, var(--surface) 84%, transparent);
+    color: var(--text);
+    font: inherit;
+    font-size: 0.96rem;
+    font-weight: 650;
+    line-height: 1.2;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    transition: border-color 140ms ease, box-shadow 140ms ease;
+  }
+
+  .selection-preview-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow:
+      0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  }
+
+  .selection-preview-input:disabled {
+    opacity: 0.64;
+  }
+
+  .selection-preview-note {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.72rem;
+    line-height: 1.35;
+  }
+
+  .photo-commit-bar {
+    position: sticky;
+    z-index: 6;
+    bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 0.8rem;
+    padding: 0.65rem 0.7rem 0.65rem 0.85rem;
+    border: 1px solid color-mix(in srgb, var(--line-strong) 72%, transparent);
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--surface-strong) 82%, transparent);
+    box-shadow:
+      0 14px 30px -20px rgba(3, 9, 18, 0.72),
+      inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    -webkit-backdrop-filter: blur(18px) saturate(145%);
+    backdrop-filter: blur(18px) saturate(145%);
+  }
+
+  .selection-summary {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.08rem;
+    line-height: 1.25;
+  }
+
+  .selection-summary strong {
+    color: var(--text);
+    font-size: 0.87rem;
+  }
+
+  .selection-summary span {
+    color: var(--muted);
+    font-size: 0.72rem;
+  }
+
+  .photo-translate-button {
+    flex: 0 0 auto;
+    min-width: 9.5rem;
+    margin: 0;
+  }
+
+  @media (max-width: 560px) {
+    .photo-review-heading {
+      gap: 0.55rem;
+    }
+
+    .detected-count {
+      font-size: 0.66rem;
+    }
+
+    .photo-commit-bar {
+      position: static;
+      align-items: stretch;
+      flex-direction: column;
+      gap: 0.55rem;
+      padding: 0.7rem;
+    }
+
+    .photo-translate-button {
+      width: 100%;
+    }
+
+    .selection-preview-row {
+      grid-template-columns: 1fr;
+      gap: 0.25rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .photo-scan-line {
+      top: 50%;
+      animation: none;
+    }
+
+    .word-box-layer,
+    .photo-word-box,
+    .photo-word-box::after {
+      transition: none;
+    }
   }
 
   .review-actions {

@@ -4,7 +4,13 @@ import pytest
 from fastapi.testclient import TestClient
 from PIL import Image
 
-from app.services.ocr_service import MAX_UPLOAD_BYTES, OcrResult, OcrUnavailableError
+from app.services.ocr_service import (
+    MAX_UPLOAD_BYTES,
+    OcrBox,
+    OcrResult,
+    OcrUnavailableError,
+    OcrWord,
+)
 
 
 def _login(client: TestClient, smoke_user: dict) -> str:
@@ -30,7 +36,23 @@ def _jpeg_bytes() -> bytes:
 
 
 async def _fake_extract(data: bytes, lang: str) -> OcrResult:
-    return OcrResult(text="hola mundo", lines=["hola mundo"], mean_confidence=91.5)
+    return OcrResult(
+        text="hola mundo",
+        lines=["hola mundo"],
+        mean_confidence=91.5,
+        words=[
+            OcrWord(
+                text="hola",
+                confidence=96.2,
+                box=OcrBox(x=0.1, y=0.2, width=0.25, height=0.12),
+            ),
+            OcrWord(
+                text="mundo",
+                confidence=94.8,
+                box=OcrBox(x=0.4, y=0.2, width=0.32, height=0.12),
+            ),
+        ],
+    )
 
 
 def test_ocr_endpoint_returns_extracted_text(client, smoke_user, monkeypatch):
@@ -47,6 +69,18 @@ def test_ocr_endpoint_returns_extracted_text(client, smoke_user, monkeypatch):
     assert payload["lines"] == ["hola mundo"]
     assert payload["mean_confidence"] == 91.5
     assert payload["ocr_lang"] == "es"
+    assert payload["words"] == [
+        {
+            "text": "hola",
+            "confidence": 96.2,
+            "box": {"x": 0.1, "y": 0.2, "width": 0.25, "height": 0.12},
+        },
+        {
+            "text": "mundo",
+            "confidence": 94.8,
+            "box": {"x": 0.4, "y": 0.2, "width": 0.32, "height": 0.12},
+        },
+    ]
 
 
 def test_ocr_endpoint_rejects_bad_csrf(client, smoke_user):

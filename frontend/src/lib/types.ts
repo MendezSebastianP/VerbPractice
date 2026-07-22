@@ -655,11 +655,23 @@ export interface AddedWordNotFound {
 
 export type AddWordResponse = AddedWordResult | AddedWordNotFound;
 
+export interface OcrWordResult {
+  text: string;
+  confidence: number;
+  box: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
+}
+
 export interface OcrResponse {
   text: string;
   lines: string[];
   mean_confidence: number | null;
   ocr_lang: string;
+  words: OcrWordResult[];
 }
 
 export interface UserWordEntry {

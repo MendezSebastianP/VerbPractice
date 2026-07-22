@@ -1,0 +1,60 @@
+name: Reject co-authored commits
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  reject-coauthors:
+    name: Reject Co-authored-by trailers
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out complete history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Inspect new commit messages
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BEFORE_SHA: ${{ github.event.before }}
+          AFTER_SHA: ${{ github.sha }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          zero_sha=0000000000000000000000000000000000000000
+
+          if [[ "$EVENT_NAME" == "pull_request" ]]; then
+            range="$PR_BASE_SHA..$PR_HEAD_SHA"
+          elif [[ "$BEFORE_SHA" != "$zero_sha" ]]; then
+            range="$BEFORE_SHA..$AFTER_SHA"
+          else
+            git fetch --no-tags origin "$DEFAULT_BRANCH"
+            base=$(git merge-base "origin/$DEFAULT_BRANCH" "$AFTER_SHA" || true)
+            range=${base:+$base..}$AFTER_SHA
+          fi
+
+          mapfile -t commits < <(git rev-list "$range")
+          violations=()
+
+          for commit in "${commits[@]}"; do
+            if git show -s --format=%B "$commit" | grep -Eiq '^[[:space:]]*Co-authored-by[[:space:]]*:'; then
+              violations+=("$commit")
+            fi
+          done
+
+          if ((${#violations[@]})); then
+            echo "Co-authored-by trailers are forbidden. Offending commits:" >&2
+            for commit in "${violations[@]}"; do
+              git show -s --format='  %h %s' "$commit" >&2
+            done
+            exit 1
+          fi
+
+          echo "Checked ${#commits[@]} new commit(s); no co-author trailers found."

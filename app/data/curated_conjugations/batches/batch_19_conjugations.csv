@@ -8141,3 +8141,303 @@ RU,страдать,Изъявительное наклонение,Будуще
 RU,страдать,Изъявительное наклонение,Будущее время,мы,будем страдать,19,reviewed,hand-curated Russian batch 19; no conjugation library; imperfective base; singular past includes gender variants
 RU,страдать,Изъявительное наклонение,Будущее время,вы,будете страдать,19,reviewed,hand-curated Russian batch 19; no conjugation library; imperfective base; singular past includes gender variants
 RU,страдать,Изъявительное наклонение,Будущее время,они,будут страдать,19,reviewed,hand-curated Russian batch 19; no conjugation library; imperfective base; singular past includes gender variants
+EN,joke,Indicative,Past Participle,I,joked,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,joke,Indicative,Past Participle,you,joked,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,joke,Indicative,Past Participle,"he (she, it)",joked,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,joke,Indicative,Past Participle,we,joked,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,joke,Indicative,Past Participle,you (pl.),joked,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,joke,Indicative,Past Participle,they,joked,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,damage,Indicative,Past Participle,I,damaged,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,damage,Indicative,Past Participle,you,damaged,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,damage,Indicative,Past Participle,"he (she, it)",damaged,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,damage,Indicative,Past Participle,we,damaged,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,damage,Indicative,Past Participle,you (pl.),damaged,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,damage,Indicative,Past Participle,they,damaged,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,evacuate,Indicative,Past Participle,I,evacuated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,evacuate,Indicative,Past Participle,you,evacuated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,evacuate,Indicative,Past Participle,"he (she, it)",evacuated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,evacuate,Indicative,Past Participle,we,evacuated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,evacuate,Indicative,Past Participle,you (pl.),evacuated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,evacuate,Indicative,Past Participle,they,evacuated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,gain weight,Indicative,Past Participle,I,gained weight,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,gain weight,Indicative,Past Participle,you,gained weight,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,gain weight,Indicative,Past Participle,"he (she, it)",gained weight,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,gain weight,Indicative,Past Participle,we,gained weight,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,gain weight,Indicative,Past Participle,you (pl.),gained weight,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,gain weight,Indicative,Past Participle,they,gained weight,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,resonate,Indicative,Past Participle,I,resonated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,resonate,Indicative,Past Participle,you,resonated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,resonate,Indicative,Past Participle,"he (she, it)",resonated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,resonate,Indicative,Past Participle,we,resonated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,resonate,Indicative,Past Participle,you (pl.),resonated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,resonate,Indicative,Past Participle,they,resonated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,worsen,Indicative,Past Participle,I,worsened,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,worsen,Indicative,Past Participle,you,worsened,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,worsen,Indicative,Past Participle,"he (she, it)",worsened,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,worsen,Indicative,Past Participle,we,worsened,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,worsen,Indicative,Past Participle,you (pl.),worsened,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,worsen,Indicative,Past Participle,they,worsened,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,conform,Indicative,Past Participle,I,conformed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,conform,Indicative,Past Participle,you,conformed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,conform,Indicative,Past Participle,"he (she, it)",conformed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,conform,Indicative,Past Participle,we,conformed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,conform,Indicative,Past Participle,you (pl.),conformed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,conform,Indicative,Past Participle,they,conformed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,raise,Indicative,Past Participle,I,raised,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,raise,Indicative,Past Participle,you,raised,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,raise,Indicative,Past Participle,"he (she, it)",raised,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,raise,Indicative,Past Participle,we,raised,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,raise,Indicative,Past Participle,you (pl.),raised,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,raise,Indicative,Past Participle,they,raised,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,administer,Indicative,Past Participle,I,administered,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,administer,Indicative,Past Participle,you,administered,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,administer,Indicative,Past Participle,"he (she, it)",administered,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,administer,Indicative,Past Participle,we,administered,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,administer,Indicative,Past Participle,you (pl.),administered,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,administer,Indicative,Past Participle,they,administered,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,dissociate,Indicative,Past Participle,I,dissociated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,dissociate,Indicative,Past Participle,you,dissociated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,dissociate,Indicative,Past Participle,"he (she, it)",dissociated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,dissociate,Indicative,Past Participle,we,dissociated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,dissociate,Indicative,Past Participle,you (pl.),dissociated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,dissociate,Indicative,Past Participle,they,dissociated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,collapse,Indicative,Past Participle,I,collapsed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,collapse,Indicative,Past Participle,you,collapsed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,collapse,Indicative,Past Participle,"he (she, it)",collapsed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,collapse,Indicative,Past Participle,we,collapsed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,collapse,Indicative,Past Participle,you (pl.),collapsed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,collapse,Indicative,Past Participle,they,collapsed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,sense beforehand,Indicative,Past Participle,I,sensed beforehand,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,sense beforehand,Indicative,Past Participle,you,sensed beforehand,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,sense beforehand,Indicative,Past Participle,"he (she, it)",sensed beforehand,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,sense beforehand,Indicative,Past Participle,we,sensed beforehand,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,sense beforehand,Indicative,Past Participle,you (pl.),sensed beforehand,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,sense beforehand,Indicative,Past Participle,they,sensed beforehand,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,yell,Indicative,Past Participle,I,yelled,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,yell,Indicative,Past Participle,you,yelled,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,yell,Indicative,Past Participle,"he (she, it)",yelled,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,yell,Indicative,Past Participle,we,yelled,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,yell,Indicative,Past Participle,you (pl.),yelled,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,yell,Indicative,Past Participle,they,yelled,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,argue,Indicative,Past Participle,I,argued,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,argue,Indicative,Past Participle,you,argued,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,argue,Indicative,Past Participle,"he (she, it)",argued,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,argue,Indicative,Past Participle,we,argued,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,argue,Indicative,Past Participle,you (pl.),argued,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,argue,Indicative,Past Participle,they,argued,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,cost,Indicative,Past Participle,I,cost,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,cost,Indicative,Past Participle,you,cost,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,cost,Indicative,Past Participle,"he (she, it)",cost,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,cost,Indicative,Past Participle,we,cost,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,cost,Indicative,Past Participle,you (pl.),cost,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,cost,Indicative,Past Participle,they,cost,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,shoot,Indicative,Past Participle,I,shot,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,shoot,Indicative,Past Participle,you,shot,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,shoot,Indicative,Past Participle,"he (she, it)",shot,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,shoot,Indicative,Past Participle,we,shot,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,shoot,Indicative,Past Participle,you (pl.),shot,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,shoot,Indicative,Past Participle,they,shot,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,coincide,Indicative,Past Participle,I,coincided,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,coincide,Indicative,Past Participle,you,coincided,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,coincide,Indicative,Past Participle,"he (she, it)",coincided,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,coincide,Indicative,Past Participle,we,coincided,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,coincide,Indicative,Past Participle,you (pl.),coincided,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,coincide,Indicative,Past Participle,they,coincided,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,sob,Indicative,Past Participle,I,sobbed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,sob,Indicative,Past Participle,you,sobbed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,sob,Indicative,Past Participle,"he (she, it)",sobbed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,sob,Indicative,Past Participle,we,sobbed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,sob,Indicative,Past Participle,you (pl.),sobbed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,sob,Indicative,Past Participle,they,sobbed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,differentiate,Indicative,Past Participle,I,differentiated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,differentiate,Indicative,Past Participle,you,differentiated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,differentiate,Indicative,Past Participle,"he (she, it)",differentiated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,differentiate,Indicative,Past Participle,we,differentiated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,differentiate,Indicative,Past Participle,you (pl.),differentiated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,differentiate,Indicative,Past Participle,they,differentiated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,recommend,Indicative,Past Participle,I,recommended,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,recommend,Indicative,Past Participle,you,recommended,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,recommend,Indicative,Past Participle,"he (she, it)",recommended,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,recommend,Indicative,Past Participle,we,recommended,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,recommend,Indicative,Past Participle,you (pl.),recommended,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,recommend,Indicative,Past Participle,they,recommended,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,model,Indicative,Past Participle,I,modeled,19,reviewed,variant modeled/modelled; chosen modeled
+EN,model,Indicative,Past Participle,you,modeled,19,reviewed,variant modeled/modelled; chosen modeled
+EN,model,Indicative,Past Participle,"he (she, it)",modeled,19,reviewed,variant modeled/modelled; chosen modeled
+EN,model,Indicative,Past Participle,we,modeled,19,reviewed,variant modeled/modelled; chosen modeled
+EN,model,Indicative,Past Participle,you (pl.),modeled,19,reviewed,variant modeled/modelled; chosen modeled
+EN,model,Indicative,Past Participle,they,modeled,19,reviewed,variant modeled/modelled; chosen modeled
+EN,speed,Indicative,Past Participle,I,sped,19,reviewed,variant sped/speeded; chosen sped
+EN,speed,Indicative,Past Participle,you,sped,19,reviewed,variant sped/speeded; chosen sped
+EN,speed,Indicative,Past Participle,"he (she, it)",sped,19,reviewed,variant sped/speeded; chosen sped
+EN,speed,Indicative,Past Participle,we,sped,19,reviewed,variant sped/speeded; chosen sped
+EN,speed,Indicative,Past Participle,you (pl.),sped,19,reviewed,variant sped/speeded; chosen sped
+EN,speed,Indicative,Past Participle,they,sped,19,reviewed,variant sped/speeded; chosen sped
+EN,equip,Indicative,Past Participle,I,equipped,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,equip,Indicative,Past Participle,you,equipped,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,equip,Indicative,Past Participle,"he (she, it)",equipped,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,equip,Indicative,Past Participle,we,equipped,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,equip,Indicative,Past Participle,you (pl.),equipped,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,equip,Indicative,Past Participle,they,equipped,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,unload,Indicative,Past Participle,I,unloaded,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,unload,Indicative,Past Participle,you,unloaded,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,unload,Indicative,Past Participle,"he (she, it)",unloaded,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,unload,Indicative,Past Participle,we,unloaded,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,unload,Indicative,Past Participle,you (pl.),unloaded,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,unload,Indicative,Past Participle,they,unloaded,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,inspect,Indicative,Past Participle,I,inspected,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,inspect,Indicative,Past Participle,you,inspected,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,inspect,Indicative,Past Participle,"he (she, it)",inspected,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,inspect,Indicative,Past Participle,we,inspected,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,inspect,Indicative,Past Participle,you (pl.),inspected,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,inspect,Indicative,Past Participle,they,inspected,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,cough,Indicative,Past Participle,I,coughed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,cough,Indicative,Past Participle,you,coughed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,cough,Indicative,Past Participle,"he (she, it)",coughed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,cough,Indicative,Past Participle,we,coughed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,cough,Indicative,Past Participle,you (pl.),coughed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,cough,Indicative,Past Participle,they,coughed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,align,Indicative,Past Participle,I,aligned,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,align,Indicative,Past Participle,you,aligned,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,align,Indicative,Past Participle,"he (she, it)",aligned,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,align,Indicative,Past Participle,we,aligned,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,align,Indicative,Past Participle,you (pl.),aligned,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,align,Indicative,Past Participle,they,aligned,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,institute,Indicative,Past Participle,I,instituted,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,institute,Indicative,Past Participle,you,instituted,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,institute,Indicative,Past Participle,"he (she, it)",instituted,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,institute,Indicative,Past Participle,we,instituted,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,institute,Indicative,Past Participle,you (pl.),instituted,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,institute,Indicative,Past Participle,they,instituted,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,violate,Indicative,Past Participle,I,violated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,violate,Indicative,Past Participle,you,violated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,violate,Indicative,Past Participle,"he (she, it)",violated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,violate,Indicative,Past Participle,we,violated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,violate,Indicative,Past Participle,you (pl.),violated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,violate,Indicative,Past Participle,they,violated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,state,Indicative,Past Participle,I,stated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,state,Indicative,Past Participle,you,stated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,state,Indicative,Past Participle,"he (she, it)",stated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,state,Indicative,Past Participle,we,stated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,state,Indicative,Past Participle,you (pl.),stated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,state,Indicative,Past Participle,they,stated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,manage,Indicative,Past Participle,I,managed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,manage,Indicative,Past Participle,you,managed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,manage,Indicative,Past Participle,"he (she, it)",managed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,manage,Indicative,Past Participle,we,managed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,manage,Indicative,Past Participle,you (pl.),managed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,manage,Indicative,Past Participle,they,managed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,shake up,Indicative,Past Participle,I,shaken up,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,shake up,Indicative,Past Participle,you,shaken up,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,shake up,Indicative,Past Participle,"he (she, it)",shaken up,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,shake up,Indicative,Past Participle,we,shaken up,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,shake up,Indicative,Past Participle,you (pl.),shaken up,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,shake up,Indicative,Past Participle,they,shaken up,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,assign,Indicative,Past Participle,I,assigned,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,assign,Indicative,Past Participle,you,assigned,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,assign,Indicative,Past Participle,"he (she, it)",assigned,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,assign,Indicative,Past Participle,we,assigned,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,assign,Indicative,Past Participle,you (pl.),assigned,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,assign,Indicative,Past Participle,they,assigned,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,emerge,Indicative,Past Participle,I,emerged,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,emerge,Indicative,Past Participle,you,emerged,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,emerge,Indicative,Past Participle,"he (she, it)",emerged,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,emerge,Indicative,Past Participle,we,emerged,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,emerge,Indicative,Past Participle,you (pl.),emerged,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,emerge,Indicative,Past Participle,they,emerged,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,hide away,Indicative,Past Participle,I,hidden away,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,hide away,Indicative,Past Participle,you,hidden away,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,hide away,Indicative,Past Participle,"he (she, it)",hidden away,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,hide away,Indicative,Past Participle,we,hidden away,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,hide away,Indicative,Past Participle,you (pl.),hidden away,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,hide away,Indicative,Past Participle,they,hidden away,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,liquidate,Indicative,Past Participle,I,liquidated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,liquidate,Indicative,Past Participle,you,liquidated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,liquidate,Indicative,Past Participle,"he (she, it)",liquidated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,liquidate,Indicative,Past Participle,we,liquidated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,liquidate,Indicative,Past Participle,you (pl.),liquidated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,liquidate,Indicative,Past Participle,they,liquidated,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,repress,Indicative,Past Participle,I,repressed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,repress,Indicative,Past Participle,you,repressed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,repress,Indicative,Past Participle,"he (she, it)",repressed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,repress,Indicative,Past Participle,we,repressed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,repress,Indicative,Past Participle,you (pl.),repressed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,repress,Indicative,Past Participle,they,repressed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,start up,Indicative,Past Participle,I,started up,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,start up,Indicative,Past Participle,you,started up,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,start up,Indicative,Past Participle,"he (she, it)",started up,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,start up,Indicative,Past Participle,we,started up,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,start up,Indicative,Past Participle,you (pl.),started up,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,start up,Indicative,Past Participle,they,started up,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,clear a path,Indicative,Past Participle,I,cleared a path,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,clear a path,Indicative,Past Participle,you,cleared a path,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,clear a path,Indicative,Past Participle,"he (she, it)",cleared a path,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,clear a path,Indicative,Past Participle,we,cleared a path,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,clear a path,Indicative,Past Participle,you (pl.),cleared a path,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,clear a path,Indicative,Past Participle,they,cleared a path,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,frighten,Indicative,Past Participle,I,frightened,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,frighten,Indicative,Past Participle,you,frightened,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,frighten,Indicative,Past Participle,"he (she, it)",frightened,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,frighten,Indicative,Past Participle,we,frightened,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,frighten,Indicative,Past Participle,you (pl.),frightened,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,frighten,Indicative,Past Participle,they,frightened,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,bypass,Indicative,Past Participle,I,bypassed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,bypass,Indicative,Past Participle,you,bypassed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,bypass,Indicative,Past Participle,"he (she, it)",bypassed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,bypass,Indicative,Past Participle,we,bypassed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,bypass,Indicative,Past Participle,you (pl.),bypassed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,bypass,Indicative,Past Participle,they,bypassed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,refer,Indicative,Past Participle,I,referred,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,refer,Indicative,Past Participle,you,referred,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,refer,Indicative,Past Participle,"he (she, it)",referred,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,refer,Indicative,Past Participle,we,referred,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,refer,Indicative,Past Participle,you (pl.),referred,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,refer,Indicative,Past Participle,they,referred,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,feel out,Indicative,Past Participle,I,felt out,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,feel out,Indicative,Past Participle,you,felt out,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,feel out,Indicative,Past Participle,"he (she, it)",felt out,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,feel out,Indicative,Past Participle,we,felt out,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,feel out,Indicative,Past Participle,you (pl.),felt out,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,feel out,Indicative,Past Participle,they,felt out,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,retrace,Indicative,Past Participle,I,retraced,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,retrace,Indicative,Past Participle,you,retraced,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,retrace,Indicative,Past Participle,"he (she, it)",retraced,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,retrace,Indicative,Past Participle,we,retraced,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,retrace,Indicative,Past Participle,you (pl.),retraced,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,retrace,Indicative,Past Participle,they,retraced,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,differ,Indicative,Past Participle,I,differed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,differ,Indicative,Past Participle,you,differed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,differ,Indicative,Past Participle,"he (she, it)",differed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,differ,Indicative,Past Participle,we,differed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,differ,Indicative,Past Participle,you (pl.),differed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,differ,Indicative,Past Participle,they,differed,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,sow,Indicative,Past Participle,I,sown,19,reviewed,variant sown/sowed; chosen sown
+EN,sow,Indicative,Past Participle,you,sown,19,reviewed,variant sown/sowed; chosen sown
+EN,sow,Indicative,Past Participle,"he (she, it)",sown,19,reviewed,variant sown/sowed; chosen sown
+EN,sow,Indicative,Past Participle,we,sown,19,reviewed,variant sown/sowed; chosen sown
+EN,sow,Indicative,Past Participle,you (pl.),sown,19,reviewed,variant sown/sowed; chosen sown
+EN,sow,Indicative,Past Participle,they,sown,19,reviewed,variant sown/sowed; chosen sown
+EN,comment,Indicative,Past Participle,I,commented,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,comment,Indicative,Past Participle,you,commented,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,comment,Indicative,Past Participle,"he (she, it)",commented,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,comment,Indicative,Past Participle,we,commented,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,comment,Indicative,Past Participle,you (pl.),commented,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,comment,Indicative,Past Participle,they,commented,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,camp,Indicative,Past Participle,I,camped,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,camp,Indicative,Past Participle,you,camped,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,camp,Indicative,Past Participle,"he (she, it)",camped,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,camp,Indicative,Past Participle,we,camped,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,camp,Indicative,Past Participle,you (pl.),camped,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,camp,Indicative,Past Participle,they,camped,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,block,Indicative,Past Participle,I,blocked,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,block,Indicative,Past Participle,you,blocked,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,block,Indicative,Past Participle,"he (she, it)",blocked,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,block,Indicative,Past Participle,we,blocked,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,block,Indicative,Past Participle,you (pl.),blocked,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,block,Indicative,Past Participle,they,blocked,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,suffer,Indicative,Past Participle,I,suffered,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,suffer,Indicative,Past Participle,you,suffered,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,suffer,Indicative,Past Participle,"he (she, it)",suffered,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,suffer,Indicative,Past Participle,we,suffered,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,suffer,Indicative,Past Participle,you (pl.),suffered,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library
+EN,suffer,Indicative,Past Participle,they,suffered,19,reviewed,hand-curated English batch 19 past participle; invariant across pronoun slots; no conjugation library

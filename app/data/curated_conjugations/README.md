@@ -15,7 +15,7 @@ Workflow:
 5. Review the filled rows and mark them `reviewed`.
 6. `python scripts/import_curated_conjugations.py --batch 1`
 
-Russian tables use `Настоящее время`, `Прошедшее время`, and `Будущее время` in the indicative. The curated equivalents are normally imperfective so their present and analytic future forms are useful. Singular past slots include masculine, feminine, and (where applicable) neuter alternatives because the shared pronoun set is gender-neutral. Impersonal verbs explicitly use `не употребляется` in unavailable person slots.
+English tables use `Present`, `Past`, `Future`, and the invariant `Past Participle` under the existing `Indicative` mood contract. The past-participle form is repeated across the six English pronoun slots because English participles do not inflect for person. Russian tables use `Настоящее время`, `Прошедшее время`, and `Будущее время` in the indicative. The curated equivalents are normally imperfective so their present and analytic future forms are useful. Singular past slots include masculine, feminine, and (where applicable) neuter alternatives because the shared pronoun set is gender-neutral. Impersonal verbs explicitly use `не употребляется` in unavailable person slots.
 
 Regenerate the Russian overlay after changing its hand-curated source list:
 

@@ -54,11 +54,12 @@ async def sqlite_session():
 
 
 def test_short_tense_inventories_still_have_three_cumulative_levels():
-    for code in ("EN", "RU"):
+    expected_hard_counts = {"EN": 4, "RU": 3}
+    for code, expected_hard_count in expected_hard_counts.items():
         definition = LANGUAGE_DEFINITIONS[code]
         assert len(tenses_for_level(definition, "easy")) == 1
         assert len(tenses_for_level(definition, "medium")) == 2
-        assert len(tenses_for_level(definition, "hard")) == 3
+        assert len(tenses_for_level(definition, "hard")) == expected_hard_count
 
 
 def _sample_inventory() -> list[InventoryLinkRow]:

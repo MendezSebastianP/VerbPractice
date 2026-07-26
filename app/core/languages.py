@@ -50,12 +50,13 @@ LANGUAGE_DEFINITIONS: dict[str, dict[str, object]] = {
         "difficulty_tiers": {
             "easy": ["Present"],
             "medium": ["Past"],
-            "hard": ["Future"],
+            "hard": ["Future", "Past Participle"],
         },
         "tense_definitions": {
             "Present": {"mood": "Indicative"},
             "Past": {"mood": "Indicative"},
             "Future": {"mood": "Indicative"},
+            "Past Participle": {"mood": "Indicative"},
         },
     },
     "RU": {

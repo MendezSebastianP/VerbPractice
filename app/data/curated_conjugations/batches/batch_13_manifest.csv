@@ -1,62 +1,62 @@
-rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive
-601,13,intégrer,integrar,1,603,integrar,integrate,интегрировать
-602,13,se pencher,inclinarse,1,604,inclinarse,lean over,наклоняться
-603,13,garantir,garantizar,1,605,garantizar,guarantee,гарантировать
-604,13,renouveler,renovar,1,606,renovar,renew,обновлять
-605,13,oser,atreverse,1,607,atreverse,dare,осмеливаться
-606,13,fouiller,registrar,1,608,"registrar, hurgar",search,обыскивать
-606,13,fouiller,hurgar,2,608,"registrar, hurgar",search,обыскивать
-607,13,répandre,difundir,1,609,"difundir, esparcir",spread,распространять
-607,13,répandre,esparcir,2,609,"difundir, esparcir",spread,распространять
-608,13,résumer,resumir,1,610,resumir,summarize,резюмировать
-609,13,interdire,prohibir,1,611,prohibir,forbid,запрещать
-610,13,pisser,orinar,1,612,orinar,pee,мочиться
-611,13,convenir,convenir,1,613,"convenir, acordar",suit,подходить
-611,13,convenir,acordar,2,613,"convenir, acordar",suit,подходить
-612,13,venger,vengar,1,614,vengar,avenge,мстить
-613,13,surmonter,superar,1,615,superar,overcome,преодолевать
-614,13,rédiger,redactar,1,616,redactar,draft,составлять
-615,13,contribuer,contribuir,1,617,contribuir,contribute,способствовать
-616,13,jaillir,brotar,1,618,"brotar, surgir",spring forth,вырываться
-616,13,jaillir,surgir,2,618,"brotar, surgir",spring forth,вырываться
-617,13,emprunter,pedir prestado,1,619,pedir prestado,borrow,занимать
-618,13,défiler,desfilar,1,620,desfilar,parade,маршировать
-619,13,agiter,agitar,1,621,agitar,shake,встряхивать
-620,13,séduire,seducir,1,622,seducir,seduce,соблазнять
-621,13,revivre,revivir,1,623,revivir,live again,оживать
-622,13,signifier,significar,1,624,significar,mean,означать
-623,13,flotter,flotar,1,625,flotar,float,плавать
-624,13,défaire,deshacer,1,626,deshacer,undo,развязывать
-625,13,croître,crecer,1,627,crecer,grow,расти
-626,13,concilier,conciliar,1,628,conciliar,reconcile,примирять
-627,13,émettre,emitir,1,629,emitir,emit,испускать
-628,13,concentrer,concentrar,1,630,concentrar,concentrate,сосредотачивать
-629,13,suffire,bastar,1,631,"bastar, ser suficiente",suffice,хватать
-629,13,suffire,ser suficiente,2,631,"bastar, ser suficiente",suffice,хватать
-630,13,renvoyer,despedir,1,632,"despedir, enviar de nuevo",send back,отправлять обратно
-630,13,renvoyer,enviar de nuevo,2,632,"despedir, enviar de nuevo",send back,отправлять обратно
-631,13,renverser,derribar,1,633,"derribar, volcar",overturn,опрокидывать
-631,13,renverser,volcar,2,633,"derribar, volcar",overturn,опрокидывать
-632,13,commettre,cometer,1,634,cometer,commit,совершать
-633,13,inspirer,inspirar,1,635,inspirar,inspire,вдохновлять
-634,13,troubler,turbar,1,636,"turbar, perturbar",trouble,беспокоить
-634,13,troubler,perturbar,2,636,"turbar, perturbar",trouble,беспокоить
-635,13,chauffer,calentar,1,637,calentar,heat,нагревать
-636,13,balancer,balancear,1,638,"balancear, lanzar (coloquial)",swing,раскачивать
-636,13,balancer,lanzar (coloquial),2,638,"balancear, lanzar (coloquial)",swing,раскачивать
-637,13,réserver,reservar,1,639,reservar,reserve,бронировать
-638,13,soucier,preocupar(se),1,640,preocupar(se),care about,заботиться о
-639,13,mentionner,mencionar,1,641,mencionar,mention,упоминать
-640,13,enregistrer,grabar,1,642,"grabar, registrar",record,записывать
-640,13,enregistrer,registrar,2,642,"grabar, registrar",record,записывать
-641,13,réchauffer,recalentar,1,643,recalentar,reheat,разогревать
-642,13,élaborer,elaborar,1,644,elaborar,elaborate,разрабатывать
-643,13,assimiler,asimilar,1,645,asimilar,assimilate,усваивать
-644,13,dénoncer,denunciar,1,646,denunciar,denounce,осуждать
-645,13,voyager,viajar,1,647,viajar,travel,путешествовать
-646,13,témoigner,testificar,1,648,"testificar, atestiguar",testify,свидетельствовать
-646,13,témoigner,atestiguar,2,648,"testificar, atestiguar",testify,свидетельствовать
-647,13,précipiter,precipitar,1,649,precipitar,rush,ускорять
-648,13,suggérer,sugerir,1,650,sugerir,suggest,предлагать
-649,13,embarquer,embarcar,1,651,embarcar,board,садиться на борт
-650,13,loger,alojar,1,652,alojar,lodge,размещать
+rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive,cefr_level
+601,13,intégrer,integrar,1,603,integrar,integrate,интегрировать,B1
+602,13,se pencher,inclinarse,1,604,inclinarse,lean over,наклоняться,B1
+603,13,garantir,garantizar,1,605,garantizar,guarantee,гарантировать,B1
+604,13,renouveler,renovar,1,606,renovar,renew,обновлять,B1
+605,13,oser,atreverse,1,607,atreverse,dare,осмеливаться,B1
+606,13,fouiller,registrar,1,608,"registrar, hurgar",search,обыскивать,B2
+606,13,fouiller,hurgar,2,608,"registrar, hurgar",search,обыскивать,B2
+607,13,répandre,difundir,1,609,"difundir, esparcir",spread,распространять,B2
+607,13,répandre,esparcir,2,609,"difundir, esparcir",spread,распространять,B2
+608,13,résumer,resumir,1,610,resumir,summarize,резюмировать,B1
+609,13,interdire,prohibir,1,611,prohibir,forbid,запрещать,A2
+610,13,pisser,orinar,1,612,orinar,pee,мочиться,B2
+611,13,convenir,convenir,1,613,"convenir, acordar",suit,подходить,B1
+611,13,convenir,acordar,2,613,"convenir, acordar",suit,подходить,B1
+612,13,venger,vengar,1,614,vengar,avenge,мстить,B2
+613,13,surmonter,superar,1,615,superar,overcome,преодолевать,B2
+614,13,rédiger,redactar,1,616,redactar,draft,составлять,B1
+615,13,contribuer,contribuir,1,617,contribuir,contribute,способствовать,B1
+616,13,jaillir,brotar,1,618,"brotar, surgir",spring forth,вырываться,B2
+616,13,jaillir,surgir,2,618,"brotar, surgir",spring forth,вырываться,B2
+617,13,emprunter,pedir prestado,1,619,pedir prestado,borrow,занимать,A2
+618,13,défiler,desfilar,1,620,desfilar,parade,маршировать,B2
+619,13,agiter,agitar,1,621,agitar,shake,встряхивать,B1
+620,13,séduire,seducir,1,622,seducir,seduce,соблазнять,B1
+621,13,revivre,revivir,1,623,revivir,live again,оживать,B1
+622,13,signifier,significar,1,624,significar,mean,означать,A2
+623,13,flotter,flotar,1,625,flotar,float,плавать,B1
+624,13,défaire,deshacer,1,626,deshacer,undo,развязывать,B2
+625,13,croître,crecer,1,627,crecer,grow,расти,B2
+626,13,concilier,conciliar,1,628,conciliar,reconcile,примирять,B2
+627,13,émettre,emitir,1,629,emitir,emit,испускать,B2
+628,13,concentrer,concentrar,1,630,concentrar,concentrate,сосредотачивать,A2
+629,13,suffire,bastar,1,631,"bastar, ser suficiente",suffice,хватать,A2
+629,13,suffire,ser suficiente,2,631,"bastar, ser suficiente",suffice,хватать,A2
+630,13,renvoyer,despedir,1,632,"despedir, enviar de nuevo",send back,отправлять обратно,B1
+630,13,renvoyer,enviar de nuevo,2,632,"despedir, enviar de nuevo",send back,отправлять обратно,B1
+631,13,renverser,derribar,1,633,"derribar, volcar",overturn,опрокидывать,B1
+631,13,renverser,volcar,2,633,"derribar, volcar",overturn,опрокидывать,B1
+632,13,commettre,cometer,1,634,cometer,commit,совершать,B1
+633,13,inspirer,inspirar,1,635,inspirar,inspire,вдохновлять,B1
+634,13,troubler,turbar,1,636,"turbar, perturbar",trouble,беспокоить,B2
+634,13,troubler,perturbar,2,636,"turbar, perturbar",trouble,беспокоить,B2
+635,13,chauffer,calentar,1,637,calentar,heat,нагревать,A2
+636,13,balancer,balancear,1,638,"balancear, lanzar (coloquial)",swing,раскачивать,B1
+636,13,balancer,lanzar (coloquial),2,638,"balancear, lanzar (coloquial)",swing,раскачивать,B1
+637,13,réserver,reservar,1,639,reservar,reserve,бронировать,A2
+638,13,soucier,preocupar(se),1,640,preocupar(se),care about,заботиться о,B1
+639,13,mentionner,mencionar,1,641,mencionar,mention,упоминать,B1
+640,13,enregistrer,grabar,1,642,"grabar, registrar",record,записывать,A2
+640,13,enregistrer,registrar,2,642,"grabar, registrar",record,записывать,A2
+641,13,réchauffer,recalentar,1,643,recalentar,reheat,разогревать,A2
+642,13,élaborer,elaborar,1,644,elaborar,elaborate,разрабатывать,B2
+643,13,assimiler,asimilar,1,645,asimilar,assimilate,усваивать,B2
+644,13,dénoncer,denunciar,1,646,denunciar,denounce,осуждать,B2
+645,13,voyager,viajar,1,647,viajar,travel,путешествовать,A1
+646,13,témoigner,testificar,1,648,"testificar, atestiguar",testify,свидетельствовать,B2
+646,13,témoigner,atestiguar,2,648,"testificar, atestiguar",testify,свидетельствовать,B2
+647,13,précipiter,precipitar,1,649,precipitar,rush,ускорять,B2
+648,13,suggérer,sugerir,1,650,sugerir,suggest,предлагать,B1
+649,13,embarquer,embarcar,1,651,embarcar,board,садиться на борт,B1
+650,13,loger,alojar,1,652,alojar,lodge,размещать,A2

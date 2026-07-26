@@ -1,72 +1,72 @@
-rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive
-51,2,expliquer,explicar,1,53,explicar,explain,объяснять
-52,2,assurer,asegurar,1,54,asegurar,ensure,обеспечивать
-53,2,servir,servir,1,55,servir,serve,служить
-54,2,porter,llevar,1,56,llevar,carry,носить
-55,2,montrer,mostrar,1,57,"mostrar, enseñar",show,показывать
-55,2,montrer,enseñar,2,57,"mostrar, enseñar",show,показывать
-56,2,éviter,evitar,1,58,evitar,avoid,избегать
-57,2,arriver,llegar,1,59,"llegar, ocurrir",arrive,прибывать
-57,2,arriver,ocurrir,2,59,"llegar, ocurrir",arrive,прибывать
-58,2,vouloir,querer,1,60,querer,want,хотеть
-59,2,reconnaître,reconocer,1,61,reconocer,recognize,узнавать
-60,2,monter,subir,1,62,"subir, montar",climb,подниматься
-60,2,monter,montar,2,62,"subir, montar",climb,подниматься
-61,2,boire,beber,1,63,"beber, tomar",drink,пить
-61,2,boire,tomar,2,63,"beber, tomar",drink,пить
-62,2,oublier,olvidar,1,64,olvidar,forget,забывать
-63,2,poser,poner,1,65,"poner, colocar",place,ставить
-63,2,poser,colocar,2,65,"poner, colocar",place,ставить
-64,2,aimer,amar,1,66,"amar, gustar",like,любить
-64,2,aimer,gustar,2,66,"amar, gustar",like,любить
-65,2,arrêter,detener,1,67,"detener, parar",stop,останавливать
-65,2,arrêter,parar,2,67,"detener, parar",stop,останавливать
-66,2,sentir,sentir,1,68,"sentir, oler",feel,чувствовать
-66,2,sentir,oler,2,68,"sentir, oler",feel,чувствовать
-67,2,atteindre,alcanzar,1,69,"alcanzar, lograr",reach,достигать
-67,2,atteindre,lograr,2,69,"alcanzar, lograr",reach,достигать
-68,2,revenir,volver,1,70,"volver, regresar",come back,возвращаться
-68,2,revenir,regresar,2,70,"volver, regresar",come back,возвращаться
-69,2,devoir,deber,1,71,"deber, tener que",have to,нуждаться
-69,2,devoir,tener que,2,71,"deber, tener que",have to,нуждаться
-70,2,changer,cambiar,1,72,cambiar,change,менять
-71,2,dormir,dormir,1,73,dormir,sleep,спать
-72,2,permettre,permitir,1,74,permitir,allow,разрешать
-73,2,quitter,dejar,1,75,"dejar, abandonar",quit,покидать
-73,2,quitter,abandonar,2,75,"dejar, abandonar",quit,покидать
-74,2,reprendre,retomar,1,76,"retomar, reanudar",resume,возобновлять
-74,2,reprendre,reanudar,2,76,"retomar, reanudar",resume,возобновлять
-75,2,appeler,llamar,1,77,llamar,call,называть
-76,2,dîner,cenar,1,78,cenar,dine,ужинать
-77,2,apprendre,aprender,1,79,"aprender, enseñar",learn,учиться
-77,2,apprendre,enseñar,2,79,"aprender, enseñar",learn,учиться
-78,2,empêcher,impedir,1,80,impedir,prevent,мешать
-79,2,établir,establecer,1,81,establecer,establish,устанавливать
-80,2,travailler,trabajar,1,82,trabajar,work,работать
-81,2,garder,guardar,1,83,"guardar, mantener",keep,хранить
-81,2,garder,mantener,2,83,"guardar, mantener",keep,хранить
-82,2,marcher,caminar,1,84,"caminar, andar",walk,гулять
-82,2,marcher,andar,2,84,"caminar, andar",walk,гулять
-83,2,imaginer,imaginar,1,85,imaginar,imagine,представлять
-84,2,considérer,considerar,1,86,considerar,consider,рассматривать
-85,2,tendre,tender,1,87,"tender, estirar",stretch,растягивать
-85,2,tendre,estirar,2,87,"tender, estirar",stretch,растягивать
-86,2,lever,levantar,1,88,"levantar, alzar",raise,поднимать
-86,2,lever,alzar,2,88,"levantar, alzar",raise,поднимать
-87,2,tourner,girar,1,89,girar,turn,поворачивать
-88,2,gagner,ganar,1,90,ganar,win,выигрывать
-89,2,recevoir,recibir,1,91,recibir,receive,принимать
-90,2,revoir,revisar,1,92,"revisar, volver a ver",see again,видеть снова
-90,2,revoir,volver a ver,2,92,"revisar, volver a ver",see again,видеть снова
-91,2,aider,ayudar,1,93,ayudar,help,помогать
-92,2,créer,crear,1,94,crear,create,создавать
-93,2,découvrir,descubrir,1,95,descubrir,discover,обнаруживать
-94,2,compter,contar,1,96,contar,count,считать
-95,2,tuer,matar,1,97,matar,kill,убивать
-96,2,courir,correr,1,98,correr,run,бегать
-97,2,rentrer,regresar,1,99,"regresar, volver",return home,возвращаться домой
-97,2,rentrer,volver,2,99,"regresar, volver",return home,возвращаться домой
-98,2,réaliser,realizar,1,100,realizar,realize,осуществлять
-99,2,toucher,tocar,1,101,tocar,touch,касаться
-100,2,finir,terminar,1,102,"terminar, acabar",finish,заканчивать
-100,2,finir,acabar,2,102,"terminar, acabar",finish,заканчивать
+rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive,cefr_level
+51,2,expliquer,explicar,1,53,explicar,explain,объяснять,A2
+52,2,assurer,asegurar,1,54,asegurar,ensure,обеспечивать,B1
+53,2,servir,servir,1,55,servir,serve,служить,A2
+54,2,porter,llevar,1,56,llevar,carry,носить,A1
+55,2,montrer,mostrar,1,57,"mostrar, enseñar",show,показывать,A1
+55,2,montrer,enseñar,2,57,"mostrar, enseñar",show,показывать,A1
+56,2,éviter,evitar,1,58,evitar,avoid,избегать,A2
+57,2,arriver,llegar,1,59,"llegar, ocurrir",arrive,прибывать,A1
+57,2,arriver,ocurrir,2,59,"llegar, ocurrir",arrive,прибывать,A1
+58,2,vouloir,querer,1,60,querer,want,хотеть,A1
+59,2,reconnaître,reconocer,1,61,reconocer,recognize,узнавать,A2
+60,2,monter,subir,1,62,"subir, montar",climb,подниматься,A1
+60,2,monter,montar,2,62,"subir, montar",climb,подниматься,A1
+61,2,boire,beber,1,63,"beber, tomar",drink,пить,A1
+61,2,boire,tomar,2,63,"beber, tomar",drink,пить,A1
+62,2,oublier,olvidar,1,64,olvidar,forget,забывать,A1
+63,2,poser,poner,1,65,"poner, colocar",place,ставить,A2
+63,2,poser,colocar,2,65,"poner, colocar",place,ставить,A2
+64,2,aimer,amar,1,66,"amar, gustar",like,любить,A1
+64,2,aimer,gustar,2,66,"amar, gustar",like,любить,A1
+65,2,arrêter,detener,1,67,"detener, parar",stop,останавливать,A1
+65,2,arrêter,parar,2,67,"detener, parar",stop,останавливать,A1
+66,2,sentir,sentir,1,68,"sentir, oler",feel,чувствовать,A1
+66,2,sentir,oler,2,68,"sentir, oler",feel,чувствовать,A1
+67,2,atteindre,alcanzar,1,69,"alcanzar, lograr",reach,достигать,B1
+67,2,atteindre,lograr,2,69,"alcanzar, lograr",reach,достигать,B1
+68,2,revenir,volver,1,70,"volver, regresar",come back,возвращаться,A2
+68,2,revenir,regresar,2,70,"volver, regresar",come back,возвращаться,A2
+69,2,devoir,deber,1,71,"deber, tener que",have to,нуждаться,A1
+69,2,devoir,tener que,2,71,"deber, tener que",have to,нуждаться,A1
+70,2,changer,cambiar,1,72,cambiar,change,менять,A1
+71,2,dormir,dormir,1,73,dormir,sleep,спать,A1
+72,2,permettre,permitir,1,74,permitir,allow,разрешать,B1
+73,2,quitter,dejar,1,75,"dejar, abandonar",quit,покидать,A2
+73,2,quitter,abandonar,2,75,"dejar, abandonar",quit,покидать,A2
+74,2,reprendre,retomar,1,76,"retomar, reanudar",resume,возобновлять,B1
+74,2,reprendre,reanudar,2,76,"retomar, reanudar",resume,возобновлять,B1
+75,2,appeler,llamar,1,77,llamar,call,называть,A1
+76,2,dîner,cenar,1,78,cenar,dine,ужинать,A1
+77,2,apprendre,aprender,1,79,"aprender, enseñar",learn,учиться,A1
+77,2,apprendre,enseñar,2,79,"aprender, enseñar",learn,учиться,A1
+78,2,empêcher,impedir,1,80,impedir,prevent,мешать,A2
+79,2,établir,establecer,1,81,establecer,establish,устанавливать,B1
+80,2,travailler,trabajar,1,82,trabajar,work,работать,A1
+81,2,garder,guardar,1,83,"guardar, mantener",keep,хранить,A1
+81,2,garder,mantener,2,83,"guardar, mantener",keep,хранить,A1
+82,2,marcher,caminar,1,84,"caminar, andar",walk,гулять,A1
+82,2,marcher,andar,2,84,"caminar, andar",walk,гулять,A1
+83,2,imaginer,imaginar,1,85,imaginar,imagine,представлять,A2
+84,2,considérer,considerar,1,86,considerar,consider,рассматривать,B1
+85,2,tendre,tender,1,87,"tender, estirar",stretch,растягивать,B1
+85,2,tendre,estirar,2,87,"tender, estirar",stretch,растягивать,B1
+86,2,lever,levantar,1,88,"levantar, alzar",raise,поднимать,A2
+86,2,lever,alzar,2,88,"levantar, alzar",raise,поднимать,A2
+87,2,tourner,girar,1,89,girar,turn,поворачивать,A1
+88,2,gagner,ganar,1,90,ganar,win,выигрывать,A1
+89,2,recevoir,recibir,1,91,recibir,receive,принимать,A2
+90,2,revoir,revisar,1,92,"revisar, volver a ver",see again,видеть снова,A2
+90,2,revoir,volver a ver,2,92,"revisar, volver a ver",see again,видеть снова,A2
+91,2,aider,ayudar,1,93,ayudar,help,помогать,A1
+92,2,créer,crear,1,94,crear,create,создавать,A2
+93,2,découvrir,descubrir,1,95,descubrir,discover,обнаруживать,A2
+94,2,compter,contar,1,96,contar,count,считать,A1
+95,2,tuer,matar,1,97,matar,kill,убивать,A2
+96,2,courir,correr,1,98,correr,run,бегать,A1
+97,2,rentrer,regresar,1,99,"regresar, volver",return home,возвращаться домой,A2
+97,2,rentrer,volver,2,99,"regresar, volver",return home,возвращаться домой,A2
+98,2,réaliser,realizar,1,100,realizar,realize,осуществлять,B1
+99,2,toucher,tocar,1,101,tocar,touch,касаться,A2
+100,2,finir,terminar,1,102,"terminar, acabar",finish,заканчивать,A1
+100,2,finir,acabar,2,102,"terminar, acabar",finish,заканчивать,A1

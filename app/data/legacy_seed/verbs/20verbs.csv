@@ -1,21 +1,21 @@
-ID,FR,FR_group,ES
-1,être ,3," ser, estar"
-2,avoir ,3," tener, haber"
-3,faire ,3, hacer
-4,dire ,3, decir
-5,voir ,3, ver
-6,prendre ,3," tomar, coger"
-7,pouvoir ,3, poder
-8,parler ,1, hablar
-9,aller ,3, ir
-10,savoir ,3, saber
-11,donner ,1, dar
-12,passer ,1, pasar
-13,mettre ,3," poner, meter"
-14,partir ,3,partir
-15,trouver ,1, encontrar
-16,rire ,3, reír
-17,vivre ,3, vivir
-18,laisser ,1, dejar
-19,rendre ,3," devolver, rendir"
-20,sourire ,3, sonreír
+ID,FR,FR_group,ES,cefr_level
+1,être ,3," ser, estar",A1
+2,avoir ,3," tener, haber",A1
+3,faire ,3, hacer,A1
+4,dire ,3, decir,A1
+5,voir ,3, ver,A1
+6,prendre ,3," tomar, coger",A1
+7,pouvoir ,3, poder,A1
+8,parler ,1, hablar,A1
+9,aller ,3, ir,A1
+10,savoir ,3, saber,A1
+11,donner ,1, dar,A1
+12,passer ,1, pasar,A1
+13,mettre ,3," poner, meter",A1
+14,partir ,3,partir,A1
+15,trouver ,1, encontrar,A1
+16,rire ,3, reír,A1
+17,vivre ,3, vivir,A1
+18,laisser ,1, dejar,A1
+19,rendre ,3," devolver, rendir",A2
+20,sourire ,3, sonreír,A2

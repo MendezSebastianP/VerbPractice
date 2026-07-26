@@ -122,6 +122,7 @@ make grant-admin USER=your_username
 - The word seed CSV now supports:
   - `spanish`, `french`, `english`, `russian`
   - `spanish synonyms`, `french synonyms`, `english synonyms`, `russian synonyms`
+  - a manually curated `cefr_level` (`A1` through `C2`)
 - Any populated word-language columns are imported pairwise, so the seed can bootstrap:
   - ES ↔ FR
   - ES ↔ EN
@@ -130,6 +131,10 @@ make grant-admin USER=your_username
   - FR ↔ RU
   - EN ↔ RU
 - Imported records include `source` and `verified` metadata.
+- Word and verb records also carry a nullable `cefr_level`. All bundled seed
+  rows are manually classified; newly added content stays unclassified until
+  reviewed. The rubric and current distribution are in
+  [`docs/CEFR_CURATION.md`](docs/CEFR_CURATION.md).
 - Curated manual conjugation source lives in:
   - `app/data/curated_conjugations/normalized_verb_inventory.csv`
   - `app/data/curated_conjugations/batches/batch_XX_conjugations.csv`

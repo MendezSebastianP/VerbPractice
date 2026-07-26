@@ -1,67 +1,67 @@
-rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive
-101,3,descendre,bajar,1,103,"bajar, descender",go down,спускаться
-101,3,descendre,descender,2,103,"bajar, descender",go down,спускаться
-102,3,ajouter,añadir,1,104,añadir,add,добавлять
-103,3,présenter,presentar,1,105,presentar,present,представлять
-104,3,se rendre compte,darse cuenta,1,106,darse cuenta,become aware,осознавать
-105,3,essayer,intentar,1,107,"intentar, probar",try,пытаться
-105,3,essayer,probar,2,107,"intentar, probar",try,пытаться
-106,3,coucher,acostar,1,108,acostar,put to bed,укладывать
-107,3,occuper,ocupar,1,109,ocupar,occupy,занимать
-108,3,asseoir,sentar,1,110,sentar,seat,усаживать
-109,3,jeter,lanzar,1,111,"lanzar, tirar",throw,бросать
-109,3,jeter,tirar,2,111,"lanzar, tirar",throw,бросать
-110,3,payer,pagar,1,112,pagar,pay,платить
-111,3,définir,definir,1,113,definir,define,определять
-112,3,déjeûner,almorzar,1,114,"almorzar, desayunar",have lunch,обедать
-112,3,déjeûner,desayunar,2,114,"almorzar, desayunar",have lunch,обедать
-113,3,se coucher,acostarse,1,115,acostarse,go to bed,ложиться
-114,3,agir,actuar,1,116,actuar,act,действовать
-115,3,choisir,elegir,1,117,"elegir, escoger",choose,выбирать
-115,3,choisir,escoger,2,117,"elegir, escoger",choose,выбирать
-116,3,distinguer,distinguir,1,118,distinguir,distinguish,различать
-117,3,s'asseoir,sentarse,1,119,sentarse,sit down,усаживаться
-118,3,préparer,preparar,1,120,preparar,prepare,готовить
-119,3,apparaître,aparecer,1,121,aparecer,appear,появляться
-120,3,remettre,entregar,1,122,"entregar, devolver",hand over,вручать
-120,3,remettre,devolver,2,122,"entregar, devolver",hand over,вручать
-121,3,raconter,contar,1,123,contar,tell,рассказывать
-122,3,échapper,escapar,1,124,escapar,escape,убегать
-123,3,acheter,comprar,1,125,comprar,buy,покупать
-124,3,rejoindre,reunirse,1,126,"reunirse, unirse",join,присоединяться
-124,3,rejoindre,unirse,2,126,"reunirse, unirse",join,присоединяться
-125,3,battre,batir,1,127,"batir, golpear",beat,ударять
-125,3,battre,golpear,2,127,"batir, golpear",beat,ударять
-126,3,écouter,escuchar,1,128,escuchar,listen,слушать
-127,3,offrir,ofrecer,1,129,"ofrecer, regalar",offer,предлагать
-127,3,offrir,regalar,2,129,"ofrecer, regalar",offer,предлагать
-128,3,glisser,deslizar,1,130,"deslizar, resbalar",slide,скользить
-128,3,glisser,resbalar,2,130,"deslizar, resbalar",slide,скользить
-129,3,conduire,conducir,1,131,"conducir, manejar",drive,управлять
-129,3,conduire,manejar,2,131,"conducir, manejar",drive,управлять
-130,3,paraître,parecer,1,132,"parecer, aparecer",seem,казаться
-130,3,paraître,aparecer,2,132,"parecer, aparecer",seem,казаться
-131,3,exprimer,expresar,1,133,expresar,express,выражать
-132,3,pleurer,llorar,1,134,llorar,cry,плакать
-133,3,étudier,estudiar,1,135,estudiar,study,изучать
-134,3,retourner,volver,1,136,"volver, regresar",go back,возвращаться назад
-134,3,retourner,regresar,2,136,"volver, regresar",go back,возвращаться назад
-135,3,accepter,aceptar,1,137,aceptar,accept,принимать
-136,3,défendre,defender,1,138,defender,defend,защищать
-137,3,maintenir,mantener,1,139,mantener,maintain,поддерживать
-138,3,rappeler,recordar,1,140,recordar,remind,напоминать
-139,3,continuer,continuar,1,141,continuar,continue,продолжать
-140,3,disparaître,desaparecer,1,142,desaparecer,disappear,исчезать
-141,3,commencer,comenzar,1,143,"comenzar, empezar",begin,начинать
-141,3,commencer,empezar,2,143,"comenzar, empezar",begin,начинать
-142,3,produire,producir,1,144,producir,produce,производить
-143,3,officier,oficiar,1,145,oficiar,officiate,совершать обряд
-144,3,observer,observar,1,146,observar,observe,наблюдать
-145,3,apporter,aportar,1,147,"aportar, traer",bring,приносить
-145,3,apporter,traer,2,147,"aportar, traer",bring,приносить
-146,3,former,formar,1,148,formar,form,формировать
-147,3,admettre,admitir,1,149,admitir,admit,признавать
-148,3,retenir,retener,1,150,retener,retain,удерживать
-149,3,fournir,proporcionar,1,151,"proporcionar, suministrar",provide,предоставлять
-149,3,fournir,suministrar,2,151,"proporcionar, suministrar",provide,предоставлять
-150,3,déterminer,determinar,1,152,determinar,determine,выяснять
+rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive,cefr_level
+101,3,descendre,bajar,1,103,"bajar, descender",go down,спускаться,A1
+101,3,descendre,descender,2,103,"bajar, descender",go down,спускаться,A1
+102,3,ajouter,añadir,1,104,añadir,add,добавлять,A2
+103,3,présenter,presentar,1,105,presentar,present,представлять,A1
+104,3,se rendre compte,darse cuenta,1,106,darse cuenta,become aware,осознавать,A2
+105,3,essayer,intentar,1,107,"intentar, probar",try,пытаться,A1
+105,3,essayer,probar,2,107,"intentar, probar",try,пытаться,A1
+106,3,coucher,acostar,1,108,acostar,put to bed,укладывать,A2
+107,3,occuper,ocupar,1,109,ocupar,occupy,занимать,B1
+108,3,asseoir,sentar,1,110,sentar,seat,усаживать,A2
+109,3,jeter,lanzar,1,111,"lanzar, tirar",throw,бросать,A2
+109,3,jeter,tirar,2,111,"lanzar, tirar",throw,бросать,A2
+110,3,payer,pagar,1,112,pagar,pay,платить,A1
+111,3,définir,definir,1,113,definir,define,определять,B1
+112,3,déjeûner,almorzar,1,114,"almorzar, desayunar",have lunch,обедать,A1
+112,3,déjeûner,desayunar,2,114,"almorzar, desayunar",have lunch,обедать,A1
+113,3,se coucher,acostarse,1,115,acostarse,go to bed,ложиться,A1
+114,3,agir,actuar,1,116,actuar,act,действовать,B1
+115,3,choisir,elegir,1,117,"elegir, escoger",choose,выбирать,A1
+115,3,choisir,escoger,2,117,"elegir, escoger",choose,выбирать,A1
+116,3,distinguer,distinguir,1,118,distinguir,distinguish,различать,B1
+117,3,s'asseoir,sentarse,1,119,sentarse,sit down,усаживаться,A2
+118,3,préparer,preparar,1,120,preparar,prepare,готовить,A1
+119,3,apparaître,aparecer,1,121,aparecer,appear,появляться,B1
+120,3,remettre,entregar,1,122,"entregar, devolver",hand over,вручать,B1
+120,3,remettre,devolver,2,122,"entregar, devolver",hand over,вручать,B1
+121,3,raconter,contar,1,123,contar,tell,рассказывать,A2
+122,3,échapper,escapar,1,124,escapar,escape,убегать,B1
+123,3,acheter,comprar,1,125,comprar,buy,покупать,A1
+124,3,rejoindre,reunirse,1,126,"reunirse, unirse",join,присоединяться,B1
+124,3,rejoindre,unirse,2,126,"reunirse, unirse",join,присоединяться,B1
+125,3,battre,batir,1,127,"batir, golpear",beat,ударять,B1
+125,3,battre,golpear,2,127,"batir, golpear",beat,ударять,B1
+126,3,écouter,escuchar,1,128,escuchar,listen,слушать,A1
+127,3,offrir,ofrecer,1,129,"ofrecer, regalar",offer,предлагать,A2
+127,3,offrir,regalar,2,129,"ofrecer, regalar",offer,предлагать,A2
+128,3,glisser,deslizar,1,130,"deslizar, resbalar",slide,скользить,A2
+128,3,glisser,resbalar,2,130,"deslizar, resbalar",slide,скользить,A2
+129,3,conduire,conducir,1,131,"conducir, manejar",drive,управлять,A2
+129,3,conduire,manejar,2,131,"conducir, manejar",drive,управлять,A2
+130,3,paraître,parecer,1,132,"parecer, aparecer",seem,казаться,B1
+130,3,paraître,aparecer,2,132,"parecer, aparecer",seem,казаться,B1
+131,3,exprimer,expresar,1,133,expresar,express,выражать,A2
+132,3,pleurer,llorar,1,134,llorar,cry,плакать,A2
+133,3,étudier,estudiar,1,135,estudiar,study,изучать,A1
+134,3,retourner,volver,1,136,"volver, regresar",go back,возвращаться назад,A2
+134,3,retourner,regresar,2,136,"volver, regresar",go back,возвращаться назад,A2
+135,3,accepter,aceptar,1,137,aceptar,accept,принимать,A2
+136,3,défendre,defender,1,138,defender,defend,защищать,B1
+137,3,maintenir,mantener,1,139,mantener,maintain,поддерживать,B1
+138,3,rappeler,recordar,1,140,recordar,remind,напоминать,A2
+139,3,continuer,continuar,1,141,continuar,continue,продолжать,A1
+140,3,disparaître,desaparecer,1,142,desaparecer,disappear,исчезать,B1
+141,3,commencer,comenzar,1,143,"comenzar, empezar",begin,начинать,A1
+141,3,commencer,empezar,2,143,"comenzar, empezar",begin,начинать,A1
+142,3,produire,producir,1,144,producir,produce,производить,B1
+143,3,officier,oficiar,1,145,oficiar,officiate,совершать обряд,C1
+144,3,observer,observar,1,146,observar,observe,наблюдать,A2
+145,3,apporter,aportar,1,147,"aportar, traer",bring,приносить,A2
+145,3,apporter,traer,2,147,"aportar, traer",bring,приносить,A2
+146,3,former,formar,1,148,formar,form,формировать,B1
+147,3,admettre,admitir,1,149,admitir,admit,признавать,B1
+148,3,retenir,retener,1,150,retener,retain,удерживать,B1
+149,3,fournir,proporcionar,1,151,"proporcionar, suministrar",provide,предоставлять,B1
+149,3,fournir,suministrar,2,151,"proporcionar, suministrar",provide,предоставлять,B1
+150,3,déterminer,determinar,1,152,determinar,determine,выяснять,B1

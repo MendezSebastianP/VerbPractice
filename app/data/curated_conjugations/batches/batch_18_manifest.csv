@@ -1,64 +1,64 @@
-rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive
-851,18,gouverner,gobernar,1,853,gobernar,govern,управлять
-852,18,dispenser,dispensar,1,854,"dispensar, eximir",dispense,распределять
-852,18,dispenser,eximir,2,854,"dispensar, eximir",dispense,распределять
-853,18,affecter,afectar,1,855,"afectar, asignar",affect,влиять
-853,18,affecter,asignar,2,855,"afectar, asignar",affect,влиять
-854,18,renier,renegar,1,856,renegar,disown,отрекаться
-855,18,virer,despedir,1,857,"despedir, echar",fire,увольнять
-855,18,virer,echar,2,857,"despedir, echar",fire,увольнять
-856,18,périr,perecer,1,858,perecer,perish,погибать
-857,18,plaider,abogar,1,859,abogar,plead,ходатайствовать
-858,18,gonfler,inflar,1,860,inflar,inflate,надувать
-859,18,saigner,sangrar,1,861,sangrar,bleed,истекать кровью
-860,18,redonner,devolver,1,862,"devolver, dar de nuevo",give again,давать снова
-860,18,redonner,dar de nuevo,2,862,"devolver, dar de nuevo",give again,давать снова
-861,18,s'unir,unirse,1,863,unirse,unite,объединяться
-862,18,fourrer,meter,1,864,"meter, rellenar",stuff,набивать
-862,18,fourrer,rellenar,2,864,"meter, rellenar",stuff,набивать
-863,18,hisser,izar,1,865,izar,hoist,поднимать
-864,18,photographier,fotografiar,1,866,fotografiar,photograph,фотографировать
-865,18,expédier,enviar,1,867,"enviar, despachar",dispatch,отправлять
-865,18,expédier,despachar,2,867,"enviar, despachar",dispatch,отправлять
-866,18,étrangler,estrangular,1,868,estrangular,strangle,душить
-867,18,puiser,sacar,1,869,"sacar, extraer",draw from,черпать
-867,18,puiser,extraer,2,869,"sacar, extraer",draw from,черпать
-868,18,inciter,incitar,1,870,"incitar, animar",encourage,побуждать
-868,18,inciter,animar,2,870,"incitar, animar",encourage,побуждать
-869,18,projeter,proyectar,1,871,proyectar,project,проектировать
-870,18,accentuer,acentuar,1,872,acentuar,accentuate,усиливать
-871,18,s'obstiner,obstinarse,1,873,obstinarse,persist,упорствовать
-872,18,sauvegarder,guardar,1,874,"guardar, respaldar",safeguard,сохранять
-872,18,sauvegarder,respaldar,2,874,"guardar, respaldar",safeguard,сохранять
-873,18,lasser,cansar,1,875,"cansar, hartar",tire,утомлять
-873,18,lasser,hartar,2,875,"cansar, hartar",tire,утомлять
-874,18,exagérer,exagerar,1,876,exagerar,exaggerate,преувеличивать
-875,18,méditer,meditar,1,877,meditar,meditate,медитировать
-876,18,insulter,insultar,1,878,insultar,insult,оскорблять
-877,18,choir,caer (arcaico),1,879,caer (arcaico),fall,падать
-878,18,lécher,lamer,1,880,lamer,lick,облизывать
-879,18,décoller,despegar,1,881,despegar,take off,взлетать
-880,18,emplir,llenar,1,882,llenar,fill,наполнять
-881,18,abuser,abusar,1,883,abusar,abuse,злоупотреблять
-882,18,pourrir,pudrirse,1,884,pudrirse,rot,разлагаться
-883,18,rembourser,reembolsar,1,885,reembolsar,reimburse,возмещать
-884,18,autoriser,autorizar,1,886,autorizar,authorize,разрешать
-885,18,gravir,escalar,1,887,"escalar, subir",climb up,взбираться
-885,18,gravir,subir,2,887,"escalar, subir",climb up,взбираться
-886,18,frémir,temblar,1,888,temblar,shiver,дрожать
-887,18,débattre,debatir,1,889,debatir,debate,обсуждать
-888,18,tisser,tejer,1,890,tejer,weave,сплетать
-889,18,compliquer,complicar,1,891,complicar,complicate,усложнять
-890,18,cocher,marcar,1,892,marcar,check off,отмечать
-891,18,dépendre,depender,1,893,depender,depend on,зависеть от
-892,18,équilibrer,equilibrar,1,894,equilibrar,balance,уравновешивать
-893,18,détendre,relajar,1,895,relajar,relax,расслаблять
-894,18,rater,fallar,1,896,"fallar, perder",miss,пропускать
-894,18,rater,perder,2,896,"fallar, perder",miss,пропускать
-895,18,déborder,desbordar,1,897,desbordar,overflow,переполняться
-896,18,reconstruire,reconstruir,1,898,reconstruir,rebuild,восстанавливать
-897,18,redescendre,volver a bajar,1,899,volver a bajar,go back down,спускаться обратно
-898,18,gâcher,estropear,1,900,"estropear, arruinar",spoil,портить
-898,18,gâcher,arruinar,2,900,"estropear, arruinar",spoil,портить
-899,18,copier,copiar,1,901,copiar,copy,копировать
-900,18,contredire,contradecir,1,902,contradecir,contradict,оспаривать
+rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive,cefr_level
+851,18,gouverner,gobernar,1,853,gobernar,govern,управлять,B1
+852,18,dispenser,dispensar,1,854,"dispensar, eximir",dispense,распределять,B2
+852,18,dispenser,eximir,2,854,"dispensar, eximir",dispense,распределять,B2
+853,18,affecter,afectar,1,855,"afectar, asignar",affect,влиять,B2
+853,18,affecter,asignar,2,855,"afectar, asignar",affect,влиять,B2
+854,18,renier,renegar,1,856,renegar,disown,отрекаться,B2
+855,18,virer,despedir,1,857,"despedir, echar",fire,увольнять,B1
+855,18,virer,echar,2,857,"despedir, echar",fire,увольнять,B1
+856,18,périr,perecer,1,858,perecer,perish,погибать,C1
+857,18,plaider,abogar,1,859,abogar,plead,ходатайствовать,B2
+858,18,gonfler,inflar,1,860,inflar,inflate,надувать,B1
+859,18,saigner,sangrar,1,861,sangrar,bleed,истекать кровью,B1
+860,18,redonner,devolver,1,862,"devolver, dar de nuevo",give again,давать снова,A2
+860,18,redonner,dar de nuevo,2,862,"devolver, dar de nuevo",give again,давать снова,A2
+861,18,s'unir,unirse,1,863,unirse,unite,объединяться,B1
+862,18,fourrer,meter,1,864,"meter, rellenar",stuff,набивать,B2
+862,18,fourrer,rellenar,2,864,"meter, rellenar",stuff,набивать,B2
+863,18,hisser,izar,1,865,izar,hoist,поднимать,B2
+864,18,photographier,fotografiar,1,866,fotografiar,photograph,фотографировать,A2
+865,18,expédier,enviar,1,867,"enviar, despachar",dispatch,отправлять,B1
+865,18,expédier,despachar,2,867,"enviar, despachar",dispatch,отправлять,B1
+866,18,étrangler,estrangular,1,868,estrangular,strangle,душить,B2
+867,18,puiser,sacar,1,869,"sacar, extraer",draw from,черпать,B2
+867,18,puiser,extraer,2,869,"sacar, extraer",draw from,черпать,B2
+868,18,inciter,incitar,1,870,"incitar, animar",encourage,побуждать,B2
+868,18,inciter,animar,2,870,"incitar, animar",encourage,побуждать,B2
+869,18,projeter,proyectar,1,871,proyectar,project,проектировать,B1
+870,18,accentuer,acentuar,1,872,acentuar,accentuate,усиливать,B2
+871,18,s'obstiner,obstinarse,1,873,obstinarse,persist,упорствовать,B2
+872,18,sauvegarder,guardar,1,874,"guardar, respaldar",safeguard,сохранять,B1
+872,18,sauvegarder,respaldar,2,874,"guardar, respaldar",safeguard,сохранять,B1
+873,18,lasser,cansar,1,875,"cansar, hartar",tire,утомлять,B2
+873,18,lasser,hartar,2,875,"cansar, hartar",tire,утомлять,B2
+874,18,exagérer,exagerar,1,876,exagerar,exaggerate,преувеличивать,A2
+875,18,méditer,meditar,1,877,meditar,meditate,медитировать,B1
+876,18,insulter,insultar,1,878,insultar,insult,оскорблять,A2
+877,18,choir,caer (arcaico),1,879,caer (arcaico),fall,падать,C2
+878,18,lécher,lamer,1,880,lamer,lick,облизывать,A2
+879,18,décoller,despegar,1,881,despegar,take off,взлетать,A2
+880,18,emplir,llenar,1,882,llenar,fill,наполнять,C1
+881,18,abuser,abusar,1,883,abusar,abuse,злоупотреблять,B1
+882,18,pourrir,pudrirse,1,884,pudrirse,rot,разлагаться,B1
+883,18,rembourser,reembolsar,1,885,reembolsar,reimburse,возмещать,A2
+884,18,autoriser,autorizar,1,886,autorizar,authorize,разрешать,A2
+885,18,gravir,escalar,1,887,"escalar, subir",climb up,взбираться,B2
+885,18,gravir,subir,2,887,"escalar, subir",climb up,взбираться,B2
+886,18,frémir,temblar,1,888,temblar,shiver,дрожать,C1
+887,18,débattre,debatir,1,889,debatir,debate,обсуждать,B1
+888,18,tisser,tejer,1,890,tejer,weave,сплетать,B1
+889,18,compliquer,complicar,1,891,complicar,complicate,усложнять,A2
+890,18,cocher,marcar,1,892,marcar,check off,отмечать,A2
+891,18,dépendre,depender,1,893,depender,depend on,зависеть от,A2
+892,18,équilibrer,equilibrar,1,894,equilibrar,balance,уравновешивать,B1
+893,18,détendre,relajar,1,895,relajar,relax,расслаблять,A2
+894,18,rater,fallar,1,896,"fallar, perder",miss,пропускать,A2
+894,18,rater,perder,2,896,"fallar, perder",miss,пропускать,A2
+895,18,déborder,desbordar,1,897,desbordar,overflow,переполняться,B1
+896,18,reconstruire,reconstruir,1,898,reconstruir,rebuild,восстанавливать,B1
+897,18,redescendre,volver a bajar,1,899,volver a bajar,go back down,спускаться обратно,A2
+898,18,gâcher,estropear,1,900,"estropear, arruinar",spoil,портить,B1
+898,18,gâcher,arruinar,2,900,"estropear, arruinar",spoil,портить,B1
+899,18,copier,copiar,1,901,copiar,copy,копировать,A1
+900,18,contredire,contradecir,1,902,contradecir,contradict,оспаривать,B1

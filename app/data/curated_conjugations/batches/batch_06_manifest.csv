@@ -1,67 +1,67 @@
-rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive
-251,6,employer,emplear,1,253,emplear,employ,использовать
-252,6,profiter,aprovechar,1,254,"aprovechar, disfrutar",take advantage,извлекать выгоду
-252,6,profiter,disfrutar,2,254,"aprovechar, disfrutar",take advantage,извлекать выгоду
-253,6,concevoir,concebir,1,255,concebir,conceive,разрабатывать
-254,6,envisager,contemplar,1,256,"contemplar, considerar",consider,рассматривать
-254,6,envisager,considerar,2,256,"contemplar, considerar",consider,рассматривать
-255,6,soutenir,apoyar,1,257,"apoyar, sostener",support,поддерживать
-255,6,soutenir,sostener,2,257,"apoyar, sostener",support,поддерживать
-256,6,promener,pasear,1,258,pasear,walk,прогуливаться
-257,6,conclure,concluir,1,259,concluir,conclude,заключать
-258,6,nourrir,alimentar,1,260,alimentar,feed,питать
-259,6,prouver,probar,1,261,"probar, demostrar",prove,доказывать
-259,6,prouver,demostrar,2,261,"probar, demostrar",prove,доказывать
-260,6,douter,dudar,1,262,dudar,doubt,сомневаться
-261,6,laver,lavar,1,263,lavar,wash,мыть
-262,6,disposer,disponer,1,264,disponer,have available,располагать
-263,6,aboutir,culminar,1,265,"culminar, llevar a cabo",lead to,приводить к
-263,6,aboutir,llevar a cabo,2,265,"culminar, llevar a cabo",lead to,приводить к
-264,6,dépasser,superar,1,266,superar,exceed,превышать
-265,6,intéresser,interesar,1,267,interesar,interest,интересовать
-266,6,prononcer,pronunciar,1,268,pronunciar,pronounce,произносить
-267,6,apprécier,apreciar,1,269,apreciar,appreciate,ценить
-268,6,rechercher,buscar,1,270,buscar,search for,разыскивать
-269,6,assister,asistir,1,271,asistir,attend,присутствовать
-270,6,marquer,marcar,1,272,marcar,mark,отмечать
-271,6,lutter,luchar,1,273,luchar,struggle,бороться
-272,6,effectuer,efectuar,1,274,"efectuar, realizar",carry out,выполнять
-272,6,effectuer,realizar,2,274,"efectuar, realizar",carry out,выполнять
-273,6,rompre,romper,1,275,romper,break,ломать
-274,6,partager,compartir,1,276,compartir,share,делиться
-275,6,supposer,suponer,1,277,suponer,suppose,предполагать
-276,6,accorder,conceder,1,278,"conceder, otorgar",grant,предоставлять
-276,6,accorder,otorgar,2,278,"conceder, otorgar",grant,предоставлять
-277,6,procéder,proceder,1,279,proceder,proceed,действовать
-278,6,casser,romper,1,280,romper,shatter,разбивать
-279,6,convaincre,convencer,1,281,convencer,convince,убеждать
-280,6,éloigner,alejar,1,282,"alejar, apartar",move away,удалять
-280,6,éloigner,apartar,2,282,"alejar, apartar",move away,удалять
-281,6,emporter,llevar,1,283,llevar,carry away,забирать
-282,6,introduire,introducir,1,284,introducir,introduce,вводить
-283,6,augmenter,aumentar,1,285,aumentar,increase,увеличивать
-284,6,évoquer,evocar,1,286,"evocar, mencionar",evoke,вызывать
-284,6,évoquer,mencionar,2,286,"evocar, mencionar",evoke,вызывать
-285,6,amener,llevar,1,287,"llevar, traer",bring along,приводить
-285,6,amener,traer,2,287,"llevar, traer",bring along,приводить
-286,6,enlever,quitar,1,288,"quitar, eliminar",remove,удалять
-286,6,enlever,eliminar,2,288,"quitar, eliminar",remove,удалять
-287,6,désigner,designar,1,289,designar,designate,назначать
-288,6,franchir,cruzar,1,290,"cruzar, atravesar",cross over,пересекать
-288,6,franchir,atravesar,2,290,"cruzar, atravesar",cross over,пересекать
-289,6,réveiller,despertar,1,291,despertar,wake,пробуждать
-290,6,écarter,apartar,1,292,"apartar, alejar",set aside,откладывать
-290,6,écarter,alejar,2,292,"apartar, alejar",set aside,откладывать
-291,6,proposer,proponer,1,293,proponer,propose,предлагать
-292,6,calculer,calcular,1,294,calcular,calculate,вычислять
-293,6,diriger,dirigir,1,295,dirigir,direct,направлять
-294,6,posséder,poseer,1,296,poseer,possess,владеть
-295,6,retirer,retirar,1,297,"retirar, quitar",withdraw,снимать
-295,6,retirer,quitar,2,297,"retirar, quitar",withdraw,снимать
-296,6,durer,durar,1,298,durar,last,продолжаться
-297,6,voler,volar,1,299,"volar, robar",fly,летать
-297,6,voler,robar,2,299,"volar, robar",fly,летать
-298,6,crever,reventar,1,300,"reventar, morir",burst,лопаться
-298,6,crever,morir,2,300,"reventar, morir",burst,лопаться
-299,6,résister,resistir,1,301,resistir,resist,сопротивляться
-300,6,deviner,adivinar,1,302,adivinar,guess,угадывать
+rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive,cefr_level
+251,6,employer,emplear,1,253,emplear,employ,использовать,B1
+252,6,profiter,aprovechar,1,254,"aprovechar, disfrutar",take advantage,извлекать выгоду,A2
+252,6,profiter,disfrutar,2,254,"aprovechar, disfrutar",take advantage,извлекать выгоду,A2
+253,6,concevoir,concebir,1,255,concebir,conceive,разрабатывать,B2
+254,6,envisager,contemplar,1,256,"contemplar, considerar",consider,рассматривать,B2
+254,6,envisager,considerar,2,256,"contemplar, considerar",consider,рассматривать,B2
+255,6,soutenir,apoyar,1,257,"apoyar, sostener",support,поддерживать,B1
+255,6,soutenir,sostener,2,257,"apoyar, sostener",support,поддерживать,B1
+256,6,promener,pasear,1,258,pasear,walk,прогуливаться,A2
+257,6,conclure,concluir,1,259,concluir,conclude,заключать,B1
+258,6,nourrir,alimentar,1,260,alimentar,feed,питать,A2
+259,6,prouver,probar,1,261,"probar, demostrar",prove,доказывать,B1
+259,6,prouver,demostrar,2,261,"probar, demostrar",prove,доказывать,B1
+260,6,douter,dudar,1,262,dudar,doubt,сомневаться,B1
+261,6,laver,lavar,1,263,lavar,wash,мыть,A1
+262,6,disposer,disponer,1,264,disponer,have available,располагать,B2
+263,6,aboutir,culminar,1,265,"culminar, llevar a cabo",lead to,приводить к,B2
+263,6,aboutir,llevar a cabo,2,265,"culminar, llevar a cabo",lead to,приводить к,B2
+264,6,dépasser,superar,1,266,superar,exceed,превышать,B1
+265,6,intéresser,interesar,1,267,interesar,interest,интересовать,A2
+266,6,prononcer,pronunciar,1,268,pronunciar,pronounce,произносить,A2
+267,6,apprécier,apreciar,1,269,apreciar,appreciate,ценить,B1
+268,6,rechercher,buscar,1,270,buscar,search for,разыскивать,B1
+269,6,assister,asistir,1,271,asistir,attend,присутствовать,B1
+270,6,marquer,marcar,1,272,marcar,mark,отмечать,A2
+271,6,lutter,luchar,1,273,luchar,struggle,бороться,B1
+272,6,effectuer,efectuar,1,274,"efectuar, realizar",carry out,выполнять,B2
+272,6,effectuer,realizar,2,274,"efectuar, realizar",carry out,выполнять,B2
+273,6,rompre,romper,1,275,romper,break,ломать,B2
+274,6,partager,compartir,1,276,compartir,share,делиться,A2
+275,6,supposer,suponer,1,277,suponer,suppose,предполагать,B1
+276,6,accorder,conceder,1,278,"conceder, otorgar",grant,предоставлять,B1
+276,6,accorder,otorgar,2,278,"conceder, otorgar",grant,предоставлять,B1
+277,6,procéder,proceder,1,279,proceder,proceed,действовать,B2
+278,6,casser,romper,1,280,romper,shatter,разбивать,A2
+279,6,convaincre,convencer,1,281,convencer,convince,убеждать,B1
+280,6,éloigner,alejar,1,282,"alejar, apartar",move away,удалять,B1
+280,6,éloigner,apartar,2,282,"alejar, apartar",move away,удалять,B1
+281,6,emporter,llevar,1,283,llevar,carry away,забирать,A2
+282,6,introduire,introducir,1,284,introducir,introduce,вводить,B1
+283,6,augmenter,aumentar,1,285,aumentar,increase,увеличивать,A2
+284,6,évoquer,evocar,1,286,"evocar, mencionar",evoke,вызывать,B2
+284,6,évoquer,mencionar,2,286,"evocar, mencionar",evoke,вызывать,B2
+285,6,amener,llevar,1,287,"llevar, traer",bring along,приводить,A2
+285,6,amener,traer,2,287,"llevar, traer",bring along,приводить,A2
+286,6,enlever,quitar,1,288,"quitar, eliminar",remove,удалять,A2
+286,6,enlever,eliminar,2,288,"quitar, eliminar",remove,удалять,A2
+287,6,désigner,designar,1,289,designar,designate,назначать,B2
+288,6,franchir,cruzar,1,290,"cruzar, atravesar",cross over,пересекать,B2
+288,6,franchir,atravesar,2,290,"cruzar, atravesar",cross over,пересекать,B2
+289,6,réveiller,despertar,1,291,despertar,wake,пробуждать,A2
+290,6,écarter,apartar,1,292,"apartar, alejar",set aside,откладывать,B2
+290,6,écarter,alejar,2,292,"apartar, alejar",set aside,откладывать,B2
+291,6,proposer,proponer,1,293,proponer,propose,предлагать,A2
+292,6,calculer,calcular,1,294,calcular,calculate,вычислять,A2
+293,6,diriger,dirigir,1,295,dirigir,direct,направлять,B1
+294,6,posséder,poseer,1,296,poseer,possess,владеть,B1
+295,6,retirer,retirar,1,297,"retirar, quitar",withdraw,снимать,B1
+295,6,retirer,quitar,2,297,"retirar, quitar",withdraw,снимать,B1
+296,6,durer,durar,1,298,durar,last,продолжаться,A2
+297,6,voler,volar,1,299,"volar, robar",fly,летать,A1
+297,6,voler,robar,2,299,"volar, robar",fly,летать,A1
+298,6,crever,reventar,1,300,"reventar, morir",burst,лопаться,B2
+298,6,crever,morir,2,300,"reventar, morir",burst,лопаться,B2
+299,6,résister,resistir,1,301,resistir,resist,сопротивляться,B1
+300,6,deviner,adivinar,1,302,adivinar,guess,угадывать,A2

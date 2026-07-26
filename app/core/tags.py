@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from app.core.cefr import CEFR_LEVELS
+
 
 WORD_ITEM = "word"
 VERB_ITEM = "verb"
@@ -97,13 +99,9 @@ CURATED_TAGS: tuple[TagDefinition, ...] = (
     TagDefinition("slang", "Slang", "register"),
     TagDefinition("vulgar", "Vulgar", "register"),
 
-    # CEFR-like difficulty.
-    TagDefinition("a1", "A1", "difficulty"),
-    TagDefinition("a2", "A2", "difficulty"),
-    TagDefinition("b1", "B1", "difficulty"),
-    TagDefinition("b2", "B2", "difficulty"),
-    TagDefinition("c1", "C1", "difficulty"),
-    TagDefinition("c2", "C2", "difficulty"),
+    # CEFR difficulty. The scalar Word/Verb field is canonical; these tags keep
+    # existing smart-set filters compatible with manually curated seed data.
+    *(TagDefinition(level.lower(), level, "difficulty") for level in CEFR_LEVELS),
 )
 
 

@@ -1,68 +1,68 @@
-rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive
-751,16,résigner,resignar(se),1,753,resignar(se),resign,смиряться
-752,16,hâter,apresurar,1,754,"apresurar, acelerar",hasten,ускорять
-752,16,hâter,acelerar,2,754,"apresurar, acelerar",hasten,ускорять
-753,16,contester,impugnar,1,755,"impugnar, cuestionar",challenge,оспаривать
-753,16,contester,cuestionar,2,755,"impugnar, cuestionar",challenge,оспаривать
-754,16,vanter,alabar,1,756,"alabar, presumir",praise,хвалить
-754,16,vanter,presumir,2,756,"alabar, presumir",praise,хвалить
-755,16,recouvrir,recubrir,1,757,"recubrir, cubrir",cover again,покрывать снова
-755,16,recouvrir,cubrir,2,757,"recubrir, cubrir",cover again,покрывать снова
-756,16,critiquer,criticar,1,758,criticar,criticize,критиковать
-757,16,croiser,cruzar,1,759,cruzar,cross,пересекать
-758,16,doubler,doblar,1,760,"doblar, adelantar",double,удваивать
-758,16,doubler,adelantar,2,760,"doblar, adelantar",double,удваивать
-759,16,conférer,conferir,1,761,conferir,confer,присуждать
-760,16,réciter,recitar,1,762,recitar,recite,декламировать
-761,16,restaurer,restaurar,1,763,restaurar,restore,восстанавливать
-762,16,résulter,resultar,1,764,resultar,result,следовать из
-763,16,se dérouler,desarrollarse,1,765,desarrollarse,unfold,разворачиваться
-764,16,qualifier,calificar,1,766,calificar,qualify,характеризовать
-765,16,promouvoir,promover,1,767,promover,promote,продвигать
-766,16,attarder,retrasar(se),1,768,retrasar(se),hold up,задерживать
-767,16,gémir,gemir,1,769,gemir,moan,стонать
-768,16,bûcher,estudiar mucho,1,770,"estudiar mucho, empollar",cram,зубрить
-768,16,bûcher,empollar,2,770,"estudiar mucho, empollar",cram,зубрить
-769,16,combiner,combinar,1,771,combinar,combine,сочетать
-770,16,approfondir,profundizar,1,772,profundizar,deepen,углублять
-771,16,succéder,suceder,1,773,"suceder, seguir",follow,следовать
-771,16,succéder,seguir,2,773,"suceder, seguir",follow,следовать
-772,16,coordonner,coordinar,1,774,coordinar,coordinate,координировать
-773,16,abaisser,bajar,1,775,"bajar, disminuir",lower,опускать
-773,16,abaisser,disminuir,2,775,"bajar, disminuir",lower,опускать
-774,16,cogner,golpear,1,776,golpear,knock,стучать
-775,16,imprimer,imprimir,1,777,imprimir,print,печатать
-776,16,accélérer,acelerar,1,778,acelerar,accelerate,ускорять
-777,16,jurer,jurar,1,779,"jurar, maldecir",swear,клясться
-777,16,jurer,maldecir,2,779,"jurar, maldecir",swear,клясться
-778,16,contraindre,obligar,1,780,"obligar, coaccionar",constrain,ограничивать
-778,16,contraindre,coaccionar,2,780,"obligar, coaccionar",constrain,ограничивать
-779,16,mouiller,mojar,1,781,mojar,wet,смачивать
-780,16,déshabiller,desvestir,1,782,"desvestir, desnudar",undress,раздевать
-780,16,déshabiller,desnudar,2,782,"desvestir, desnudar",undress,раздевать
-781,16,invoquer,invocar,1,783,invocar,invoke,призывать
-782,16,ralentir,ralentizar,1,784,"ralentizar, disminuir la velocidad",slow down,замедлять
-782,16,ralentir,disminuir la velocidad,2,784,"ralentizar, disminuir la velocidad",slow down,замедлять
-783,16,préoccuper,preocupar,1,785,preocupar,preoccupy,беспокоить
-784,16,dépenser,gastar,1,786,gastar,spend,расходовать
-785,16,déboucher,destapar,1,787,"destapar, desembocar",unblock,прочищать
-785,16,déboucher,desembocar,2,787,"destapar, desembocar",unblock,прочищать
-786,16,siffler,silbar,1,788,silbar,whistle,свистеть
-787,16,accumuler,acumular,1,789,acumular,accumulate,накапливать
-788,16,restituer,restituir,1,790,"restituir, devolver",return,возвращать
-788,16,restituer,devolver,2,790,"restituir, devolver",return,возвращать
-789,16,retarder,retrasar,1,791,retrasar,delay,задерживать
-790,16,décrocher,descolgar,1,792,"descolgar, conseguir (coloquial)",unhook,отцеплять
-790,16,décrocher,conseguir (coloquial),2,792,"descolgar, conseguir (coloquial)",unhook,отцеплять
-791,16,redouter,temer,1,793,temer,fear,опасаться
-792,16,s'attarder,demorarse,1,794,demorarse,linger,задерживаться
-793,16,influencer,influenciar,1,795,influenciar,influence,влиять
-794,16,généraliser,generalizar,1,796,generalizar,generalize,обобщать
-795,16,entamer,empezar,1,797,"empezar, iniciar",begin,начинать
-795,16,entamer,iniciar,2,797,"empezar, iniciar",begin,начинать
-796,16,balayer,barrer,1,798,barrer,sweep,подметать
-797,16,simplifier,simplificar,1,799,simplificar,simplify,упрощать
-798,16,perfectionner,perfeccionar,1,800,perfeccionar,perfect,совершенствовать
-799,16,épuiser,agotar,1,801,agotar,exhaust,истощать
-800,16,épanouir,florecer,1,802,"florecer, prosperar",blossom,расцветать
-800,16,épanouir,prosperar,2,802,"florecer, prosperar",blossom,расцветать
+rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive,cefr_level
+751,16,résigner,resignar(se),1,753,resignar(se),resign,смиряться,B2
+752,16,hâter,apresurar,1,754,"apresurar, acelerar",hasten,ускорять,B2
+752,16,hâter,acelerar,2,754,"apresurar, acelerar",hasten,ускорять,B2
+753,16,contester,impugnar,1,755,"impugnar, cuestionar",challenge,оспаривать,B2
+753,16,contester,cuestionar,2,755,"impugnar, cuestionar",challenge,оспаривать,B2
+754,16,vanter,alabar,1,756,"alabar, presumir",praise,хвалить,B2
+754,16,vanter,presumir,2,756,"alabar, presumir",praise,хвалить,B2
+755,16,recouvrir,recubrir,1,757,"recubrir, cubrir",cover again,покрывать снова,B2
+755,16,recouvrir,cubrir,2,757,"recubrir, cubrir",cover again,покрывать снова,B2
+756,16,critiquer,criticar,1,758,criticar,criticize,критиковать,A2
+757,16,croiser,cruzar,1,759,cruzar,cross,пересекать,A2
+758,16,doubler,doblar,1,760,"doblar, adelantar",double,удваивать,B1
+758,16,doubler,adelantar,2,760,"doblar, adelantar",double,удваивать,B1
+759,16,conférer,conferir,1,761,conferir,confer,присуждать,C1
+760,16,réciter,recitar,1,762,recitar,recite,декламировать,A2
+761,16,restaurer,restaurar,1,763,restaurar,restore,восстанавливать,B1
+762,16,résulter,resultar,1,764,resultar,result,следовать из,B1
+763,16,se dérouler,desarrollarse,1,765,desarrollarse,unfold,разворачиваться,B1
+764,16,qualifier,calificar,1,766,calificar,qualify,характеризовать,B1
+765,16,promouvoir,promover,1,767,promover,promote,продвигать,B1
+766,16,attarder,retrasar(se),1,768,retrasar(se),hold up,задерживать,B2
+767,16,gémir,gemir,1,769,gemir,moan,стонать,B2
+768,16,bûcher,estudiar mucho,1,770,"estudiar mucho, empollar",cram,зубрить,B2
+768,16,bûcher,empollar,2,770,"estudiar mucho, empollar",cram,зубрить,B2
+769,16,combiner,combinar,1,771,combinar,combine,сочетать,B1
+770,16,approfondir,profundizar,1,772,profundizar,deepen,углублять,B2
+771,16,succéder,suceder,1,773,"suceder, seguir",follow,следовать,B2
+771,16,succéder,seguir,2,773,"suceder, seguir",follow,следовать,B2
+772,16,coordonner,coordinar,1,774,coordinar,coordinate,координировать,B1
+773,16,abaisser,bajar,1,775,"bajar, disminuir",lower,опускать,B2
+773,16,abaisser,disminuir,2,775,"bajar, disminuir",lower,опускать,B2
+774,16,cogner,golpear,1,776,golpear,knock,стучать,B1
+775,16,imprimer,imprimir,1,777,imprimir,print,печатать,A2
+776,16,accélérer,acelerar,1,778,acelerar,accelerate,ускорять,B1
+777,16,jurer,jurar,1,779,"jurar, maldecir",swear,клясться,B1
+777,16,jurer,maldecir,2,779,"jurar, maldecir",swear,клясться,B1
+778,16,contraindre,obligar,1,780,"obligar, coaccionar",constrain,ограничивать,B2
+778,16,contraindre,coaccionar,2,780,"obligar, coaccionar",constrain,ограничивать,B2
+779,16,mouiller,mojar,1,781,mojar,wet,смачивать,A2
+780,16,déshabiller,desvestir,1,782,"desvestir, desnudar",undress,раздевать,A2
+780,16,déshabiller,desnudar,2,782,"desvestir, desnudar",undress,раздевать,A2
+781,16,invoquer,invocar,1,783,invocar,invoke,призывать,B2
+782,16,ralentir,ralentizar,1,784,"ralentizar, disminuir la velocidad",slow down,замедлять,A2
+782,16,ralentir,disminuir la velocidad,2,784,"ralentizar, disminuir la velocidad",slow down,замедлять,A2
+783,16,préoccuper,preocupar,1,785,preocupar,preoccupy,беспокоить,B1
+784,16,dépenser,gastar,1,786,gastar,spend,расходовать,A2
+785,16,déboucher,destapar,1,787,"destapar, desembocar",unblock,прочищать,B1
+785,16,déboucher,desembocar,2,787,"destapar, desembocar",unblock,прочищать,B1
+786,16,siffler,silbar,1,788,silbar,whistle,свистеть,A2
+787,16,accumuler,acumular,1,789,acumular,accumulate,накапливать,B1
+788,16,restituer,restituir,1,790,"restituir, devolver",return,возвращать,B2
+788,16,restituer,devolver,2,790,"restituir, devolver",return,возвращать,B2
+789,16,retarder,retrasar,1,791,retrasar,delay,задерживать,B1
+790,16,décrocher,descolgar,1,792,"descolgar, conseguir (coloquial)",unhook,отцеплять,B1
+790,16,décrocher,conseguir (coloquial),2,792,"descolgar, conseguir (coloquial)",unhook,отцеплять,B1
+791,16,redouter,temer,1,793,temer,fear,опасаться,B2
+792,16,s'attarder,demorarse,1,794,demorarse,linger,задерживаться,B2
+793,16,influencer,influenciar,1,795,influenciar,influence,влиять,B1
+794,16,généraliser,generalizar,1,796,generalizar,generalize,обобщать,B2
+795,16,entamer,empezar,1,797,"empezar, iniciar",begin,начинать,B2
+795,16,entamer,iniciar,2,797,"empezar, iniciar",begin,начинать,B2
+796,16,balayer,barrer,1,798,barrer,sweep,подметать,A2
+797,16,simplifier,simplificar,1,799,simplificar,simplify,упрощать,B1
+798,16,perfectionner,perfeccionar,1,800,perfeccionar,perfect,совершенствовать,B2
+799,16,épuiser,agotar,1,801,agotar,exhaust,истощать,B1
+800,16,épanouir,florecer,1,802,"florecer, prosperar",blossom,расцветать,B2
+800,16,épanouir,prosperar,2,802,"florecer, prosperar",blossom,расцветать,B2

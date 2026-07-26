@@ -9,6 +9,7 @@ from typing import Any
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.cefr import CEFR_LEVEL_SET, earliest_cefr_level, normalize_cefr_level
 from app.core.languages import LANGUAGE_DEFINITIONS
 from app.db.models import Language, Verb, VerbConjugation, VerbTranslation
 
@@ -22,6 +23,7 @@ INVENTORY_FIELDNAMES = [
     "source_es_text",
     "en_infinitive",
     "ru_infinitive",
+    "cefr_level",
 ]
 CONJUGATION_FIELDNAMES = [
     "language_code",
@@ -53,6 +55,7 @@ class InventoryLinkRow:
     source_es_text: str
     en_infinitive: str = ""
     ru_infinitive: str = ""
+    cefr_level: str = ""
 
     def to_csv_row(self) -> dict[str, str]:
         return {
@@ -65,6 +68,7 @@ class InventoryLinkRow:
             "source_es_text": self.source_es_text,
             "en_infinitive": self.en_infinitive,
             "ru_infinitive": self.ru_infinitive,
+            "cefr_level": self.cefr_level,
         }
 
 
@@ -168,9 +172,15 @@ def normalize_legacy_inventory_rows(
                 "source_es_values": [],
                 "es_candidates": [],
                 "es_seen": set(),
+                "cefr_level": normalize_cefr_level(raw_row.get("cefr_level")) or "",
             }
             by_french[fr_key] = entry
             aggregates.append(entry)
+        else:
+            incoming_level = normalize_cefr_level(raw_row.get("cefr_level"))
+            entry["cefr_level"] = (
+                earliest_cefr_level(entry["cefr_level"], incoming_level) or ""
+            )
 
         legacy_id_raw = clean_cell(raw_row.get("ID"))
         if legacy_id_raw.isdigit():
@@ -203,6 +213,7 @@ def normalize_legacy_inventory_rows(
                     link_order=link_order,
                     legacy_ids=tuple(entry["legacy_ids"]),
                     source_es_text=source_es_text,
+                    cefr_level=entry["cefr_level"],
                 )
             )
     return normalized_rows
@@ -235,6 +246,7 @@ def load_inventory_rows(path: Path) -> list[InventoryLinkRow]:
                 source_es_text=clean_cell(row.get("source_es_text")),
                 en_infinitive=clean_cell(row.get("en_infinitive")),
                 ru_infinitive=clean_cell(row.get("ru_infinitive")),
+                cefr_level=normalize_cefr_level(row.get("cefr_level")) or "",
             )
             for row in reader
         ]
@@ -281,6 +293,29 @@ def discover_batch_conjugation_files(root: Path | None = None) -> list[Path]:
 
 def inventory_rows_for_batch(rows: list[InventoryLinkRow], batch: int) -> list[InventoryLinkRow]:
     return [row for row in rows if row.batch == batch]
+
+
+def canonical_inventory_cefr_levels(
+    rows: list[InventoryLinkRow],
+) -> dict[tuple[str, str], str]:
+    levels: dict[tuple[str, str], str] = {}
+    for row in rows:
+        row_level = normalize_cefr_level(row.cefr_level)
+        if row_level is None:
+            raise ValueError(
+                f"Inventory row rank {row.rank} is missing its required CEFR level."
+            )
+        for language_code, infinitive in (
+            ("FR", row.fr_infinitive),
+            ("ES", row.es_infinitive),
+            ("EN", row.en_infinitive),
+            ("RU", row.ru_infinitive),
+        ):
+            if not infinitive:
+                continue
+            key = (language_code, infinitive)
+            levels[key] = earliest_cefr_level(levels.get(key), row_level) or row_level
+    return levels
 
 
 def ordered_verbs_for_batch(rows: list[InventoryLinkRow], batch: int) -> dict[str, list[str]]:
@@ -345,6 +380,12 @@ def validate_inventory_rows(rows: list[InventoryLinkRow], *, batch_size: int = 5
             errors.append("Inventory row is missing rank or batch.")
         if not row.fr_infinitive or not row.es_infinitive:
             errors.append(f"Inventory row rank {row.rank} has empty French or Spanish infinitive.")
+        if not row.cefr_level:
+            errors.append(f"Inventory row rank {row.rank} is missing its CEFR level.")
+        elif row.cefr_level not in CEFR_LEVEL_SET:
+            errors.append(
+                f"Inventory row rank {row.rank} has unsupported CEFR level '{row.cefr_level}'."
+            )
         expected_batch = ((row.rank - 1) // batch_size) + 1 if row.rank else row.batch
         if row.batch != expected_batch:
             errors.append(
@@ -480,10 +521,12 @@ async def _get_or_create_verb(
     languages: dict[str, Language],
     language_code: str,
     infinitive: str,
+    cefr_level: str | None,
 ) -> tuple[Verb, bool]:
     key = (language_code, infinitive)
     cached = cache.get(key)
     if cached is not None:
+        cached.cefr_level = normalize_cefr_level(cefr_level)
         return cached, False
 
     language = languages[language_code]
@@ -493,10 +536,16 @@ async def _get_or_create_verb(
     verb = result.scalar_one_or_none()
     created = False
     if verb is None:
-        verb = Verb(infinitive=infinitive, language_id=language.id)
+        verb = Verb(
+            infinitive=infinitive,
+            language_id=language.id,
+            cefr_level=normalize_cefr_level(cefr_level),
+        )
         session.add(verb)
         await session.flush()
         created = True
+    else:
+        verb.cefr_level = normalize_cefr_level(cefr_level)
     cache[key] = verb
     return verb, created
 
@@ -544,6 +593,7 @@ async def import_inventory_rows(
         "translations_created": 0,
     }
 
+    canonical_cefr_levels = canonical_inventory_cefr_levels(rows)
     selected_rows = [row for row in rows if batch is None or row.batch == batch]
     for row in selected_rows:
         en_verb: Verb | None = None
@@ -553,6 +603,7 @@ async def import_inventory_rows(
             languages=languages,
             language_code="FR",
             infinitive=row.fr_infinitive,
+            cefr_level=canonical_cefr_levels[("FR", row.fr_infinitive)],
         )
         es_verb, es_created = await _get_or_create_verb(
             session,
@@ -560,6 +611,7 @@ async def import_inventory_rows(
             languages=languages,
             language_code="ES",
             infinitive=row.es_infinitive,
+            cefr_level=canonical_cefr_levels[("ES", row.es_infinitive)],
         )
         counts["verbs_created"] += int(fr_created) + int(es_created)
 
@@ -584,6 +636,7 @@ async def import_inventory_rows(
                 languages=languages,
                 language_code="EN",
                 infinitive=row.en_infinitive,
+                cefr_level=canonical_cefr_levels[("EN", row.en_infinitive)],
             )
             counts["verbs_created"] += int(en_created)
 
@@ -625,6 +678,7 @@ async def import_inventory_rows(
                 languages=languages,
                 language_code="RU",
                 infinitive=row.ru_infinitive,
+                cefr_level=canonical_cefr_levels[("RU", row.ru_infinitive)],
             )
             counts["verbs_created"] += int(ru_created)
 

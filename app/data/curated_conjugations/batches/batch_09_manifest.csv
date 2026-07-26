@@ -1,66 +1,66 @@
-rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive
-401,9,contenter,contentar,1,403,"contentar, satisfacer",satisfy,удовлетворять
-401,9,contenter,satisfacer,2,403,"contentar, satisfacer",satisfy,удовлетворять
-402,9,mêler,mezclar,1,404,mezclar,mix,смешивать
-403,9,nommer,nombrar,1,405,nombrar,appoint,назначать
-404,9,exposer,exponer,1,406,exponer,expose,выставлять
-405,9,écraser,aplastar,1,407,aplastar,crush,раздавливать
-406,9,marier,casar,1,408,casar,marry off,сочетать браком
-407,9,achever,completar,1,409,"completar, terminar",complete,завершать
-407,9,achever,terminar,2,409,"completar, terminar",complete,завершать
-408,9,jouir,disfrutar,1,410,"disfrutar, gozar",enjoy,наслаждаться
-408,9,jouir,gozar,2,410,"disfrutar, gozar",enjoy,наслаждаться
-409,9,surprendre,sorprender,1,411,sorprender,surprise,удивлять
-410,9,soulever,levantar,1,412,levantar,lift,поднимать
-411,9,fondre,fundir,1,413,fundir,melt,таять
-412,9,dissimuler,disimular,1,414,disimular,conceal,скрывать
-413,9,allumer,encender,1,415,"encender, prender",light up,зажигать
-413,9,allumer,prender,2,415,"encender, prender",light up,зажигать
-414,9,consulter,consultar,1,416,consultar,consult,консультироваться
-415,9,briser,romper,1,417,"romper, quebrar",break apart,разбивать
-415,9,briser,quebrar,2,417,"romper, quebrar",break apart,разбивать
-416,9,obéir,obedecer,1,418,obedecer,obey,подчиняться
-417,9,reconstituer,reconstituir,1,419,reconstituir,reconstitute,восстанавливать
-418,9,enfoncer,hundir,1,420,"hundir, clavar",drive in,вдавливать
-418,9,enfoncer,clavar,2,420,"hundir, clavar",drive in,вдавливать
-419,9,analyser,analizar,1,421,analizar,analyze,анализировать
-420,9,éliminer,eliminar,1,422,eliminar,eliminate,устранять
-421,9,étonner,asombrar,1,423,"asombrar, sorprender",astonish,удивлять
-421,9,étonner,sorprender,2,423,"asombrar, sorprender",astonish,удивлять
-422,9,terminer,terminar,1,424,terminar,end,заканчивать
-423,9,procurer,procurar,1,425,procurar,procure,снабжать
-424,9,contempler,contemplar,1,426,contemplar,contemplate,созерцать
-425,9,peser,pesar,1,427,pesar,weigh,взвешивать
-426,9,transporter,transportar,1,428,transportar,transport,транспортировать
-427,9,ressembler,parecerse,1,429,parecerse,resemble,напоминать
-428,9,se fondre,derretirse,1,430,derretirse,melt away,растворяться
-429,9,classer,clasificar,1,431,clasificar,classify,классифицировать
-430,9,éteindre,apagar,1,432,apagar,turn off,выключать
-431,9,inscrire,inscribir,1,433,inscribir,register,записывать
-432,9,déplacer,desplazar,1,434,"desplazar, mover",move,перемещать
-432,9,déplacer,mover,2,434,"desplazar, mover",move,перемещать
-433,9,habiter,habitar,1,435,"habitar, vivir",inhabit,проживать
-433,9,habiter,vivir,2,435,"habitar, vivir",inhabit,проживать
-434,9,ramasser,recoger,1,436,recoger,pick up,подбирать
-435,9,attacher,atar,1,437,atar,attach,прикреплять
-436,9,accueillir,acoger,1,438,"acoger, recibir",welcome,принимать
-436,9,accueillir,recibir,2,438,"acoger, recibir",welcome,принимать
-437,9,sonner,sonar,1,439,"sonar, tocar",ring,звонить
-437,9,sonner,tocar,2,439,"sonar, tocar",ring,звонить
-438,9,substituer,sustituir,1,440,sustituir,substitute,заменять
-439,9,déceler,detectar,1,441,detectar,detect,обнаруживать
-440,9,soigner,cuidar,1,442,cuidar,care for,ухаживать
-441,9,fumer,fumar,1,443,fumar,smoke,курить
-442,9,arranger,arreglar,1,444,"arreglar, ordenar",arrange,устраивать
-442,9,arranger,ordenar,2,444,"arreglar, ordenar",arrange,устраивать
-443,9,parcourir,recorrer,1,445,recorrer,travel through,проезжать
-444,9,reculer,retroceder,1,446,retroceder,move back,отступать
-445,9,claquer,chasquear,1,447,chasquear,snap,щёлкать
-446,9,veiller,velar,1,448,"velar, vigilar",watch over,присматривать
-446,9,veiller,vigilar,2,448,"velar, vigilar",watch over,присматривать
-447,9,compléter,completar,1,449,completar,fill out,дополнять
-448,9,publier,publicar,1,450,publicar,publish,публиковать
-449,9,hésiter,dudar,1,451,"dudar, vacilar",hesitate,колебаться
-449,9,hésiter,vacilar,2,451,"dudar, vacilar",hesitate,колебаться
-450,9,téléphoner,telefonear,1,452,"telefonear, llamar",phone,звонить
-450,9,téléphoner,llamar,2,452,"telefonear, llamar",phone,звонить
+rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive,cefr_level
+401,9,contenter,contentar,1,403,"contentar, satisfacer",satisfy,удовлетворять,B2
+401,9,contenter,satisfacer,2,403,"contentar, satisfacer",satisfy,удовлетворять,B2
+402,9,mêler,mezclar,1,404,mezclar,mix,смешивать,B2
+403,9,nommer,nombrar,1,405,nombrar,appoint,назначать,B1
+404,9,exposer,exponer,1,406,exponer,expose,выставлять,B1
+405,9,écraser,aplastar,1,407,aplastar,crush,раздавливать,B1
+406,9,marier,casar,1,408,casar,marry off,сочетать браком,B1
+407,9,achever,completar,1,409,"completar, terminar",complete,завершать,B2
+407,9,achever,terminar,2,409,"completar, terminar",complete,завершать,B2
+408,9,jouir,disfrutar,1,410,"disfrutar, gozar",enjoy,наслаждаться,B2
+408,9,jouir,gozar,2,410,"disfrutar, gozar",enjoy,наслаждаться,B2
+409,9,surprendre,sorprender,1,411,sorprender,surprise,удивлять,A2
+410,9,soulever,levantar,1,412,levantar,lift,поднимать,B1
+411,9,fondre,fundir,1,413,fundir,melt,таять,B1
+412,9,dissimuler,disimular,1,414,disimular,conceal,скрывать,B2
+413,9,allumer,encender,1,415,"encender, prender",light up,зажигать,A2
+413,9,allumer,prender,2,415,"encender, prender",light up,зажигать,A2
+414,9,consulter,consultar,1,416,consultar,consult,консультироваться,B1
+415,9,briser,romper,1,417,"romper, quebrar",break apart,разбивать,B1
+415,9,briser,quebrar,2,417,"romper, quebrar",break apart,разбивать,B1
+416,9,obéir,obedecer,1,418,obedecer,obey,подчиняться,B1
+417,9,reconstituer,reconstituir,1,419,reconstituir,reconstitute,восстанавливать,B2
+418,9,enfoncer,hundir,1,420,"hundir, clavar",drive in,вдавливать,B2
+418,9,enfoncer,clavar,2,420,"hundir, clavar",drive in,вдавливать,B2
+419,9,analyser,analizar,1,421,analizar,analyze,анализировать,B1
+420,9,éliminer,eliminar,1,422,eliminar,eliminate,устранять,B1
+421,9,étonner,asombrar,1,423,"asombrar, sorprender",astonish,удивлять,A2
+421,9,étonner,sorprender,2,423,"asombrar, sorprender",astonish,удивлять,A2
+422,9,terminer,terminar,1,424,terminar,end,заканчивать,A2
+423,9,procurer,procurar,1,425,procurar,procure,снабжать,B2
+424,9,contempler,contemplar,1,426,contemplar,contemplate,созерцать,B2
+425,9,peser,pesar,1,427,pesar,weigh,взвешивать,A2
+426,9,transporter,transportar,1,428,transportar,transport,транспортировать,A2
+427,9,ressembler,parecerse,1,429,parecerse,resemble,напоминать,A2
+428,9,se fondre,derretirse,1,430,derretirse,melt away,растворяться,B2
+429,9,classer,clasificar,1,431,clasificar,classify,классифицировать,B1
+430,9,éteindre,apagar,1,432,apagar,turn off,выключать,A2
+431,9,inscrire,inscribir,1,433,inscribir,register,записывать,B1
+432,9,déplacer,desplazar,1,434,"desplazar, mover",move,перемещать,B1
+432,9,déplacer,mover,2,434,"desplazar, mover",move,перемещать,B1
+433,9,habiter,habitar,1,435,"habitar, vivir",inhabit,проживать,A1
+433,9,habiter,vivir,2,435,"habitar, vivir",inhabit,проживать,A1
+434,9,ramasser,recoger,1,436,recoger,pick up,подбирать,A2
+435,9,attacher,atar,1,437,atar,attach,прикреплять,A2
+436,9,accueillir,acoger,1,438,"acoger, recibir",welcome,принимать,B1
+436,9,accueillir,recibir,2,438,"acoger, recibir",welcome,принимать,B1
+437,9,sonner,sonar,1,439,"sonar, tocar",ring,звонить,A2
+437,9,sonner,tocar,2,439,"sonar, tocar",ring,звонить,A2
+438,9,substituer,sustituir,1,440,sustituir,substitute,заменять,B2
+439,9,déceler,detectar,1,441,detectar,detect,обнаруживать,C1
+440,9,soigner,cuidar,1,442,cuidar,care for,ухаживать,A2
+441,9,fumer,fumar,1,443,fumar,smoke,курить,A1
+442,9,arranger,arreglar,1,444,"arreglar, ordenar",arrange,устраивать,A2
+442,9,arranger,ordenar,2,444,"arreglar, ordenar",arrange,устраивать,A2
+443,9,parcourir,recorrer,1,445,recorrer,travel through,проезжать,B1
+444,9,reculer,retroceder,1,446,retroceder,move back,отступать,B1
+445,9,claquer,chasquear,1,447,chasquear,snap,щёлкать,B2
+446,9,veiller,velar,1,448,"velar, vigilar",watch over,присматривать,B2
+446,9,veiller,vigilar,2,448,"velar, vigilar",watch over,присматривать,B2
+447,9,compléter,completar,1,449,completar,fill out,дополнять,B1
+448,9,publier,publicar,1,450,publicar,publish,публиковать,B1
+449,9,hésiter,dudar,1,451,"dudar, vacilar",hesitate,колебаться,A2
+449,9,hésiter,vacilar,2,451,"dudar, vacilar",hesitate,колебаться,A2
+450,9,téléphoner,telefonear,1,452,"telefonear, llamar",phone,звонить,A1
+450,9,téléphoner,llamar,2,452,"telefonear, llamar",phone,звонить,A1

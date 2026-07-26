@@ -1,63 +1,63 @@
-rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive
-351,8,soumettre,someter,1,353,someter,submit,представлять
-352,8,appuyer,apoyar,1,354,apoyar,press,нажимать
-353,8,surveiller,vigilar,1,355,vigilar,monitor,наблюдать
-354,8,prier,rezar,1,356,"rezar, rogar",pray,молиться
-354,8,prier,rogar,2,356,"rezar, rogar",pray,молиться
-355,8,éclater,estallar,1,357,estallar,burst,взрываться
-356,8,acquérir,adquirir,1,358,adquirir,acquire,приобретать
-357,8,chasser,cazar,1,359,"cazar, ahuyentar",hunt,выслеживать
-357,8,chasser,ahuyentar,2,359,"cazar, ahuyentar",hunt,выслеживать
-358,8,endormir,adormecer,1,360,adormecer,put to sleep,усыплять
-359,8,attribuer,atribuir,1,361,atribuir,attribute,приписывать
-360,8,souligner,subrayar,1,362,subrayar,underline,подчеркивать
-361,8,épouser,casarse con,1,363,casarse con,marry,вступать в брак
-362,8,adopter,adoptar,1,364,adoptar,adopt,принимать в семью
-363,8,interroger,interrogar,1,365,"interrogar, preguntar",question,опрашивать
-363,8,interroger,preguntar,2,365,"interrogar, preguntar",question,опрашивать
-364,8,révéler,revelar,1,366,revelar,reveal,раскрывать
-365,8,éclairer,iluminar,1,367,"iluminar, aclarar",light,освещать
-365,8,éclairer,aclarar,2,367,"iluminar, aclarar",light,освещать
-366,8,limiter,limitar,1,368,limitar,limit,ограничивать
-367,8,demeurer,permanecer,1,369,permanecer,remain,оставаться
-368,8,libérer,liberar,1,370,liberar,free,освобождать
-369,8,inventer,inventar,1,371,inventar,invent,изобретать
-370,8,consacrer,consagrar,1,372,"consagrar, dedicar",dedicate,посвящать
-370,8,consacrer,dedicar,2,372,"consagrar, dedicar",dedicate,посвящать
-371,8,faciliter,facilitar,1,373,facilitar,facilitate,облегчать
-372,8,s'endormir,dormirse,1,374,dormirse,fall asleep,засыпать
-373,8,ranger,ordenar,1,375,"ordenar, arreglar",tidy,прибирать
-373,8,ranger,arreglar,2,375,"ordenar, arreglar",tidy,прибирать
-374,8,plaire,gustar,1,376,"gustar, agradar",please,радовать
-374,8,plaire,agradar,2,376,"gustar, agradar",please,радовать
-375,8,goûter,probar,1,377,probar,taste,пробовать
-376,8,effacer,borrar,1,378,borrar,erase,стирать
-377,8,communiquer,comunicar,1,379,comunicar,communicate,общаться
-378,8,exécuter,ejecutar,1,380,ejecutar,execute,выполнять
-379,8,boucher,tapar,1,381,"tapar, obstruir",plug,затыкать
-379,8,boucher,obstruir,2,381,"tapar, obstruir",plug,затыкать
-380,8,répartir,repartir,1,382,"repartir, distribuir",distribute,распределять
-380,8,répartir,distribuir,2,382,"repartir, distribuir",distribute,распределять
-381,8,repartir,repartir,1,383,repartir,set off again,отправляться снова
-382,8,réunir,reunir,1,384,"reunir, juntar",gather,собирать
-382,8,réunir,juntar,2,384,"reunir, juntar",gather,собирать
-383,8,respecter,respetar,1,385,respetar,respect,уважать
-384,8,interpréter,interpretar,1,386,interpretar,interpret,толковать
-385,8,forcer,forzar,1,387,forzar,force,заставлять
-386,8,contrôler,controlar,1,388,controlar,control,контролировать
-387,8,vaincre,vencer,1,389,vencer,conquer,завоёвывать
-388,8,ficher,archivar,1,390,"archivar, fastidiar",file,регистрировать
-388,8,ficher,fastidiar,2,390,"archivar, fastidiar",file,регистрировать
-389,8,lâcher,soltar,1,391,soltar,release,отпускать
-390,8,trembler,temblar,1,392,temblar,tremble,дрожать
-391,8,supprimer,suprimir,1,393,"suprimir, eliminar",delete,удалять
-391,8,supprimer,eliminar,2,393,"suprimir, eliminar",delete,удалять
-392,8,identifier,identificar,1,394,identificar,identify,определять
-393,8,opérer,operar,1,395,operar,operate,оперировать
-394,8,diminuer,disminuir,1,396,disminuir,decrease,уменьшать
-395,8,imiter,imitar,1,397,imitar,imitate,подражать
-396,8,manifester,manifestar,1,398,manifestar,manifest,проявлять
-397,8,insister,insistir,1,399,insistir,insist,настаивать
-398,8,admirer,admirar,1,400,admirar,admire,восхищаться
-399,8,rétablir,restablecer,1,401,restablecer,restore,восстанавливать
-400,8,filer,hilar,1,402,hilar,spin,наматывать
+rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive,cefr_level
+351,8,soumettre,someter,1,353,someter,submit,представлять,B2
+352,8,appuyer,apoyar,1,354,apoyar,press,нажимать,B1
+353,8,surveiller,vigilar,1,355,vigilar,monitor,наблюдать,A2
+354,8,prier,rezar,1,356,"rezar, rogar",pray,молиться,A2
+354,8,prier,rogar,2,356,"rezar, rogar",pray,молиться,A2
+355,8,éclater,estallar,1,357,estallar,burst,взрываться,B2
+356,8,acquérir,adquirir,1,358,adquirir,acquire,приобретать,B2
+357,8,chasser,cazar,1,359,"cazar, ahuyentar",hunt,выслеживать,B1
+357,8,chasser,ahuyentar,2,359,"cazar, ahuyentar",hunt,выслеживать,B1
+358,8,endormir,adormecer,1,360,adormecer,put to sleep,усыплять,B1
+359,8,attribuer,atribuir,1,361,atribuir,attribute,приписывать,B2
+360,8,souligner,subrayar,1,362,subrayar,underline,подчеркивать,B1
+361,8,épouser,casarse con,1,363,casarse con,marry,вступать в брак,B1
+362,8,adopter,adoptar,1,364,adoptar,adopt,принимать в семью,B1
+363,8,interroger,interrogar,1,365,"interrogar, preguntar",question,опрашивать,B1
+363,8,interroger,preguntar,2,365,"interrogar, preguntar",question,опрашивать,B1
+364,8,révéler,revelar,1,366,revelar,reveal,раскрывать,B1
+365,8,éclairer,iluminar,1,367,"iluminar, aclarar",light,освещать,B1
+365,8,éclairer,aclarar,2,367,"iluminar, aclarar",light,освещать,B1
+366,8,limiter,limitar,1,368,limitar,limit,ограничивать,B1
+367,8,demeurer,permanecer,1,369,permanecer,remain,оставаться,B2
+368,8,libérer,liberar,1,370,liberar,free,освобождать,B1
+369,8,inventer,inventar,1,371,inventar,invent,изобретать,A2
+370,8,consacrer,consagrar,1,372,"consagrar, dedicar",dedicate,посвящать,B2
+370,8,consacrer,dedicar,2,372,"consagrar, dedicar",dedicate,посвящать,B2
+371,8,faciliter,facilitar,1,373,facilitar,facilitate,облегчать,B1
+372,8,s'endormir,dormirse,1,374,dormirse,fall asleep,засыпать,A2
+373,8,ranger,ordenar,1,375,"ordenar, arreglar",tidy,прибирать,A1
+373,8,ranger,arreglar,2,375,"ordenar, arreglar",tidy,прибирать,A1
+374,8,plaire,gustar,1,376,"gustar, agradar",please,радовать,A2
+374,8,plaire,agradar,2,376,"gustar, agradar",please,радовать,A2
+375,8,goûter,probar,1,377,probar,taste,пробовать,A1
+376,8,effacer,borrar,1,378,borrar,erase,стирать,A2
+377,8,communiquer,comunicar,1,379,comunicar,communicate,общаться,A2
+378,8,exécuter,ejecutar,1,380,ejecutar,execute,выполнять,B2
+379,8,boucher,tapar,1,381,"tapar, obstruir",plug,затыкать,B1
+379,8,boucher,obstruir,2,381,"tapar, obstruir",plug,затыкать,B1
+380,8,répartir,repartir,1,382,"repartir, distribuir",distribute,распределять,B2
+380,8,répartir,distribuir,2,382,"repartir, distribuir",distribute,распределять,B2
+381,8,repartir,repartir,1,383,repartir,set off again,отправляться снова,B1
+382,8,réunir,reunir,1,384,"reunir, juntar",gather,собирать,B1
+382,8,réunir,juntar,2,384,"reunir, juntar",gather,собирать,B1
+383,8,respecter,respetar,1,385,respetar,respect,уважать,A2
+384,8,interpréter,interpretar,1,386,interpretar,interpret,толковать,B1
+385,8,forcer,forzar,1,387,forzar,force,заставлять,B1
+386,8,contrôler,controlar,1,388,controlar,control,контролировать,B1
+387,8,vaincre,vencer,1,389,vencer,conquer,завоёвывать,B2
+388,8,ficher,archivar,1,390,"archivar, fastidiar",file,регистрировать,B2
+388,8,ficher,fastidiar,2,390,"archivar, fastidiar",file,регистрировать,B2
+389,8,lâcher,soltar,1,391,soltar,release,отпускать,B1
+390,8,trembler,temblar,1,392,temblar,tremble,дрожать,A2
+391,8,supprimer,suprimir,1,393,"suprimir, eliminar",delete,удалять,B1
+391,8,supprimer,eliminar,2,393,"suprimir, eliminar",delete,удалять,B1
+392,8,identifier,identificar,1,394,identificar,identify,определять,B1
+393,8,opérer,operar,1,395,operar,operate,оперировать,B1
+394,8,diminuer,disminuir,1,396,disminuir,decrease,уменьшать,B1
+395,8,imiter,imitar,1,397,imitar,imitate,подражать,A2
+396,8,manifester,manifestar,1,398,manifestar,manifest,проявлять,B2
+397,8,insister,insistir,1,399,insistir,insist,настаивать,B1
+398,8,admirer,admirar,1,400,admirar,admire,восхищаться,A2
+399,8,rétablir,restablecer,1,401,restablecer,restore,восстанавливать,B2
+400,8,filer,hilar,1,402,hilar,spin,наматывать,B2

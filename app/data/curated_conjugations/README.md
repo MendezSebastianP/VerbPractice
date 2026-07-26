@@ -3,7 +3,7 @@
 This directory holds the repo-backed source of truth for the manual conjugation pipeline.
 
 Files:
-- `normalized_verb_inventory.csv`: canonical French-first inventory, normalized to the first 1000 unique French infinitives from the legacy list, with curated English and Russian equivalents where available.
+- `normalized_verb_inventory.csv`: canonical French-first inventory, normalized to the first 1000 unique French infinitives from the legacy list, with curated English and Russian equivalents where available and a manually assigned `cefr_level`.
 - `batches/batch_XX_manifest.csv`: generated batch manifest for one 50-verb French batch.
 - `batches/batch_XX_conjugations.csv`: manually filled conjugation rows for that batch.
 
@@ -14,6 +14,9 @@ Workflow:
 4. `python scripts/validate_curated_conjugations.py --batch 1`
 5. Review the filled rows and mark them `reviewed`.
 6. `python scripts/import_curated_conjugations.py --batch 1`
+
+`cefr_level` is inherited from the hand-reviewed legacy verb row when the
+inventory is rebuilt. Do not assign it independently in batch manifests.
 
 English tables use `Present`, `Past`, `Future`, and the invariant `Past Participle` under the existing `Indicative` mood contract. The past-participle form is repeated across the six English pronoun slots because English participles do not inflect for person. Russian tables use `Настоящее время`, `Прошедшее время`, and `Будущее время` in the indicative. The curated equivalents are normally imperfective so their present and analytic future forms are useful. Singular past slots include masculine, feminine, and (where applicable) neuter alternatives because the shared pronoun set is gender-neutral. Impersonal verbs explicitly use `не употребляется` in unavailable person slots.
 

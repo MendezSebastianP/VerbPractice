@@ -1,62 +1,62 @@
-rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive
-901,19,plaisanter,bromear,1,903,bromear,joke,рассказывать шутки
-902,19,abîmer,dañar,1,904,"dañar, estropear",damage,повреждать
-902,19,abîmer,estropear,2,904,"dañar, estropear",damage,повреждать
-903,19,évacuer,evacuar,1,905,evacuar,evacuate,эвакуировать
-904,19,grossir,engordar,1,906,"engordar, agrandar",gain weight,полнеть
-904,19,grossir,agrandar,2,906,"engordar, agrandar",gain weight,полнеть
-905,19,résonner,resonar,1,907,resonar,resonate,звучать
-906,19,aggraver,agravar,1,908,agravar,worsen,ухудшать
-907,19,conformer,conformar,1,909,conformar,conform,соответствовать
-908,19,hausser,alzar,1,910,"alzar, levantar",raise,поднимать
-908,19,hausser,levantar,2,910,"alzar, levantar",raise,поднимать
-909,19,administrer,administrar,1,911,administrar,administer,управлять
-910,19,dissocier,disociar,1,912,disociar,dissociate,разделять
-911,19,effondrer,derrumbar(se),1,913,derrumbar(se),collapse,обрушиваться
-912,19,pressentir,presentir,1,914,presentir,sense beforehand,предчувствовать
-913,19,gueuler,gritar (coloquial),1,915,gritar (coloquial),yell,кричать
-914,19,disputer,discutir,1,916,"discutir, disputar",argue,спорить
-914,19,disputer,disputar,2,916,"discutir, disputar",argue,спорить
-915,19,coûter,costar,1,917,costar,cost,стоить
-916,19,fusiller,fusilar,1,918,fusilar,shoot,расстреливать
-917,19,coïncider,coincidir,1,919,coincidir,coincide,совпадать
-918,19,chialer,llorar (coloquial),1,920,llorar (coloquial),sob,рыдать
-919,19,différencier,diferenciar,1,921,diferenciar,differentiate,различать
-920,19,recommander,recomendar,1,922,recomendar,recommend,рекомендовать
-921,19,modeler,modelar,1,923,modelar,model,моделировать
-922,19,foncer,ir rápido,1,924,ir rápido,speed,ускоряться
-923,19,équiper,equipar,1,925,equipar,equip,оснащать
-924,19,décharger,descargar,1,926,descargar,unload,разгружать
-925,19,inspecter,inspeccionar,1,927,inspeccionar,inspect,осматривать
-926,19,tousser,toser,1,928,toser,cough,кашлять
-927,19,aligner,alinear,1,929,alinear,align,выравнивать
-928,19,instituer,instituir,1,930,instituir,institute,учреждать
-929,19,violer,violar,1,931,violar,violate,нарушать
-930,19,énoncer,enunciar,1,932,enunciar,state,формулировать
-931,19,gérer,gestionar,1,933,gestionar,manage,управлять
-932,19,ébranler,sacudir,1,934,"sacudir, conmover",shake up,потрясать
-932,19,ébranler,conmover,2,934,"sacudir, conmover",shake up,потрясать
-933,19,assigner,asignar,1,935,asignar,assign,назначать
-934,19,émerger,emerger,1,936,emerger,emerge,появляться
-935,19,planquer,esconder (coloquial),1,937,esconder (coloquial),hide away,прятать
-936,19,liquider,liquidar,1,938,liquidar,liquidate,ликвидировать
-937,19,réprimer,reprimir,1,939,reprimir,repress,подавлять
-938,19,démarrer,arrancar,1,940,"arrancar, empezar",start up,запускаться
-938,19,démarrer,empezar,2,940,"arrancar, empezar",start up,запускаться
-939,19,frayer,abrir camino,1,941,"abrir camino, rozar",clear a path,прокладывать путь
-939,19,frayer,rozar,2,941,"abrir camino, rozar",clear a path,прокладывать путь
-940,19,effrayer,asustar,1,942,asustar,frighten,пугать
-941,19,contourner,rodear,1,943,"rodear, eludir",bypass,обходить
-941,19,contourner,eludir,2,943,"rodear, eludir",bypass,обходить
-942,19,référer,referir,1,944,referir,refer,ссылаться на
-943,19,tâter,palpar,1,945,"palpar, tentar",feel out,ощупывать
-943,19,tâter,tentar,2,945,"palpar, tentar",feel out,ощупывать
-944,19,retracer,trazar de nuevo,1,946,"trazar de nuevo, relatar",retrace,прослеживать
-944,19,retracer,relatar,2,946,"trazar de nuevo, relatar",retrace,прослеживать
-945,19,différer,diferir,1,947,diferir,differ,отличаться от
-946,19,semer,sembrar,1,948,sembrar,sow,засевать
-947,19,commenter,comentar,1,949,comentar,comment,комментировать
-948,19,camper,acampar,1,950,acampar,camp,разбивать лагерь
-949,19,barrer,bloquear,1,951,"bloquear, tachar",block,преграждать
-949,19,barrer,tachar,2,951,"bloquear, tachar",block,преграждать
-950,19,pâtir,sufrir,1,952,sufrir,suffer,страдать
+rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive,cefr_level
+901,19,plaisanter,bromear,1,903,bromear,joke,рассказывать шутки,A2
+902,19,abîmer,dañar,1,904,"dañar, estropear",damage,повреждать,A2
+902,19,abîmer,estropear,2,904,"dañar, estropear",damage,повреждать,A2
+903,19,évacuer,evacuar,1,905,evacuar,evacuate,эвакуировать,B1
+904,19,grossir,engordar,1,906,"engordar, agrandar",gain weight,полнеть,A2
+904,19,grossir,agrandar,2,906,"engordar, agrandar",gain weight,полнеть,A2
+905,19,résonner,resonar,1,907,resonar,resonate,звучать,B2
+906,19,aggraver,agravar,1,908,agravar,worsen,ухудшать,B2
+907,19,conformer,conformar,1,909,conformar,conform,соответствовать,B2
+908,19,hausser,alzar,1,910,"alzar, levantar",raise,поднимать,B2
+908,19,hausser,levantar,2,910,"alzar, levantar",raise,поднимать,B2
+909,19,administrer,administrar,1,911,administrar,administer,управлять,B1
+910,19,dissocier,disociar,1,912,disociar,dissociate,разделять,B2
+911,19,effondrer,derrumbar(se),1,913,derrumbar(se),collapse,обрушиваться,B1
+912,19,pressentir,presentir,1,914,presentir,sense beforehand,предчувствовать,C1
+913,19,gueuler,gritar (coloquial),1,915,gritar (coloquial),yell,кричать,B2
+914,19,disputer,discutir,1,916,"discutir, disputar",argue,спорить,A2
+914,19,disputer,disputar,2,916,"discutir, disputar",argue,спорить,A2
+915,19,coûter,costar,1,917,costar,cost,стоить,A1
+916,19,fusiller,fusilar,1,918,fusilar,shoot,расстреливать,B2
+917,19,coïncider,coincidir,1,919,coincidir,coincide,совпадать,B1
+918,19,chialer,llorar (coloquial),1,920,llorar (coloquial),sob,рыдать,C1
+919,19,différencier,diferenciar,1,921,diferenciar,differentiate,различать,B1
+920,19,recommander,recomendar,1,922,recomendar,recommend,рекомендовать,A2
+921,19,modeler,modelar,1,923,modelar,model,моделировать,B2
+922,19,foncer,ir rápido,1,924,ir rápido,speed,ускоряться,B1
+923,19,équiper,equipar,1,925,equipar,equip,оснащать,B1
+924,19,décharger,descargar,1,926,descargar,unload,разгружать,B1
+925,19,inspecter,inspeccionar,1,927,inspeccionar,inspect,осматривать,B1
+926,19,tousser,toser,1,928,toser,cough,кашлять,A1
+927,19,aligner,alinear,1,929,alinear,align,выравнивать,B1
+928,19,instituer,instituir,1,930,instituir,institute,учреждать,C1
+929,19,violer,violar,1,931,violar,violate,нарушать,B2
+930,19,énoncer,enunciar,1,932,enunciar,state,формулировать,C1
+931,19,gérer,gestionar,1,933,gestionar,manage,управлять,B1
+932,19,ébranler,sacudir,1,934,"sacudir, conmover",shake up,потрясать,C1
+932,19,ébranler,conmover,2,934,"sacudir, conmover",shake up,потрясать,C1
+933,19,assigner,asignar,1,935,asignar,assign,назначать,B2
+934,19,émerger,emerger,1,936,emerger,emerge,появляться,B2
+935,19,planquer,esconder (coloquial),1,937,esconder (coloquial),hide away,прятать,B2
+936,19,liquider,liquidar,1,938,liquidar,liquidate,ликвидировать,B2
+937,19,réprimer,reprimir,1,939,reprimir,repress,подавлять,B2
+938,19,démarrer,arrancar,1,940,"arrancar, empezar",start up,запускаться,A2
+938,19,démarrer,empezar,2,940,"arrancar, empezar",start up,запускаться,A2
+939,19,frayer,abrir camino,1,941,"abrir camino, rozar",clear a path,прокладывать путь,C1
+939,19,frayer,rozar,2,941,"abrir camino, rozar",clear a path,прокладывать путь,C1
+940,19,effrayer,asustar,1,942,asustar,frighten,пугать,B1
+941,19,contourner,rodear,1,943,"rodear, eludir",bypass,обходить,B2
+941,19,contourner,eludir,2,943,"rodear, eludir",bypass,обходить,B2
+942,19,référer,referir,1,944,referir,refer,ссылаться на,B2
+943,19,tâter,palpar,1,945,"palpar, tentar",feel out,ощупывать,B2
+943,19,tâter,tentar,2,945,"palpar, tentar",feel out,ощупывать,B2
+944,19,retracer,trazar de nuevo,1,946,"trazar de nuevo, relatar",retrace,прослеживать,B2
+944,19,retracer,relatar,2,946,"trazar de nuevo, relatar",retrace,прослеживать,B2
+945,19,différer,diferir,1,947,diferir,differ,отличаться от,B2
+946,19,semer,sembrar,1,948,sembrar,sow,засевать,A2
+947,19,commenter,comentar,1,949,comentar,comment,комментировать,A2
+948,19,camper,acampar,1,950,acampar,camp,разбивать лагерь,A2
+949,19,barrer,bloquear,1,951,"bloquear, tachar",block,преграждать,B1
+949,19,barrer,tachar,2,951,"bloquear, tachar",block,преграждать,B1
+950,19,pâtir,sufrir,1,952,sufrir,suffer,страдать,C1

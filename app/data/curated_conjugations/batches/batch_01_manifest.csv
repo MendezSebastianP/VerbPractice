@@ -1,67 +1,67 @@
-rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive
-1,1,être,ser,1,1,"ser, estar",be,быть
-1,1,être,estar,2,1,"ser, estar",be,быть
-2,1,avoir,tener,1,2,"tener, haber",have,иметь
-2,1,avoir,haber,2,2,"tener, haber",have,иметь
-3,1,faire,hacer,1,3,hacer,do,делать
-4,1,dire,decir,1,4,decir,say,говорить
-5,1,voir,ver,1,5,ver,see,видеть
-6,1,prendre,tomar,1,6,"tomar, coger",take,брать
-6,1,prendre,coger,2,6,"tomar, coger",take,брать
-7,1,pouvoir,poder,1,7,poder,be able to,мочь
-8,1,parler,hablar,1,8,hablar,speak,разговаривать
-9,1,aller,ir,1,9,ir,go,ходить
-10,1,savoir,saber,1,10,saber,know,знать
-11,1,donner,dar,1,11,dar,give,давать
-12,1,passer,pasar,1,12,pasar,pass,проходить
-13,1,mettre,poner,1,13,"poner, meter",put,помещать
-13,1,mettre,meter,2,13,"poner, meter",put,помещать
-14,1,partir,partir,1,14,partir,leave,уходить
-15,1,trouver,encontrar,1,15,encontrar,find,находить
-16,1,s'en aller,irse,1,16,irse,go away,удаляться
-17,1,rire,reír,1,17,reír,laugh,смеяться
-18,1,vivre,vivir,1,18,vivir,live,жить
-19,1,laisser,dejar,1,19,dejar,let,позволять
-20,1,rendre,devolver,1,20,"devolver, rendir",return,возвращать
-20,1,rendre,rendir,2,20,"devolver, rendir",return,возвращать
-21,1,sourire,sonreír,1,21,sonreír,smile,улыбаться
-22,1,venir,venir,1,22,venir,come,приходить
-23,1,comprendre,comprender,1,23,"comprender, entender",understand,понимать
-23,1,comprendre,entender,2,23,"comprender, entender",understand,понимать
-24,1,penser,pensar,1,24,pensar,think,думать
-25,1,chercher,buscar,1,25,buscar,look for,искать
-26,1,croire,creer,1,26,creer,believe,верить
-27,1,entendre,oír,1,27,oír,hear,слышать
-28,1,tenir,sostener,1,28,"sostener, tener",hold,держать
-28,1,tenir,tener,2,28,"sostener, tener",hold,держать
-29,1,demander,pedir,1,29,"pedir, preguntar",ask,спрашивать
-29,1,demander,preguntar,2,29,"pedir, preguntar",ask,спрашивать
-30,1,se souvenir,recordar,1,"30,33",recordar | acordarse,remember,помнить
-30,1,se souvenir,acordarse,2,"30,33",recordar | acordarse,remember,помнить
-31,1,attendre,esperar,1,31,esperar,wait,ждать
-32,1,sortir,salir,1,32,salir,go out,выходить
-33,1,regarder,mirar,1,34,mirar,watch,смотреть
-34,1,jouer,jugar,1,35,jugar,play,играть
-35,1,écrire,escribir,1,36,escribir,write,писать
-36,1,connaître,conocer,1,37,"conocer, saber",be acquainted with,знать
-36,1,connaître,saber,2,37,"conocer, saber",be acquainted with,знать
-37,1,devenir,llegar a ser,1,38,llegar a ser,become,становиться
-38,1,mourir,morir,1,39,"morir, fallecer",die,умирать
-38,1,mourir,fallecer,2,39,"morir, fallecer",die,умирать
-39,1,rester,permanecer,1,"40,46",permanecer | quedarse,stay,оставаться
-39,1,rester,quedarse,2,"40,46",permanecer | quedarse,stay,оставаться
-40,1,retrouver,reencontrar,1,41,"reencontrar, encontrar",find again,находить снова
-40,1,retrouver,encontrar,2,41,"reencontrar, encontrar",find again,находить снова
-41,1,se convertir,convertirse,1,42,convertirse,convert,превращаться
-42,1,entrer,entrar,1,43,entrar,enter,входить
-43,1,manger,comer,1,44,comer,eat,кушать
-44,1,tomber,caer,1,45,caer,fall,падать
-45,1,tirer,tirar,1,47,"tirar, disparar",pull,вытягивать
-45,1,tirer,disparar,2,47,"tirar, disparar",pull,вытягивать
-46,1,lire,leer,1,48,leer,read,читать
-47,1,suivre,seguir,1,49,seguir,follow,следовать
-48,1,répondre,responder,1,50,"responder, contestar",answer,отвечать
-48,1,répondre,contestar,2,50,"responder, contestar",answer,отвечать
-49,1,obtenir,obtener,1,51,"obtener, conseguir",obtain,получать
-49,1,obtenir,conseguir,2,51,"obtener, conseguir",obtain,получать
-50,1,perdre,perder,1,52,perder,lose,терять
+rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive,cefr_level
+1,1,être,ser,1,1,"ser, estar",be,быть,A1
+1,1,être,estar,2,1,"ser, estar",be,быть,A1
+2,1,avoir,tener,1,2,"tener, haber",have,иметь,A1
+2,1,avoir,haber,2,2,"tener, haber",have,иметь,A1
+3,1,faire,hacer,1,3,hacer,do,делать,A1
+4,1,dire,decir,1,4,decir,say,говорить,A1
+5,1,voir,ver,1,5,ver,see,видеть,A1
+6,1,prendre,tomar,1,6,"tomar, coger",take,брать,A1
+6,1,prendre,coger,2,6,"tomar, coger",take,брать,A1
+7,1,pouvoir,poder,1,7,poder,be able to,мочь,A1
+8,1,parler,hablar,1,8,hablar,speak,разговаривать,A1
+9,1,aller,ir,1,9,ir,go,ходить,A1
+10,1,savoir,saber,1,10,saber,know,знать,A1
+11,1,donner,dar,1,11,dar,give,давать,A1
+12,1,passer,pasar,1,12,pasar,pass,проходить,A1
+13,1,mettre,poner,1,13,"poner, meter",put,помещать,A1
+13,1,mettre,meter,2,13,"poner, meter",put,помещать,A1
+14,1,partir,partir,1,14,partir,leave,уходить,A1
+15,1,trouver,encontrar,1,15,encontrar,find,находить,A1
+16,1,s'en aller,irse,1,16,irse,go away,удаляться,A1
+17,1,rire,reír,1,17,reír,laugh,смеяться,A1
+18,1,vivre,vivir,1,18,vivir,live,жить,A1
+19,1,laisser,dejar,1,19,dejar,let,позволять,A2
+20,1,rendre,devolver,1,20,"devolver, rendir",return,возвращать,A2
+20,1,rendre,rendir,2,20,"devolver, rendir",return,возвращать,A2
+21,1,sourire,sonreír,1,21,sonreír,smile,улыбаться,A1
+22,1,venir,venir,1,22,venir,come,приходить,A1
+23,1,comprendre,comprender,1,23,"comprender, entender",understand,понимать,A1
+23,1,comprendre,entender,2,23,"comprender, entender",understand,понимать,A1
+24,1,penser,pensar,1,24,pensar,think,думать,A1
+25,1,chercher,buscar,1,25,buscar,look for,искать,A1
+26,1,croire,creer,1,26,creer,believe,верить,A1
+27,1,entendre,oír,1,27,oír,hear,слышать,A1
+28,1,tenir,sostener,1,28,"sostener, tener",hold,держать,A2
+28,1,tenir,tener,2,28,"sostener, tener",hold,держать,A2
+29,1,demander,pedir,1,29,"pedir, preguntar",ask,спрашивать,A1
+29,1,demander,preguntar,2,29,"pedir, preguntar",ask,спрашивать,A1
+30,1,se souvenir,recordar,1,"30,33",recordar | acordarse,remember,помнить,A2
+30,1,se souvenir,acordarse,2,"30,33",recordar | acordarse,remember,помнить,A2
+31,1,attendre,esperar,1,31,esperar,wait,ждать,A1
+32,1,sortir,salir,1,32,salir,go out,выходить,A1
+33,1,regarder,mirar,1,34,mirar,watch,смотреть,A1
+34,1,jouer,jugar,1,35,jugar,play,играть,A1
+35,1,écrire,escribir,1,36,escribir,write,писать,A1
+36,1,connaître,conocer,1,37,"conocer, saber",be acquainted with,знать,A1
+36,1,connaître,saber,2,37,"conocer, saber",be acquainted with,знать,A1
+37,1,devenir,llegar a ser,1,38,llegar a ser,become,становиться,A2
+38,1,mourir,morir,1,39,"morir, fallecer",die,умирать,A2
+38,1,mourir,fallecer,2,39,"morir, fallecer",die,умирать,A2
+39,1,rester,permanecer,1,"40,46",permanecer | quedarse,stay,оставаться,A1
+39,1,rester,quedarse,2,"40,46",permanecer | quedarse,stay,оставаться,A1
+40,1,retrouver,reencontrar,1,41,"reencontrar, encontrar",find again,находить снова,A2
+40,1,retrouver,encontrar,2,41,"reencontrar, encontrar",find again,находить снова,A2
+41,1,se convertir,convertirse,1,42,convertirse,convert,превращаться,B1
+42,1,entrer,entrar,1,43,entrar,enter,входить,A1
+43,1,manger,comer,1,44,comer,eat,кушать,A1
+44,1,tomber,caer,1,45,caer,fall,падать,A1
+45,1,tirer,tirar,1,47,"tirar, disparar",pull,вытягивать,A2
+45,1,tirer,disparar,2,47,"tirar, disparar",pull,вытягивать,A2
+46,1,lire,leer,1,48,leer,read,читать,A1
+47,1,suivre,seguir,1,49,seguir,follow,следовать,A2
+48,1,répondre,responder,1,50,"responder, contestar",answer,отвечать,A1
+48,1,répondre,contestar,2,50,"responder, contestar",answer,отвечать,A1
+49,1,obtenir,obtener,1,51,"obtener, conseguir",obtain,получать,B1
+49,1,obtenir,conseguir,2,51,"obtener, conseguir",obtain,получать,B1
+50,1,perdre,perder,1,52,perder,lose,терять,A1

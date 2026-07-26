@@ -15,6 +15,7 @@ from app.services.curated_conjugations import (
     CuratedConjugationRow,
     InventoryLinkRow,
     build_batch_template_rows,
+    canonical_inventory_cefr_levels,
     import_curated_conjugation_rows,
     import_inventory_rows,
     normalize_legacy_inventory_rows,
@@ -72,6 +73,7 @@ def _sample_inventory() -> list[InventoryLinkRow]:
             link_order=1,
             legacy_ids=(1,),
             source_es_text="ser, estar",
+            cefr_level="A1",
         ),
         InventoryLinkRow(
             rank=1,
@@ -81,6 +83,7 @@ def _sample_inventory() -> list[InventoryLinkRow]:
             link_order=2,
             legacy_ids=(1,),
             source_es_text="ser, estar",
+            cefr_level="A1",
         ),
     ]
 
@@ -99,10 +102,10 @@ def _filled_template_rows(batch_rows: list[CuratedConjugationRow], *, review_sta
 
 def test_normalize_legacy_inventory_rows_dedupes_and_preserves_order():
     raw_rows = [
-        {"ID": "1", "FR": "être ", "ES": "ser, estar"},
-        {"ID": "2", "FR": "avoir", "ES": "tener, haber"},
-        {"ID": "3", "FR": "être", "ES": "estar, ser"},
-        {"ID": "4", "FR": "faire", "ES": "hacer"},
+        {"ID": "1", "FR": "être ", "ES": "ser, estar", "cefr_level": "A1"},
+        {"ID": "2", "FR": "avoir", "ES": "tener, haber", "cefr_level": "A1"},
+        {"ID": "3", "FR": "être", "ES": "estar, ser", "cefr_level": "A1"},
+        {"ID": "4", "FR": "faire", "ES": "hacer", "cefr_level": "A1"},
     ]
 
     rows = normalize_legacy_inventory_rows(raw_rows, limit=3, batch_size=2)
@@ -114,6 +117,7 @@ def test_normalize_legacy_inventory_rows_dedupes_and_preserves_order():
     assert rows[4].rank == 3
     assert rows[4].batch == 2
     assert rows[0].legacy_ids == (1, 3)
+    assert {row.cefr_level for row in rows} == {"A1"}
 
 
 def test_validate_inventory_rows_rejects_duplicate_links():
@@ -125,6 +129,29 @@ def test_validate_inventory_rows_rejects_duplicate_links():
     errors = validate_inventory_rows(duplicate_rows)
 
     assert any("Duplicate inventory link" in error for error in errors)
+
+
+def test_canonical_inventory_level_uses_the_easiest_shared_headword_sense():
+    rows = [
+        replace(_sample_inventory()[0], cefr_level="B2"),
+        InventoryLinkRow(
+            rank=2,
+            batch=1,
+            fr_infinitive="demeurer",
+            es_infinitive="ser",
+            link_order=1,
+            legacy_ids=(2,),
+            source_es_text="ser",
+            en_infinitive="be",
+            cefr_level="A2",
+        ),
+    ]
+
+    levels = canonical_inventory_cefr_levels(rows)
+
+    assert levels[("FR", "être")] == "B2"
+    assert levels[("ES", "ser")] == "A2"
+    assert levels[("EN", "be")] == "A2"
 
 
 def test_build_batch_template_rows_uses_current_training_scope():
@@ -172,6 +199,7 @@ async def test_import_inventory_rows_creates_separate_spanish_verbs(sqlite_sessi
     assert {(verb.infinitive, verb.language_id) for verb in verbs}
     assert len(translations) == 4
     assert sum(1 for verb in verbs if verb.infinitive in {"ser", "estar"}) == 2
+    assert {verb.cefr_level for verb in verbs} == {"A1"}
 
 
 @pytest.mark.asyncio

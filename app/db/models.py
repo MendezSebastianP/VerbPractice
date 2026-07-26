@@ -6,6 +6,7 @@ from enum import StrEnum
 from sqlalchemy import (
     JSON,
     Boolean,
+    CheckConstraint,
     Date,
     DateTime,
     Enum,
@@ -149,6 +150,7 @@ class Word(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     text: Mapped[str] = mapped_column(String(128), index=True)
     language_id: Mapped[int] = mapped_column(ForeignKey("languages.id", ondelete="RESTRICT"), index=True)
+    cefr_level: Mapped[str | None] = mapped_column(String(2), nullable=True, index=True)
 
     translations: Mapped[list[WordTranslation]] = relationship(
         "WordTranslation", back_populates="word", cascade="all, delete-orphan"
@@ -157,7 +159,13 @@ class Word(Base):
         "WordSense", back_populates="word", cascade="all, delete-orphan"
     )
 
-    __table_args__ = (UniqueConstraint("text", "language_id", name="uq_words_text_language"),)
+    __table_args__ = (
+        CheckConstraint(
+            "cefr_level IS NULL OR cefr_level IN ('A1', 'A2', 'B1', 'B2', 'C1', 'C2')",
+            name="ck_words_cefr_level",
+        ),
+        UniqueConstraint("text", "language_id", name="uq_words_text_language"),
+    )
 
 
 class WordTranslation(Base):
@@ -184,6 +192,7 @@ class Verb(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     infinitive: Mapped[str] = mapped_column(String(128), index=True)
     language_id: Mapped[int] = mapped_column(ForeignKey("languages.id", ondelete="RESTRICT"), index=True)
+    cefr_level: Mapped[str | None] = mapped_column(String(2), nullable=True, index=True)
 
     translations: Mapped[list[VerbTranslation]] = relationship(
         "VerbTranslation", back_populates="verb", cascade="all, delete-orphan"
@@ -192,7 +201,13 @@ class Verb(Base):
         "VerbConjugation", back_populates="verb", cascade="all, delete-orphan"
     )
 
-    __table_args__ = (UniqueConstraint("infinitive", "language_id", name="uq_verbs_infinitive_language"),)
+    __table_args__ = (
+        CheckConstraint(
+            "cefr_level IS NULL OR cefr_level IN ('A1', 'A2', 'B1', 'B2', 'C1', 'C2')",
+            name="ck_verbs_cefr_level",
+        ),
+        UniqueConstraint("infinitive", "language_id", name="uq_verbs_infinitive_language"),
+    )
 
 
 class VerbTranslation(Base):

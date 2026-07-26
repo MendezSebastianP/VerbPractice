@@ -1,73 +1,73 @@
-rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive
-801,17,débarquer,desembarcar,1,803,"desembarcar, llegar",disembark,высаживаться
-801,17,débarquer,llegar,2,803,"desembarcar, llegar",disembark,высаживаться
-802,17,redevenir,volver a ser,1,804,volver a ser,become again,становиться снова
-803,17,éclaircir,aclarar,1,805,"aclarar, iluminar",clarify,прояснять
-803,17,éclaircir,iluminar,2,805,"aclarar, iluminar",clarify,прояснять
-804,17,consommer,consumir,1,806,consumir,consume,потреблять
-805,17,fendre,hender,1,807,"hender, partir",split,раскалывать
-805,17,fendre,partir,2,807,"hender, partir",split,раскалывать
-806,17,soulager,aliviar,1,808,aliviar,relieve,облегчать
-807,17,décourager,desalentar,1,809,"desalentar, desanimar",discourage,обескураживать
-807,17,décourager,desanimar,2,809,"desalentar, desanimar",discourage,обескураживать
-808,17,engendrer,engendrar,1,810,engendrar,generate,порождать
-809,17,fêter,celebrar,1,811,"celebrar, festejar",celebrate,праздновать
-809,17,fêter,festejar,2,811,"celebrar, festejar",celebrate,праздновать
-810,17,renaître,renacer,1,812,renacer,be reborn,возрождаться
-811,17,affranchir,liberar,1,813,"liberar, franquear",free,освобождать
-811,17,affranchir,franquear,2,813,"liberar, franquear",free,освобождать
-812,17,freiner,frenar,1,814,frenar,brake,замедлять
-813,17,racheter,recomprar,1,815,"recomprar, redimir",buy back,выкупать
-813,17,racheter,redimir,2,815,"recomprar, redimir",buy back,выкупать
-814,17,initier,iniciar,1,816,iniciar,initiate,посвящать
-815,17,dater,fechar,1,817,fechar,date,датировать
-816,17,raser,afeitar,1,818,"afeitar, derribar",shave,брить
-816,17,raser,derribar,2,818,"afeitar, derribar",shave,брить
-817,17,solliciter,solicitar,1,819,solicitar,solicit,запрашивать
-818,17,errer,errar,1,820,"errar, vagar",wander,скитаться
-818,17,errer,vagar,2,820,"errar, vagar",wander,скитаться
-819,17,honorer,honrar,1,821,honrar,honor,уважать
-820,17,féliciter,felicitar,1,822,felicitar,congratulate,поздравлять
-821,17,entourer,rodear,1,823,rodear,surround,окружать
-822,17,dépouiller,despojar,1,824,despojar,strip,раздевать
-823,17,exciter,excitar,1,825,"excitar, entusiasmar",excite,возбуждать
-823,17,exciter,entusiasmar,2,825,"excitar, entusiasmar",excite,возбуждать
-824,17,tâcher,intentar,1,826,"intentar, manchar",try hard,стараться
-824,17,tâcher,manchar,2,826,"intentar, manchar",try hard,стараться
-825,17,pleuvoir,llover,1,827,llover,rain,дождить
-826,17,insérer,insertar,1,828,insertar,insert,вставлять
-827,17,accommoder,acomodar,1,829,acomodar,accommodate,приспосабливать
-828,17,énumérer,enumerar,1,830,enumerar,enumerate,перечислять
-829,17,incliner,inclinar,1,831,inclinar,incline,наклонять
-830,17,convertir,convertir,1,832,convertir,convert,преобразовывать
-831,17,exploser,explotar,1,833,explotar,explode,взрываться
-832,17,redire,repetir,1,834,"repetir, volver a decir",say again,повторять
-832,17,redire,volver a decir,2,834,"repetir, volver a decir",say again,повторять
-833,17,méconnaître,desconocer,1,835,"desconocer, ignorar",misunderstand,понимать неправильно
-833,17,méconnaître,ignorar,2,835,"desconocer, ignorar",misunderstand,понимать неправильно
-834,17,rallier,reunir,1,836,reunir,rally,объединять
-835,17,nouer,anudar,1,837,"anudar, establecer",tie,завязывать
-835,17,nouer,establecer,2,837,"anudar, establecer",tie,завязывать
-836,17,aménager,acondicionar,1,838,"acondicionar, arreglar",arrange,обустраивать
-836,17,aménager,arreglar,2,838,"acondicionar, arreglar",arrange,обустраивать
-837,17,viser,apuntar,1,839,"apuntar, aspirar",aim,целиться
-837,17,viser,aspirar,2,839,"apuntar, aspirar",aim,целиться
-838,17,débrouiller,desenredar,1,840,"desenredar, arreglárselas",untangle,распутывать
-838,17,débrouiller,arreglárselas,2,840,"desenredar, arreglárselas",untangle,распутывать
-839,17,sombrer,hundirse,1,841,hundirse,sink,погружаться
-840,17,masquer,enmascarar,1,842,"enmascarar, ocultar",mask,маскировать
-840,17,masquer,ocultar,2,842,"enmascarar, ocultar",mask,маскировать
-841,17,ressusciter,resucitar,1,843,resucitar,resurrect,воскрешать
-842,17,buter,tropezar,1,844,tropezar,stumble,спотыкаться
-843,17,mépriser,despreciar,1,845,despreciar,despise,презирать
-844,17,découper,recortar,1,846,"recortar, cortar",cut out,вырезать
-844,17,découper,cortar,2,846,"recortar, cortar",cut out,вырезать
-845,17,proclamer,proclamar,1,847,proclamar,proclaim,провозглашать
-846,17,menacer,amenazar,1,848,amenazar,threaten,угрожать
-847,17,mater,mirar,1,849,"mirar, dominar (coloquial)",tame,укрощать
-847,17,mater,dominar (coloquial),2,849,"mirar, dominar (coloquial)",tame,укрощать
-848,17,contrarier,contrariar,1,850,"contrariar, frustrar",thwart,препятствовать
-848,17,contrarier,frustrar,2,850,"contrariar, frustrar",thwart,препятствовать
-849,17,réjouir,alegrar(se),1,851,alegrar(se),rejoice,радоваться
-850,17,cerner,rodear,1,852,"rodear, delimitar",encircle,окружать
-850,17,cerner,delimitar,2,852,"rodear, delimitar",encircle,окружать
+rank,batch,fr_infinitive,es_infinitive,link_order,legacy_ids,source_es_text,en_infinitive,ru_infinitive,cefr_level
+801,17,débarquer,desembarcar,1,803,"desembarcar, llegar",disembark,высаживаться,B1
+801,17,débarquer,llegar,2,803,"desembarcar, llegar",disembark,высаживаться,B1
+802,17,redevenir,volver a ser,1,804,volver a ser,become again,становиться снова,B1
+803,17,éclaircir,aclarar,1,805,"aclarar, iluminar",clarify,прояснять,B1
+803,17,éclaircir,iluminar,2,805,"aclarar, iluminar",clarify,прояснять,B1
+804,17,consommer,consumir,1,806,consumir,consume,потреблять,B1
+805,17,fendre,hender,1,807,"hender, partir",split,раскалывать,B2
+805,17,fendre,partir,2,807,"hender, partir",split,раскалывать,B2
+806,17,soulager,aliviar,1,808,aliviar,relieve,облегчать,B1
+807,17,décourager,desalentar,1,809,"desalentar, desanimar",discourage,обескураживать,B1
+807,17,décourager,desanimar,2,809,"desalentar, desanimar",discourage,обескураживать,B1
+808,17,engendrer,engendrar,1,810,engendrar,generate,порождать,C1
+809,17,fêter,celebrar,1,811,"celebrar, festejar",celebrate,праздновать,A2
+809,17,fêter,festejar,2,811,"celebrar, festejar",celebrate,праздновать,A2
+810,17,renaître,renacer,1,812,renacer,be reborn,возрождаться,B2
+811,17,affranchir,liberar,1,813,"liberar, franquear",free,освобождать,C1
+811,17,affranchir,franquear,2,813,"liberar, franquear",free,освобождать,C1
+812,17,freiner,frenar,1,814,frenar,brake,замедлять,A2
+813,17,racheter,recomprar,1,815,"recomprar, redimir",buy back,выкупать,B1
+813,17,racheter,redimir,2,815,"recomprar, redimir",buy back,выкупать,B1
+814,17,initier,iniciar,1,816,iniciar,initiate,посвящать,B1
+815,17,dater,fechar,1,817,fechar,date,датировать,A2
+816,17,raser,afeitar,1,818,"afeitar, derribar",shave,брить,A2
+816,17,raser,derribar,2,818,"afeitar, derribar",shave,брить,A2
+817,17,solliciter,solicitar,1,819,solicitar,solicit,запрашивать,B2
+818,17,errer,errar,1,820,"errar, vagar",wander,скитаться,B2
+818,17,errer,vagar,2,820,"errar, vagar",wander,скитаться,B2
+819,17,honorer,honrar,1,821,honrar,honor,уважать,B1
+820,17,féliciter,felicitar,1,822,felicitar,congratulate,поздравлять,A2
+821,17,entourer,rodear,1,823,rodear,surround,окружать,A2
+822,17,dépouiller,despojar,1,824,despojar,strip,раздевать,C1
+823,17,exciter,excitar,1,825,"excitar, entusiasmar",excite,возбуждать,B1
+823,17,exciter,entusiasmar,2,825,"excitar, entusiasmar",excite,возбуждать,B1
+824,17,tâcher,intentar,1,826,"intentar, manchar",try hard,стараться,B2
+824,17,tâcher,manchar,2,826,"intentar, manchar",try hard,стараться,B2
+825,17,pleuvoir,llover,1,827,llover,rain,дождить,A1
+826,17,insérer,insertar,1,828,insertar,insert,вставлять,B1
+827,17,accommoder,acomodar,1,829,acomodar,accommodate,приспосабливать,B2
+828,17,énumérer,enumerar,1,830,enumerar,enumerate,перечислять,B2
+829,17,incliner,inclinar,1,831,inclinar,incline,наклонять,B1
+830,17,convertir,convertir,1,832,convertir,convert,преобразовывать,B1
+831,17,exploser,explotar,1,833,explotar,explode,взрываться,A2
+832,17,redire,repetir,1,834,"repetir, volver a decir",say again,повторять,A2
+832,17,redire,volver a decir,2,834,"repetir, volver a decir",say again,повторять,A2
+833,17,méconnaître,desconocer,1,835,"desconocer, ignorar",misunderstand,понимать неправильно,C1
+833,17,méconnaître,ignorar,2,835,"desconocer, ignorar",misunderstand,понимать неправильно,C1
+834,17,rallier,reunir,1,836,reunir,rally,объединять,B2
+835,17,nouer,anudar,1,837,"anudar, establecer",tie,завязывать,B1
+835,17,nouer,establecer,2,837,"anudar, establecer",tie,завязывать,B1
+836,17,aménager,acondicionar,1,838,"acondicionar, arreglar",arrange,обустраивать,B1
+836,17,aménager,arreglar,2,838,"acondicionar, arreglar",arrange,обустраивать,B1
+837,17,viser,apuntar,1,839,"apuntar, aspirar",aim,целиться,B1
+837,17,viser,aspirar,2,839,"apuntar, aspirar",aim,целиться,B1
+838,17,débrouiller,desenredar,1,840,"desenredar, arreglárselas",untangle,распутывать,B1
+838,17,débrouiller,arreglárselas,2,840,"desenredar, arreglárselas",untangle,распутывать,B1
+839,17,sombrer,hundirse,1,841,hundirse,sink,погружаться,B2
+840,17,masquer,enmascarar,1,842,"enmascarar, ocultar",mask,маскировать,B1
+840,17,masquer,ocultar,2,842,"enmascarar, ocultar",mask,маскировать,B1
+841,17,ressusciter,resucitar,1,843,resucitar,resurrect,воскрешать,B2
+842,17,buter,tropezar,1,844,tropezar,stumble,спотыкаться,B2
+843,17,mépriser,despreciar,1,845,despreciar,despise,презирать,B2
+844,17,découper,recortar,1,846,"recortar, cortar",cut out,вырезать,A2
+844,17,découper,cortar,2,846,"recortar, cortar",cut out,вырезать,A2
+845,17,proclamer,proclamar,1,847,proclamar,proclaim,провозглашать,B2
+846,17,menacer,amenazar,1,848,amenazar,threaten,угрожать,B1
+847,17,mater,mirar,1,849,"mirar, dominar (coloquial)",tame,укрощать,B2
+847,17,mater,dominar (coloquial),2,849,"mirar, dominar (coloquial)",tame,укрощать,B2
+848,17,contrarier,contrariar,1,850,"contrariar, frustrar",thwart,препятствовать,B1
+848,17,contrarier,frustrar,2,850,"contrariar, frustrar",thwart,препятствовать,B1
+849,17,réjouir,alegrar(se),1,851,alegrar(se),rejoice,радоваться,B1
+850,17,cerner,rodear,1,852,"rodear, delimitar",encircle,окружать,B2
+850,17,cerner,delimitar,2,852,"rodear, delimitar",encircle,окружать,B2

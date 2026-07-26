@@ -1,965 +1,965 @@
-spanish,french,english,russian,spanish synonyms,french synonyms,english synonyms,russian synonyms,tags
-solo,seulement,only,только,solamente,uniquement;seul,just,лишь,adverb
-parte,partie,part,часть,fragmento;porción;sección;segmento,portion;section,portion;section,фрагмент,abstract_concepts;noun_thing
-tiempo,temps,time,время,época;periodo,,,,time;noun_thing
-día,jour,day,день,jornada,journée,,,time;noun_thing
-vida,vie,life,жизнь,existencia;subsistencia,existence,existence,существование,abstract_concepts;noun_thing
-siempre,toujours,always,всегда,,,,навсегда,time;adverb
-gente,gens,people,люди,pueblo;muchedumbre;personas,monde;population,crowd;population,народ,abstract_concepts;noun_person
-mundo,monde,world,мир,orbe;planeta;globo,univers;planète;globe,planet;globe,планета,places_geography;nature;noun_place
-año,année,year,год,,,,,time;noun_thing
-nunca,jamais,never,никогда,jamás,,,,time;adverb
-antes,avant,before,раньше,previamente,auparavant,previously,прежде,time;adverb
-trabajo,travail,work,работа,labor;ocupación;oficio,emploi;boulot;labeur,job;occupation,труд;занятие,work;noun_thing
-lugar,lieu,place,место,sitio;paraje;ubicación,endroit;emplacement,site;location,,places_geography;noun_place
-país,pays,country,страна,nación;territorio;patria,nation;territoire,nation,государство,places_geography;noun_place
-casa,maison,house,дом,vivienda;hogar;domicilio,habitation;demeure;foyer;logement,home;dwelling,жилище;очаг,house;noun_place
-aquí,ici,here,здесь,acá,,,,directions_positions;adverb
-caso,cas,case,случай,asunto;situación;supuesto,affaire;situation,situation,обстоятельство;ситуация,abstract_concepts;noun_thing
-ciudad,ville,city,город,urbe;metrópoli,cité;métropole;agglomération,metropolis,,places_geography;noun_place
-luego,ensuite,then,потом,después;más tarde,après;plus tard,later;afterwards,затем,time;adverb
-verdad,vérité,truth,правда,certeza;autenticidad,authenticité,,истина,abstract_concepts;noun_thing
-historia,histoire,story,история,cuento;relato;narración,récit,tale;narrative,рассказ;повесть,literature;noun_thing
-nombre,nom,name,имя,denominación,appellation;désignation,designation,название,abstract_concepts;noun_thing
-fuera,dehors,outside,снаружи,afuera,à l'extérieur,,вне,directions_positions;adverb
-hombre,homme,man,мужчина,varón;individuo;sujeto,individu,individual,человек,noun_person
-grupo,groupe,group,группа,conjunto;equipo,ensemble;collectif,team;collection,коллектив;команда,abstract_concepts;noun_thing
-mujer,femme,woman,женщина,dama;señora,dame,lady,дама;леди,noun_person
-sistema,système,system,система,método;conjunto,méthode,method,,abstract_concepts;noun_thing
-persona,personne,person,человек,individuo;sujeto;ser,individu;être,individual,индивид,noun_person
-noche,nuit,night,ночь,,,,,time;noun_thing
-casi,presque,almost,почти,aproximadamente,quasiment,nearly,,adverb
-lado,côté,side,сторона,costado;flanco,flanc;bord,flank,бок,directions_positions;noun_thing
-cosa,chose,thing,вещь,objeto;ente;elemento,objet,object,объект;предмет,noun_thing
-dentro,à l'intérieur,inside,внутри,adentro,dedans,,,directions_positions;adverb
-familia,famille,family,семья,parentela;clan,foyer;clan,clan,родня,family;noun_thing
-pueblo,village,village,деревня,aldea;localidad,commune;bourg,hamlet,село,places_geography;noun_place
-problema,problème,problem,проблема,inconveniente;dificultad,difficulté;souci,difficulty;issue,затруднение,abstract_concepts;noun_thing
-punto,point,point,точка,cuestión;aspecto;detalle,aspect,aspect,,shapes_measurements;noun_thing
-guerra,guerre,war,война,contienda;conflicto;lucha,conflit;bataille,conflict;battle,битва;сражение,law_society;noun_thing
-agua,eau,water,вода,,,,,drink;nature;noun_thing
-semana,semaine,week,неделя,,,,,time;noun_thing
-información,information,information,информация,datos;noticia,info;nouvelle,data;news,данные,media_communication;noun_thing
-dinero,argent,money,деньги,plata;pasta;efectivo,fric;pognon,cash,наличные,money;noun_thing
-madre,mère,mother,мать,mamá,maman,mom,мама,family;noun_person
-idea,idée,idea,идея,concepto;noción,concept,concept;notion,концепция;понятие,abstract_concepts;noun_thing
-realidad,réalité,reality,реальность,existencia,existence,existence,действительность,abstract_concepts;noun_thing
-real,réel,real,реальный,verdadero;auténtico,vrai;authentique,true;authentic,настоящий;истинный,abstract_concepts;adjective
-amor,amour,love,любовь,adoración;cariño;afecto,tendresse;affection,affection,привязанность,emotions;noun_thing
-sociedad,société,society,общество,comunidad;colectividad,communauté;collectivité,community,сообщество,law_society;noun_thing
-hijo,fils,son,сын,vástago;nene,gosse,,,family;noun_person
-nivel,niveau,level,уровень,,,,,shapes_measurements;abstract_concepts;noun_thing
-seguro,sûr,sure,уверенный,cierto,certain,certain,,abstract_concepts;adjective
-mano,main,hand,рука,,,,,body;noun_thing
-juego,jeu,game,игра,partida;competición,partie;divertissement,play;match,матч;состязание,sports;noun_thing
-grande,grand,big,большой,gran;enorme,immense;vaste,large;huge,огромный,shapes_measurements;adjective
-cerca,près,close,близко,cercano;próximo,proche,near,рядом,directions_positions;adverb
-padre,père,father,отец,papá,papa,dad,папа,family;noun_person
-amigo,ami,friend,друг,compañero;camarada,copain;camarade;pote,companion;mate,приятель;товарищ,emotions;noun_person
-tierra,terre,earth,земля,suelo;planeta,sol;planète,soil;ground,почва;грунт,nature;places_geography;noun_thing
-seguridad,sécurité,security,безопасность,,,,,law_society;abstract_concepts;noun_thing
-programa,programme,program,программа,plan,plan;émission,plan,план,technology;media_communication;noun_thing
-cuerpo,corps,body,тело,organismo,organisme,organism,организм,body;noun_thing
-servicio,service,service,сервис,atención;prestación,prestation,,обслуживание,work;abstract_concepts;noun_thing
-cabeza,tête,head,голова,,crâne;chef,,,body;noun_thing
-libro,livre,book,книга,obra;ejemplar,ouvrage;bouquin,work,произведение,literature;noun_thing
-proceso,processus,process,процесс,procedimiento;trámite,procédure;démarche,procedure,процедура,abstract_concepts;noun_thing
-mes,mois,month,месяц,,,,,time;noun_thing
-largo,long,long,длинный,extenso,étendu,,протяжённый,shapes_measurements;adjective
-realmente,vraiment,really,действительно,en verdad,effectivement;réellement,truly,правда,adverb
-camino,chemin,path,путь,senda;sendero,sentier;voie,way;trail,тропа;дорога,travel;places_geography;noun_place
-salud,santé,health,здоровье,bienestar;salubridad,bien-être,well-being,благополучие,health;noun_thing
-policía,policier,police,полиция,agente,flic,officer,правоохранители,law_society;professions;noun_person
-empresa,entreprise,company,компания,compañía;sociedad;negocio,société;firme;boîte,business;firm,фирма,work;noun_thing
-obra,œuvre,work,произведение,trabajo;pieza,ouvrage;pièce,piece,шедевр,art;noun_thing
-calle,rue,street,улица,vía;avenida,voie;avenue,road,дорога;проспект,transportation;places_geography;noun_place
-allí,là,there,там,allá,là-bas,,,directions_positions;adverb
-escuela,école,school,школа,colegio;academia,établissement scolaire,,,school;noun_place
-música,musique,music,музыка,melodía,mélodie,,,music;noun_thing
-pregunta,question,question,вопрос,cuestión;interrogante,interrogation,,,media_communication;noun_thing
-miedo,peur,fear,страх,temor;pavor,crainte;terreur,dread,боязнь,emotions;noun_thing
-propio,propre,own,собственный,característico,,,,abstract_concepts;adjective
-principal,principal,principal,основной,fundamental,,main;primary,главный,abstract_concepts;adjective
-imagen,image,image,изображение,figura;representación,représentation;illustration,picture,картина,media_communication;art;noun_thing
-palabra,mot,word,слово,vocablo;término,terme;vocable,term,термин,media_communication;noun_thing
-plan,plan,plan,план,proyecto;intención,projet;intention,project;scheme,проект;замысел,abstract_concepts;noun_thing
-campo,champ,field,поле,terreno,terrain,,,nature;places_geography;noun_place
-película,film,film,фильм,cinta;filme,long-métrage,movie,кино,media_communication;art;noun_thing
-respuesta,réponse,response,ответ,contestación,réplique,reply;answer,,media_communication;noun_thing
-precio,prix,price,цена,valor;costo,coût,cost,стоимость,money;shopping;noun_thing
-mercado,marché,market,рынок,zoco;feria,foire;bazar,bazaar;fair,базар;ярмарка,shopping;money;noun_place
-comida,nourriture,food,еда,alimento;manjar,aliment;bouffe,nourishment;meal,пища;продовольствие,food;noun_thing
-oportunidad,opportunité,opportunity,возможность,ocasión;chance,occasion;chance,chance,шанс,abstract_concepts;noun_thing
-iglesia,église,church,церковь,templo,,,храм,religion;noun_place
-central,central,central,центральный,,,main,,directions_positions;adjective
-viaje,voyage,journey,путешествие,travesía;recorrido,périple;trajet,trip;voyage,поездка,travel;noun_thing
-mar,mer,sea,море,piélago;océano,océan,ocean,океан,nature;places_geography;noun_place
-local,local,local,местный,,,,,places_geography;adjective
-hermano,frère,brother,брат,,frangin,,,family;noun_person
-niño,enfant,child,ребёнок,crío;muchacho,gamin;gosse,kid,,family;baby_childcare;noun_person
-red,réseau,network,сеть,,,,,technology;media_communication;noun_thing
-objetivo,objectif,objective,цель,meta,but;cible,goal;aim,задача,abstract_concepts;noun_thing
-río,rivière,river,река,,cours d'eau,,,nature;places_geography;noun_place
-negro,noir,black,чёрный,oscuro,sombre,,тёмный,colors_patterns;adjective
-interior,intérieur,interior,внутренний,,,inside,,directions_positions;adjective
-sol,soleil,sun,солнце,astro,astre,,,weather;nature;noun_thing
-pequeño,petit,small,маленький,chico,réduit,little,небольшой,shapes_measurements;adjective
-blanco,blanc,white,белый,albo,,,,colors_patterns;adjective
-aire,air,air,воздух,atmósfera,atmosphère,atmosphere,атмосфера,weather;nature;noun_thing
-lejos,loin,far,далеко,distante,éloigné,distant,удалённый,directions_positions;adverb
-arriba,en haut,up,вверх,encima,au-dessus,above,над,directions_positions;adverb
-puerta,porte,door,дверь,acceso;entrada,accès;entrée,entrance,вход,house;construction;noun_thing
-puerto,port,port,порт,embarcadero;muelle,quai,harbor,гавань,travel;transportation;noun_place
-hija,fille,daughter,дочь,vástago;nena,,,,family;noun_person
-color,couleur,color,цвет,tonalidad;tono,teinte,hue;shade,оттенок,colors_patterns;noun_thing
-banco,banque,bank,банк,,,,,money;noun_place
-oficina,bureau,office,офис,despacho,,,контора,work;noun_place
-capacidad,capacité,capacity,вместимость,aptitud,,ability,способность,abstract_concepts;noun_thing
-modelo,modèle,model,модель,ejemplo;prototipo,,example;prototype,образец,abstract_concepts;noun_thing
-fuego,feu,fire,огонь,lumbre;llama,flamme;incendie,flame,пламя,nature;house;noun_thing
-culpa,culpabilité,guilt,вина,responsabilidad;falta,faute,blame,ощущение вины,emotions;abstract_concepts;noun_thing
-cámara,caméra,camera,камера,cámara fotográfica,appareil photo,,фотоаппарат,technology;media_communication;noun_thing
-probablemente,probablement,probably,вероятно,posiblemente,sans doute;vraisemblablement,possibly,возможно,adverb
-decisión,décision,decision,решение,determinación;resolución,résolution;détermination,resolution,постановление,abstract_concepts;noun_thing
-abajo,en bas,below,внизу,debajo,en dessous,underneath,ниже,directions_positions;adverb
-versión,version,version,версия,,,,,media_communication;abstract_concepts;noun_thing
-odio,haine,hatred,ненависть,aversión;repugnancia,aversion;répulsion,aversion,отвращение,emotions;noun_thing
-ropa,vêtements,clothing,одежда,vestimenta;indumentaria;atuendo,habits;fringues,garments,одеяние;наряд,clothing;noun_thing
-isla,île,island,остров,islote,îlot,,,nature;places_geography;noun_place
-profesor,professeur,teacher,учитель,maestro;docente,enseignant,professor;instructor,преподаватель,school;professions;noun_person
-original,original,original,оригинал,primigenio,,,,abstract_concepts;adjective
-prensa,étau,vise,тиски,tornillo de banco,,,,tools_diy;noun_thing
-canal,canal,channel,канал,,,canal,,media_communication;noun_thing
-verano,été,summer,лето,,,,,time;weather;noun_thing
-hospital,hôpital,hospital,больница,sanatorio,,,госпиталь,health;noun_place
-completamente,complètement,completely,полностью,totalmente,entièrement,entirely,,adverb
-suelo,sol,floor,пол,pavimento;piso,plancher,,,house;construction;noun_thing
-sala,salon,room,комната,estancia,séjour,living room,помещение,house;noun_place
-protección,protection,protection,защита,amparo,,,,law_society;health;abstract_concepts;noun_thing
-sueño,sommeil,sleep,сон,,,,,health;noun_thing
-edificio,bâtiment,building,здание,inmueble;construcción,immeuble;construction,edifice,строение,construction;places_geography;noun_place
-mesa,table,table,стол,,,,,furniture;noun_thing
-completo,complet,complete,полный,íntegro,,whole,,abstract_concepts;adjective
-material,matériau,material,материал,materia,matière,substance,,materials;noun_thing
-venta,vente,sale,продажа,transacción,transaction,transaction,,shopping;money;noun_thing
-solución,solution,solution,решение,resolución;remedio,remède;issue,remedy,выход,abstract_concepts;noun_thing
-confianza,confiance,confidence,уверенность,seguridad;fe,assurance,trust,доверие,emotions;abstract_concepts;noun_thing
-hambre,faim,hunger,голод,apetito;gana,appétit,appetite,аппетит,food;health;noun_thing
-legal,légal,legal,законный,lícito,licite,,,law_society;adjective
-perro,chien,dog,собака,can,,,,animals;noun_thing
-cama,lit,bed,кровать,lecho;catre,couchette,,ложе,furniture;house;noun_thing
-opción,option,option,вариант,alternativa,choix,alternative;choice,альтернатива,abstract_concepts;noun_thing
-memoria,mémoire,memory,память,recuerdo,souvenir,recall;remembrance,,abstract_concepts;noun_thing
-silencio,silence,silence,тишина,mutismo;calma,,quiet,покой,abstract_concepts;noun_thing
-producto,produit,product,продукт,artículo;mercancía,article;marchandise,item;merchandise,товар,shopping;noun_thing
-médico,médecin,doctor,врач,doctor,docteur,physician,доктор,health;professions;noun_person
-verde,vert,green,зелёный,verdoso,,,,colors_patterns;adjective
-esperanza,espoir,hope,надежда,ilusión;expectativa,espérance,,,emotions;noun_thing
-hermana,sœur,sister,сестра,,frangine,,,family;noun_person
-parque,parc,park,парк,,,,,places_geography;nature;noun_place
-comercial,commercial,commercial,коммерческий,,,,,shopping;work;adjective
-exterior,extérieur,exterior,внешний,,,outside;outer,наружный,directions_positions;adjective
-rojo,rouge,red,красный,encarnado;rojizo,rougeâtre,,алый;пунцовый,colors_patterns;adjective
-niña,fille,girl,девочка,muchacha,fillette,,,family;baby_childcare;noun_person
-juez,juge,judge,судья,magistrado,,,,law_society;professions;noun_person
-carne,viande,meat,мясо,,,,,food;noun_thing
-teatro,théâtre,theater,театр,,,,,art;noun_place
-azul,bleu,blue,синий,añil;celeste,azur,azure,лазурный,colors_patterns;adjective
-marco,cadre,frame,рама,,,,,art;noun_thing
-pan,pain,bread,хлеб,hogaza;barra,,,,food;noun_thing
-sección,section,section,раздел,apartado,,,часть,abstract_concepts;noun_thing
-pelo,cheveux,hair,волосы,cabello;cabellera,,,шевелюра,body;personal_care;noun_thing
-peligro,danger,danger,опасность,riesgo;amenaza,risque;menace,risk;threat,риск;угроза,health;abstract_concepts;noun_thing
-amiga,amie,friend,подруга,compañera;camarada,copine;camarade,,товарищ,emotions;noun_person
-estación,gare,station,станция,parada;terminal,station,,вокзал,transportation;noun_place
-baño,salle de bains,bathroom,ванная,lavabo;aseo,toilettes;sanitaires,restroom,туалет;уборная,house;noun_place
-compra,achat,purchase,покупка,adquisición,acquisition,buy,приобретение,shopping;noun_thing
-exactamente,exactement,exactly,точно,cabalmente,,,,adverb
-hotel,hôtel,hotel,отель,,,,гостиница,travel;noun_place
-demanda,demande,request,запрос,petición,requête,,просьба,law_society;abstract_concepts;noun_thing
-luna,lune,moon,луна,,,,,nature;noun_thing
-piso,étage,floor,этаж,planta;nivel,niveau,level,ярус,construction;house;noun_thing
-abogado,avocat,lawyer,адвокат,letrado,,attorney,юрист,law_society;professions;noun_person
-contexto,contexte,context,контекст,entorno,,,,abstract_concepts;noun_thing
-piedra,pierre,stone,камень,roca;canto,rocher;caillou,rock,скала,nature;materials;noun_thing
-aeropuerto,aéroport,airport,аэропорт,aeródromo;terminal aéreo,aérogare,,,travel;transportation;noun_place
-idioma,langue,language,язык,lengua,idiome,,,school;media_communication;noun_thing
-basura,poubelle,trash,мусор,desechos;residuos,ordures,garbage,отходы,household_cleaning;noun_thing
-corto,court,short,короткий,breve,bref,brief,краткий,shapes_measurements;adjective
-tienda,magasin,store,магазин,negocio;local,boutique;échoppe,shop,лавка,shopping;noun_place
-coche,voiture,car,машина,automóvil;auto,bagnole;caisse,automobile,автомобиль,transportation;noun_thing
-leche,lait,milk,молоко,,,,,drink;food;noun_thing
-perfil,profil,profile,профиль,,,,,technology;media_communication;noun_thing
-pantalla,écran,screen,экран,monitor,moniteur,,монитор,technology;noun_thing
-león,lion,lion,лев,,,,,animals;noun_thing
-ropa interior,sous-vêtements,underwear,нижнее белье,lencería,lingerie,,,clothing;noun_thing
-artista,artiste,artist,артист,,,,художник,art;professions;noun_person
-identidad,identité,identity,идентичность,,,,,abstract_concepts;noun_thing
-playa,plage,beach,пляж,orilla;costa,rivage;côte,,берег,travel;nature;places_geography;noun_place
-permiso,permission,permission,разрешение,autorización;licencia,autorisation,authorization;license,лицензия,law_society;abstract_concepts;noun_thing
-tren,train,train,поезд,ferrocarril,chemin de fer,,,transportation;travel;noun_thing
-cocina,cuisine,kitchen,кухня,,,,,house;cooking;noun_place
-rosa,rose,pink,розовый,rosado,,,,colors_patterns;adjective
-dulce,sucré,sweet,сладкий,azucarado,doux,sugary,сахарный,food;textures_qualities;adjective
-puente,pont,bridge,мост,pasarela;viaducto,passerelle;viaduc,footbridge;viaduct,виадук;пешеходный мост,transportation;construction;noun_place
-periodista,journaliste,journalist,журналист,reportero,,reporter,репортёр,media_communication;professions;noun_person
-estrategia,stratégie,strategy,стратегия,,,,,work;abstract_concepts;noun_thing
-frío,froid,cold,холодный,gélido,glacial,chilly,ледяной,weather;adjective
-pensamiento,pensée,thought,мысль,reflexión;idea;razonamiento,réflexion;idée,idea;reflection,идея;размышление,abstract_concepts;noun_thing
-claramente,clairement,clearly,ясно,evidentemente,nettement;évidemment,obviously,очевидно,adverb
-precisamente,précisément,precisely,точно,justamente,justement,exactly,ровно,adverb
-avión,avion,plane,самолёт,aeroplano;aeronave,,airplane;aircraft,воздушное судно,travel;transportation;noun_thing
-madera,bois,wood,древесина,leño,,,дерево,materials;noun_thing
-biblioteca,bibliothèque,library,библиотека,mediateca,,,,school;literature;noun_place
-escritor,écrivain,writer,писатель,autor,,author,автор,literature;professions;noun_person
-resolución,résolution,resolution,решение,determinación,,determination,решимость,media_communication;abstract_concepts;noun_thing
-regional,régional,regional,региональный,,,,,places_geography;adjective
-museo,musée,museum,музей,,,,,art;travel;noun_place
-habitación,chambre,room,комната,alcoba;cuarto;dormitorio,pièce,bedroom,спальня;помещение,house;noun_place
-rápidamente,rapidement,quickly,быстро,rápido;velozmente,vite;prestement,rapidly,скоро;оперативно,adverb
-plataforma,plateforme,platform,платформа,,,,,technology;noun_thing
-técnico,technique,technical,технический,,,,,technology;adjective
-frecuencia,fréquence,frequency,частота,,,,,shapes_measurements;abstract_concepts;noun_thing
-valle,vallée,valley,долина,,,,,nature;places_geography;noun_place
-metro,métro,metro,метро,subte,,subway,подземка,transportation;noun_thing
-viento,vent,wind,ветер,brisa;ráfaga,brise;rafale,breeze,бриз;порыв,weather;nature;noun_thing
-estrella,étoile,star,звезда,astro,astre,,астро,nature;noun_thing
-temprano,tôt,early,рано,pronto,de bonne heure,,,time;adverb
-capítulo,chapitre,chapter,глава,,,,,literature;noun_thing
-señal,signal,signal,сигнал,,,,,media_communication;transportation;noun_thing
-tarjeta,carte,card,карта,,,,карточка,money;shopping;noun_thing
-sorpresa,surprise,surprise,сюрприз,asombro;extrañeza,étonnement,astonishment,удивление;неожиданность,emotions;noun_thing
-igualdad,égalité,equality,равенство,equivalencia;paridad,,parity,паритет,law_society;abstract_concepts;noun_thing
-seguramente,sûrement,surely,наверняка,con seguridad,certainement,certainly,безусловно;несомненно,adverb
-normalmente,normalement,normally,обычно,habitualmente,habituellement,usually,стандартно;повседневно,adverb
-oferta,offre,offer,предложение,,,,,shopping;money;noun_thing
-invierno,hiver,winter,зима,,,,,time;weather;noun_thing
-clima,climat,climate,климат,,,,,weather;noun_thing
-escala,échelle,scale,масштаб,,,,,shapes_measurements;noun_thing
-cerebro,cerveau,brain,мозг,sesos,cervelle,,серое вещество,body;health;noun_thing
-vergüenza,honte,shame,стыд,pena;bochorno,gêne;embarras,embarrassment,позор;смущение,emotions;noun_thing
-industrial,industriel,industrial,промышленный,,,,,work;adjective
-mentira,mensonge,lie,ложь,embuste;engaño;falsedad,tromperie;fausseté,falsehood,неправда;враньё,abstract_concepts;noun_thing
-resumen,résumé,summary,резюме,sumario,synthèse,abstract,сводка;краткое изложение,literature;school;noun_thing
-constante,constante,constant,постоянная,,,,,abstract_concepts;adjective
-gato,chat,cat,кот,minino;micho,minet,kitty,котофей,animals;noun_thing
-archivo,fichier,file,файл,fichero,,,архив,technology;media_communication;noun_thing
-cuello,cou,neck,шея,pescuezo,,,,body;clothing;noun_thing
-carretera,route,road,дорога,vía;autovía;calzada,voie;chaussée,highway,шоссе;трасса,transportation;noun_place
-lluvia,pluie,rain,дождь,precipitación;chaparrón,averse;précipitation,,ливень,weather;noun_thing
-moneda,monnaie,currency,валюта,pecunia;divisa,pièce;devise,coin,деньги,money;noun_thing
-motor,moteur,engine,двигатель,propulsor,propulseur,,,transportation;vehicle_parts;noun_thing
-amistad,amitié,friendship,дружба,compañerismo;camaradería,camaraderie,,,emotions;abstract_concepts;noun_thing
-alegría,joie,joy,радость,felicidad;gozo,bonheur;allégresse,happiness,веселье;счастье,emotions;noun_thing
-pecho,poitrine,chest,грудь,busto,buste,,,body;noun_thing
-licencia,licence,license,лицензия,permiso,permis,permit,разрешение,law_society;transportation;noun_thing
-perfectamente,parfaitement,perfectly,в совершенстве,impecablemente,impeccablement,flawlessly,идеально,adverb
-castillo,château,castle,замок,fortaleza,forteresse,fortress,крепость,travel;places_geography;noun_place
-primavera,printemps,spring,весна,,,,,time;weather;noun_thing
-vestido,robe,dress,платье,,,,,clothing;noun_thing
-bosque,forêt,forest,лес,arboleda;selva,bois,woods,роща,nature;places_geography;noun_place
-sal,sel,salt,соль,,,,,food;cooking;noun_thing
-ilegal,illégal,illegal,нелегальный,ilícito,illicite,unlawful,незаконный,law_society;adjective
-ruido,bruit,noise,шум,estruendo,vacarme,,,abstract_concepts;noun_thing
-jardín,jardin,garden,сад,,,,,house;plants_garden;noun_place
-perspectiva,point de vue,perspective,перспектива,punto de vista,,viewpoint,точка зрения,abstract_concepts;noun_thing
-caballo,cheval,horse,лошадь,corcel;potro,destrier,,конь,animals;noun_thing
-orgullo,fierté,pride,гордость,soberbia;vanidad,orgueil,self-esteem,самолюбие,emotions;noun_thing
-montaña,montagne,mountain,гора,sierra;monte;cerro,mont,peak,пик;вершина,nature;places_geography;noun_place
-rural,rural,rural,сельский,campestre,,,деревенский,places_geography;adjective
-estadio,stade,stadium,стадион,,,,,sports;noun_place
-ventana,fenêtre,window,окно,ventanal,baie vitrée,,,house;construction;noun_thing
-actor,acteur,actor,актёр,intérprete,comédien,,исполнитель,art;professions;noun_person
-zapatos,chaussures,shoes,обувь,calzado,souliers,footwear,туфли,clothing;noun_thing
-barco,bateau,boat,лодка,navío;embarcación,navire;embarcation,vessel,судно,transportation;travel;noun_thing
-clásico,classique,classic,классический,tradicional,,traditional,традиционный,art;adjective
-cuadro,tableau,painting,картина,obra;pintura;lienzo,peinture,artwork,полотно;живопись,art;noun_thing
-granada,grenade,grenade,граната,,,,,law_society;noun_thing
-taller,atelier,workshop,мастерская,obrador,,,цех,work;tools_diy;noun_place
-pared,mur,wall,стена,tapia;muro,paroi,,,house;construction;noun_thing
-huevo,œuf,egg,яйцо,,,,,food;cooking;noun_thing
-teléfono inteligente,smartphone,smartphone,смартфон,móvil;celular,,,,technology;media_communication;noun_thing
-científico,scientifique,scientist,учёный,,,,,school;professions;noun_person
-formato,format,format,формат,,,,,media_communication;technology;noun_thing
-lago,lac,lake,озеро,,,,,nature;places_geography;noun_place
-falso,faux,false,ложный,falsificado,contrefait,fake,фальшивый,abstract_concepts;adjective
-copia,copie,copy,копия,reproducción;duplicata,,duplicate,дубликат,media_communication;noun_thing
-fábrica,usine,factory,завод,factoría,,,фабрика,work;noun_place
-flor,fleur,flower,цветок,,,,,plants_garden;nature;noun_thing
-dedo,doigt,finger,палец,,,,,body;noun_thing
-peligroso,dangereux,dangerous,опасный,arriesgado,risqué,risky,рискованный,health;adjective
-techo,toit,roof,крыша,tejado;cubierta,toiture,,,house;construction;noun_thing
-columna,colonne,column,колонна,,,,,construction;media_communication;noun_thing
-anuncio,annonce,advertisement,реклама,aviso,publicité,,объявление,media_communication;shopping;noun_thing
-azúcar,sucre,sugar,сахар,,,,,food;cooking;noun_thing
-aceite,huile,oil,масло,,,,,food;cooking;noun_thing
-raíz,racine,root,корень,,,,,plants_garden;nature;noun_thing
-índice,index,index,индекс,,,,,literature;media_communication;noun_thing
-moderno,moderne,modern,современный,actual,,,,abstract_concepts;adjective
-queso,fromage,cheese,сыр,,,,,food;noun_thing
-templo,temple,temple,храм,,,,,religion;noun_place
-metal,métal,metal,металл,,,,,materials;noun_thing
-solidaridad,solidarité,solidarity,солидарность,apoyo,,,,law_society;abstract_concepts;noun_thing
-cable,câble,cable,кабель,,,,,technology;noun_thing
-silla,chaise,chair,стул,,,,,furniture;noun_thing
-ingeniero,ingénieur,engineer,инженер,,,,,work;professions;noun_person
-brillante,brillant,bright,яркий,reluciente,éclatant,,блестящий,textures_qualities;adjective
-cena,dîner,dinner,ужин,,,,,food;noun_thing
-batería,batterie,battery,батарея,acumulador,accumulateur,,,technology;noun_thing
-enfermo,malade,sick,больной,indispuesto,souffrant,ill,нездоровый,health;adjective
-agradable,agréable,pleasant,приятный,placentero,plaisant,,,emotions;adjective
-espejo,miroir,mirror,зеркало,luna,glace,,,house;personal_care;noun_thing
-chocolate,chocolat,chocolate,шоколад,,,,,food;noun_thing
-paciencia,patience,patience,терпение,tolerancia,tolérance,,,emotions;abstract_concepts;noun_thing
-urbano,urbain,urban,городской,citadino,,,,places_geography;adjective
-piloto,pilote,pilot,пилот,,,,,transportation;professions;noun_person
-patio,cour,patio,патио,terraza,terrasse,courtyard,дворик,house;noun_place
-arroz,riz,rice,рис,,,,,food;cooking;noun_thing
-nieve,neige,snow,снег,,,,,weather;noun_thing
-pollo,poulet,chicken,курица,,,,,food;animals;noun_thing
-soldado,soldat,soldier,солдат,militar,,,,law_society;professions;noun_person
-roca,roche,rock,скала,piedra,pierre,,,nature;materials;noun_thing
-combustible,carburant,fuel,топливо,carburante;gasolina,essence,gasoline;petrol,,transportation;materials;noun_thing
-desayuno,petit-déjeuner,breakfast,завтрак,,,,,food;noun_thing
-traje,costume,suit,костюм,terno;ambo,complet,,,clothing;work;noun_thing
-cartel,pancarte,sign,знак,póster;afiche,affiche,poster,плакат;афиша,media_communication;noun_thing
-rueda,roue,wheel,колесо,llanta,,,,transportation;vehicle_parts;noun_thing
-recuperación,récupération,recovery,восстановление,restablecimiento,,,,health;abstract_concepts;noun_thing
-hoja,feuille,leaf,лист,,,sheet,,plants_garden;nature;noun_thing
-conductor,conducteur,driver,водитель,chofer,chauffeur,chauffeur,,transportation;professions;noun_person
-ancho,large,wide,широкий,amplio,vaste;ample,,,shapes_measurements;adjective
-rendimiento,performance,performance,производительность,desempeño,,,,work;abstract_concepts;noun_thing
-patrón,motif,pattern,узор,esquema;modelo,schéma;modèle,,,colors_patterns;noun_thing
-medias,bas,stockings,чулки,,,hose,,clothing;noun_thing
-patrón,modèle,model,модель,modelo,,,,abstract_concepts;noun_thing
-desierto,désert,desert,пустыня,,,,,nature;places_geography;noun_place
-asiento,siège,seat,сиденье,butaca;plaza,,,,furniture;transportation;noun_thing
-calma,calme,calm,спокойствие,tranquilidad;paz,tranquillité;sérénité,peace;tranquility,тишина,emotions;noun_thing
-parada,arrêt,stop,остановка,paradero;estación,station,,,transportation;noun_place
-portada,couverture,cover,обложка,carátula,,front page,,literature;media_communication;noun_thing
-parcial,partiel,partial,частичный,,,,,abstract_concepts;adjective
-criterio,critère,criterion,критерий,norma,,standard,норма,abstract_concepts;noun_thing
-mate,mat,matte,матовый,opaco,terne,dull;non-glossy,тусклый,colors_patterns;textures_qualities;adjective
-suave,doux,soft,мягкий,blando,moelleux,gentle;mellow,,textures_qualities;adjective
-manual,manuel,manual,руководство,guía,guide,guide,,literature;tools_diy;noun_thing
-amarillo,jaune,yellow,желтый,amarillento,,,,colors_patterns;adjective
-actualización,mise à jour,update,обновление,modernización,,,,technology;noun_thing
-académico,académique,academic,академический,,universitaire,scholarly,,school;adjective
-prioridad,priorité,priority,приоритет,prelación,,,,abstract_concepts;noun_thing
-moto,moto,motorcycle,мотоцикл,motocicleta,motocyclette,bike,,transportation;noun_thing
-salsa,sauce,sauce,соус,,,,,food;cooking;noun_thing
-gris,gris,gray,серый,grisáceo,,,,colors_patterns;adjective
-autobús,bus,bus,автобус,colectivo;camión,autocar,coach,,transportation;noun_thing
-bicicleta,vélo,bicycle,велосипед,bici,bicyclette,bike,,transportation;sports;noun_thing
-camiseta,t-shirt,t-shirt,футболка,remera;playera;franela,tee-shirt,tee,,clothing;noun_thing
-taxi,taxi,taxi,такси,,,,,transportation;travel;noun_thing
-transparencia,transparence,transparency,прозрачность,,,,,abstract_concepts;textures_qualities;noun_thing
-fila,rangée,row,ряд,hilera,ligne,line,,directions_positions;noun_thing
-tristeza,tristesse,sadness,печаль,pena;melancolía;pesadumbre,chagrin;mélancolie,sorrow;melancholy,грусть;скорбь,emotions;noun_thing
-carretera secundaria,route secondaire,secondary road,второстепенная дорога,carretera comarcal,départementale,backroad,,transportation;noun_place
-rama,branche,branch,ветка,ramo,,,,plants_garden;nature;noun_thing
-profundamente,profondément,deeply,глубоко,hondamente,,profoundly,основательно,adverb
-mapa mental,carte mentale,mind map,ментальная карта,mapa conceptual,,,,school;abstract_concepts;noun_thing
-clínica,clinique,clinic,клиника,sanatorio,,sanatorium,санаторий,health;noun_place
-ácido,acide,acid,кислота,agrio,,sour,,materials;adjective
-otoño,automne,autumn,осень,,,fall,,time;weather;noun_thing
-seco,sec,dry,сухой,árido,aride,arid,засушливый,weather;textures_qualities;adjective
-naranja,orange,orange,оранжевый,anaranjado,,,,food;colors_patterns;noun_thing
-apartamento,appartement,apartment,квартира,departamento;piso,,flat,,house;noun_place
-fruto,fruit,fruit,фрукт,fruta,,,,food;plants_garden;noun_thing
-privacidad,confidentialité,privacy,конфиденциальность,intimidad,,confidentiality,приватность,technology;law_society;abstract_concepts;noun_thing
-cuadros,carreaux,plaid,в клетку,tartán;escocés,,checked,,colors_patterns;noun_thing
-intensidad,intensité,intensity,интенсивность,fuerza,,strength,,shapes_measurements;abstract_concepts;noun_thing
-traje de baño,maillot de bain,swimsuit,купальник,bañador;vestido de baño,,swimming costume,,clothing;travel;sports;noun_thing
-plástico,plastique,plastic,пластик,,,,,materials;noun_thing
-vidrio,verre,glass,стекло,cristal,,crystal,хрусталь,materials;noun_thing
-sano,sain,healthy,здоровый,saludable,en bonne santé,wholesome,полезный,health;adjective
-pescado,poisson,fish,рыба,,,,,food;animals;noun_thing
-pesado,lourd,heavy,тяжёлый,,pesant,,,shapes_measurements;adjective
-lana,laine,wool,шерсть,,,,,materials;clothing;noun_thing
-maíz,maïs,corn,кукуруза,elote;choclo;jojoto,,maize,,food;plants_garden;noun_thing
-helado,glace,ice cream,мороженое,crema helada,crème glacée,,,food;noun_thing
-satisfacción,satisfaction,satisfaction,удовлетворение,contento,contentement,contentment,,emotions;noun_thing
-visible,visible,visible,видимый,perceptible,,perceptible,заметный,textures_qualities;adjective
-tela,tissu,fabric,ткань,tejido,étoffe,cloth;material,материал,materials;clothing;noun_thing
-frecuentemente,fréquemment,frequently,часто,a menudo,souvent,often,,adverb
-fruta,fruit,fruit,фрукт,,,,,food;plants_garden;noun_thing
-lobo,loup,wolf,волк,,,,,animals;noun_thing
-terremoto,séisme,earthquake,землетрясение,sismo;temblor,tremblement de terre,tremor,сейсмический толчок,weather;nature;noun_thing
-camisa,chemise,shirt,рубашка,,,,,clothing;noun_thing
-hombro,épaule,shoulder,плечо,,,,,body;noun_thing
-respaldo,sauvegarde,backup,резервная копия,copia de seguridad,,,,technology;noun_thing
-catálogo,catalogue,catalog,каталог,,,,,shopping;media_communication;noun_thing
-esquema,schéma,schema,схема,diagrama,plan,diagram;plan,,abstract_concepts;media_communication;noun_thing
-horno,four,oven,духовка,,,,,cooking;home_appliances;noun_thing
-miel,miel,honey,мёд,,,,,food;noun_thing
-almuerzo,déjeuner,lunch,обед,,,,,food;noun_thing
-lealtad,loyauté,loyalty,лояльность,fidelidad,fidélité,fidelity,верность,emotions;abstract_concepts;noun_thing
-ligeramente,légèrement,slightly,слегка,levemente,,lightly,немного,adverb
-autopista,autoroute,highway,автострада,autovía,voie rapide,expressway,шоссе,transportation;noun_place
-precisión,précision,precision,точность,exactitud,,accuracy,,abstract_concepts;noun_thing
-cueva,grotte,cave,пещера,caverna;gruta,caverne,cavern;grotto,грот,nature;places_geography;noun_place
-manzana,pomme,apple,яблоко,,,,,food;plants_garden;noun_thing
-vaca,vache,cow,корова,,,,,animals;food;noun_thing
-ordenador,ordinateur,computer,компьютер,computadora;PC,,PC,ПК,technology;noun_thing
-escalera,escalier,stairs,лестница,,,,,house;construction;noun_thing
-barba,barbe,beard,борода,,,,,body;personal_care;noun_thing
-cuero,cuir,leather,кожа,,,,,materials;clothing;noun_thing
-tigre,tigre,tiger,тигр,,,,,animals;noun_thing
-artificial,artificiel,artificial,искусственный,sintético,synthétique,synthetic,синтетический,technology;adjective
-sed,soif,thirst,жажда,,,,,drink;health;noun_thing
-sopa,soupe,soup,суп,caldo,potage;bouillon,broth,бульон,food;cooking;noun_thing
-mono,singe,monkey,обезьяна,simio;primate,,,,animals;noun_thing
-harina,farine,flour,мука,,,,,food;cooking;noun_thing
-oso,ours,bear,медведь,,,,,animals;noun_thing
-claridad,clarté,clarity,ясность,nitidez;transparencia,netteté,clearness;transparency,четкость,abstract_concepts;noun_thing
-teclado,clavier,keyboard,клавиатура,,,,,technology;noun_thing
-sombrero,chapeau,hat,шляпа,pamela,,,,clothing;noun_thing
-limón,citron,lemon,лимон,,,,,food;plants_garden;noun_thing
-auténtico,authentique,authentic,аутентичный,genuino,véritable,genuine,подлинный,abstract_concepts;adjective
-variable,variable,variable,переменная,,,,,abstract_concepts;noun_thing
-armonía,harmonie,harmony,гармония,paz;equilibrio,équilibre,balance,баланс,music;abstract_concepts;noun_thing
-cerdo,cochon,pig,свинья,puerco;chancho;marrano,porc,hog,,animals;food;noun_thing
-ligero,léger,light,лёгкий,liviano,,,,shapes_measurements;adjective
-algodón,coton,cotton,хлопок,,,,,materials;clothing;noun_thing
-lateral,latéral,lateral,боковой,,,side,,directions_positions;adjective
-aceite esencial,huile essentielle,essential oil,эфирное масло,,,,,personal_care;noun_thing
-transparente,transparent,transparent,прозрачный,claro,,clear,ясный,textures_qualities;adjective
-músico,musicien,musician,музыкант,,,,,music;professions;noun_person
-arroyo,ruisseau,stream,ручей,riachuelo,,brook,,nature;places_geography;noun_place
-nube,nuage,cloud,облако,,,,,weather;nature;noun_thing
-secundario,secondaire,secondary,вторичный,accesorio,accessoire,ancillary;incidental,,abstract_concepts;adjective
-tomate,tomate,tomato,помидор,jitomate,,,,food;plants_garden;noun_thing
-pintor,peintre,painter,художник,,,,,art;professions;noun_person
-pasta de dientes,dentifrice,toothpaste,зубная паста,crema dental,,,,personal_care;health;noun_thing
-envidia,envie,envy,зависть,,,,,emotions;noun_thing
-botas,bottes,boots,сапоги,botines,,,,clothing;noun_thing
-cinturón,ceinture,belt,ремень,correa;cincho;cinto,,,пояс,clothing;noun_thing
-arquitecto,architecte,architect,архитектор,,,,,construction;professions;noun_person
-parcialmente,partiellement,partially,частично,a medias,,,,adverb
-wifi,wifi,wifi,вай-фай,,,,,technology;noun_thing
-restauración,restauration,restoration,реставрация,restitución,,restitution,восстановление,construction;art;noun_thing
-preferencia,préférence,preference,предпочтение,predilección,,,,abstract_concepts;noun_thing
-silla de ruedas,fauteuil roulant,wheelchair,инвалидная коляска,,,,,accessibility;health;noun_thing
-fotógrafo,photographe,photographer,фотограф,,,,,media_communication;art;professions;noun_person
-invisible,invisible,invisible,невидимый,imperceptible,,imperceptible,незаметный,textures_qualities;adjective
-vertical,vertical,vertical,вертикальный,,,,,directions_positions;shapes_measurements;adjective
-mochila,sac à dos,backpack,рюкзак,,,,,travel;school;noun_thing
-coco,noix de coco,coconut,кокос,,,,,food;plants_garden;noun_thing
-billete,billet,ticket,билет,entrada;ticket,ticket,,,travel;transportation;money;noun_thing
-mineral,minéral,mineral,минерал,,,,,nature;materials;noun_thing
-pila,pile,battery,батарея,,batterie,,аккумулятор,technology;noun_thing
-pastel,gâteau,cake,торт,torta;tarta,,,,food;cooking;noun_thing
-plenamente,pleinement,fully,полностью,totalmente,entièrement,completely;entirely,целиком,adverb
-automóvil,automobile,car,автомобиль,coche;auto,voiture,automobile;vehicle,машина,transportation;noun_thing
-accesible,accessible,accessible,доступный,alcanzable,,,,accessibility;adjective
-contemporáneo,contemporain,contemporary,современный,actual,,,,time;adjective
-bolso,sac à main,handbag,сумочка,bolsa;cartera,,purse,сумка,clothing;shopping;noun_thing
-rodilla,genou,knee,колено,,,,,body;noun_thing
-configuración,configuration,configuration,конфигурация,ajustes;parametrización,réglages,setup,настройка,technology;noun_thing
-comedor,salle à manger,dining room,столовая,,,,,house;furniture;noun_place
-plantilla,modèle,template,шаблон,machote,gabarit,pattern,модель,technology;work;noun_thing
-plantilla,semelle,insole,стелька,plantilla ortopédica,semelle orthopédique,,,clothing;noun_thing
-postre,dessert,dessert,десерт,dulce,entremets,,сладкое,food;noun_thing
-farmacia,pharmacie,pharmacy,аптека,botica,,,,health;shopping;noun_place
-postal,carte postale,postcard,открытка,tarjeta postal,,,почтовая карточка,travel;media_communication;noun_thing
-jersey,pull,sweater,свитер,pulóver;suéter,chandail,,пуловер,clothing;noun_thing
-cordero,agneau,lamb,ягнёнок,,,,барашек,food;animals;noun_thing
-prado,pré,meadow,луг,pradera,prairie,pasture,пастбище,nature;places_geography;noun_place
-col,chou,cabbage,капуста,repollo;berza,,,,food;plants_garden;noun_thing
-decepción,déception,disappointment,разочарование,desilusión;desengaño,désillusion,,,emotions;noun_thing
-cebolla,oignon,onion,лук,,,,,food;plants_garden;noun_thing
-honestidad,honnêteté,honesty,честность,sinceridad,sincérité,integrity,порядочность,abstract_concepts;noun_thing
-hígado,foie,liver,печень,,,,,body;food;noun_thing
-protector,protecteur,protector,защитник,defensa,,,,health;accessibility;noun_thing
-desagradable,désagréable,unpleasant,неприятный,molesto,déplaisant,,,emotions;adjective
-dormitorio,chambre,bedroom,спальня,cuarto;habitación;pieza;alcoba,,,комната,house;noun_place
-matriz,matrice,matrix,матрица,,,,,technology;abstract_concepts;noun_thing
-celda,cellule,cell,ячейка,casilla,,,,technology;noun_thing
-cuna,berceau,crib,колыбель,camita,lit de bébé,,люлька,baby_childcare;furniture;noun_thing
-volante,volant,steering wheel,руль,timón;manubrio,,,,vehicle_parts;transportation;noun_thing
-cintura,taille,waist,талия,,,,,body;clothing;noun_thing
-colina,colline,hill,холм,cerro;loma,,,,nature;places_geography;noun_place
-botas de lluvia,bottes de pluie,rain boots,резиновые сапоги,,,wellies,,clothing;weather;noun_thing
-billete de tren,billet de train,train ticket,билет на поезд,boleto;pasaje;ticket,,,,travel;transportation;noun_thing
-batería externa,batterie externe,power bank,пауэрбанк,batería portátil;power bank,,external battery,внешний аккумулятор,technology;travel;noun_thing
-pájaro,oiseau,bird,птица,ave,,,пташка,animals;noun_thing
-volcán,volcan,volcano,вулкан,,,,,nature;places_geography;noun_place
-pato,canard,duck,утка,ánade,,,,animals;food;noun_thing
-nostalgia,nostalgie,nostalgia,ностальгия,añoranza,regret,longing,,emotions;noun_thing
-marea,marée,tide,прилив и отлив,,,,,nature;weather;noun_thing
-celos,jalousie,jealousy,ревность,recelo,,,,emotions;noun_thing
-pantalón,pantalon,pants,брюки,pantalones;vaqueros,jean,trousers,штаны,clothing;noun_thing
-marrón,brun,brown,коричневый,castaño,marron,,,colors_patterns;adjective
-pasillo,couloir,hallway,коридор,corredor,dégagement,corridor,,house;noun_place
-zapatillas,chaussons,slippers,тапочки,pantuflas,pantoufles,,тапки,clothing;house;noun_thing
-horizontal,horizontal,horizontal,горизонтальный,,,,,directions_positions;shapes_measurements;adjective
-paloma,colombe,dove,голубь,pichón,pigeon,pigeon,горлица,animals;noun_thing
-abrigo,manteau,coat,пальто,gabán;sobretodo;tapado,pardessus,,шинель,clothing;weather;noun_thing
-chaqueta,veste,jacket,куртка,cazadora;chamarra;saco,blouson,,пиджак,clothing;noun_thing
-equidad,équité,equity,справедливость,imparcialidad;justicia,,fairness,,law_society;abstract_concepts;noun_thing
-indiferencia,indifférence,indifference,безразличие,desinterés;apatía,désintérêt;apathie,apathy,апатия,emotions;noun_thing
-ensalada,salade,salad,салат,,,,,food;cooking;noun_thing
-cuidadosamente,soigneusement,carefully,тщательно,meticulosamente,méticuleusement,meticulously,,adverb
-supermercado,supermarché,supermarket,супермаркет,,,,,shopping;noun_place
-semilla,graine,seed,семя,pepita;simiente,,,зёрнышко,plants_garden;food;noun_thing
-alfombra,tapis,carpet,ковёр,tapete;estera;moqueta,moquette,rug,палас,house;furniture;noun_thing
-araña,araignée,spider,паук,,,,,animals;noun_thing
-enojo,colère,anger,гнев,enfado;ira;rabia,fureur,rage,злость;ярость,emotions;noun_thing
-falda,jupe,skirt,юбка,saya;pollera,,,,clothing;noun_thing
-pimienta,poivre,pepper,перец,,,,,food;cooking;noun_thing
-perfume,parfum,perfume,духи,aroma;fragancia;colonia;esencia,fragrance;senteur,fragrance;scent,,personal_care;noun_thing
-cartón,carton,cardboard,картон,,,,,materials;noun_thing
-freno,frein,brake,тормоз,,,,,vehicle_parts;transportation;noun_thing
-frontal,frontal,frontal,фронтальный,,,,,directions_positions;adjective
-cajón,tiroir,drawer,ящик,gaveta,,,,furniture;house;noun_thing
-librería,librairie,bookstore,книжный магазин,,,,,shopping;literature;noun_place
-águila,aigle,eagle,орёл,rapaz,,,,animals;noun_thing
-jabón,savon,soap,мыло,,,,,personal_care;household_cleaning;noun_thing
-ratón,souris,mouse,мышь,,,,,animals;technology;noun_thing
-linterna frontal,lampe frontale,headlamp,налобный фонарь,frontal,,,,travel;technology;noun_thing
-mantequilla,beurre,butter,масло,,,,,food;cooking;noun_thing
-tronco,tronc,trunk,ствол,,,,ствол дерева,plants_garden;nature;noun_thing
-tablero,plaque,board,доска,panel,panneau,panel;plaque,панель;плита,tools_diy;construction;noun_thing
-balcón,balcon,balcony,балкон,,,,,house;construction;noun_place
-jamón,jambon,ham,ветчина,,,,,food;noun_thing
-armario,armoire,wardrobe,шкаф,ropero;clóset,penderie;placard,closet,гардероб,furniture;house;noun_thing
-neutral,neutre,neutral,нейтральный,neutro,,,,abstract_concepts;adjective
-ascensor,ascenseur,elevator,лифт,elevador,,lift,,house;accessibility;noun_thing
-mango,mangue,mango,манго,,,,,food;plants_garden;noun_thing
-piña,ananas,pineapple,ананас,ananá,,,,food;plants_garden;noun_thing
-frustración,frustration,frustration,фрустрация,,,,,emotions;noun_thing
-cabra,chèvre,goat,коза,chivo,,,,animals;noun_thing
-cortina,rideau,curtain,занавеска,visillo,voilage,,штора,house;furniture;noun_thing
-mariposa,papillon,butterfly,бабочка,,,,,animals;noun_thing
-protector solar,crème solaire,sunscreen,солнцезащитный крем,bloqueador solar,écran solaire,sunblock,,personal_care;health;travel;noun_thing
-bodega,cave,cellar,подвал,,,,,house;food;drink;noun_place
-amargo,amer,bitter,горький,,,,,food;textures_qualities;adjective
-perla,perle,pearl,жемчуг,,,,,materials;clothing;noun_thing
-toalla,serviette de toilette,towel,полотенце,,,,,house;personal_care;noun_thing
-ajo,ail,garlic,чеснок,,,,,food;cooking;noun_thing
-caravana,caravane,caravan,караван,casa rodante,roulotte,trailer,фургон,travel;transportation;noun_thing
-micrófono,microphone,microphone,микрофон,micro,,mic,,technology;media_communication;noun_thing
-elefante,éléphant,elephant,слон,,,,,animals;noun_thing
-frágil,fragile,fragile,хрупкий,quebradizo,cassant,breakable,,textures_qualities;adjective
-ético,éthique,ethical,этический,moral,,moral,моральный,law_society;abstract_concepts;adjective
-cálido,chaud,warm,тёплый,caliente,,hot,жаркий,weather;textures_qualities;adjective
-selva tropical,jungle tropicale,rainforest,тропический лес,jungla,,jungle,джунгли,nature;places_geography;noun_place
-guantes,gants,gloves,перчатки,,,,,clothing;noun_thing
-uva,raisin,grape,виноград,,,,,food;plants_garden;noun_thing
-carpeta,dossier,folder,папка,,,,,technology;school;noun_thing
-recto,droit,straight,прямой,derecho,,upright,,directions_positions;shapes_measurements;adjective
-húmedo,humide,damp,влажный,,,moist,,weather;textures_qualities;adjective
-optimismo,optimisme,optimism,оптимизм,,,,,emotions;noun_thing
-cera,cire,wax,воск,,,,,materials;personal_care;noun_thing
-mármol,marbre,marble,мрамор,,,,,materials;construction;noun_thing
-pulmón,poumon,lung,лёгкое,,,,,body;health;noun_thing
-aroma,arôme,aroma,аромат,fragancia;perfume;olor,parfum;senteur,fragrance;scent,запах;благоухание,food;personal_care;noun_thing
-lámpara,lampe,lamp,лампа,bombilla;foco,luminaire,light,светильник,house;furniture;noun_thing
-textil,textile,textile,текстиль,,,,,materials;clothing;noun_thing
-coherencia,cohérence,coherence,согласованность,cohesión,,consistency,последовательность,abstract_concepts;noun_thing
-equipaje,bagage,luggage,багаж,maletas;bultos,,baggage,чемоданы,travel;noun_thing
-rocío,rosée,dew,роса,,,,,weather;nature;noun_thing
-gorra,casquette,cap,кепка,cachucha,,baseball cap,бейсболка,clothing;noun_thing
-tiburón,requin,shark,акула,escualo,,,,animals;noun_thing
-coral,corail,coral,коралл,,,,,nature;materials;noun_thing
-portátil,portable,portable,портативный,portativo,,,,technology;noun_thing
-empatía,empathie,empathy,эмпатия,,,,,emotions;noun_thing
-flexible,flexible,flexible,гибкий,elástico,souple,pliable,эластичный,textures_qualities;adjective
-violeta,violet,violet,фиолетовый,morado,,purple,пурпурный,colors_patterns;adjective
-cubo,seau,bucket,ведро,balde,,,бадья,house;tools_diy;noun_thing
-manta,couverture,blanket,одеяло,frazada;cobija,plaid,,,house;furniture;noun_thing
-prólogo,prologue,prologue,пролог,prefacio;introducción,préface;introduction,preface,предисловие;введение,literature;noun_thing
-zapato,chaussure,shoe,туфля,calzado,soulier,footwear,обувь,clothing;noun_thing
-caldo,bouillon,broth,бульон,consomé,,stock,отвар,food;cooking;noun_thing
-almohada,oreiller,pillow,подушка,cojín;cabecera,traversin,,думка,house;furniture;noun_thing
-orgánico,organique,organic,органический,,,,,food;plants_garden;adjective
-granito,granit,granite,гранит,,,,,materials;construction;noun_thing
-mojado,mouillé,wet,мокрый,húmedo,humide;trempé,damp;soaked,влажный;пропитанный,weather;textures_qualities;adjective
-marfil,ivoire,ivory,слоновая кость,,,,,materials;colors_patterns;noun_thing
-bigote,moustache,mustache,усы,,,,,body;personal_care;noun_thing
-exactitud,exactitude,accuracy,точность,precisión,,precision,,abstract_concepts;noun_thing
-faro,phare,lighthouse,маяк,,,,,travel;transportation;noun_place
-auriculares,écouteurs,earphones,наушники,cascos;audífonos,,earbuds,,technology;music;noun_thing
-escuadra,équerre,set square,угольник,,,,,tools_diy;shapes_measurements;noun_thing
-cargador,chargeur,charger,зарядное устройство,,,,,technology;noun_thing
-cuervo,corbeau,crow,ворон,,,,,animals;noun_thing
-amplitud,amplitude,amplitude,амплитуда,,,,,shapes_measurements;abstract_concepts;noun_thing
-metálico,métallique,metallic,металлический,,,,,materials;adjective
-hormigón,béton,concrete,бетон,concreto,,,конкрет,materials;construction;noun_thing
-confidencial,confidentiel,confidential,конфиденциальный,secreto,,secret,секретный,law_society;abstract_concepts;adjective
-regla flexible,règle souple,flexible ruler,гибкая линейка,,,,,tools_diy;school;noun_thing
-martillo de bola,marteau à panne ronde,ball-peen hammer,шариковый молоток,,,,,tools_diy;noun_thing
-garaje,garage,garage,гараж,cochera,,,,house;transportation;noun_place
-colchón,matelas,mattress,матрас,colchoneta,,,,house;furniture;noun_thing
-zorro,renard,fox,лиса,,,,,animals;noun_thing
-rayas,rayures,stripes,полосы,listas,,lines,линии,colors_patterns;noun_thing
-resonancia,résonance,resonance,резонанс,eco,écho,echo,эхо,music;technology;noun_thing
-chimenea,cheminée,chimney,дымоход,hogar,foyer,fireplace,камин,house;construction;noun_thing
-resistente,résistant,resilient,стойкий,fuerte,solide,durable,прочный,textures_qualities;adjective
-calefacción,chauffage,heating,отопление,calefactor,,,,house;home_appliances;noun_thing
-corbata,cravate,tie,галстук,,,,,clothing;work;noun_thing
-guantes de lana,gants en laine,wool gloves,шерстяные перчатки,,,,,clothing;weather;noun_thing
-sótano,sous-sol,basement,подвал,,,,,house;noun_place
-atún,thon,tuna,тунец,,,,,food;animals;noun_thing
-objetividad,objectivité,objectivity,объективность,imparcialidad,,,непредвзятость,abstract_concepts;noun_thing
-ventilador,ventilateur,fan,вентилятор,abanico,,,,house;home_appliances;noun_thing
-oveja,brebis,ewe,овца,borrego,,sheep,,animals;noun_thing
-plátano,banane,banana,банан,banana;cambur;guineo,,,,food;plants_garden;noun_thing
-raramente,rarement,rarely,редко,pocas veces,,,,adverb
-salado,salé,salty,солёный,,,,,food;textures_qualities;adjective
-cadera,hanche,hip,бедро,,,,,body;noun_thing
-interferencia,interférence,interference,помехи,perturbación,,,,abstract_concepts;technology;noun_thing
-consistencia,consistance,consistency,консистенция,,,,,textures_qualities;abstract_concepts;noun_thing
-trapo,chiffon,rag,тряпка,paño;bayeta,torchon,,ветошь,household_cleaning;noun_thing
-yeso,plâtre,plaster,гипс,,,,,materials;construction;noun_thing
-microondas,micro-ondes,microwave,микроволновка,,,,микроволновая печь,cooking;home_appliances;noun_thing
-folleto,brochure,brochure,брошюра,prospecto,dépliant,pamphlet,проспект,media_communication;noun_thing
-pera,poire,pear,груша,,,,,food;plants_garden;noun_thing
-vinagre,vinaigre,vinegar,уксус,,,,,food;cooking;noun_thing
-carrito,poussette,stroller,детская коляска,cochecito;carriola,,pram;pushchair,прогулочная коляска,baby_childcare;noun_thing
-cajero,caissier,cashier,кассир,cajera,,,,shopping;professions;noun_person
-tobillo,cheville,ankle,лодыжка,,,,,body;noun_thing
-parche,correctif,patch,заплатка,remiendo,rustine,,лата,technology;noun_thing
-pizarra,ardoise,blackboard,доска,pizarrón;encerado,tableau noir,chalkboard,школьная доска,school;noun_thing
-esponja,éponge,sponge,губка,,,,,household_cleaning;personal_care;noun_thing
-impresora,imprimante,printer,принтер,,,,,technology;work;noun_thing
-hilo dental,fil dentaire,dental floss,зубная нить,seda dental,,,,personal_care;health;noun_thing
-camarero,serveur,waiter,официант,mesero,,server,,professions;food;noun_person
-ballena,baleine,whale,кит,,,,,animals;noun_thing
-cocinero,cuisinier,cook,повар,,,,,professions;cooking;noun_person
-gorro,bonnet,beanie,шапка,gorra,,,,clothing;weather;noun_thing
-esmeralda,émeraude,emerald,изумруд,,,,,materials;colors_patterns;noun_thing
-intestino,intestin,intestine,кишка,tripas,boyaux,,,body;health;noun_thing
-tendido,literie,bedding,постельное бельё,ropa de cama,linge de lit,,,house;furniture;noun_thing
-fresa,fraise,strawberry,клубника,frutilla,,,,food;plants_garden;noun_thing
-cascada,cascade,waterfall,водопад,catarata,chute d'eau,,,nature;places_geography;noun_place
-barroco,baroque,baroque,барокко,,,,,art;adjective
-semáforo,feu tricolore,traffic light,светофор,,feu,,,transportation;noun_thing
-peaje,péage,toll,плата за проезд,portazgo,,,дорожный сбор,transportation;money;noun_thing
-huerto urbano,potager urbain,urban garden,городской сад,,,,,plants_garden;house;noun_place
-calabaza,citrouille,pumpkin,тыква,auyama;zapallo,,,,food;plants_garden;noun_thing
-frijoles,haricots,beans,фасоль,porotos;caraotas;judías;habichuelas,,,бобы,food;plants_garden;noun_thing
-ciclón,cyclone,cyclone,циклон,huracán;tifón,ouragan;typhon,hurricane;typhoon,ураган;тайфун,weather;noun_thing
-riñón,rein,kidney,почка,,,,,body;health;noun_thing
-linterna,lampe de poche,flashlight,фонарик,linterna eléctrica,,torch,карманный фонарик,travel;technology;noun_thing
-loro,perroquet,parrot,попугай,cotorra;papagayo,,macaw,ара,animals;noun_thing
-blusa,blouse,blouse,блузка,camisola,,,,clothing;noun_thing
-resaca,ressac,undertow,отбой,oleaje,houle,,прибой,nature;weather;noun_thing
-prudencia,prudence,prudence,осторожность,cautela,précaution,caution,осмотрительность,abstract_concepts;noun_thing
-compás,compas,drawing compass,циркуль,,,,,school;tools_diy;noun_thing
-mermelada,confiture,jam,варенье,,,,,food;cooking;noun_thing
-zócalo,plinthe,skirting board,плинтус,rodapié,,baseboard,,construction;house;noun_thing
-helada,gel,frost,мороз,congelación;escarcha,gelée,freeze;glaze,,weather;noun_thing
-cepillo de dientes,brosse à dents,toothbrush,зубная щетка,,,,,personal_care;health;noun_thing
-vaqueros,jean,jeans,джинсы,pantalón vaquero,,denims,,clothing;noun_thing
-calcetines,chaussettes,socks,носки,calcetas,,,,clothing;noun_thing
-guante,gant,glove,перчатка,,,,,clothing;noun_thing
-patata,pomme de terre,potato,картошка,papa,,,,food;plants_garden;noun_thing
-lechuga,laitue,lettuce,салат,,,,,food;plants_garden;noun_thing
-delfín,dauphin,dolphin,дельфин,,,,,animals;noun_thing
-salmón,saumon,salmon,лосось,,,,,food;animals;noun_thing
-trueno,tonnerre,thunder,гром,,,,,weather;noun_thing
-regla metálica,règle métallique,metal ruler,металлическая линейка,,,,,tools_diy;school;noun_thing
-zanahoria,carotte,carrot,морковь,,,,,food;plants_garden;noun_thing
-abeja,abeille,bee,пчела,,,,,animals;noun_thing
-rígido,rigide,rigid,жесткий,tieso,raide,stiff,твердый,textures_qualities;adjective
-halcón,faucon,falcon,сокол,,,,,animals;noun_thing
-cepillo eléctrico,raboteuse,electric planer,электрорубанок,cepilladora,rabot,,,tools_diy;noun_thing
-relámpago,éclair,lightning,молния,rayo,foudre,bolt,,weather;noun_thing
-jade,jade,jade,нефрит,,,,,materials;colors_patterns;noun_thing
-parámetro,paramètre,parameter,параметр,,,,,technology;abstract_concepts;noun_thing
-carnicero,boucher,butcher,мясник,,,,,professions;food;noun_person
-pesimismo,pessimisme,pessimism,пессимизм,negatividad,,negativity,негативизм,emotions;noun_thing
-compacto,compact,compact,компактный,denso,,dense,плотный,shapes_measurements;adjective
-puerta de embarque,porte d'embarquement,boarding gate,посадочная стойка,puerta de salida,,,,travel;transportation;noun_place
-pastilla de freno,plaquette de frein,brake pad,тормозная колодка,,,,,vehicle_parts;transportation;noun_thing
-lunares,pois,polka dots,горошек,topos,,,в горошек,colors_patterns;noun_thing
-ático,grenier,attic,чердак,desván;buhardilla;sobrado,,loft,мансарда,house;noun_place
-liso,lisse,smooth,гладкий,llano,uni,plain,,textures_qualities;adjective
-pulpo,pieuvre,octopus,осьминог,octópodo,poulpe,,,food;animals;noun_thing
-paño,chiffon,cloth,ткань,trapo,,rag,,household_cleaning;noun_thing
-escoba,balai,broom,метла,,,,,household_cleaning;noun_thing
-vector,vecteur,vector,вектор,,,,,shapes_measurements;technology;noun_thing
-acústica,acoustique,acoustics,акустика,,,,,music;technology;noun_thing
-pijama,pyjama,pajamas,пижама,,,,,clothing;house;noun_thing
-verdura,légume,vegetable,овощ,hortaliza,,,,food;plants_garden;noun_thing
-hormiga,fourmi,ant,муравей,,,,,animals;noun_thing
-mosquito,moustique,mosquito,комар,zancudo,,,,animals;noun_thing
-pepino,concombre,cucumber,огурец,,,,,food;plants_garden;noun_thing
-prótesis,prothèse,prosthesis,протез,,,,,health;accessibility;noun_thing
-router,routeur,router,роутер,enrutador,,,,technology;noun_thing
-gaviota,goéland,seagull,чайка,,mouette,gull,,animals;noun_thing
-páramo,lande,moor,пустошь,erial;yermo,,wasteland,,nature;places_geography;noun_place
-melón,melon,melon,дыня,,,,,food;plants_garden;noun_thing
-periférico,périphérique,peripheral,периферия,,,,,technology;noun_thing
-galleta,biscuit,cookie,печенье,,,biscuit,бисквит,food;noun_thing
-caverna,caverne,cavern,пещера,cueva,grotte,cave,грот,nature;places_geography;noun_place
-bombero,pompier,firefighter,пожарный,apagafuegos,,,,professions;law_society;noun_person
-cuarzo,quartz,quartz,кварц,,,,,materials;noun_thing
-ladera,versant,hillside,склон,falda,pente,slope,,nature;places_geography;noun_place
-cucaracha,cafard,cockroach,таракан,barata,blatte,,,animals;noun_thing
-grifo,robinet,faucet,кран,llave;canilla,,tap,,house;construction;noun_thing
-despensa,garde-manger,pantry,кладовая,alacena,,larder,чулан,house;food;noun_place
-yogur,yaourt,yogurt,йогурт,,,,,food;noun_thing
-bragas,culotte,panties,трусы,panti;bombacha,,,,clothing;noun_thing
-intermitente,clignotant,indicator,поворотник,luz de giro;direccional,,turn signal,,vehicle_parts;transportation;noun_thing
-lavadora,lave-linge,washing machine,стиральная машина,lavarropas,machine à laver,,,house;home_appliances;noun_thing
-cráter,cratère,crater,кратер,,,,,nature;places_geography;noun_place
-altavoz,haut-parleur,speaker,динамик,parlante;bocina,enceinte,loudspeaker,колонка,technology;music;noun_thing
-sábana,drap,sheet,простыня,,,,,house;furniture;noun_thing
-pradera,prairie,meadow,луг,prado,pré,prairie,поле,nature;places_geography;noun_place
-enchufe,fiche,plug,вилка,conector,prise mâle,,,technology;house;noun_thing
-interruptor,interrupteur,switch,выключатель,apagador;llave de luz,,,переключатель,technology;house;noun_thing
-diésel,gazole,diesel,дизель,gasoil,diesel,diesel fuel,солярка,transportation;materials;noun_thing
-ternera,veau,veal,телятина,,,,,food;animals;noun_thing
-trucha,truite,trout,форель,,,,,food;animals;noun_thing
-camello,chameau,camel,верблюд,,,,,animals;noun_thing
-ganso,oie,goose,гусь,oca,,,,animals;noun_thing
-levadura,levure,yeast,дрожжи,,,,,food;cooking;noun_thing
-altavoz inteligente,enceinte connectée,smart speaker,умная колонка,parlante inteligente,haut-parleur intelligent,,смарт-колонка,technology;house;noun_thing
-cafetera,cafetière,coffee maker,кофеварка,cafetera de filtro,,,кофемашина,cooking;home_appliances;noun_thing
-bufanda,écharpe,scarf,шарф,pañuelo;chalina,foulard,,платок;кашне,clothing;weather;noun_thing
-sandalias,sandales,sandals,сандалии,,,,,clothing;noun_thing
-remolque,remorque,trailer,прицеп,tráiler,,,трейлер,transportation;noun_thing
-acantilado,falaise,cliff,утёс,precipicio,précipice,precipice,обрыв,nature;places_geography;noun_place
-bombilla,ampoule,light bulb,лампочка,foco;lamparita;bombillo,,bulb;lamp,,technology;house;noun_thing
-bluetooth,Bluetooth,Bluetooth,блютус,,,,,technology;noun_thing
-termo,thermos,thermos,термос,botella termo,,,,travel;drink;noun_thing
-discordia,discorde,discord,раздор,desacuerdo,désaccord,disagreement,разногласие,emotions;abstract_concepts;noun_thing
-ansia,anxiété,anxiety,тревога,ansiedad,,,беспокойство,emotions;health;noun_thing
-jarra,pichet,jug,кувшин,jarro,,pitcher,графин,cooking;drink;noun_thing
-fragancia,fragrance,fragrance,аромат,aroma;perfume;olor,parfum;senteur,aroma;scent;perfume,дух;запах,personal_care;noun_thing
-narciso,narcisse,daffodil,нарцисс,,,,,plants_garden;noun_thing
-tibio,tiède,lukewarm,тепловатый,templado,,tepid,тёплый,textures_qualities;adjective
-salchicha,saucisse,sausage,колбаса,,,,,food;noun_thing
-ámbar,ambre,amber,янтарь,,,,,materials;colors_patterns;noun_thing
-monzón,mousson,monsoon,муссон,,,,,weather;noun_thing
-ardilla,écureuil,squirrel,белка,,,,,animals;noun_thing
-credencial,badge,badge,бейдж,identificación,carte d'identification,ID card;credential,удостоверение,work;school;noun_thing
-polen,pollen,pollen,пыльца,,,,,plants_garden;health;noun_thing
-bacalao,morue,cod,треска,abadejo,,,,food;animals;noun_thing
-abs,ABS,ABS,АБС,sistema antibloqueo de ruedas,,anti-lock braking system,антиблокировочная система,materials;vehicle_parts;noun_thing
-peine,peigne,comb,гребень,,,,,personal_care;noun_thing
-bufanda de lana,écharpe en laine,wool scarf,шерстяной шарф,,,,,clothing;weather;noun_thing
-glaciar,glacier,glacier,ледник,,,,,nature;places_geography;noun_place
-visiblemente,visiblement,visibly,видимо,notoriamente,notoirement,noticeably,заметно,adverb
-tableta,tablette,tablet,планшет,tablet,,,,technology;noun_thing
-champú,shampooing,shampoo,шампунь,,,,,personal_care;noun_thing
-panadero,boulanger,baker,пекарь,,,,,professions;food;noun_person
-colmena,ruche,beehive,улей,,,,,animals;plants_garden;noun_thing
-pimiento,poivron,bell pepper,болгарский перец,pimiento morrón,,sweet pepper,сладкий перец,food;plants_garden;noun_thing
-enfermero,infirmier,male nurse,медбрат,,,,,professions;health;noun_person
-poncho,poncho,poncho,пончо,,,,,clothing;weather;noun_thing
-calzoncillos,caleçon,underpants,трусы,calzones;calzoncillo,,briefs,,clothing;noun_thing
-sandía,pastèque,watermelon,арбуз,patilla;melón de agua,,,,food;plants_garden;noun_thing
-suéter,pull,sweater,свитер,jersey;pulóver,chandail,jumper,,clothing;weather;noun_thing
-soldadura,soudure,welding,сварка,,,,,tools_diy;construction;noun_thing
-cableado,câblage,wiring,проводка,,,,,technology;construction;noun_thing
-acné,acné,acne,акне,granos;espinillas,boutons,pimples,угри,health;body;noun_thing
-estaño,étain,tin,олово,,,,,materials;noun_thing
-transformador,transformateur,transformer,трансформатор,transfo,,,,technology;noun_thing
-rubí,rubis,ruby,рубин,,,,,materials;colors_patterns;noun_thing
-sujetador,soutien-gorge,bra,бюстгальтер,brasier;sostén;corpiño,,brassiere,лифчик,clothing;noun_thing
-inaccesible,inaccessible,inaccessible,недоступный,,,,,accessibility;adjective
-taladro,perceuse,drill,дрель,taladradora,,,,tools_diy;noun_thing
-dirección asistida,direction assistée,power steering,усилитель руля,,,,гидроусилитель,vehicle_parts;transportation;noun_thing
-blindaje,blindage,armor,броня,coraza,,armour,доспехи,vehicle_parts;law_society;noun_thing
-áspero,rugueux,rough,грубый,rugoso,rêche,coarse,шероховатый,textures_qualities;adjective
-calidez,chaleur humaine,warmth,теплота,calidez humana,chaleur,human warmth,радушие,emotions;textures_qualities;noun_thing
-foca,phoque,seal,тюлень,,,,,animals;noun_thing
-hormiguero,fourmilière,anthill,муравейник,,,ant nest,,animals;nature;noun_thing
-módem,modem,modem,модем,,,,,technology;noun_thing
-pañal,couche,diaper,подгузник,pañal desechable,couche-culotte,nappy,,baby_childcare;noun_thing
-costero,côtier,coastal,прибрежный,littoral,,,береговой,places_geography;adjective
-cereza,cerise,cherry,вишня,guinda,,,черешня,food;plants_garden;noun_thing
-estante,étagère,shelf,полка,anaquel;repisa,rayon,rack,стеллаж,furniture;house;noun_thing
-taladro de columna,perceuse à colonne,pillar drill,сверлильный станок,,,,,tools_diy;noun_thing
-moño,chignon,bun,пучок,rodete,,,,body;personal_care;noun_thing
-proyector,projecteur,projector,проектор,videoproyector,vidéoprojecteur,,видеопроектор,technology;media_communication;noun_thing
-desodorante,déodorant,deodorant,дезодорант,,,,,personal_care;noun_thing
-maletero,coffre,trunk,багажник,baúl;maletera;cajuela,,boot,,vehicle_parts;transportation;noun_thing
-frialdad,froideur,coldness,холодность,distancia;indiferencia,distance,aloofness,равнодушие,emotions;weather;noun_thing
-impermeable,imperméable,waterproof,водонепроницаемый,estanco,étanche,impervious,непроницаемый,weather;textures_qualities;adjective
-medusa,méduse,jellyfish,медуза,aguaviva;malagua,,,,animals;noun_thing
-detergente,détergent,detergent,детергент,,,,,household_cleaning;noun_thing
-sudadera,sweat,sweatshirt,толстовка,polerón;buzo,sweat-shirt,,,clothing;noun_thing
-sardina,sardine,sardine,сардина,,,,,food;animals;noun_thing
-cerrojo,pêne,bolt,задвижка,pasador,verrou,latch,засов,house;construction;noun_thing
-especia,épice,spice,специя,condimento;aliño,condiment,seasoning,приправа,food;cooking;noun_thing
-ermitaño,ermite,hermit,отшельник,anacoreta,,,,religion;noun_person
-papaya,papaye,papaya,папайя,lechosa;frutabomba,,,,food;plants_garden;noun_thing
-adaptador,adaptateur,adapter,адаптер,,,,,technology;noun_thing
-cebra,zèbre,zebra,зебра,,,,,animals;noun_thing
-crujiente,croquant,crunchy,хрустящий,crocante,croustillant,crispy,,food;textures_qualities;adjective
-escáner,scanner,scanner,сканер,digitalizador,,,,technology;noun_thing
-savia,sève,sap,сок,,,,,plants_garden;nature;noun_thing
-estampado,imprimé,print,принт,impreso,,pattern,рисунок,colors_patterns;clothing;noun_thing
-hostal,auberge,hostel,хостел,albergue,,inn,,travel;noun_place
-anguila,anguille,eel,угорь,,,,,food;animals;noun_thing
-opaco,opaque,opaque,непрозрачный,,,,,textures_qualities;adjective
-avispa,guêpe,wasp,оса,,,,,animals;noun_thing
-aceituna,olive,olive,маслина,,,,оливка,food;plants_garden;noun_thing
-polilla,mite,moth,моль,tine,,,,animals;noun_thing
-afiche,affiche,poster,плакат,póster;cartel,,,афиша,media_communication;art;noun_thing
-inalámbrico,sans fil,wireless,беспроводной,,,,,technology;adjective
-marisco,fruits de mer,seafood,морепродукты,,,,,food;animals;noun_thing
-muletas,béquilles,crutches,костыли,,,,,health;accessibility;noun_thing
-turquesa,turquoise,turquoise,бирюза,,,,,colors_patterns;materials;noun_thing
-jirafa,girafe,giraffe,жираф,,,,,animals;noun_thing
-montañoso,montagneux,mountainous,гористый,,,,,places_geography;adjective
-fregadero,évier,sink,раковина,pila,,basin,,house;construction;noun_thing
-kiwi,kiwi,kiwi,киви,,,,,food;plants_garden;noun_thing
-berenjena,aubergine,eggplant,баклажан,,,aubergine,,food;plants_garden;noun_thing
-melocotón,pêche,peach,персик,durazno,,,,food;plants_garden;noun_thing
-trenza,tresse,braid,коса,,natte,plait,,body;personal_care;noun_thing
-vasija,jarre,vessel,сосуд,recipiente,,jar,ёмкость,house;cooking;noun_thing
-bochorno,chaleur étouffante,stifling heat,душная жара,calor;sofoco,canicule,heatwave;mugginess,зной,weather;noun_thing
-cojín,coussin,cushion,подушка,almohada;almohadón,,pillow,декоративная подушка,furniture;house;noun_thing
-calcetín,chaussette,sock,носок,,,,,clothing;noun_thing
-arruga,ride,wrinkle,морщина,,,,,body;clothing;noun_thing
-absorbente,absorbant,absorbent,впитывающий,,,,,textures_qualities;adjective
-camaleón,caméléon,chameleon,хамелеон,,,,,animals;noun_thing
-airbag,airbag,airbag,подушка безопасности,bolsa de aire,coussin gonflable,,,vehicle_parts;transportation;noun_thing
-mapache,raton laveur,raccoon,енот,,,,,animals;noun_thing
-peca,tache de rousseur,freckle,веснушка,,,,,body;noun_thing
-saltamontes,sauterelle,grasshopper,кузнечик,chapulín,criquet,locust,саранча,animals;noun_thing
-nota adhesiva,note adhésive,sticky note,липкая записка,post-it,,post-it,стикер,school;work;noun_thing
-zafiro,saphir,sapphire,сапфир,,,,,materials;colors_patterns;noun_thing
-minimalista,minimaliste,minimalist,минималист,,,,,art;adjective
-pegajoso,collant,sticky,липкий,adhesivo,adhésif,tacky,клейкий,textures_qualities;adjective
-repelente,répulsif,repellent,репеллент,repelente de insectos,anti-moustiques,,средство от насекомых,personal_care;health;noun_thing
-barandilla,garde-corps,railing,перила,baranda;pasamanos,rampe;main courante,handrail,ограждение,house;construction;noun_thing
-morsa,morse,walrus,морж,,,,,animals;noun_thing
-brócoli,brocoli,broccoli,брокколи,brécol,,,,food;plants_garden;noun_thing
-arnés,harnais,harness,упряжь,,,,,tools_diy;sports;noun_thing
-señalización táctil,signalétique tactile,tactile signage,тактильный знак,,signalisation tactile,,,accessibility;media_communication;noun_thing
-braille,braille,braille,шрифт Брайля,,,,,accessibility;media_communication;noun_thing
-caldero,chaudron,cauldron,котел,olla,marmite,pot,кастрюля,cooking;noun_thing
-trineo,luge,sled,санки,,,sledge,салазки,transportation;sports;weather;noun_thing
-merluza,merlu,hake,хек,pescada,colin,,,food;animals;noun_thing
-lija,papier de verre,sandpaper,наждачная бумага,papel de lija,,,,tools_diy;noun_thing
-portafolios,porte-documents,briefcase,портфель,carpeta,,portfolio,,work;noun_thing
-flequillo,frange,bangs,челка,cerquillo;copete,,fringe,,body;personal_care;noun_thing
-ciruela,prune,plum,слива,,,,,food;plants_garden;noun_thing
-pantuflas,pantoufles,slippers,тапки,zapatillas,chaussons,,домашние туфли,clothing;house;noun_thing
-ampolla,ampoule,blister,волдырь,cloque,,,,health;body;noun_thing
-chupete,tétine,pacifier,пустышка,chupón;chupo,sucette,dummy,соска,baby_childcare;noun_thing
-tetera,théière,teapot,заварник,,,,,cooking;drink;noun_thing
-colcha,couvre-lit,bedspread,покрывало,cubrecama,dessus-de-lit,coverlet,,house;furniture;noun_thing
-chanclas,tongues,flip-flops,шлепанцы,chancletas;sandalias,claquettes,thongs;sandals,,clothing;travel;noun_thing
-raqueta de nieve,raquette à neige,snowshoe,снегоступ,,,,,sports;weather;noun_thing
-maceta colgante,pot suspendu,hanging pot,подвесной горшок,maceta suspendida,,hanging planter,,plants_garden;house;noun_thing
-triciclo,tricycle,tricycle,трёхколёсный велосипед,,,,,baby_childcare;transportation;noun_thing
-espinaca,épinard,spinach,шпинат,,,,,food;plants_garden;noun_thing
-cremoso,crémeux,creamy,сливочный,untuoso,onctueux,smooth,кремообразный,food;textures_qualities;adjective
-escarcha,givre,frost,иней,helada,gelée,,мороз,weather;noun_thing
-recibidor,entrée,foyer,прихожая,vestíbulo;hall,,entryway;hall,,house;noun_place
-curvo,courbe,curved,изогнутый,torcido,incurvé,bent,,shapes_measurements;adjective
-desván,grenier,attic,чердак,ático;buhardilla,,,,house;noun_place
-biberón,biberon,baby bottle,бутылочка,tetero;mamila;mamadera,,,,baby_childcare;drink;noun_thing
-cerámico,céramique,ceramic,керамика,,,,,materials;adjective
-gasoil,gazole,diesel,дизель,diésel,diesel,,солярка,transportation;materials;noun_thing
-magenta,magenta,magenta,маджента,,,,,colors_patterns;adjective
-analgésico,antalgique,analgesic,анальгетик,calmante,calmant,painkiller,обезболивающее,health;noun_thing
-coliflor,chou-fleur,cauliflower,цветная капуста,,,,,food;plants_garden;noun_thing
-broca,foret,drill bit,сверло,mecha,mèche,,,tools_diy;noun_thing
-camisón,chemise de nuit,nightgown,ночная рубашка,,,nightdress,,clothing;house;noun_thing
-codorniz,caille,quail,перепел,,,,,food;animals;noun_thing
-óvalo,ovale,oval,овал,,,,,shapes_measurements;noun_thing
-azucarero,sucrier,sugar bowl,сахарница,,,,,cooking;noun_thing
-pasamanos,rampe,handrail,перила,barandilla,main courante,,,accessibility;construction;noun_thing
-corralito,parc pour bébé,playpen,манеж,corral,,baby enclosure,,baby_childcare;noun_thing
-hematoma,ecchymose,bruise,синяк,moretón;cardenal,bleu,hematoma,гематома,health;body;noun_thing
-contraportada,quatrième de couverture,back cover,задняя обложка,contratapa,,,,literature;media_communication;noun_thing
-lavavajillas,lave-vaisselle,dishwasher,посудомоечная машина,,,,,home_appliances;household_cleaning;noun_thing
-resbaladizo,glissant,slippery,скользкий,escurridizo,,,,textures_qualities;adjective
-mesilla,table de chevet,bedside table,прикроватная тумбочка,mesita de noche,,nightstand,,house;furniture;noun_thing
-clorofila,chlorophylle,chlorophyll,хлорофилл,,,,,plants_garden;nature;noun_thing
-edredón,édredon,quilt,одеяло,acolchado;plumón,couette,duvet,пуховое одеяло,house;furniture;noun_thing
-lámina,feuille,sheet,лист,hoja;plancha,plaque,leaf;plaque,пластина,materials;media_communication;noun_thing
-soplete,chalumeau,blowtorch,горелка,,,,,tools_diy;noun_thing
-fregona,serpillière,mop,швабра,trapeador;mopa,,,,household_cleaning;noun_thing
-faisán,faisan,pheasant,фазан,,,,,food;animals;noun_thing
-salero,salière,salt shaker,солонка,,,,,cooking;food;noun_thing
-viscoso,visqueux,viscous,вязкий,espeso,,,,textures_qualities;adjective
-pradera alpina,alpage,alpine meadow,альпийский луг,,,,,nature;places_geography;noun_place
-antiséptico,antiseptique,antiseptic,антисептик,desinfectante,désinfectant,disinfectant,дезинфицирующее средство,health;noun_thing
-alcalino,alcalin,alkaline,щелочной,básico,basique,basic,основной,materials;adjective
-coordenada,coordonnée,coordinate,координата,,,,,shapes_measurements;noun_thing
-paragolpes,pare-chocs,bumper,бампер,parachoques,,,,vehicle_parts;transportation;noun_thing
-ágata,agate,agate,агат,,,,,materials;colors_patterns;noun_thing
-rococó,rococo,rococo,рококо,,,,,art;adjective
-andador,déambulateur,walker,ходунки,caminador,,,,health;accessibility;noun_thing
-narcótico,narcotique,narcotic,наркотик,estupefaciente;droga,stupéfiant;drogue,drug,наркотическое средство,health;noun_thing
-mirilla,judas,peephole,глазок,mirilla de puerta,,,,house;construction;noun_thing
-ventisca,blizzard,blizzard,метель,nevasca;temporal,tempête de neige,,пурга,weather;noun_thing
-grapa,agrafe,staple,скоба,gancho,,,,school;work;noun_thing
-plumón,couette,duvet,пуховое одеяло,edredón,édredon,comforter,одеяло,house;furniture;noun_thing
-perchero mural,patère,wall hook,настенный крючок,perchero de pared,porte-manteau mural,,,house;furniture;noun_thing
-balda,étagère,shelf,полка,estante;repisa,,ledge,этажерка,house;furniture;noun_thing
-ayllu,communauté andine,ayllu,айлью,,,,,law_society;noun_thing
-guisante,pois,pea,горох,arveja;chícharo;petipuá,,,,food;plants_garden;noun_thing
-carpeta de anillas,classeur à anneaux,ring binder,папка на кольцах,archivador,,,,school;work;noun_thing
-amatista,améthyste,amethyst,аметист,,,,,materials;colors_patterns;noun_thing
-fiordo,fjord,fjord,фьорд,,,,,nature;places_geography;noun_place
-pestillo,loquet,latch,щеколда,picaporte,targette,,,house;construction;noun_thing
-encerado,ciré,oilcloth,клеёнка,hule,toile cirée,,,materials;house;noun_thing
-cian,cyan,cyan,циан,,,,,colors_patterns;adjective
-trastero,débarras,storage room,кладовка,cuarto de trebejos;bodega,,,подсобка,house;noun_place
-camelia,camélia,camellia,камелия,,,,,plants_garden;noun_thing
-topacio,topaze,topaz,топаз,,,,,materials;colors_patterns;noun_thing
-parka,parka,parka,парка,anorak,,,,clothing;weather;noun_thing
-almohadón,grand coussin,large cushion,большая подушка,cojín grande,,,,house;furniture;noun_thing
-rugoso,rugueux,rough,шероховатый,áspero,rêche,coarse,грубый,textures_qualities;adjective
-crisantemo,chrysanthème,chrysanthemum,хризантема,,,,,plants_garden;noun_thing
-poroso,poreux,porous,пористый,,,,,textures_qualities;adjective
-conversor,convertisseur,converter,конвертер,convertidor,,,,technology;noun_thing
-biodegradable,biodégradable,biodegradable,биоразлагаемый,,,,,law_society;nature;adjective
-lenguado,sole,sole,морской язык,,,,,food;animals;noun_thing
-reutilizable,réutilisable,reusable,многоразовый,,,,,law_society;nature;adjective
-mandolina,mandoline,mandolin,мандолина,,,,,cooking;noun_thing
-bajamar,marée basse,low tide,отлив,marea baja,,,,nature;weather;noun_thing
-reciclable,recyclable,recyclable,перерабатываемый,,,,,law_society;nature;adjective
-abejorro,bourdon,bumblebee,шмель,,,,,animals;noun_thing
-perforadora,perceuse,drill,дрель,taladradora,perforatrice,,,tools_diy;noun_thing
-suavizante,adoucissant,softener,смягчитель,,,,,household_cleaning;noun_thing
-sonajero,hochet,rattle,погремушка,sonaja,,,,baby_childcare;noun_thing
-rallador,râpe,grater,тёрка,rallo,,,,cooking;noun_thing
-pleamar,marée haute,high tide,прилив,marea alta,,,,nature;weather;noun_thing
-explícito,explicite,explicit,явный,,,,,media_communication;adjective
-botijo,botijo,botijo,глиняный кувшин для воды,cántaro,,,,drink;house;noun_thing
-anémona,anémone,anemone,анемона,,,,,plants_garden;nature;noun_thing
-batidor,fouet,whisk,венчик,batidora,,,,cooking;noun_thing
-pescadero,poissonnier,fishmonger,продавец рыбы,,,,,food;professions;noun_person
-autocaravana,camping-car,motorhome,автодом,casa rodante,,campervan,,travel;transportation;noun_thing
-cabecero,tête de lit,headboard,изголовье,respaldo;cabecera,,,,house;furniture;noun_thing
-meandro,méandre,meander,меандр,curva,virage,,,nature;places_geography;noun_place
-jamba,huisserie,jamb,косяк,marco,montant;encadrement,,,house;construction;noun_thing
-plomada,fil à plomb,plumb line,отвес,,,,,tools_diy;construction;noun_thing
-exprimidor,presse-agrumes,juicer,соковыжималка,sacajugos,,,,cooking;drink;noun_thing
-ónix,onyx,onyx,оникс,,,,,materials;colors_patterns;noun_thing
-ensaladera,saladier,salad bowl,салатник,,,,,cooking;food;noun_thing
-pimentero,poivrier,pepper mill,перечница,,,,,cooking;food;noun_thing
-grapadora,agrafeuse,stapler,степлер,engrapadora,,,,school;work;noun_thing
-mosquetón,mousqueton,carabiner,карабин,,,,,sports;travel;tools_diy;noun_thing
-portaequipajes,porte-bagages,luggage rack,багажник,baca,galerie,,,travel;transportation;vehicle_parts;noun_thing
-climatizador,climatiseur,air conditioner,кондиционер,aire acondicionado,climatisation,,,home_appliances;weather;noun_thing
-somier,sommier,bed base,каркас кровати,base de cama,,,,house;furniture;noun_thing
-trona,chaise haute,high chair,высокий стул,silla alta;periquera,,,,baby_childcare;furniture;noun_thing
-rótulo,enseigne,sign,вывеска,letrero,,,,media_communication;shopping;noun_thing
-rocalla,rocaille,rock garden,альпинарий,jardín de rocas,,,,plants_garden;materials;noun_thing
-raspador,grattoir,scraper,скребок,rasqueta,racloir,,,tools_diy;household_cleaning;noun_thing
-pelador,éplucheur,peeler,овощечистка,pelapapas,économe,,экономка,cooking;noun_thing
-regleta,multiprise,power strip,удлинитель,zapatilla;multicontacto,bloc multiprise,multisocket,,technology;house;noun_thing
-escoplo,burin,chisel,зубило,cincel,,,,tools_diy;noun_thing
-formón,bédane,gouge,стамеска,gubia,,,,tools_diy;noun_thing
-colutorio,bain de bouche,mouthwash,ополаскиватель,enjuague bucal,,,,personal_care;health;noun_thing
-lebrillo,bassine,basin,таз,barreño,cuvette,,,cooking;household_cleaning;noun_thing
-colchón antiescaras,matelas anti-escarres,pressure relief mattress,матрас против пролежней,,,,,health;accessibility;furniture;noun_thing
-atornillador,tournevis,screwdriver,отвёртка,destornillador,,,,tools_diy;noun_thing
-cordino,cordelette,cord,шнур,,,,,sports;travel;tools_diy;noun_thing
-subrayador,surligneur,highlighter,маркер,resaltador,marqueur,,выделитель,school;work;noun_thing
-compostera,composteur,composter,компостер,compostador,,,,plants_garden;household_cleaning;noun_thing
-prolongador,rallonge,extension cord,удлинитель,alargador;extensión,rallonge électrique,extension cable,удлинительный кабель,technology;house;noun_thing
-espinillera,protège-tibias,shin guard,щиток,canillera,,,защита на голень,sports;clothing;noun_thing
+spanish,french,english,russian,spanish synonyms,french synonyms,english synonyms,russian synonyms,tags,cefr_level
+solo,seulement,only,только,solamente,uniquement;seul,just,лишь,adverb,A1
+parte,partie,part,часть,fragmento;porción;sección;segmento,portion;section,portion;section,фрагмент,abstract_concepts;noun_thing,A2
+tiempo,temps,time,время,época;periodo,,,,time;noun_thing,A1
+día,jour,day,день,jornada,journée,,,time;noun_thing,A1
+vida,vie,life,жизнь,existencia;subsistencia,existence,existence,существование,abstract_concepts;noun_thing,A1
+siempre,toujours,always,всегда,,,,навсегда,time;adverb,A1
+gente,gens,people,люди,pueblo;muchedumbre;personas,monde;population,crowd;population,народ,abstract_concepts;noun_person,A1
+mundo,monde,world,мир,orbe;planeta;globo,univers;planète;globe,planet;globe,планета,places_geography;nature;noun_place,A1
+año,année,year,год,,,,,time;noun_thing,A1
+nunca,jamais,never,никогда,jamás,,,,time;adverb,A1
+antes,avant,before,раньше,previamente,auparavant,previously,прежде,time;adverb,A1
+trabajo,travail,work,работа,labor;ocupación;oficio,emploi;boulot;labeur,job;occupation,труд;занятие,work;noun_thing,A1
+lugar,lieu,place,место,sitio;paraje;ubicación,endroit;emplacement,site;location,,places_geography;noun_place,A1
+país,pays,country,страна,nación;territorio;patria,nation;territoire,nation,государство,places_geography;noun_place,A1
+casa,maison,house,дом,vivienda;hogar;domicilio,habitation;demeure;foyer;logement,home;dwelling,жилище;очаг,house;noun_place,A1
+aquí,ici,here,здесь,acá,,,,directions_positions;adverb,A1
+caso,cas,case,случай,asunto;situación;supuesto,affaire;situation,situation,обстоятельство;ситуация,abstract_concepts;noun_thing,B1
+ciudad,ville,city,город,urbe;metrópoli,cité;métropole;agglomération,metropolis,,places_geography;noun_place,A1
+luego,ensuite,then,потом,después;más tarde,après;plus tard,later;afterwards,затем,time;adverb,A1
+verdad,vérité,truth,правда,certeza;autenticidad,authenticité,,истина,abstract_concepts;noun_thing,A2
+historia,histoire,story,история,cuento;relato;narración,récit,tale;narrative,рассказ;повесть,literature;noun_thing,A1
+nombre,nom,name,имя,denominación,appellation;désignation,designation,название,abstract_concepts;noun_thing,A1
+fuera,dehors,outside,снаружи,afuera,à l'extérieur,,вне,directions_positions;adverb,A1
+hombre,homme,man,мужчина,varón;individuo;sujeto,individu,individual,человек,noun_person,A1
+grupo,groupe,group,группа,conjunto;equipo,ensemble;collectif,team;collection,коллектив;команда,abstract_concepts;noun_thing,A2
+mujer,femme,woman,женщина,dama;señora,dame,lady,дама;леди,noun_person,A1
+sistema,système,system,система,método;conjunto,méthode,method,,abstract_concepts;noun_thing,A2
+persona,personne,person,человек,individuo;sujeto;ser,individu;être,individual,индивид,noun_person,A1
+noche,nuit,night,ночь,,,,,time;noun_thing,A1
+casi,presque,almost,почти,aproximadamente,quasiment,nearly,,adverb,A2
+lado,côté,side,сторона,costado;flanco,flanc;bord,flank,бок,directions_positions;noun_thing,A2
+cosa,chose,thing,вещь,objeto;ente;elemento,objet,object,объект;предмет,noun_thing,A1
+dentro,à l'intérieur,inside,внутри,adentro,dedans,,,directions_positions;adverb,A2
+familia,famille,family,семья,parentela;clan,foyer;clan,clan,родня,family;noun_thing,A1
+pueblo,village,village,деревня,aldea;localidad,commune;bourg,hamlet,село,places_geography;noun_place,A1
+problema,problème,problem,проблема,inconveniente;dificultad,difficulté;souci,difficulty;issue,затруднение,abstract_concepts;noun_thing,A1
+punto,point,point,точка,cuestión;aspecto;detalle,aspect,aspect,,shapes_measurements;noun_thing,A2
+guerra,guerre,war,война,contienda;conflicto;lucha,conflit;bataille,conflict;battle,битва;сражение,law_society;noun_thing,A2
+agua,eau,water,вода,,,,,drink;nature;noun_thing,A1
+semana,semaine,week,неделя,,,,,time;noun_thing,A1
+información,information,information,информация,datos;noticia,info;nouvelle,data;news,данные,media_communication;noun_thing,A1
+dinero,argent,money,деньги,plata;pasta;efectivo,fric;pognon,cash,наличные,money;noun_thing,A1
+madre,mère,mother,мать,mamá,maman,mom,мама,family;noun_person,A1
+idea,idée,idea,идея,concepto;noción,concept,concept;notion,концепция;понятие,abstract_concepts;noun_thing,A2
+realidad,réalité,reality,реальность,existencia,existence,existence,действительность,abstract_concepts;noun_thing,B1
+real,réel,real,реальный,verdadero;auténtico,vrai;authentique,true;authentic,настоящий;истинный,abstract_concepts;adjective,A2
+amor,amour,love,любовь,adoración;cariño;afecto,tendresse;affection,affection,привязанность,emotions;noun_thing,A1
+sociedad,société,society,общество,comunidad;colectividad,communauté;collectivité,community,сообщество,law_society;noun_thing,B1
+hijo,fils,son,сын,vástago;nene,gosse,,,family;noun_person,A1
+nivel,niveau,level,уровень,,,,,shapes_measurements;abstract_concepts;noun_thing,A2
+seguro,sûr,sure,уверенный,cierto,certain,certain,,abstract_concepts;adjective,A2
+mano,main,hand,рука,,,,,body;noun_thing,A1
+juego,jeu,game,игра,partida;competición,partie;divertissement,play;match,матч;состязание,sports;noun_thing,A1
+grande,grand,big,большой,gran;enorme,immense;vaste,large;huge,огромный,shapes_measurements;adjective,A1
+cerca,près,close,близко,cercano;próximo,proche,near,рядом,directions_positions;adverb,A1
+padre,père,father,отец,papá,papa,dad,папа,family;noun_person,A1
+amigo,ami,friend,друг,compañero;camarada,copain;camarade;pote,companion;mate,приятель;товарищ,emotions;noun_person,A1
+tierra,terre,earth,земля,suelo;planeta,sol;planète,soil;ground,почва;грунт,nature;places_geography;noun_thing,A2
+seguridad,sécurité,security,безопасность,,,,,law_society;abstract_concepts;noun_thing,B1
+programa,programme,program,программа,plan,plan;émission,plan,план,technology;media_communication;noun_thing,A2
+cuerpo,corps,body,тело,organismo,organisme,organism,организм,body;noun_thing,A1
+servicio,service,service,сервис,atención;prestación,prestation,,обслуживание,work;abstract_concepts;noun_thing,A2
+cabeza,tête,head,голова,,crâne;chef,,,body;noun_thing,A1
+libro,livre,book,книга,obra;ejemplar,ouvrage;bouquin,work,произведение,literature;noun_thing,A1
+proceso,processus,process,процесс,procedimiento;trámite,procédure;démarche,procedure,процедура,abstract_concepts;noun_thing,B1
+mes,mois,month,месяц,,,,,time;noun_thing,A1
+largo,long,long,длинный,extenso,étendu,,протяжённый,shapes_measurements;adjective,A1
+realmente,vraiment,really,действительно,en verdad,effectivement;réellement,truly,правда,adverb,A1
+camino,chemin,path,путь,senda;sendero,sentier;voie,way;trail,тропа;дорога,travel;places_geography;noun_place,A2
+salud,santé,health,здоровье,bienestar;salubridad,bien-être,well-being,благополучие,health;noun_thing,A2
+policía,policier,police,полиция,agente,flic,officer,правоохранители,law_society;professions;noun_person,A1
+empresa,entreprise,company,компания,compañía;sociedad;negocio,société;firme;boîte,business;firm,фирма,work;noun_thing,A2
+obra,œuvre,work,произведение,trabajo;pieza,ouvrage;pièce,piece,шедевр,art;noun_thing,A1
+calle,rue,street,улица,vía;avenida,voie;avenue,road,дорога;проспект,transportation;places_geography;noun_place,A1
+allí,là,there,там,allá,là-bas,,,directions_positions;adverb,A1
+escuela,école,school,школа,colegio;academia,établissement scolaire,,,school;noun_place,A1
+música,musique,music,музыка,melodía,mélodie,,,music;noun_thing,A1
+pregunta,question,question,вопрос,cuestión;interrogante,interrogation,,,media_communication;noun_thing,A1
+miedo,peur,fear,страх,temor;pavor,crainte;terreur,dread,боязнь,emotions;noun_thing,A2
+propio,propre,own,собственный,característico,,,,abstract_concepts;adjective,A2
+principal,principal,principal,основной,fundamental,,main;primary,главный,abstract_concepts;adjective,A2
+imagen,image,image,изображение,figura;representación,représentation;illustration,picture,картина,media_communication;art;noun_thing,A2
+palabra,mot,word,слово,vocablo;término,terme;vocable,term,термин,media_communication;noun_thing,A1
+plan,plan,plan,план,proyecto;intención,projet;intention,project;scheme,проект;замысел,abstract_concepts;noun_thing,A2
+campo,champ,field,поле,terreno,terrain,,,nature;places_geography;noun_place,A2
+película,film,film,фильм,cinta;filme,long-métrage,movie,кино,media_communication;art;noun_thing,A1
+respuesta,réponse,response,ответ,contestación,réplique,reply;answer,,media_communication;noun_thing,A1
+precio,prix,price,цена,valor;costo,coût,cost,стоимость,money;shopping;noun_thing,A1
+mercado,marché,market,рынок,zoco;feria,foire;bazar,bazaar;fair,базар;ярмарка,shopping;money;noun_place,A1
+comida,nourriture,food,еда,alimento;manjar,aliment;bouffe,nourishment;meal,пища;продовольствие,food;noun_thing,A1
+oportunidad,opportunité,opportunity,возможность,ocasión;chance,occasion;chance,chance,шанс,abstract_concepts;noun_thing,B1
+iglesia,église,church,церковь,templo,,,храм,religion;noun_place,A2
+central,central,central,центральный,,,main,,directions_positions;adjective,A2
+viaje,voyage,journey,путешествие,travesía;recorrido,périple;trajet,trip;voyage,поездка,travel;noun_thing,A2
+mar,mer,sea,море,piélago;océano,océan,ocean,океан,nature;places_geography;noun_place,A1
+local,local,local,местный,,,,,places_geography;adjective,A2
+hermano,frère,brother,брат,,frangin,,,family;noun_person,A1
+niño,enfant,child,ребёнок,crío;muchacho,gamin;gosse,kid,,family;baby_childcare;noun_person,A1
+red,réseau,network,сеть,,,,,technology;media_communication;noun_thing,B1
+objetivo,objectif,objective,цель,meta,but;cible,goal;aim,задача,abstract_concepts;noun_thing,B1
+río,rivière,river,река,,cours d'eau,,,nature;places_geography;noun_place,A2
+negro,noir,black,чёрный,oscuro,sombre,,тёмный,colors_patterns;adjective,A1
+interior,intérieur,interior,внутренний,,,inside,,directions_positions;adjective,B1
+sol,soleil,sun,солнце,astro,astre,,,weather;nature;noun_thing,A1
+pequeño,petit,small,маленький,chico,réduit,little,небольшой,shapes_measurements;adjective,A1
+blanco,blanc,white,белый,albo,,,,colors_patterns;adjective,A1
+aire,air,air,воздух,atmósfera,atmosphère,atmosphere,атмосфера,weather;nature;noun_thing,A1
+lejos,loin,far,далеко,distante,éloigné,distant,удалённый,directions_positions;adverb,A1
+arriba,en haut,up,вверх,encima,au-dessus,above,над,directions_positions;adverb,A1
+puerta,porte,door,дверь,acceso;entrada,accès;entrée,entrance,вход,house;construction;noun_thing,A1
+puerto,port,port,порт,embarcadero;muelle,quai,harbor,гавань,travel;transportation;noun_place,A2
+hija,fille,daughter,дочь,vástago;nena,,,,family;noun_person,A1
+color,couleur,color,цвет,tonalidad;tono,teinte,hue;shade,оттенок,colors_patterns;noun_thing,A1
+banco,banque,bank,банк,,,,,money;noun_place,A1
+oficina,bureau,office,офис,despacho,,,контора,work;noun_place,A1
+capacidad,capacité,capacity,вместимость,aptitud,,ability,способность,abstract_concepts;noun_thing,B1
+modelo,modèle,model,модель,ejemplo;prototipo,,example;prototype,образец,abstract_concepts;noun_thing,A2
+fuego,feu,fire,огонь,lumbre;llama,flamme;incendie,flame,пламя,nature;house;noun_thing,A1
+culpa,culpabilité,guilt,вина,responsabilidad;falta,faute,blame,ощущение вины,emotions;abstract_concepts;noun_thing,B1
+cámara,caméra,camera,камера,cámara fotográfica,appareil photo,,фотоаппарат,technology;media_communication;noun_thing,A1
+probablemente,probablement,probably,вероятно,posiblemente,sans doute;vraisemblablement,possibly,возможно,adverb,A2
+decisión,décision,decision,решение,determinación;resolución,résolution;détermination,resolution,постановление,abstract_concepts;noun_thing,B1
+abajo,en bas,below,внизу,debajo,en dessous,underneath,ниже,directions_positions;adverb,A2
+versión,version,version,версия,,,,,media_communication;abstract_concepts;noun_thing,B1
+odio,haine,hatred,ненависть,aversión;repugnancia,aversion;répulsion,aversion,отвращение,emotions;noun_thing,B2
+ropa,vêtements,clothing,одежда,vestimenta;indumentaria;atuendo,habits;fringues,garments,одеяние;наряд,clothing;noun_thing,A1
+isla,île,island,остров,islote,îlot,,,nature;places_geography;noun_place,A2
+profesor,professeur,teacher,учитель,maestro;docente,enseignant,professor;instructor,преподаватель,school;professions;noun_person,A1
+original,original,original,оригинал,primigenio,,,,abstract_concepts;adjective,A2
+prensa,étau,vise,тиски,tornillo de banco,,,,tools_diy;noun_thing,C1
+canal,canal,channel,канал,,,canal,,media_communication;noun_thing,B1
+verano,été,summer,лето,,,,,time;weather;noun_thing,A1
+hospital,hôpital,hospital,больница,sanatorio,,,госпиталь,health;noun_place,A1
+completamente,complètement,completely,полностью,totalmente,entièrement,entirely,,adverb,A2
+suelo,sol,floor,пол,pavimento;piso,plancher,,,house;construction;noun_thing,A1
+sala,salon,room,комната,estancia,séjour,living room,помещение,house;noun_place,A1
+protección,protection,protection,защита,amparo,,,,law_society;health;abstract_concepts;noun_thing,B1
+sueño,sommeil,sleep,сон,,,,,health;noun_thing,A1
+edificio,bâtiment,building,здание,inmueble;construcción,immeuble;construction,edifice,строение,construction;places_geography;noun_place,A2
+mesa,table,table,стол,,,,,furniture;noun_thing,A1
+completo,complet,complete,полный,íntegro,,whole,,abstract_concepts;adjective,A2
+material,matériau,material,материал,materia,matière,substance,,materials;noun_thing,B1
+venta,vente,sale,продажа,transacción,transaction,transaction,,shopping;money;noun_thing,A2
+solución,solution,solution,решение,resolución;remedio,remède;issue,remedy,выход,abstract_concepts;noun_thing,B1
+confianza,confiance,confidence,уверенность,seguridad;fe,assurance,trust,доверие,emotions;abstract_concepts;noun_thing,B1
+hambre,faim,hunger,голод,apetito;gana,appétit,appetite,аппетит,food;health;noun_thing,A1
+legal,légal,legal,законный,lícito,licite,,,law_society;adjective,B1
+perro,chien,dog,собака,can,,,,animals;noun_thing,A1
+cama,lit,bed,кровать,lecho;catre,couchette,,ложе,furniture;house;noun_thing,A1
+opción,option,option,вариант,alternativa,choix,alternative;choice,альтернатива,abstract_concepts;noun_thing,A2
+memoria,mémoire,memory,память,recuerdo,souvenir,recall;remembrance,,abstract_concepts;noun_thing,B1
+silencio,silence,silence,тишина,mutismo;calma,,quiet,покой,abstract_concepts;noun_thing,A2
+producto,produit,product,продукт,artículo;mercancía,article;marchandise,item;merchandise,товар,shopping;noun_thing,A2
+médico,médecin,doctor,врач,doctor,docteur,physician,доктор,health;professions;noun_person,A1
+verde,vert,green,зелёный,verdoso,,,,colors_patterns;adjective,A1
+esperanza,espoir,hope,надежда,ilusión;expectativa,espérance,,,emotions;noun_thing,A2
+hermana,sœur,sister,сестра,,frangine,,,family;noun_person,A1
+parque,parc,park,парк,,,,,places_geography;nature;noun_place,A1
+comercial,commercial,commercial,коммерческий,,,,,shopping;work;adjective,B1
+exterior,extérieur,exterior,внешний,,,outside;outer,наружный,directions_positions;adjective,B1
+rojo,rouge,red,красный,encarnado;rojizo,rougeâtre,,алый;пунцовый,colors_patterns;adjective,A1
+niña,fille,girl,девочка,muchacha,fillette,,,family;baby_childcare;noun_person,A1
+juez,juge,judge,судья,magistrado,,,,law_society;professions;noun_person,B1
+carne,viande,meat,мясо,,,,,food;noun_thing,A1
+teatro,théâtre,theater,театр,,,,,art;noun_place,A1
+azul,bleu,blue,синий,añil;celeste,azur,azure,лазурный,colors_patterns;adjective,A1
+marco,cadre,frame,рама,,,,,art;noun_thing,B1
+pan,pain,bread,хлеб,hogaza;barra,,,,food;noun_thing,A1
+sección,section,section,раздел,apartado,,,часть,abstract_concepts;noun_thing,B1
+pelo,cheveux,hair,волосы,cabello;cabellera,,,шевелюра,body;personal_care;noun_thing,A1
+peligro,danger,danger,опасность,riesgo;amenaza,risque;menace,risk;threat,риск;угроза,health;abstract_concepts;noun_thing,A2
+amiga,amie,friend,подруга,compañera;camarada,copine;camarade,,товарищ,emotions;noun_person,A1
+estación,gare,station,станция,parada;terminal,station,,вокзал,transportation;noun_place,A1
+baño,salle de bains,bathroom,ванная,lavabo;aseo,toilettes;sanitaires,restroom,туалет;уборная,house;noun_place,A1
+compra,achat,purchase,покупка,adquisición,acquisition,buy,приобретение,shopping;noun_thing,A2
+exactamente,exactement,exactly,точно,cabalmente,,,,adverb,A2
+hotel,hôtel,hotel,отель,,,,гостиница,travel;noun_place,A1
+demanda,demande,request,запрос,petición,requête,,просьба,law_society;abstract_concepts;noun_thing,B1
+luna,lune,moon,луна,,,,,nature;noun_thing,A1
+piso,étage,floor,этаж,planta;nivel,niveau,level,ярус,construction;house;noun_thing,A1
+abogado,avocat,lawyer,адвокат,letrado,,attorney,юрист,law_society;professions;noun_person,B1
+contexto,contexte,context,контекст,entorno,,,,abstract_concepts;noun_thing,B2
+piedra,pierre,stone,камень,roca;canto,rocher;caillou,rock,скала,nature;materials;noun_thing,A2
+aeropuerto,aéroport,airport,аэропорт,aeródromo;terminal aéreo,aérogare,,,travel;transportation;noun_place,A1
+idioma,langue,language,язык,lengua,idiome,,,school;media_communication;noun_thing,A1
+basura,poubelle,trash,мусор,desechos;residuos,ordures,garbage,отходы,household_cleaning;noun_thing,A1
+corto,court,short,короткий,breve,bref,brief,краткий,shapes_measurements;adjective,A1
+tienda,magasin,store,магазин,negocio;local,boutique;échoppe,shop,лавка,shopping;noun_place,A1
+coche,voiture,car,машина,automóvil;auto,bagnole;caisse,automobile,автомобиль,transportation;noun_thing,A1
+leche,lait,milk,молоко,,,,,drink;food;noun_thing,A1
+perfil,profil,profile,профиль,,,,,technology;media_communication;noun_thing,B1
+pantalla,écran,screen,экран,monitor,moniteur,,монитор,technology;noun_thing,A2
+león,lion,lion,лев,,,,,animals;noun_thing,A1
+ropa interior,sous-vêtements,underwear,нижнее белье,lencería,lingerie,,,clothing;noun_thing,A2
+artista,artiste,artist,артист,,,,художник,art;professions;noun_person,A1
+identidad,identité,identity,идентичность,,,,,abstract_concepts;noun_thing,B1
+playa,plage,beach,пляж,orilla;costa,rivage;côte,,берег,travel;nature;places_geography;noun_place,A1
+permiso,permission,permission,разрешение,autorización;licencia,autorisation,authorization;license,лицензия,law_society;abstract_concepts;noun_thing,A2
+tren,train,train,поезд,ferrocarril,chemin de fer,,,transportation;travel;noun_thing,A1
+cocina,cuisine,kitchen,кухня,,,,,house;cooking;noun_place,A1
+rosa,rose,pink,розовый,rosado,,,,colors_patterns;adjective,A1
+dulce,sucré,sweet,сладкий,azucarado,doux,sugary,сахарный,food;textures_qualities;adjective,A1
+puente,pont,bridge,мост,pasarela;viaducto,passerelle;viaduc,footbridge;viaduct,виадук;пешеходный мост,transportation;construction;noun_place,A2
+periodista,journaliste,journalist,журналист,reportero,,reporter,репортёр,media_communication;professions;noun_person,A2
+estrategia,stratégie,strategy,стратегия,,,,,work;abstract_concepts;noun_thing,B2
+frío,froid,cold,холодный,gélido,glacial,chilly,ледяной,weather;adjective,A1
+pensamiento,pensée,thought,мысль,reflexión;idea;razonamiento,réflexion;idée,idea;reflection,идея;размышление,abstract_concepts;noun_thing,B1
+claramente,clairement,clearly,ясно,evidentemente,nettement;évidemment,obviously,очевидно,adverb,B1
+precisamente,précisément,precisely,точно,justamente,justement,exactly,ровно,adverb,A2
+avión,avion,plane,самолёт,aeroplano;aeronave,,airplane;aircraft,воздушное судно,travel;transportation;noun_thing,A1
+madera,bois,wood,древесина,leño,,,дерево,materials;noun_thing,A2
+biblioteca,bibliothèque,library,библиотека,mediateca,,,,school;literature;noun_place,A1
+escritor,écrivain,writer,писатель,autor,,author,автор,literature;professions;noun_person,A2
+resolución,résolution,resolution,решение,determinación,,determination,решимость,media_communication;abstract_concepts;noun_thing,B1
+regional,régional,regional,региональный,,,,,places_geography;adjective,B1
+museo,musée,museum,музей,,,,,art;travel;noun_place,A1
+habitación,chambre,room,комната,alcoba;cuarto;dormitorio,pièce,bedroom,спальня;помещение,house;noun_place,A1
+rápidamente,rapidement,quickly,быстро,rápido;velozmente,vite;prestement,rapidly,скоро;оперативно,adverb,A2
+plataforma,plateforme,platform,платформа,,,,,technology;noun_thing,B1
+técnico,technique,technical,технический,,,,,technology;adjective,B1
+frecuencia,fréquence,frequency,частота,,,,,shapes_measurements;abstract_concepts;noun_thing,B2
+valle,vallée,valley,долина,,,,,nature;places_geography;noun_place,A2
+metro,métro,metro,метро,subte,,subway,подземка,transportation;noun_thing,A1
+viento,vent,wind,ветер,brisa;ráfaga,brise;rafale,breeze,бриз;порыв,weather;nature;noun_thing,A1
+estrella,étoile,star,звезда,astro,astre,,астро,nature;noun_thing,A1
+temprano,tôt,early,рано,pronto,de bonne heure,,,time;adverb,A1
+capítulo,chapitre,chapter,глава,,,,,literature;noun_thing,A2
+señal,signal,signal,сигнал,,,,,media_communication;transportation;noun_thing,B1
+tarjeta,carte,card,карта,,,,карточка,money;shopping;noun_thing,A1
+sorpresa,surprise,surprise,сюрприз,asombro;extrañeza,étonnement,astonishment,удивление;неожиданность,emotions;noun_thing,A2
+igualdad,égalité,equality,равенство,equivalencia;paridad,,parity,паритет,law_society;abstract_concepts;noun_thing,B1
+seguramente,sûrement,surely,наверняка,con seguridad,certainement,certainly,безусловно;несомненно,adverb,B1
+normalmente,normalement,normally,обычно,habitualmente,habituellement,usually,стандартно;повседневно,adverb,A2
+oferta,offre,offer,предложение,,,,,shopping;money;noun_thing,A2
+invierno,hiver,winter,зима,,,,,time;weather;noun_thing,A1
+clima,climat,climate,климат,,,,,weather;noun_thing,A2
+escala,échelle,scale,масштаб,,,,,shapes_measurements;noun_thing,B2
+cerebro,cerveau,brain,мозг,sesos,cervelle,,серое вещество,body;health;noun_thing,A2
+vergüenza,honte,shame,стыд,pena;bochorno,gêne;embarras,embarrassment,позор;смущение,emotions;noun_thing,B1
+industrial,industriel,industrial,промышленный,,,,,work;adjective,B2
+mentira,mensonge,lie,ложь,embuste;engaño;falsedad,tromperie;fausseté,falsehood,неправда;враньё,abstract_concepts;noun_thing,A2
+resumen,résumé,summary,резюме,sumario,synthèse,abstract,сводка;краткое изложение,literature;school;noun_thing,B1
+constante,constante,constant,постоянная,,,,,abstract_concepts;adjective,B2
+gato,chat,cat,кот,minino;micho,minet,kitty,котофей,animals;noun_thing,A1
+archivo,fichier,file,файл,fichero,,,архив,technology;media_communication;noun_thing,A2
+cuello,cou,neck,шея,pescuezo,,,,body;clothing;noun_thing,A1
+carretera,route,road,дорога,vía;autovía;calzada,voie;chaussée,highway,шоссе;трасса,transportation;noun_place,A1
+lluvia,pluie,rain,дождь,precipitación;chaparrón,averse;précipitation,,ливень,weather;noun_thing,A1
+moneda,monnaie,currency,валюта,pecunia;divisa,pièce;devise,coin,деньги,money;noun_thing,B1
+motor,moteur,engine,двигатель,propulsor,propulseur,,,transportation;vehicle_parts;noun_thing,A2
+amistad,amitié,friendship,дружба,compañerismo;camaradería,camaraderie,,,emotions;abstract_concepts;noun_thing,A2
+alegría,joie,joy,радость,felicidad;gozo,bonheur;allégresse,happiness,веселье;счастье,emotions;noun_thing,A2
+pecho,poitrine,chest,грудь,busto,buste,,,body;noun_thing,A2
+licencia,licence,license,лицензия,permiso,permis,permit,разрешение,law_society;transportation;noun_thing,B1
+perfectamente,parfaitement,perfectly,в совершенстве,impecablemente,impeccablement,flawlessly,идеально,adverb,B1
+castillo,château,castle,замок,fortaleza,forteresse,fortress,крепость,travel;places_geography;noun_place,A2
+primavera,printemps,spring,весна,,,,,time;weather;noun_thing,A1
+vestido,robe,dress,платье,,,,,clothing;noun_thing,A1
+bosque,forêt,forest,лес,arboleda;selva,bois,woods,роща,nature;places_geography;noun_place,A1
+sal,sel,salt,соль,,,,,food;cooking;noun_thing,A1
+ilegal,illégal,illegal,нелегальный,ilícito,illicite,unlawful,незаконный,law_society;adjective,B1
+ruido,bruit,noise,шум,estruendo,vacarme,,,abstract_concepts;noun_thing,A2
+jardín,jardin,garden,сад,,,,,house;plants_garden;noun_place,A1
+perspectiva,point de vue,perspective,перспектива,punto de vista,,viewpoint,точка зрения,abstract_concepts;noun_thing,B2
+caballo,cheval,horse,лошадь,corcel;potro,destrier,,конь,animals;noun_thing,A1
+orgullo,fierté,pride,гордость,soberbia;vanidad,orgueil,self-esteem,самолюбие,emotions;noun_thing,B1
+montaña,montagne,mountain,гора,sierra;monte;cerro,mont,peak,пик;вершина,nature;places_geography;noun_place,A1
+rural,rural,rural,сельский,campestre,,,деревенский,places_geography;adjective,B1
+estadio,stade,stadium,стадион,,,,,sports;noun_place,A2
+ventana,fenêtre,window,окно,ventanal,baie vitrée,,,house;construction;noun_thing,A1
+actor,acteur,actor,актёр,intérprete,comédien,,исполнитель,art;professions;noun_person,A1
+zapatos,chaussures,shoes,обувь,calzado,souliers,footwear,туфли,clothing;noun_thing,A1
+barco,bateau,boat,лодка,navío;embarcación,navire;embarcation,vessel,судно,transportation;travel;noun_thing,A1
+clásico,classique,classic,классический,tradicional,,traditional,традиционный,art;adjective,B1
+cuadro,tableau,painting,картина,obra;pintura;lienzo,peinture,artwork,полотно;живопись,art;noun_thing,A2
+granada,grenade,grenade,граната,,,,,law_society;noun_thing,B2
+taller,atelier,workshop,мастерская,obrador,,,цех,work;tools_diy;noun_place,B1
+pared,mur,wall,стена,tapia;muro,paroi,,,house;construction;noun_thing,A1
+huevo,œuf,egg,яйцо,,,,,food;cooking;noun_thing,A1
+teléfono inteligente,smartphone,smartphone,смартфон,móvil;celular,,,,technology;media_communication;noun_thing,A1
+científico,scientifique,scientist,учёный,,,,,school;professions;noun_person,A2
+formato,format,format,формат,,,,,media_communication;technology;noun_thing,B1
+lago,lac,lake,озеро,,,,,nature;places_geography;noun_place,A2
+falso,faux,false,ложный,falsificado,contrefait,fake,фальшивый,abstract_concepts;adjective,A2
+copia,copie,copy,копия,reproducción;duplicata,,duplicate,дубликат,media_communication;noun_thing,A2
+fábrica,usine,factory,завод,factoría,,,фабрика,work;noun_place,A2
+flor,fleur,flower,цветок,,,,,plants_garden;nature;noun_thing,A1
+dedo,doigt,finger,палец,,,,,body;noun_thing,A1
+peligroso,dangereux,dangerous,опасный,arriesgado,risqué,risky,рискованный,health;adjective,A2
+techo,toit,roof,крыша,tejado;cubierta,toiture,,,house;construction;noun_thing,A2
+columna,colonne,column,колонна,,,,,construction;media_communication;noun_thing,B1
+anuncio,annonce,advertisement,реклама,aviso,publicité,,объявление,media_communication;shopping;noun_thing,A2
+azúcar,sucre,sugar,сахар,,,,,food;cooking;noun_thing,A1
+aceite,huile,oil,масло,,,,,food;cooking;noun_thing,A1
+raíz,racine,root,корень,,,,,plants_garden;nature;noun_thing,A2
+índice,index,index,индекс,,,,,literature;media_communication;noun_thing,B1
+moderno,moderne,modern,современный,actual,,,,abstract_concepts;adjective,A2
+queso,fromage,cheese,сыр,,,,,food;noun_thing,A1
+templo,temple,temple,храм,,,,,religion;noun_place,A2
+metal,métal,metal,металл,,,,,materials;noun_thing,A2
+solidaridad,solidarité,solidarity,солидарность,apoyo,,,,law_society;abstract_concepts;noun_thing,B2
+cable,câble,cable,кабель,,,,,technology;noun_thing,A2
+silla,chaise,chair,стул,,,,,furniture;noun_thing,A1
+ingeniero,ingénieur,engineer,инженер,,,,,work;professions;noun_person,A2
+brillante,brillant,bright,яркий,reluciente,éclatant,,блестящий,textures_qualities;adjective,A2
+cena,dîner,dinner,ужин,,,,,food;noun_thing,A1
+batería,batterie,battery,батарея,acumulador,accumulateur,,,technology;noun_thing,A2
+enfermo,malade,sick,больной,indispuesto,souffrant,ill,нездоровый,health;adjective,A1
+agradable,agréable,pleasant,приятный,placentero,plaisant,,,emotions;adjective,A2
+espejo,miroir,mirror,зеркало,luna,glace,,,house;personal_care;noun_thing,A1
+chocolate,chocolat,chocolate,шоколад,,,,,food;noun_thing,A1
+paciencia,patience,patience,терпение,tolerancia,tolérance,,,emotions;abstract_concepts;noun_thing,B1
+urbano,urbain,urban,городской,citadino,,,,places_geography;adjective,B1
+piloto,pilote,pilot,пилот,,,,,transportation;professions;noun_person,A2
+patio,cour,patio,патио,terraza,terrasse,courtyard,дворик,house;noun_place,A2
+arroz,riz,rice,рис,,,,,food;cooking;noun_thing,A1
+nieve,neige,snow,снег,,,,,weather;noun_thing,A1
+pollo,poulet,chicken,курица,,,,,food;animals;noun_thing,A1
+soldado,soldat,soldier,солдат,militar,,,,law_society;professions;noun_person,A2
+roca,roche,rock,скала,piedra,pierre,,,nature;materials;noun_thing,A2
+combustible,carburant,fuel,топливо,carburante;gasolina,essence,gasoline;petrol,,transportation;materials;noun_thing,B1
+desayuno,petit-déjeuner,breakfast,завтрак,,,,,food;noun_thing,A1
+traje,costume,suit,костюм,terno;ambo,complet,,,clothing;work;noun_thing,A2
+cartel,pancarte,sign,знак,póster;afiche,affiche,poster,плакат;афиша,media_communication;noun_thing,A2
+rueda,roue,wheel,колесо,llanta,,,,transportation;vehicle_parts;noun_thing,A2
+recuperación,récupération,recovery,восстановление,restablecimiento,,,,health;abstract_concepts;noun_thing,B1
+hoja,feuille,leaf,лист,,,sheet,,plants_garden;nature;noun_thing,A2
+conductor,conducteur,driver,водитель,chofer,chauffeur,chauffeur,,transportation;professions;noun_person,A1
+ancho,large,wide,широкий,amplio,vaste;ample,,,shapes_measurements;adjective,A2
+rendimiento,performance,performance,производительность,desempeño,,,,work;abstract_concepts;noun_thing,B2
+patrón,motif,pattern,узор,esquema;modelo,schéma;modèle,,,colors_patterns;noun_thing,A2
+medias,bas,stockings,чулки,,,hose,,clothing;noun_thing,A2
+patrón,modèle,model,модель,modelo,,,,abstract_concepts;noun_thing,A2
+desierto,désert,desert,пустыня,,,,,nature;places_geography;noun_place,A2
+asiento,siège,seat,сиденье,butaca;plaza,,,,furniture;transportation;noun_thing,A1
+calma,calme,calm,спокойствие,tranquilidad;paz,tranquillité;sérénité,peace;tranquility,тишина,emotions;noun_thing,A2
+parada,arrêt,stop,остановка,paradero;estación,station,,,transportation;noun_place,A1
+portada,couverture,cover,обложка,carátula,,front page,,literature;media_communication;noun_thing,A2
+parcial,partiel,partial,частичный,,,,,abstract_concepts;adjective,B2
+criterio,critère,criterion,критерий,norma,,standard,норма,abstract_concepts;noun_thing,B2
+mate,mat,matte,матовый,opaco,terne,dull;non-glossy,тусклый,colors_patterns;textures_qualities;adjective,B2
+suave,doux,soft,мягкий,blando,moelleux,gentle;mellow,,textures_qualities;adjective,A2
+manual,manuel,manual,руководство,guía,guide,guide,,literature;tools_diy;noun_thing,B1
+amarillo,jaune,yellow,желтый,amarillento,,,,colors_patterns;adjective,A1
+actualización,mise à jour,update,обновление,modernización,,,,technology;noun_thing,B1
+académico,académique,academic,академический,,universitaire,scholarly,,school;adjective,B2
+prioridad,priorité,priority,приоритет,prelación,,,,abstract_concepts;noun_thing,B1
+moto,moto,motorcycle,мотоцикл,motocicleta,motocyclette,bike,,transportation;noun_thing,A1
+salsa,sauce,sauce,соус,,,,,food;cooking;noun_thing,A1
+gris,gris,gray,серый,grisáceo,,,,colors_patterns;adjective,A1
+autobús,bus,bus,автобус,colectivo;camión,autocar,coach,,transportation;noun_thing,A1
+bicicleta,vélo,bicycle,велосипед,bici,bicyclette,bike,,transportation;sports;noun_thing,A1
+camiseta,t-shirt,t-shirt,футболка,remera;playera;franela,tee-shirt,tee,,clothing;noun_thing,A1
+taxi,taxi,taxi,такси,,,,,transportation;travel;noun_thing,A1
+transparencia,transparence,transparency,прозрачность,,,,,abstract_concepts;textures_qualities;noun_thing,B2
+fila,rangée,row,ряд,hilera,ligne,line,,directions_positions;noun_thing,A2
+tristeza,tristesse,sadness,печаль,pena;melancolía;pesadumbre,chagrin;mélancolie,sorrow;melancholy,грусть;скорбь,emotions;noun_thing,A2
+carretera secundaria,route secondaire,secondary road,второстепенная дорога,carretera comarcal,départementale,backroad,,transportation;noun_place,B2
+rama,branche,branch,ветка,ramo,,,,plants_garden;nature;noun_thing,A2
+profundamente,profondément,deeply,глубоко,hondamente,,profoundly,основательно,adverb,B2
+mapa mental,carte mentale,mind map,ментальная карта,mapa conceptual,,,,school;abstract_concepts;noun_thing,B1
+clínica,clinique,clinic,клиника,sanatorio,,sanatorium,санаторий,health;noun_place,A2
+ácido,acide,acid,кислота,agrio,,sour,,materials;adjective,B1
+otoño,automne,autumn,осень,,,fall,,time;weather;noun_thing,A1
+seco,sec,dry,сухой,árido,aride,arid,засушливый,weather;textures_qualities;adjective,A2
+naranja,orange,orange,оранжевый,anaranjado,,,,food;colors_patterns;noun_thing,A1
+apartamento,appartement,apartment,квартира,departamento;piso,,flat,,house;noun_place,A1
+fruto,fruit,fruit,фрукт,fruta,,,,food;plants_garden;noun_thing,A1
+privacidad,confidentialité,privacy,конфиденциальность,intimidad,,confidentiality,приватность,technology;law_society;abstract_concepts;noun_thing,B2
+cuadros,carreaux,plaid,в клетку,tartán;escocés,,checked,,colors_patterns;noun_thing,B1
+intensidad,intensité,intensity,интенсивность,fuerza,,strength,,shapes_measurements;abstract_concepts;noun_thing,B2
+traje de baño,maillot de bain,swimsuit,купальник,bañador;vestido de baño,,swimming costume,,clothing;travel;sports;noun_thing,A2
+plástico,plastique,plastic,пластик,,,,,materials;noun_thing,A1
+vidrio,verre,glass,стекло,cristal,,crystal,хрусталь,materials;noun_thing,A1
+sano,sain,healthy,здоровый,saludable,en bonne santé,wholesome,полезный,health;adjective,A2
+pescado,poisson,fish,рыба,,,,,food;animals;noun_thing,A1
+pesado,lourd,heavy,тяжёлый,,pesant,,,shapes_measurements;adjective,A2
+lana,laine,wool,шерсть,,,,,materials;clothing;noun_thing,A2
+maíz,maïs,corn,кукуруза,elote;choclo;jojoto,,maize,,food;plants_garden;noun_thing,A2
+helado,glace,ice cream,мороженое,crema helada,crème glacée,,,food;noun_thing,A1
+satisfacción,satisfaction,satisfaction,удовлетворение,contento,contentement,contentment,,emotions;noun_thing,B1
+visible,visible,visible,видимый,perceptible,,perceptible,заметный,textures_qualities;adjective,B1
+tela,tissu,fabric,ткань,tejido,étoffe,cloth;material,материал,materials;clothing;noun_thing,A2
+frecuentemente,fréquemment,frequently,часто,a menudo,souvent,often,,adverb,B1
+fruta,fruit,fruit,фрукт,,,,,food;plants_garden;noun_thing,A1
+lobo,loup,wolf,волк,,,,,animals;noun_thing,A2
+terremoto,séisme,earthquake,землетрясение,sismo;temblor,tremblement de terre,tremor,сейсмический толчок,weather;nature;noun_thing,B1
+camisa,chemise,shirt,рубашка,,,,,clothing;noun_thing,A1
+hombro,épaule,shoulder,плечо,,,,,body;noun_thing,A2
+respaldo,sauvegarde,backup,резервная копия,copia de seguridad,,,,technology;noun_thing,B1
+catálogo,catalogue,catalog,каталог,,,,,shopping;media_communication;noun_thing,B1
+esquema,schéma,schema,схема,diagrama,plan,diagram;plan,,abstract_concepts;media_communication;noun_thing,B2
+horno,four,oven,духовка,,,,,cooking;home_appliances;noun_thing,A2
+miel,miel,honey,мёд,,,,,food;noun_thing,A2
+almuerzo,déjeuner,lunch,обед,,,,,food;noun_thing,A1
+lealtad,loyauté,loyalty,лояльность,fidelidad,fidélité,fidelity,верность,emotions;abstract_concepts;noun_thing,B2
+ligeramente,légèrement,slightly,слегка,levemente,,lightly,немного,adverb,B1
+autopista,autoroute,highway,автострада,autovía,voie rapide,expressway,шоссе,transportation;noun_place,A2
+precisión,précision,precision,точность,exactitud,,accuracy,,abstract_concepts;noun_thing,B2
+cueva,grotte,cave,пещера,caverna;gruta,caverne,cavern;grotto,грот,nature;places_geography;noun_place,A2
+manzana,pomme,apple,яблоко,,,,,food;plants_garden;noun_thing,A1
+vaca,vache,cow,корова,,,,,animals;food;noun_thing,A1
+ordenador,ordinateur,computer,компьютер,computadora;PC,,PC,ПК,technology;noun_thing,A1
+escalera,escalier,stairs,лестница,,,,,house;construction;noun_thing,A1
+barba,barbe,beard,борода,,,,,body;personal_care;noun_thing,A2
+cuero,cuir,leather,кожа,,,,,materials;clothing;noun_thing,A2
+tigre,tigre,tiger,тигр,,,,,animals;noun_thing,A1
+artificial,artificiel,artificial,искусственный,sintético,synthétique,synthetic,синтетический,technology;adjective,B1
+sed,soif,thirst,жажда,,,,,drink;health;noun_thing,A2
+sopa,soupe,soup,суп,caldo,potage;bouillon,broth,бульон,food;cooking;noun_thing,A1
+mono,singe,monkey,обезьяна,simio;primate,,,,animals;noun_thing,A1
+harina,farine,flour,мука,,,,,food;cooking;noun_thing,A2
+oso,ours,bear,медведь,,,,,animals;noun_thing,A1
+claridad,clarté,clarity,ясность,nitidez;transparencia,netteté,clearness;transparency,четкость,abstract_concepts;noun_thing,B2
+teclado,clavier,keyboard,клавиатура,,,,,technology;noun_thing,A2
+sombrero,chapeau,hat,шляпа,pamela,,,,clothing;noun_thing,A1
+limón,citron,lemon,лимон,,,,,food;plants_garden;noun_thing,A1
+auténtico,authentique,authentic,аутентичный,genuino,véritable,genuine,подлинный,abstract_concepts;adjective,B2
+variable,variable,variable,переменная,,,,,abstract_concepts;noun_thing,B2
+armonía,harmonie,harmony,гармония,paz;equilibrio,équilibre,balance,баланс,music;abstract_concepts;noun_thing,B2
+cerdo,cochon,pig,свинья,puerco;chancho;marrano,porc,hog,,animals;food;noun_thing,A1
+ligero,léger,light,лёгкий,liviano,,,,shapes_measurements;adjective,A2
+algodón,coton,cotton,хлопок,,,,,materials;clothing;noun_thing,A2
+lateral,latéral,lateral,боковой,,,side,,directions_positions;adjective,B2
+aceite esencial,huile essentielle,essential oil,эфирное масло,,,,,personal_care;noun_thing,B2
+transparente,transparent,transparent,прозрачный,claro,,clear,ясный,textures_qualities;adjective,B1
+músico,musicien,musician,музыкант,,,,,music;professions;noun_person,A2
+arroyo,ruisseau,stream,ручей,riachuelo,,brook,,nature;places_geography;noun_place,B1
+nube,nuage,cloud,облако,,,,,weather;nature;noun_thing,A1
+secundario,secondaire,secondary,вторичный,accesorio,accessoire,ancillary;incidental,,abstract_concepts;adjective,B1
+tomate,tomate,tomato,помидор,jitomate,,,,food;plants_garden;noun_thing,A1
+pintor,peintre,painter,художник,,,,,art;professions;noun_person,A2
+pasta de dientes,dentifrice,toothpaste,зубная паста,crema dental,,,,personal_care;health;noun_thing,A1
+envidia,envie,envy,зависть,,,,,emotions;noun_thing,B1
+botas,bottes,boots,сапоги,botines,,,,clothing;noun_thing,A1
+cinturón,ceinture,belt,ремень,correa;cincho;cinto,,,пояс,clothing;noun_thing,A2
+arquitecto,architecte,architect,архитектор,,,,,construction;professions;noun_person,A2
+parcialmente,partiellement,partially,частично,a medias,,,,adverb,B2
+wifi,wifi,wifi,вай-фай,,,,,technology;noun_thing,A1
+restauración,restauration,restoration,реставрация,restitución,,restitution,восстановление,construction;art;noun_thing,B2
+preferencia,préférence,preference,предпочтение,predilección,,,,abstract_concepts;noun_thing,B1
+silla de ruedas,fauteuil roulant,wheelchair,инвалидная коляска,,,,,accessibility;health;noun_thing,B1
+fotógrafo,photographe,photographer,фотограф,,,,,media_communication;art;professions;noun_person,A2
+invisible,invisible,invisible,невидимый,imperceptible,,imperceptible,незаметный,textures_qualities;adjective,B1
+vertical,vertical,vertical,вертикальный,,,,,directions_positions;shapes_measurements;adjective,B1
+mochila,sac à dos,backpack,рюкзак,,,,,travel;school;noun_thing,A1
+coco,noix de coco,coconut,кокос,,,,,food;plants_garden;noun_thing,A2
+billete,billet,ticket,билет,entrada;ticket,ticket,,,travel;transportation;money;noun_thing,A1
+mineral,minéral,mineral,минерал,,,,,nature;materials;noun_thing,B1
+pila,pile,battery,батарея,,batterie,,аккумулятор,technology;noun_thing,A2
+pastel,gâteau,cake,торт,torta;tarta,,,,food;cooking;noun_thing,A1
+plenamente,pleinement,fully,полностью,totalmente,entièrement,completely;entirely,целиком,adverb,A2
+automóvil,automobile,car,автомобиль,coche;auto,voiture,automobile;vehicle,машина,transportation;noun_thing,A1
+accesible,accessible,accessible,доступный,alcanzable,,,,accessibility;adjective,B1
+contemporáneo,contemporain,contemporary,современный,actual,,,,time;adjective,A2
+bolso,sac à main,handbag,сумочка,bolsa;cartera,,purse,сумка,clothing;shopping;noun_thing,A2
+rodilla,genou,knee,колено,,,,,body;noun_thing,A2
+configuración,configuration,configuration,конфигурация,ajustes;parametrización,réglages,setup,настройка,technology;noun_thing,B2
+comedor,salle à manger,dining room,столовая,,,,,house;furniture;noun_place,A2
+plantilla,modèle,template,шаблон,machote,gabarit,pattern,модель,technology;work;noun_thing,A2
+plantilla,semelle,insole,стелька,plantilla ortopédica,semelle orthopédique,,,clothing;noun_thing,A2
+postre,dessert,dessert,десерт,dulce,entremets,,сладкое,food;noun_thing,A1
+farmacia,pharmacie,pharmacy,аптека,botica,,,,health;shopping;noun_place,A1
+postal,carte postale,postcard,открытка,tarjeta postal,,,почтовая карточка,travel;media_communication;noun_thing,A2
+jersey,pull,sweater,свитер,pulóver;suéter,chandail,,пуловер,clothing;noun_thing,A1
+cordero,agneau,lamb,ягнёнок,,,,барашек,food;animals;noun_thing,A2
+prado,pré,meadow,луг,pradera,prairie,pasture,пастбище,nature;places_geography;noun_place,B1
+col,chou,cabbage,капуста,repollo;berza,,,,food;plants_garden;noun_thing,A2
+decepción,déception,disappointment,разочарование,desilusión;desengaño,désillusion,,,emotions;noun_thing,B1
+cebolla,oignon,onion,лук,,,,,food;plants_garden;noun_thing,A1
+honestidad,honnêteté,honesty,честность,sinceridad,sincérité,integrity,порядочность,abstract_concepts;noun_thing,B2
+hígado,foie,liver,печень,,,,,body;food;noun_thing,B1
+protector,protecteur,protector,защитник,defensa,,,,health;accessibility;noun_thing,B1
+desagradable,désagréable,unpleasant,неприятный,molesto,déplaisant,,,emotions;adjective,B1
+dormitorio,chambre,bedroom,спальня,cuarto;habitación;pieza;alcoba,,,комната,house;noun_place,A1
+matriz,matrice,matrix,матрица,,,,,technology;abstract_concepts;noun_thing,B2
+celda,cellule,cell,ячейка,casilla,,,,technology;noun_thing,B1
+cuna,berceau,crib,колыбель,camita,lit de bébé,,люлька,baby_childcare;furniture;noun_thing,B1
+volante,volant,steering wheel,руль,timón;manubrio,,,,vehicle_parts;transportation;noun_thing,A2
+cintura,taille,waist,талия,,,,,body;clothing;noun_thing,A2
+colina,colline,hill,холм,cerro;loma,,,,nature;places_geography;noun_place,A2
+botas de lluvia,bottes de pluie,rain boots,резиновые сапоги,,,wellies,,clothing;weather;noun_thing,A2
+billete de tren,billet de train,train ticket,билет на поезд,boleto;pasaje;ticket,,,,travel;transportation;noun_thing,A1
+batería externa,batterie externe,power bank,пауэрбанк,batería portátil;power bank,,external battery,внешний аккумулятор,technology;travel;noun_thing,A2
+pájaro,oiseau,bird,птица,ave,,,пташка,animals;noun_thing,A1
+volcán,volcan,volcano,вулкан,,,,,nature;places_geography;noun_place,A2
+pato,canard,duck,утка,ánade,,,,animals;food;noun_thing,A1
+nostalgia,nostalgie,nostalgia,ностальгия,añoranza,regret,longing,,emotions;noun_thing,B2
+marea,marée,tide,прилив и отлив,,,,,nature;weather;noun_thing,B1
+celos,jalousie,jealousy,ревность,recelo,,,,emotions;noun_thing,B1
+pantalón,pantalon,pants,брюки,pantalones;vaqueros,jean,trousers,штаны,clothing;noun_thing,A1
+marrón,brun,brown,коричневый,castaño,marron,,,colors_patterns;adjective,A1
+pasillo,couloir,hallway,коридор,corredor,dégagement,corridor,,house;noun_place,A2
+zapatillas,chaussons,slippers,тапочки,pantuflas,pantoufles,,тапки,clothing;house;noun_thing,A2
+horizontal,horizontal,horizontal,горизонтальный,,,,,directions_positions;shapes_measurements;adjective,A2
+paloma,colombe,dove,голубь,pichón,pigeon,pigeon,горлица,animals;noun_thing,B1
+abrigo,manteau,coat,пальто,gabán;sobretodo;tapado,pardessus,,шинель,clothing;weather;noun_thing,A1
+chaqueta,veste,jacket,куртка,cazadora;chamarra;saco,blouson,,пиджак,clothing;noun_thing,A1
+equidad,équité,equity,справедливость,imparcialidad;justicia,,fairness,,law_society;abstract_concepts;noun_thing,C1
+indiferencia,indifférence,indifference,безразличие,desinterés;apatía,désintérêt;apathie,apathy,апатия,emotions;noun_thing,B2
+ensalada,salade,salad,салат,,,,,food;cooking;noun_thing,A1
+cuidadosamente,soigneusement,carefully,тщательно,meticulosamente,méticuleusement,meticulously,,adverb,A2
+supermercado,supermarché,supermarket,супермаркет,,,,,shopping;noun_place,A1
+semilla,graine,seed,семя,pepita;simiente,,,зёрнышко,plants_garden;food;noun_thing,A2
+alfombra,tapis,carpet,ковёр,tapete;estera;moqueta,moquette,rug,палас,house;furniture;noun_thing,A2
+araña,araignée,spider,паук,,,,,animals;noun_thing,A2
+enojo,colère,anger,гнев,enfado;ira;rabia,fureur,rage,злость;ярость,emotions;noun_thing,A2
+falda,jupe,skirt,юбка,saya;pollera,,,,clothing;noun_thing,A1
+pimienta,poivre,pepper,перец,,,,,food;cooking;noun_thing,A1
+perfume,parfum,perfume,духи,aroma;fragancia;colonia;esencia,fragrance;senteur,fragrance;scent,,personal_care;noun_thing,A2
+cartón,carton,cardboard,картон,,,,,materials;noun_thing,A2
+freno,frein,brake,тормоз,,,,,vehicle_parts;transportation;noun_thing,B1
+frontal,frontal,frontal,фронтальный,,,,,directions_positions;adjective,B2
+cajón,tiroir,drawer,ящик,gaveta,,,,furniture;house;noun_thing,A2
+librería,librairie,bookstore,книжный магазин,,,,,shopping;literature;noun_place,A2
+águila,aigle,eagle,орёл,rapaz,,,,animals;noun_thing,A2
+jabón,savon,soap,мыло,,,,,personal_care;household_cleaning;noun_thing,A1
+ratón,souris,mouse,мышь,,,,,animals;technology;noun_thing,A1
+linterna frontal,lampe frontale,headlamp,налобный фонарь,frontal,,,,travel;technology;noun_thing,B1
+mantequilla,beurre,butter,масло,,,,,food;cooking;noun_thing,A1
+tronco,tronc,trunk,ствол,,,,ствол дерева,plants_garden;nature;noun_thing,A2
+tablero,plaque,board,доска,panel,panneau,panel;plaque,панель;плита,tools_diy;construction;noun_thing,A2
+balcón,balcon,balcony,балкон,,,,,house;construction;noun_place,A2
+jamón,jambon,ham,ветчина,,,,,food;noun_thing,A1
+armario,armoire,wardrobe,шкаф,ropero;clóset,penderie;placard,closet,гардероб,furniture;house;noun_thing,A2
+neutral,neutre,neutral,нейтральный,neutro,,,,abstract_concepts;adjective,B1
+ascensor,ascenseur,elevator,лифт,elevador,,lift,,house;accessibility;noun_thing,A1
+mango,mangue,mango,манго,,,,,food;plants_garden;noun_thing,A1
+piña,ananas,pineapple,ананас,ananá,,,,food;plants_garden;noun_thing,A1
+frustración,frustration,frustration,фрустрация,,,,,emotions;noun_thing,B1
+cabra,chèvre,goat,коза,chivo,,,,animals;noun_thing,A2
+cortina,rideau,curtain,занавеска,visillo,voilage,,штора,house;furniture;noun_thing,A2
+mariposa,papillon,butterfly,бабочка,,,,,animals;noun_thing,A2
+protector solar,crème solaire,sunscreen,солнцезащитный крем,bloqueador solar,écran solaire,sunblock,,personal_care;health;travel;noun_thing,A2
+bodega,cave,cellar,подвал,,,,,house;food;drink;noun_place,B1
+amargo,amer,bitter,горький,,,,,food;textures_qualities;adjective,A2
+perla,perle,pearl,жемчуг,,,,,materials;clothing;noun_thing,B1
+toalla,serviette de toilette,towel,полотенце,,,,,house;personal_care;noun_thing,A1
+ajo,ail,garlic,чеснок,,,,,food;cooking;noun_thing,A2
+caravana,caravane,caravan,караван,casa rodante,roulotte,trailer,фургон,travel;transportation;noun_thing,B1
+micrófono,microphone,microphone,микрофон,micro,,mic,,technology;media_communication;noun_thing,A2
+elefante,éléphant,elephant,слон,,,,,animals;noun_thing,A1
+frágil,fragile,fragile,хрупкий,quebradizo,cassant,breakable,,textures_qualities;adjective,A2
+ético,éthique,ethical,этический,moral,,moral,моральный,law_society;abstract_concepts;adjective,B2
+cálido,chaud,warm,тёплый,caliente,,hot,жаркий,weather;textures_qualities;adjective,A1
+selva tropical,jungle tropicale,rainforest,тропический лес,jungla,,jungle,джунгли,nature;places_geography;noun_place,B1
+guantes,gants,gloves,перчатки,,,,,clothing;noun_thing,A1
+uva,raisin,grape,виноград,,,,,food;plants_garden;noun_thing,A1
+carpeta,dossier,folder,папка,,,,,technology;school;noun_thing,A2
+recto,droit,straight,прямой,derecho,,upright,,directions_positions;shapes_measurements;adjective,A2
+húmedo,humide,damp,влажный,,,moist,,weather;textures_qualities;adjective,B1
+optimismo,optimisme,optimism,оптимизм,,,,,emotions;noun_thing,B2
+cera,cire,wax,воск,,,,,materials;personal_care;noun_thing,B1
+mármol,marbre,marble,мрамор,,,,,materials;construction;noun_thing,B1
+pulmón,poumon,lung,лёгкое,,,,,body;health;noun_thing,B1
+aroma,arôme,aroma,аромат,fragancia;perfume;olor,parfum;senteur,fragrance;scent,запах;благоухание,food;personal_care;noun_thing,B1
+lámpara,lampe,lamp,лампа,bombilla;foco,luminaire,light,светильник,house;furniture;noun_thing,A1
+textil,textile,textile,текстиль,,,,,materials;clothing;noun_thing,B2
+coherencia,cohérence,coherence,согласованность,cohesión,,consistency,последовательность,abstract_concepts;noun_thing,B2
+equipaje,bagage,luggage,багаж,maletas;bultos,,baggage,чемоданы,travel;noun_thing,A2
+rocío,rosée,dew,роса,,,,,weather;nature;noun_thing,B2
+gorra,casquette,cap,кепка,cachucha,,baseball cap,бейсболка,clothing;noun_thing,A2
+tiburón,requin,shark,акула,escualo,,,,animals;noun_thing,A2
+coral,corail,coral,коралл,,,,,nature;materials;noun_thing,B1
+portátil,portable,portable,портативный,portativo,,,,technology;noun_thing,B1
+empatía,empathie,empathy,эмпатия,,,,,emotions;noun_thing,B2
+flexible,flexible,flexible,гибкий,elástico,souple,pliable,эластичный,textures_qualities;adjective,B1
+violeta,violet,violet,фиолетовый,morado,,purple,пурпурный,colors_patterns;adjective,A2
+cubo,seau,bucket,ведро,balde,,,бадья,house;tools_diy;noun_thing,A2
+manta,couverture,blanket,одеяло,frazada;cobija,plaid,,,house;furniture;noun_thing,A2
+prólogo,prologue,prologue,пролог,prefacio;introducción,préface;introduction,preface,предисловие;введение,literature;noun_thing,B2
+zapato,chaussure,shoe,туфля,calzado,soulier,footwear,обувь,clothing;noun_thing,A1
+caldo,bouillon,broth,бульон,consomé,,stock,отвар,food;cooking;noun_thing,B1
+almohada,oreiller,pillow,подушка,cojín;cabecera,traversin,,думка,house;furniture;noun_thing,A1
+orgánico,organique,organic,органический,,,,,food;plants_garden;adjective,B1
+granito,granit,granite,гранит,,,,,materials;construction;noun_thing,B2
+mojado,mouillé,wet,мокрый,húmedo,humide;trempé,damp;soaked,влажный;пропитанный,weather;textures_qualities;adjective,A1
+marfil,ivoire,ivory,слоновая кость,,,,,materials;colors_patterns;noun_thing,B2
+bigote,moustache,mustache,усы,,,,,body;personal_care;noun_thing,A2
+exactitud,exactitude,accuracy,точность,precisión,,precision,,abstract_concepts;noun_thing,B2
+faro,phare,lighthouse,маяк,,,,,travel;transportation;noun_place,B1
+auriculares,écouteurs,earphones,наушники,cascos;audífonos,,earbuds,,technology;music;noun_thing,A2
+escuadra,équerre,set square,угольник,,,,,tools_diy;shapes_measurements;noun_thing,B1
+cargador,chargeur,charger,зарядное устройство,,,,,technology;noun_thing,A2
+cuervo,corbeau,crow,ворон,,,,,animals;noun_thing,B1
+amplitud,amplitude,amplitude,амплитуда,,,,,shapes_measurements;abstract_concepts;noun_thing,B2
+metálico,métallique,metallic,металлический,,,,,materials;adjective,B1
+hormigón,béton,concrete,бетон,concreto,,,конкрет,materials;construction;noun_thing,B1
+confidencial,confidentiel,confidential,конфиденциальный,secreto,,secret,секретный,law_society;abstract_concepts;adjective,B2
+regla flexible,règle souple,flexible ruler,гибкая линейка,,,,,tools_diy;school;noun_thing,B1
+martillo de bola,marteau à panne ronde,ball-peen hammer,шариковый молоток,,,,,tools_diy;noun_thing,C1
+garaje,garage,garage,гараж,cochera,,,,house;transportation;noun_place,A2
+colchón,matelas,mattress,матрас,colchoneta,,,,house;furniture;noun_thing,A2
+zorro,renard,fox,лиса,,,,,animals;noun_thing,A2
+rayas,rayures,stripes,полосы,listas,,lines,линии,colors_patterns;noun_thing,A2
+resonancia,résonance,resonance,резонанс,eco,écho,echo,эхо,music;technology;noun_thing,B2
+chimenea,cheminée,chimney,дымоход,hogar,foyer,fireplace,камин,house;construction;noun_thing,B1
+resistente,résistant,resilient,стойкий,fuerte,solide,durable,прочный,textures_qualities;adjective,B2
+calefacción,chauffage,heating,отопление,calefactor,,,,house;home_appliances;noun_thing,A2
+corbata,cravate,tie,галстук,,,,,clothing;work;noun_thing,A2
+guantes de lana,gants en laine,wool gloves,шерстяные перчатки,,,,,clothing;weather;noun_thing,A2
+sótano,sous-sol,basement,подвал,,,,,house;noun_place,B1
+atún,thon,tuna,тунец,,,,,food;animals;noun_thing,A2
+objetividad,objectivité,objectivity,объективность,imparcialidad,,,непредвзятость,abstract_concepts;noun_thing,B2
+ventilador,ventilateur,fan,вентилятор,abanico,,,,house;home_appliances;noun_thing,A2
+oveja,brebis,ewe,овца,borrego,,sheep,,animals;noun_thing,A2
+plátano,banane,banana,банан,banana;cambur;guineo,,,,food;plants_garden;noun_thing,A1
+raramente,rarement,rarely,редко,pocas veces,,,,adverb,A2
+salado,salé,salty,солёный,,,,,food;textures_qualities;adjective,A2
+cadera,hanche,hip,бедро,,,,,body;noun_thing,A2
+interferencia,interférence,interference,помехи,perturbación,,,,abstract_concepts;technology;noun_thing,B2
+consistencia,consistance,consistency,консистенция,,,,,textures_qualities;abstract_concepts;noun_thing,B2
+trapo,chiffon,rag,тряпка,paño;bayeta,torchon,,ветошь,household_cleaning;noun_thing,A2
+yeso,plâtre,plaster,гипс,,,,,materials;construction;noun_thing,B1
+microondas,micro-ondes,microwave,микроволновка,,,,микроволновая печь,cooking;home_appliances;noun_thing,A2
+folleto,brochure,brochure,брошюра,prospecto,dépliant,pamphlet,проспект,media_communication;noun_thing,B1
+pera,poire,pear,груша,,,,,food;plants_garden;noun_thing,A1
+vinagre,vinaigre,vinegar,уксус,,,,,food;cooking;noun_thing,A2
+carrito,poussette,stroller,детская коляска,cochecito;carriola,,pram;pushchair,прогулочная коляска,baby_childcare;noun_thing,A2
+cajero,caissier,cashier,кассир,cajera,,,,shopping;professions;noun_person,A2
+tobillo,cheville,ankle,лодыжка,,,,,body;noun_thing,A2
+parche,correctif,patch,заплатка,remiendo,rustine,,лата,technology;noun_thing,B1
+pizarra,ardoise,blackboard,доска,pizarrón;encerado,tableau noir,chalkboard,школьная доска,school;noun_thing,A2
+esponja,éponge,sponge,губка,,,,,household_cleaning;personal_care;noun_thing,A2
+impresora,imprimante,printer,принтер,,,,,technology;work;noun_thing,A2
+hilo dental,fil dentaire,dental floss,зубная нить,seda dental,,,,personal_care;health;noun_thing,B1
+camarero,serveur,waiter,официант,mesero,,server,,professions;food;noun_person,A1
+ballena,baleine,whale,кит,,,,,animals;noun_thing,A2
+cocinero,cuisinier,cook,повар,,,,,professions;cooking;noun_person,A1
+gorro,bonnet,beanie,шапка,gorra,,,,clothing;weather;noun_thing,A2
+esmeralda,émeraude,emerald,изумруд,,,,,materials;colors_patterns;noun_thing,B2
+intestino,intestin,intestine,кишка,tripas,boyaux,,,body;health;noun_thing,B2
+tendido,literie,bedding,постельное бельё,ropa de cama,linge de lit,,,house;furniture;noun_thing,B1
+fresa,fraise,strawberry,клубника,frutilla,,,,food;plants_garden;noun_thing,A1
+cascada,cascade,waterfall,водопад,catarata,chute d'eau,,,nature;places_geography;noun_place,A2
+barroco,baroque,baroque,барокко,,,,,art;adjective,B2
+semáforo,feu tricolore,traffic light,светофор,,feu,,,transportation;noun_thing,A2
+peaje,péage,toll,плата за проезд,portazgo,,,дорожный сбор,transportation;money;noun_thing,B1
+huerto urbano,potager urbain,urban garden,городской сад,,,,,plants_garden;house;noun_place,B1
+calabaza,citrouille,pumpkin,тыква,auyama;zapallo,,,,food;plants_garden;noun_thing,A2
+frijoles,haricots,beans,фасоль,porotos;caraotas;judías;habichuelas,,,бобы,food;plants_garden;noun_thing,A1
+ciclón,cyclone,cyclone,циклон,huracán;tifón,ouragan;typhon,hurricane;typhoon,ураган;тайфун,weather;noun_thing,B1
+riñón,rein,kidney,почка,,,,,body;health;noun_thing,B2
+linterna,lampe de poche,flashlight,фонарик,linterna eléctrica,,torch,карманный фонарик,travel;technology;noun_thing,A2
+loro,perroquet,parrot,попугай,cotorra;papagayo,,macaw,ара,animals;noun_thing,A2
+blusa,blouse,blouse,блузка,camisola,,,,clothing;noun_thing,A2
+resaca,ressac,undertow,отбой,oleaje,houle,,прибой,nature;weather;noun_thing,C1
+prudencia,prudence,prudence,осторожность,cautela,précaution,caution,осмотрительность,abstract_concepts;noun_thing,B2
+compás,compas,drawing compass,циркуль,,,,,school;tools_diy;noun_thing,B1
+mermelada,confiture,jam,варенье,,,,,food;cooking;noun_thing,A1
+zócalo,plinthe,skirting board,плинтус,rodapié,,baseboard,,construction;house;noun_thing,C1
+helada,gel,frost,мороз,congelación;escarcha,gelée,freeze;glaze,,weather;noun_thing,B1
+cepillo de dientes,brosse à dents,toothbrush,зубная щетка,,,,,personal_care;health;noun_thing,A1
+vaqueros,jean,jeans,джинсы,pantalón vaquero,,denims,,clothing;noun_thing,A1
+calcetines,chaussettes,socks,носки,calcetas,,,,clothing;noun_thing,A1
+guante,gant,glove,перчатка,,,,,clothing;noun_thing,A1
+patata,pomme de terre,potato,картошка,papa,,,,food;plants_garden;noun_thing,A1
+lechuga,laitue,lettuce,салат,,,,,food;plants_garden;noun_thing,A1
+delfín,dauphin,dolphin,дельфин,,,,,animals;noun_thing,A2
+salmón,saumon,salmon,лосось,,,,,food;animals;noun_thing,A2
+trueno,tonnerre,thunder,гром,,,,,weather;noun_thing,B1
+regla metálica,règle métallique,metal ruler,металлическая линейка,,,,,tools_diy;school;noun_thing,A2
+zanahoria,carotte,carrot,морковь,,,,,food;plants_garden;noun_thing,A1
+abeja,abeille,bee,пчела,,,,,animals;noun_thing,A2
+rígido,rigide,rigid,жесткий,tieso,raide,stiff,твердый,textures_qualities;adjective,B2
+halcón,faucon,falcon,сокол,,,,,animals;noun_thing,B1
+cepillo eléctrico,raboteuse,electric planer,электрорубанок,cepilladora,rabot,,,tools_diy;noun_thing,C1
+relámpago,éclair,lightning,молния,rayo,foudre,bolt,,weather;noun_thing,B1
+jade,jade,jade,нефрит,,,,,materials;colors_patterns;noun_thing,B2
+parámetro,paramètre,parameter,параметр,,,,,technology;abstract_concepts;noun_thing,B2
+carnicero,boucher,butcher,мясник,,,,,professions;food;noun_person,A2
+pesimismo,pessimisme,pessimism,пессимизм,negatividad,,negativity,негативизм,emotions;noun_thing,B2
+compacto,compact,compact,компактный,denso,,dense,плотный,shapes_measurements;adjective,B1
+puerta de embarque,porte d'embarquement,boarding gate,посадочная стойка,puerta de salida,,,,travel;transportation;noun_place,A2
+pastilla de freno,plaquette de frein,brake pad,тормозная колодка,,,,,vehicle_parts;transportation;noun_thing,C1
+lunares,pois,polka dots,горошек,topos,,,в горошек,colors_patterns;noun_thing,A2
+ático,grenier,attic,чердак,desván;buhardilla;sobrado,,loft,мансарда,house;noun_place,B1
+liso,lisse,smooth,гладкий,llano,uni,plain,,textures_qualities;adjective,A2
+pulpo,pieuvre,octopus,осьминог,octópodo,poulpe,,,food;animals;noun_thing,A2
+paño,chiffon,cloth,ткань,trapo,,rag,,household_cleaning;noun_thing,A2
+escoba,balai,broom,метла,,,,,household_cleaning;noun_thing,A2
+vector,vecteur,vector,вектор,,,,,shapes_measurements;technology;noun_thing,B2
+acústica,acoustique,acoustics,акустика,,,,,music;technology;noun_thing,C1
+pijama,pyjama,pajamas,пижама,,,,,clothing;house;noun_thing,A1
+verdura,légume,vegetable,овощ,hortaliza,,,,food;plants_garden;noun_thing,A1
+hormiga,fourmi,ant,муравей,,,,,animals;noun_thing,A2
+mosquito,moustique,mosquito,комар,zancudo,,,,animals;noun_thing,A2
+pepino,concombre,cucumber,огурец,,,,,food;plants_garden;noun_thing,A2
+prótesis,prothèse,prosthesis,протез,,,,,health;accessibility;noun_thing,C1
+router,routeur,router,роутер,enrutador,,,,technology;noun_thing,B1
+gaviota,goéland,seagull,чайка,,mouette,gull,,animals;noun_thing,B1
+páramo,lande,moor,пустошь,erial;yermo,,wasteland,,nature;places_geography;noun_place,C1
+melón,melon,melon,дыня,,,,,food;plants_garden;noun_thing,A2
+periférico,périphérique,peripheral,периферия,,,,,technology;noun_thing,C1
+galleta,biscuit,cookie,печенье,,,biscuit,бисквит,food;noun_thing,A1
+caverna,caverne,cavern,пещера,cueva,grotte,cave,грот,nature;places_geography;noun_place,A2
+bombero,pompier,firefighter,пожарный,apagafuegos,,,,professions;law_society;noun_person,A2
+cuarzo,quartz,quartz,кварц,,,,,materials;noun_thing,C1
+ladera,versant,hillside,склон,falda,pente,slope,,nature;places_geography;noun_place,B2
+cucaracha,cafard,cockroach,таракан,barata,blatte,,,animals;noun_thing,B1
+grifo,robinet,faucet,кран,llave;canilla,,tap,,house;construction;noun_thing,A2
+despensa,garde-manger,pantry,кладовая,alacena,,larder,чулан,house;food;noun_place,B1
+yogur,yaourt,yogurt,йогурт,,,,,food;noun_thing,A1
+bragas,culotte,panties,трусы,panti;bombacha,,,,clothing;noun_thing,A2
+intermitente,clignotant,indicator,поворотник,luz de giro;direccional,,turn signal,,vehicle_parts;transportation;noun_thing,B1
+lavadora,lave-linge,washing machine,стиральная машина,lavarropas,machine à laver,,,house;home_appliances;noun_thing,A1
+cráter,cratère,crater,кратер,,,,,nature;places_geography;noun_place,B1
+altavoz,haut-parleur,speaker,динамик,parlante;bocina,enceinte,loudspeaker,колонка,technology;music;noun_thing,A2
+sábana,drap,sheet,простыня,,,,,house;furniture;noun_thing,A2
+pradera,prairie,meadow,луг,prado,pré,prairie,поле,nature;places_geography;noun_place,B1
+enchufe,fiche,plug,вилка,conector,prise mâle,,,technology;house;noun_thing,B1
+interruptor,interrupteur,switch,выключатель,apagador;llave de luz,,,переключатель,technology;house;noun_thing,A2
+diésel,gazole,diesel,дизель,gasoil,diesel,diesel fuel,солярка,transportation;materials;noun_thing,A2
+ternera,veau,veal,телятина,,,,,food;animals;noun_thing,B1
+trucha,truite,trout,форель,,,,,food;animals;noun_thing,B1
+camello,chameau,camel,верблюд,,,,,animals;noun_thing,A2
+ganso,oie,goose,гусь,oca,,,,animals;noun_thing,A2
+levadura,levure,yeast,дрожжи,,,,,food;cooking;noun_thing,B1
+altavoz inteligente,enceinte connectée,smart speaker,умная колонка,parlante inteligente,haut-parleur intelligent,,смарт-колонка,technology;house;noun_thing,B1
+cafetera,cafetière,coffee maker,кофеварка,cafetera de filtro,,,кофемашина,cooking;home_appliances;noun_thing,A2
+bufanda,écharpe,scarf,шарф,pañuelo;chalina,foulard,,платок;кашне,clothing;weather;noun_thing,A1
+sandalias,sandales,sandals,сандалии,,,,,clothing;noun_thing,A1
+remolque,remorque,trailer,прицеп,tráiler,,,трейлер,transportation;noun_thing,B1
+acantilado,falaise,cliff,утёс,precipicio,précipice,precipice,обрыв,nature;places_geography;noun_place,B1
+bombilla,ampoule,light bulb,лампочка,foco;lamparita;bombillo,,bulb;lamp,,technology;house;noun_thing,A2
+bluetooth,Bluetooth,Bluetooth,блютус,,,,,technology;noun_thing,A2
+termo,thermos,thermos,термос,botella termo,,,,travel;drink;noun_thing,A2
+discordia,discorde,discord,раздор,desacuerdo,désaccord,disagreement,разногласие,emotions;abstract_concepts;noun_thing,C1
+ansia,anxiété,anxiety,тревога,ansiedad,,,беспокойство,emotions;health;noun_thing,B2
+jarra,pichet,jug,кувшин,jarro,,pitcher,графин,cooking;drink;noun_thing,A2
+fragancia,fragrance,fragrance,аромат,aroma;perfume;olor,parfum;senteur,aroma;scent;perfume,дух;запах,personal_care;noun_thing,B1
+narciso,narcisse,daffodil,нарцисс,,,,,plants_garden;noun_thing,B2
+tibio,tiède,lukewarm,тепловатый,templado,,tepid,тёплый,textures_qualities;adjective,B1
+salchicha,saucisse,sausage,колбаса,,,,,food;noun_thing,A2
+ámbar,ambre,amber,янтарь,,,,,materials;colors_patterns;noun_thing,B2
+monzón,mousson,monsoon,муссон,,,,,weather;noun_thing,B2
+ardilla,écureuil,squirrel,белка,,,,,animals;noun_thing,A2
+credencial,badge,badge,бейдж,identificación,carte d'identification,ID card;credential,удостоверение,work;school;noun_thing,B1
+polen,pollen,pollen,пыльца,,,,,plants_garden;health;noun_thing,B1
+bacalao,morue,cod,треска,abadejo,,,,food;animals;noun_thing,B1
+abs,ABS,ABS,АБС,sistema antibloqueo de ruedas,,anti-lock braking system,антиблокировочная система,materials;vehicle_parts;noun_thing,C1
+peine,peigne,comb,гребень,,,,,personal_care;noun_thing,A1
+bufanda de lana,écharpe en laine,wool scarf,шерстяной шарф,,,,,clothing;weather;noun_thing,A2
+glaciar,glacier,glacier,ледник,,,,,nature;places_geography;noun_place,B1
+visiblemente,visiblement,visibly,видимо,notoriamente,notoirement,noticeably,заметно,adverb,B2
+tableta,tablette,tablet,планшет,tablet,,,,technology;noun_thing,A2
+champú,shampooing,shampoo,шампунь,,,,,personal_care;noun_thing,A1
+panadero,boulanger,baker,пекарь,,,,,professions;food;noun_person,A2
+colmena,ruche,beehive,улей,,,,,animals;plants_garden;noun_thing,B1
+pimiento,poivron,bell pepper,болгарский перец,pimiento morrón,,sweet pepper,сладкий перец,food;plants_garden;noun_thing,A2
+enfermero,infirmier,male nurse,медбрат,,,,,professions;health;noun_person,A2
+poncho,poncho,poncho,пончо,,,,,clothing;weather;noun_thing,B1
+calzoncillos,caleçon,underpants,трусы,calzones;calzoncillo,,briefs,,clothing;noun_thing,A2
+sandía,pastèque,watermelon,арбуз,patilla;melón de agua,,,,food;plants_garden;noun_thing,A2
+suéter,pull,sweater,свитер,jersey;pulóver,chandail,jumper,,clothing;weather;noun_thing,A1
+soldadura,soudure,welding,сварка,,,,,tools_diy;construction;noun_thing,C1
+cableado,câblage,wiring,проводка,,,,,technology;construction;noun_thing,B2
+acné,acné,acne,акне,granos;espinillas,boutons,pimples,угри,health;body;noun_thing,B1
+estaño,étain,tin,олово,,,,,materials;noun_thing,B2
+transformador,transformateur,transformer,трансформатор,transfo,,,,technology;noun_thing,C1
+rubí,rubis,ruby,рубин,,,,,materials;colors_patterns;noun_thing,B2
+sujetador,soutien-gorge,bra,бюстгальтер,brasier;sostén;corpiño,,brassiere,лифчик,clothing;noun_thing,A2
+inaccesible,inaccessible,inaccessible,недоступный,,,,,accessibility;adjective,B2
+taladro,perceuse,drill,дрель,taladradora,,,,tools_diy;noun_thing,B1
+dirección asistida,direction assistée,power steering,усилитель руля,,,,гидроусилитель,vehicle_parts;transportation;noun_thing,C1
+blindaje,blindage,armor,броня,coraza,,armour,доспехи,vehicle_parts;law_society;noun_thing,B2
+áspero,rugueux,rough,грубый,rugoso,rêche,coarse,шероховатый,textures_qualities;adjective,B1
+calidez,chaleur humaine,warmth,теплота,calidez humana,chaleur,human warmth,радушие,emotions;textures_qualities;noun_thing,B2
+foca,phoque,seal,тюлень,,,,,animals;noun_thing,B1
+hormiguero,fourmilière,anthill,муравейник,,,ant nest,,animals;nature;noun_thing,B2
+módem,modem,modem,модем,,,,,technology;noun_thing,B1
+pañal,couche,diaper,подгузник,pañal desechable,couche-culotte,nappy,,baby_childcare;noun_thing,A2
+costero,côtier,coastal,прибрежный,littoral,,,береговой,places_geography;adjective,B1
+cereza,cerise,cherry,вишня,guinda,,,черешня,food;plants_garden;noun_thing,A2
+estante,étagère,shelf,полка,anaquel;repisa,rayon,rack,стеллаж,furniture;house;noun_thing,A2
+taladro de columna,perceuse à colonne,pillar drill,сверлильный станок,,,,,tools_diy;noun_thing,C1
+moño,chignon,bun,пучок,rodete,,,,body;personal_care;noun_thing,B1
+proyector,projecteur,projector,проектор,videoproyector,vidéoprojecteur,,видеопроектор,technology;media_communication;noun_thing,B1
+desodorante,déodorant,deodorant,дезодорант,,,,,personal_care;noun_thing,A2
+maletero,coffre,trunk,багажник,baúl;maletera;cajuela,,boot,,vehicle_parts;transportation;noun_thing,A2
+frialdad,froideur,coldness,холодность,distancia;indiferencia,distance,aloofness,равнодушие,emotions;weather;noun_thing,B2
+impermeable,imperméable,waterproof,водонепроницаемый,estanco,étanche,impervious,непроницаемый,weather;textures_qualities;adjective,B1
+medusa,méduse,jellyfish,медуза,aguaviva;malagua,,,,animals;noun_thing,B1
+detergente,détergent,detergent,детергент,,,,,household_cleaning;noun_thing,A2
+sudadera,sweat,sweatshirt,толстовка,polerón;buzo,sweat-shirt,,,clothing;noun_thing,A2
+sardina,sardine,sardine,сардина,,,,,food;animals;noun_thing,A2
+cerrojo,pêne,bolt,задвижка,pasador,verrou,latch,засов,house;construction;noun_thing,B2
+especia,épice,spice,специя,condimento;aliño,condiment,seasoning,приправа,food;cooking;noun_thing,A2
+ermitaño,ermite,hermit,отшельник,anacoreta,,,,religion;noun_person,B2
+papaya,papaye,papaya,папайя,lechosa;frutabomba,,,,food;plants_garden;noun_thing,A2
+adaptador,adaptateur,adapter,адаптер,,,,,technology;noun_thing,B1
+cebra,zèbre,zebra,зебра,,,,,animals;noun_thing,A1
+crujiente,croquant,crunchy,хрустящий,crocante,croustillant,crispy,,food;textures_qualities;adjective,B1
+escáner,scanner,scanner,сканер,digitalizador,,,,technology;noun_thing,A2
+savia,sève,sap,сок,,,,,plants_garden;nature;noun_thing,B2
+estampado,imprimé,print,принт,impreso,,pattern,рисунок,colors_patterns;clothing;noun_thing,B1
+hostal,auberge,hostel,хостел,albergue,,inn,,travel;noun_place,A2
+anguila,anguille,eel,угорь,,,,,food;animals;noun_thing,B2
+opaco,opaque,opaque,непрозрачный,,,,,textures_qualities;adjective,B2
+avispa,guêpe,wasp,оса,,,,,animals;noun_thing,B1
+aceituna,olive,olive,маслина,,,,оливка,food;plants_garden;noun_thing,A2
+polilla,mite,moth,моль,tine,,,,animals;noun_thing,B1
+afiche,affiche,poster,плакат,póster;cartel,,,афиша,media_communication;art;noun_thing,A2
+inalámbrico,sans fil,wireless,беспроводной,,,,,technology;adjective,B1
+marisco,fruits de mer,seafood,морепродукты,,,,,food;animals;noun_thing,A2
+muletas,béquilles,crutches,костыли,,,,,health;accessibility;noun_thing,B1
+turquesa,turquoise,turquoise,бирюза,,,,,colors_patterns;materials;noun_thing,B1
+jirafa,girafe,giraffe,жираф,,,,,animals;noun_thing,A1
+montañoso,montagneux,mountainous,гористый,,,,,places_geography;adjective,B2
+fregadero,évier,sink,раковина,pila,,basin,,house;construction;noun_thing,A2
+kiwi,kiwi,kiwi,киви,,,,,food;plants_garden;noun_thing,A1
+berenjena,aubergine,eggplant,баклажан,,,aubergine,,food;plants_garden;noun_thing,A2
+melocotón,pêche,peach,персик,durazno,,,,food;plants_garden;noun_thing,A2
+trenza,tresse,braid,коса,,natte,plait,,body;personal_care;noun_thing,B1
+vasija,jarre,vessel,сосуд,recipiente,,jar,ёмкость,house;cooking;noun_thing,B2
+bochorno,chaleur étouffante,stifling heat,душная жара,calor;sofoco,canicule,heatwave;mugginess,зной,weather;noun_thing,C1
+cojín,coussin,cushion,подушка,almohada;almohadón,,pillow,декоративная подушка,furniture;house;noun_thing,A1
+calcetín,chaussette,sock,носок,,,,,clothing;noun_thing,A1
+arruga,ride,wrinkle,морщина,,,,,body;clothing;noun_thing,B1
+absorbente,absorbant,absorbent,впитывающий,,,,,textures_qualities;adjective,B2
+camaleón,caméléon,chameleon,хамелеон,,,,,animals;noun_thing,B1
+airbag,airbag,airbag,подушка безопасности,bolsa de aire,coussin gonflable,,,vehicle_parts;transportation;noun_thing,B1
+mapache,raton laveur,raccoon,енот,,,,,animals;noun_thing,B1
+peca,tache de rousseur,freckle,веснушка,,,,,body;noun_thing,B1
+saltamontes,sauterelle,grasshopper,кузнечик,chapulín,criquet,locust,саранча,animals;noun_thing,B1
+nota adhesiva,note adhésive,sticky note,липкая записка,post-it,,post-it,стикер,school;work;noun_thing,A2
+zafiro,saphir,sapphire,сапфир,,,,,materials;colors_patterns;noun_thing,B2
+minimalista,minimaliste,minimalist,минималист,,,,,art;adjective,B2
+pegajoso,collant,sticky,липкий,adhesivo,adhésif,tacky,клейкий,textures_qualities;adjective,B1
+repelente,répulsif,repellent,репеллент,repelente de insectos,anti-moustiques,,средство от насекомых,personal_care;health;noun_thing,B1
+barandilla,garde-corps,railing,перила,baranda;pasamanos,rampe;main courante,handrail,ограждение,house;construction;noun_thing,B1
+morsa,morse,walrus,морж,,,,,animals;noun_thing,B1
+brócoli,brocoli,broccoli,брокколи,brécol,,,,food;plants_garden;noun_thing,A2
+arnés,harnais,harness,упряжь,,,,,tools_diy;sports;noun_thing,B2
+señalización táctil,signalétique tactile,tactile signage,тактильный знак,,signalisation tactile,,,accessibility;media_communication;noun_thing,C1
+braille,braille,braille,шрифт Брайля,,,,,accessibility;media_communication;noun_thing,B1
+caldero,chaudron,cauldron,котел,olla,marmite,pot,кастрюля,cooking;noun_thing,B2
+trineo,luge,sled,санки,,,sledge,салазки,transportation;sports;weather;noun_thing,B1
+merluza,merlu,hake,хек,pescada,colin,,,food;animals;noun_thing,B2
+lija,papier de verre,sandpaper,наждачная бумага,papel de lija,,,,tools_diy;noun_thing,B1
+portafolios,porte-documents,briefcase,портфель,carpeta,,portfolio,,work;noun_thing,B1
+flequillo,frange,bangs,челка,cerquillo;copete,,fringe,,body;personal_care;noun_thing,B1
+ciruela,prune,plum,слива,,,,,food;plants_garden;noun_thing,A2
+pantuflas,pantoufles,slippers,тапки,zapatillas,chaussons,,домашние туфли,clothing;house;noun_thing,A2
+ampolla,ampoule,blister,волдырь,cloque,,,,health;body;noun_thing,A2
+chupete,tétine,pacifier,пустышка,chupón;chupo,sucette,dummy,соска,baby_childcare;noun_thing,A2
+tetera,théière,teapot,заварник,,,,,cooking;drink;noun_thing,A2
+colcha,couvre-lit,bedspread,покрывало,cubrecama,dessus-de-lit,coverlet,,house;furniture;noun_thing,B2
+chanclas,tongues,flip-flops,шлепанцы,chancletas;sandalias,claquettes,thongs;sandals,,clothing;travel;noun_thing,A2
+raqueta de nieve,raquette à neige,snowshoe,снегоступ,,,,,sports;weather;noun_thing,B2
+maceta colgante,pot suspendu,hanging pot,подвесной горшок,maceta suspendida,,hanging planter,,plants_garden;house;noun_thing,B2
+triciclo,tricycle,tricycle,трёхколёсный велосипед,,,,,baby_childcare;transportation;noun_thing,A2
+espinaca,épinard,spinach,шпинат,,,,,food;plants_garden;noun_thing,A2
+cremoso,crémeux,creamy,сливочный,untuoso,onctueux,smooth,кремообразный,food;textures_qualities;adjective,B1
+escarcha,givre,frost,иней,helada,gelée,,мороз,weather;noun_thing,B1
+recibidor,entrée,foyer,прихожая,vestíbulo;hall,,entryway;hall,,house;noun_place,B1
+curvo,courbe,curved,изогнутый,torcido,incurvé,bent,,shapes_measurements;adjective,B1
+desván,grenier,attic,чердак,ático;buhardilla,,,,house;noun_place,B1
+biberón,biberon,baby bottle,бутылочка,tetero;mamila;mamadera,,,,baby_childcare;drink;noun_thing,A2
+cerámico,céramique,ceramic,керамика,,,,,materials;adjective,B2
+gasoil,gazole,diesel,дизель,diésel,diesel,,солярка,transportation;materials;noun_thing,A2
+magenta,magenta,magenta,маджента,,,,,colors_patterns;adjective,B2
+analgésico,antalgique,analgesic,анальгетик,calmante,calmant,painkiller,обезболивающее,health;noun_thing,B2
+coliflor,chou-fleur,cauliflower,цветная капуста,,,,,food;plants_garden;noun_thing,A2
+broca,foret,drill bit,сверло,mecha,mèche,,,tools_diy;noun_thing,B2
+camisón,chemise de nuit,nightgown,ночная рубашка,,,nightdress,,clothing;house;noun_thing,B1
+codorniz,caille,quail,перепел,,,,,food;animals;noun_thing,B2
+óvalo,ovale,oval,овал,,,,,shapes_measurements;noun_thing,A2
+azucarero,sucrier,sugar bowl,сахарница,,,,,cooking;noun_thing,B1
+pasamanos,rampe,handrail,перила,barandilla,main courante,,,accessibility;construction;noun_thing,B1
+corralito,parc pour bébé,playpen,манеж,corral,,baby enclosure,,baby_childcare;noun_thing,B2
+hematoma,ecchymose,bruise,синяк,moretón;cardenal,bleu,hematoma,гематома,health;body;noun_thing,B1
+contraportada,quatrième de couverture,back cover,задняя обложка,contratapa,,,,literature;media_communication;noun_thing,B1
+lavavajillas,lave-vaisselle,dishwasher,посудомоечная машина,,,,,home_appliances;household_cleaning;noun_thing,A2
+resbaladizo,glissant,slippery,скользкий,escurridizo,,,,textures_qualities;adjective,B1
+mesilla,table de chevet,bedside table,прикроватная тумбочка,mesita de noche,,nightstand,,house;furniture;noun_thing,A2
+clorofila,chlorophylle,chlorophyll,хлорофилл,,,,,plants_garden;nature;noun_thing,B2
+edredón,édredon,quilt,одеяло,acolchado;plumón,couette,duvet,пуховое одеяло,house;furniture;noun_thing,A2
+lámina,feuille,sheet,лист,hoja;plancha,plaque,leaf;plaque,пластина,materials;media_communication;noun_thing,A2
+soplete,chalumeau,blowtorch,горелка,,,,,tools_diy;noun_thing,C1
+fregona,serpillière,mop,швабра,trapeador;mopa,,,,household_cleaning;noun_thing,A2
+faisán,faisan,pheasant,фазан,,,,,food;animals;noun_thing,B2
+salero,salière,salt shaker,солонка,,,,,cooking;food;noun_thing,B1
+viscoso,visqueux,viscous,вязкий,espeso,,,,textures_qualities;adjective,C1
+pradera alpina,alpage,alpine meadow,альпийский луг,,,,,nature;places_geography;noun_place,C1
+antiséptico,antiseptique,antiseptic,антисептик,desinfectante,désinfectant,disinfectant,дезинфицирующее средство,health;noun_thing,B2
+alcalino,alcalin,alkaline,щелочной,básico,basique,basic,основной,materials;adjective,C1
+coordenada,coordonnée,coordinate,координата,,,,,shapes_measurements;noun_thing,B2
+paragolpes,pare-chocs,bumper,бампер,parachoques,,,,vehicle_parts;transportation;noun_thing,B1
+ágata,agate,agate,агат,,,,,materials;colors_patterns;noun_thing,C1
+rococó,rococo,rococo,рококо,,,,,art;adjective,C1
+andador,déambulateur,walker,ходунки,caminador,,,,health;accessibility;noun_thing,B1
+narcótico,narcotique,narcotic,наркотик,estupefaciente;droga,stupéfiant;drogue,drug,наркотическое средство,health;noun_thing,B2
+mirilla,judas,peephole,глазок,mirilla de puerta,,,,house;construction;noun_thing,B2
+ventisca,blizzard,blizzard,метель,nevasca;temporal,tempête de neige,,пурга,weather;noun_thing,B2
+grapa,agrafe,staple,скоба,gancho,,,,school;work;noun_thing,B1
+plumón,couette,duvet,пуховое одеяло,edredón,édredon,comforter,одеяло,house;furniture;noun_thing,B1
+perchero mural,patère,wall hook,настенный крючок,perchero de pared,porte-manteau mural,,,house;furniture;noun_thing,B1
+balda,étagère,shelf,полка,estante;repisa,,ledge,этажерка,house;furniture;noun_thing,A2
+ayllu,communauté andine,ayllu,айлью,,,,,law_society;noun_thing,C2
+guisante,pois,pea,горох,arveja;chícharo;petipuá,,,,food;plants_garden;noun_thing,A2
+carpeta de anillas,classeur à anneaux,ring binder,папка на кольцах,archivador,,,,school;work;noun_thing,B1
+amatista,améthyste,amethyst,аметист,,,,,materials;colors_patterns;noun_thing,B2
+fiordo,fjord,fjord,фьорд,,,,,nature;places_geography;noun_place,B2
+pestillo,loquet,latch,щеколда,picaporte,targette,,,house;construction;noun_thing,B2
+encerado,ciré,oilcloth,клеёнка,hule,toile cirée,,,materials;house;noun_thing,C1
+cian,cyan,cyan,циан,,,,,colors_patterns;adjective,B2
+trastero,débarras,storage room,кладовка,cuarto de trebejos;bodega,,,подсобка,house;noun_place,B1
+camelia,camélia,camellia,камелия,,,,,plants_garden;noun_thing,C1
+topacio,topaze,topaz,топаз,,,,,materials;colors_patterns;noun_thing,B2
+parka,parka,parka,парка,anorak,,,,clothing;weather;noun_thing,B1
+almohadón,grand coussin,large cushion,большая подушка,cojín grande,,,,house;furniture;noun_thing,A2
+rugoso,rugueux,rough,шероховатый,áspero,rêche,coarse,грубый,textures_qualities;adjective,B1
+crisantemo,chrysanthème,chrysanthemum,хризантема,,,,,plants_garden;noun_thing,B2
+poroso,poreux,porous,пористый,,,,,textures_qualities;adjective,B2
+conversor,convertisseur,converter,конвертер,convertidor,,,,technology;noun_thing,B2
+biodegradable,biodégradable,biodegradable,биоразлагаемый,,,,,law_society;nature;adjective,B2
+lenguado,sole,sole,морской язык,,,,,food;animals;noun_thing,B2
+reutilizable,réutilisable,reusable,многоразовый,,,,,law_society;nature;adjective,B1
+mandolina,mandoline,mandolin,мандолина,,,,,cooking;noun_thing,C1
+bajamar,marée basse,low tide,отлив,marea baja,,,,nature;weather;noun_thing,B1
+reciclable,recyclable,recyclable,перерабатываемый,,,,,law_society;nature;adjective,B1
+abejorro,bourdon,bumblebee,шмель,,,,,animals;noun_thing,B2
+perforadora,perceuse,drill,дрель,taladradora,perforatrice,,,tools_diy;noun_thing,B1
+suavizante,adoucissant,softener,смягчитель,,,,,household_cleaning;noun_thing,B1
+sonajero,hochet,rattle,погремушка,sonaja,,,,baby_childcare;noun_thing,B1
+rallador,râpe,grater,тёрка,rallo,,,,cooking;noun_thing,B1
+pleamar,marée haute,high tide,прилив,marea alta,,,,nature;weather;noun_thing,B1
+explícito,explicite,explicit,явный,,,,,media_communication;adjective,B2
+botijo,botijo,botijo,глиняный кувшин для воды,cántaro,,,,drink;house;noun_thing,C2
+anémona,anémone,anemone,анемона,,,,,plants_garden;nature;noun_thing,C1
+batidor,fouet,whisk,венчик,batidora,,,,cooking;noun_thing,B1
+pescadero,poissonnier,fishmonger,продавец рыбы,,,,,food;professions;noun_person,B2
+autocaravana,camping-car,motorhome,автодом,casa rodante,,campervan,,travel;transportation;noun_thing,B1
+cabecero,tête de lit,headboard,изголовье,respaldo;cabecera,,,,house;furniture;noun_thing,B2
+meandro,méandre,meander,меандр,curva,virage,,,nature;places_geography;noun_place,C1
+jamba,huisserie,jamb,косяк,marco,montant;encadrement,,,house;construction;noun_thing,C1
+plomada,fil à plomb,plumb line,отвес,,,,,tools_diy;construction;noun_thing,C1
+exprimidor,presse-agrumes,juicer,соковыжималка,sacajugos,,,,cooking;drink;noun_thing,A2
+ónix,onyx,onyx,оникс,,,,,materials;colors_patterns;noun_thing,C1
+ensaladera,saladier,salad bowl,салатник,,,,,cooking;food;noun_thing,A2
+pimentero,poivrier,pepper mill,перечница,,,,,cooking;food;noun_thing,B1
+grapadora,agrafeuse,stapler,степлер,engrapadora,,,,school;work;noun_thing,A2
+mosquetón,mousqueton,carabiner,карабин,,,,,sports;travel;tools_diy;noun_thing,B2
+portaequipajes,porte-bagages,luggage rack,багажник,baca,galerie,,,travel;transportation;vehicle_parts;noun_thing,A2
+climatizador,climatiseur,air conditioner,кондиционер,aire acondicionado,climatisation,,,home_appliances;weather;noun_thing,A2
+somier,sommier,bed base,каркас кровати,base de cama,,,,house;furniture;noun_thing,B2
+trona,chaise haute,high chair,высокий стул,silla alta;periquera,,,,baby_childcare;furniture;noun_thing,A2
+rótulo,enseigne,sign,вывеска,letrero,,,,media_communication;shopping;noun_thing,A2
+rocalla,rocaille,rock garden,альпинарий,jardín de rocas,,,,plants_garden;materials;noun_thing,C1
+raspador,grattoir,scraper,скребок,rasqueta,racloir,,,tools_diy;household_cleaning;noun_thing,B2
+pelador,éplucheur,peeler,овощечистка,pelapapas,économe,,экономка,cooking;noun_thing,B1
+regleta,multiprise,power strip,удлинитель,zapatilla;multicontacto,bloc multiprise,multisocket,,technology;house;noun_thing,B1
+escoplo,burin,chisel,зубило,cincel,,,,tools_diy;noun_thing,B2
+formón,bédane,gouge,стамеска,gubia,,,,tools_diy;noun_thing,C1
+colutorio,bain de bouche,mouthwash,ополаскиватель,enjuague bucal,,,,personal_care;health;noun_thing,B1
+lebrillo,bassine,basin,таз,barreño,cuvette,,,cooking;household_cleaning;noun_thing,C1
+colchón antiescaras,matelas anti-escarres,pressure relief mattress,матрас против пролежней,,,,,health;accessibility;furniture;noun_thing,C1
+atornillador,tournevis,screwdriver,отвёртка,destornillador,,,,tools_diy;noun_thing,A2
+cordino,cordelette,cord,шнур,,,,,sports;travel;tools_diy;noun_thing,B2
+subrayador,surligneur,highlighter,маркер,resaltador,marqueur,,выделитель,school;work;noun_thing,A2
+compostera,composteur,composter,компостер,compostador,,,,plants_garden;household_cleaning;noun_thing,B2
+prolongador,rallonge,extension cord,удлинитель,alargador;extensión,rallonge électrique,extension cable,удлинительный кабель,technology;house;noun_thing,B1
+espinillera,protège-tibias,shin guard,щиток,canillera,,,защита на голень,sports;clothing;noun_thing,B1

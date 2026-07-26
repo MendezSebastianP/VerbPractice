@@ -15,6 +15,7 @@ from app.db.models import (
     Tag,
     TranslationReport,
     UserAddedWord,
+    UserWordLookup,
     UserPreference,
     UserProgress,
     Word,
@@ -30,6 +31,7 @@ from app.schemas.spa import (
     ExpandWordPayload,
     OcrExtractResponse,
     ReportTranslationPayload,
+    SelectWordSensePayload,
 )
 from app.services.gamification import ensure_user_preference
 from app.services.ocr_service import (
@@ -39,12 +41,17 @@ from app.services.ocr_service import (
     OcrUnavailableError,
     extract_text,
 )
-from app.services.word_ai_service import WordAIError, expand_word, translate_word
+from app.services.word_ai_service import (
+    WordAIError,
+    expand_word,
+    translate_selected_sense,
+    translate_word,
+)
 
 router = APIRouter(prefix="/api/words", tags=["words"])
 
 
-def _serialize_lexical(entry: WordLexicalEntry) -> dict:
+def _serialize_lexical(entry) -> dict:
     return {
         "id": entry.id,
         "word_id": entry.word_id,
@@ -55,13 +62,41 @@ def _serialize_lexical(entry: WordLexicalEntry) -> dict:
     }
 
 
-def _serialize_native(entry: WordNativeTranslation, lang_code: str) -> dict:
+def _serialize_native(entry, lang_code: str) -> dict:
     return {
         "id": entry.id,
         "word_id": entry.word_id,
         "native_language_code": lang_code,
         "translation": entry.translation,
         "note": entry.note,
+    }
+
+
+def _serialize_translated_result(result, mother_code: str) -> dict:
+    assert result.word is not None and result.lexical is not None
+    return {
+        "lexical": _serialize_lexical(result.lexical),
+        "natives": [
+            _serialize_native(native, mother_code)
+            for native in (result.natives or [])
+        ],
+        "question_answer": result.question_answer,
+        "selected_sense_id": result.selected_sense_id,
+        "sense_candidates": [
+            {
+                "id": candidate.id,
+                "sense_key": candidate.sense_key,
+                "definition": candidate.definition,
+                "part_of_speech": candidate.part_of_speech,
+            }
+            for candidate in (result.sense_candidates or [])
+        ],
+        "ranking": {
+            "method": result.ranking_method,
+            "score": result.ranking_score,
+            "margin": result.ranking_margin,
+        },
+        "reportable": result.reportable,
     }
 
 
@@ -141,6 +176,7 @@ async def add_word(
             learning_lang=learning,
             mother_tongue=mother,
             context=payload.context,
+            question=payload.question,
             user_id=auth.user.id,
         )
     except WordAIError as exc:
@@ -157,8 +193,11 @@ async def add_word(
         }
 
     assert result.word is not None and result.lexical is not None and result.natives is not None
+    serialized_result = _serialize_translated_result(result, mother.code)
 
     language_pair = f"{learning.code.lower()}_{mother.code.lower()}"
+    cleaned_context = (payload.context or "").strip() or None
+    cleaned_question = (payload.question or "").strip() or None
 
     existing_added = await db.execute(
         select(UserAddedWord).where(
@@ -173,12 +212,33 @@ async def add_word(
             user_id=auth.user.id,
             word_id=result.word.id,
             language_pair=language_pair,
-            context_hint=payload.context,
+            context_hint=cleaned_context,
+            selected_sense_id=result.selected_sense_id,
         )
         db.add(added)
+    else:
+        added.context_hint = cleaned_context
+        added.selected_sense_id = result.selected_sense_id
     # Bump even when the word was already in the pool, so it resurfaces at the
     # top of "Recent searches"; added_at stays untouched for the unlock queue.
     added.last_searched_at = datetime.now(timezone.utc)
+    await db.flush()
+
+    private_lookup = UserWordLookup(
+        user_id=auth.user.id,
+        word_id=result.word.id,
+        selected_sense_id=result.selected_sense_id,
+        source_language_id=learning.id,
+        target_language_id=mother.id,
+        context=cleaned_context,
+        question=cleaned_question,
+        answer=result.question_answer,
+        context_source=payload.context_source,
+        result_data=serialized_result,
+        ranking_method=result.ranking_method,
+        ranking_score=result.ranking_score,
+    )
+    db.add(private_lookup)
     await db.flush()
 
     force_unlocked = False
@@ -207,10 +267,6 @@ async def add_word(
             force_unlocked = True
 
     await db.commit()
-    await db.refresh(result.word)
-    await db.refresh(result.lexical)
-    for n in result.natives:
-        await db.refresh(n)
 
     return {
         "status": result.status,
@@ -220,13 +276,83 @@ async def add_word(
         "text": result.word.text,
         "learning_language_code": learning.code,
         "mother_tongue_code": mother.code,
-        "lexical": _serialize_lexical(result.lexical),
-        "natives": [_serialize_native(n, mother.code) for n in result.natives],
+        **serialized_result,
         "general_note": result.general_note,
         "suggested_tags": result.suggested_tags or [],
         "priority_queue_id": added.id,
+        "lookup_id": private_lookup.id,
         "force_unlocked": force_unlocked,
     }
+
+
+@router.post("/lookups/{lookup_id}/sense")
+async def select_word_sense(
+    request: Request,
+    lookup_id: int,
+    payload: SelectWordSensePayload,
+    auth: AuthContext = Depends(require_auth_context),
+    db: AsyncSession = Depends(get_db),
+):
+    validate_csrf(request, payload.csrf_token)
+    row = await db.execute(
+        select(UserWordLookup).where(
+            UserWordLookup.id == lookup_id,
+            UserWordLookup.user_id == auth.user.id,
+        )
+    )
+    private_lookup = row.scalar_one_or_none()
+    if private_lookup is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Private word lookup not found",
+        )
+
+    word = await db.get(Word, private_lookup.word_id)
+    learning = await db.get(Language, private_lookup.source_language_id)
+    mother = await db.get(Language, private_lookup.target_language_id)
+    if word is None or learning is None or mother is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Word or language no longer exists",
+        )
+
+    try:
+        result = await translate_selected_sense(
+            db,
+            word=word,
+            sense_id=payload.sense_id,
+            learning_lang=learning,
+            mother_tongue=mother,
+            context=private_lookup.context,
+            question=private_lookup.question,
+            user_id=auth.user.id,
+        )
+    except WordAIError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=str(exc),
+        ) from exc
+
+    serialized_result = _serialize_translated_result(result, mother.code)
+    private_lookup.selected_sense_id = result.selected_sense_id
+    private_lookup.answer = result.question_answer
+    private_lookup.result_data = serialized_result
+    private_lookup.ranking_method = result.ranking_method
+    private_lookup.ranking_score = result.ranking_score
+
+    language_pair = f"{learning.code.lower()}_{mother.code.lower()}"
+    added_row = await db.execute(
+        select(UserAddedWord).where(
+            UserAddedWord.user_id == auth.user.id,
+            UserAddedWord.word_id == word.id,
+            UserAddedWord.language_pair == language_pair,
+        )
+    )
+    added = added_row.scalar_one_or_none()
+    if added is not None:
+        added.selected_sense_id = result.selected_sense_id
+    await db.commit()
+    return serialized_result
 
 
 @router.post("/ocr", response_model=OcrExtractResponse)
@@ -325,6 +451,21 @@ async def word_history(
         l.word_id: l for l in lex_lookup.scalars().all()
     }
 
+    private_lookup_rows = await db.execute(
+        select(UserWordLookup)
+        .where(
+            UserWordLookup.user_id == auth.user.id,
+            UserWordLookup.word_id.in_(word_ids),
+        )
+        .order_by(UserWordLookup.created_at.desc(), UserWordLookup.id.desc())
+    )
+    latest_private_by_pair: dict[tuple[int, int, int], UserWordLookup] = {}
+    for lookup in private_lookup_rows.scalars().all():
+        latest_private_by_pair.setdefault(
+            (lookup.word_id, lookup.source_language_id, lookup.target_language_id),
+            lookup,
+        )
+
     native_lookup = await db.execute(
         select(WordNativeTranslation)
         .where(WordNativeTranslation.word_id.in_(word_ids))
@@ -348,17 +489,31 @@ async def word_history(
         word = words_by_id.get(added.word_id)
         if word is None:
             continue
-        lex = lex_by_word.get(word.id)
-        if lex is None:
-            continue
         learning_code, _, mother_code = added.language_pair.partition("_")
         mother_lang = next(
             (l for l in lang_by_id.values() if l.code.lower() == mother_code.lower()),
             None,
         )
+        private_lookup = (
+            latest_private_by_pair.get((word.id, word.language_id, mother_lang.id))
+            if mother_lang
+            else None
+        )
+        private_data = private_lookup.result_data if private_lookup else {}
+        lex = lex_by_word.get(word.id)
+        serialized_lexical = private_data.get("lexical") if private_data else None
+        if serialized_lexical is None and lex is not None:
+            serialized_lexical = _serialize_lexical(lex)
+        if serialized_lexical is None:
+            continue
         natives = (
             natives_by_pair.get((word.id, mother_lang.id), []) if mother_lang else []
         )
+        serialized_natives = private_data.get("natives") if private_data else None
+        if serialized_natives is None:
+            serialized_natives = [
+                _serialize_native(n, mother_code.upper()) for n in natives
+            ]
         entries.append(
             {
                 "added_id": added.id,
@@ -368,10 +523,14 @@ async def word_history(
                 "learning_language_code": learning_code.upper(),
                 "mother_tongue_code": mother_code.upper(),
                 "added_at": added.added_at.isoformat() if added.added_at else None,
-                "lexical": _serialize_lexical(lex),
-                "natives": [
-                    _serialize_native(n, mother_code.upper()) for n in natives
-                ],
+                "lexical": serialized_lexical,
+                "natives": serialized_natives,
+                "context": private_lookup.context if private_lookup else None,
+                "question": private_lookup.question if private_lookup else None,
+                "question_answer": private_lookup.answer if private_lookup else None,
+                "selected_sense_id": (
+                    private_lookup.selected_sense_id if private_lookup else None
+                ),
                 "tags": tags_by_word.get(word.id, []),
             }
         )
@@ -492,6 +651,7 @@ async def delete_user_word(
 ):
     validate_csrf(request, payload.csrf_token)
     pair_key = payload.language_pair.lower()
+    learning, mother = await _resolve_language_pair(db, pair_key)
 
     await db.execute(
         delete(UserAddedWord).where(
@@ -506,6 +666,14 @@ async def delete_user_word(
             UserProgress.item_type == ProgressItemType.WORD,
             UserProgress.item_id == word_id,
             UserProgress.language_pair == pair_key,
+        )
+    )
+    await db.execute(
+        delete(UserWordLookup).where(
+            UserWordLookup.user_id == auth.user.id,
+            UserWordLookup.word_id == word_id,
+            UserWordLookup.source_language_id == learning.id,
+            UserWordLookup.target_language_id == mother.id,
         )
     )
     await db.commit()

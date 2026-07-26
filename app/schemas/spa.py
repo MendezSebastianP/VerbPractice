@@ -99,8 +99,16 @@ class SettingsPatchPayload(CsrfPayload):
 class AddWordPayload(CsrfPayload):
     input_text: str = Field(min_length=1, max_length=128)
     context: str | None = Field(default=None, max_length=512)
+    question: str | None = Field(default=None, max_length=512)
+    context_source: str = Field(
+        default="manual", pattern=r"^(manual|photo)$"
+    )
     learning_lang_code: str | None = Field(default=None, max_length=8)
     mother_lang_code: str | None = Field(default=None, max_length=8)
+
+
+class SelectWordSensePayload(CsrfPayload):
+    sense_id: int = Field(gt=0)
 
 
 class AddWordOfflinePayload(CsrfPayload):

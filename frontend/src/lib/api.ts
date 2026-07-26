@@ -19,6 +19,7 @@ import type {
   MonitorPayload,
   OcrResponse,
   PriorityQueueEntry,
+  SenseSelectionResult,
   StudyPoolResponse,
   ThemeName,
   TranslationState,
@@ -148,10 +149,17 @@ export const api = {
   addWord: (payload: {
     input_text: string;
     context?: string;
+    question?: string;
+    context_source?: 'manual' | 'photo';
     learning_lang_code?: string;
     mother_lang_code?: string;
     csrf_token: string;
   }) => request<AddWordResponse>('/api/words/add', { method: 'POST', body: JSON.stringify(payload) }),
+  selectWordSense: (lookup_id: number, sense_id: number, csrf_token: string) =>
+    request<SenseSelectionResult>(`/api/words/lookups/${lookup_id}/sense`, {
+      method: 'POST',
+      body: JSON.stringify({ sense_id, csrf_token }),
+    }),
   ocrExtract: (image: Blob, lang_code: string, csrf_token: string) => {
     const form = new FormData();
     form.append('image', image, 'subtitle.jpg');

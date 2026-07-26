@@ -611,7 +611,7 @@ export interface UserSettingsPatch {
 }
 
 export interface LexicalEntry {
-  id: number;
+  id: number | null;
   word_id: number;
   definition: string;
   synonyms: Array<{ text: string; gloss?: string }>;
@@ -620,7 +620,7 @@ export interface LexicalEntry {
 }
 
 export interface NativeTranslation {
-  id: number;
+  id: number | null;
   word_id: number;
   native_language_code: string;
   translation: string;
@@ -640,10 +640,36 @@ export interface AddedWordResult {
   lexical: LexicalEntry;
   natives: NativeTranslation[];
   general_note: string | null;
+  question_answer: string | null;
+  selected_sense_id: number | null;
+  sense_candidates: {
+    id: number;
+    sense_key: string;
+    definition: string;
+    part_of_speech: string | null;
+  }[];
+  ranking: {
+    method: string | null;
+    score: number | null;
+    margin: number | null;
+  };
+  reportable: boolean;
   suggested_tags: string[];
   priority_queue_id: number | null;
+  lookup_id: number;
   force_unlocked: boolean;
 }
+
+export type SenseSelectionResult = Pick<
+  AddedWordResult,
+  | 'lexical'
+  | 'natives'
+  | 'question_answer'
+  | 'selected_sense_id'
+  | 'sense_candidates'
+  | 'ranking'
+  | 'reportable'
+>;
 
 export interface AddedWordNotFound {
   status: 'not_found';
@@ -694,6 +720,10 @@ export interface WordHistoryEntry {
   added_at: string | null;
   lexical: LexicalEntry;
   natives: NativeTranslation[];
+  context: string | null;
+  question: string | null;
+  question_answer: string | null;
+  selected_sense_id: number | null;
   tags: string[];
 }
 

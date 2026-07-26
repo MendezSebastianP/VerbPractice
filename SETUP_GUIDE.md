@@ -38,6 +38,36 @@ also works offline. If the models can't be fetched, `/api/words/ocr` responds
 
 The default env keeps `DATABASE_USE_NULL_POOL=true` so async Postgres behaves reliably during local development and test runs.
 
+Context-aware word-sense selection can also run entirely on CPU. Download the
+pinned quantized multilingual E5 model once:
+
+```bash
+make sense-model
+```
+
+The model is stored under `.local/models/` and is not committed. Without it,
+trusted dictionary senses still work with a basic lexical ranker. Download and
+import sense-linked entries for the words already in the database with:
+
+```bash
+make sense-import
+```
+
+This uses the native English, French, Spanish, and Russian Wiktionary editions
+published as per-word JSONL by Kaikki. It needs internet access only while
+building the local dictionary; downloaded data is cached under
+`.local/dictionary/`. To import your own normalized file instead, run
+`make sense-import SENSE_FILE=your-senses.jsonl`. The JSONL contract is
+documented in `app/data/offline_dictionary/README.md`.
+
+Existing lexical cache entries are backfilled as untrusted initial senses;
+only dictionary imports are used for automatic contextual selection. Kaikki
+translations are imported only when they can be linked to one source sense by
+an explicit sense index or a unique lexical match; ambiguous mappings are
+skipped. When several imported senses exist, the UI shows the model's
+suggestion and lets the user switch the private lookup with one click.
+Context, questions, and answers are stored only in per-user lookup rows.
+
 ## 3. Initialize schema + seed data
 
 ```bash

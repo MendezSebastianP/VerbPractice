@@ -33,7 +33,7 @@ POSTGRES_PASSWORD ?= postgres
 POSTGRES_DB ?= verbpractice
 POSTGRES_PORT ?= 5432
 
-.PHONY: help up venv install ocr-models check-venv env db-up db-wait db-down db-logs init-db migrate migrate-adopt migrate-stamp migration seed inventory batch-template import-curated validate-curated curated-report grant-admin spa-install spa-check spa-build visual-install e2e visual-check setup run health profile backup-db test validate smoke clean
+.PHONY: help up venv install ocr-models sense-model sense-import check-venv env db-up db-wait db-down db-logs init-db migrate migrate-adopt migrate-stamp migration seed inventory batch-template import-curated validate-curated curated-report grant-admin spa-install spa-check spa-build visual-install e2e visual-check setup run health profile backup-db test validate smoke clean
 
 help:
 	@printf "Important targets:\n"
@@ -49,6 +49,9 @@ help:
 	@printf "  make migrate    Apply Alembic migrations to the configured database\n"
 	@printf "  make migrate-adopt Adopt an existing pre-Alembic FastAPI database, then apply deltas\n"
 	@printf "  make migrate-stamp Mark an existing database as already migrated\n"
+	@printf "  make sense-model Download the pinned CPU-only word-sense model\n"
+	@printf "  make sense-import Import trusted Kaikki/Wiktionary senses for existing words\n"
+	@printf "  make sense-import SENSE_FILE=file.jsonl Import a custom normalized sense file\n"
 	@printf "  make migration REVISION='message'  Create a new Alembic migration\n"
 	@printf "  make init-db    Legacy direct schema creation helper (prefer migrate)\n"
 	@printf "  make seed       Import legacy CSV data into the new schema\n"
@@ -89,6 +92,16 @@ ocr-models: check-venv
 	$(PYTHON) -c "from app.services.ocr_service import OCR_LANG_BY_CODE, _get_engine; \
 	[_get_engine(key) for key in dict.fromkeys(OCR_LANG_BY_CODE.values())]; \
 	print('OCR models ready.')"
+
+sense-model: check-venv
+	$(PYTHON) scripts/download_offline_sense_model.py
+
+sense-import: migrate
+	@if [ -n "$(SENSE_FILE)" ]; then \
+		$(PYTHON) scripts/import_offline_senses.py "$(SENSE_FILE)"; \
+	else \
+		$(PYTHON) scripts/import_kaikki_senses.py; \
+	fi
 
 check-venv:
 	@if [ ! -x "$(PYTHON)" ]; then \
@@ -139,20 +152,20 @@ db-down:
 db-logs:
 	docker logs -f $(POSTGRES_CONTAINER)
 
-init-db: check-venv db-wait
+init-db: check-venv db-up db-wait
 	$(PYTHON) -m app.db.init_db
 
-migrate: check-venv db-wait
+migrate: check-venv db-up db-wait
 	$(ALEMBIC) upgrade head
 
-migrate-adopt: check-venv db-wait
+migrate-adopt: check-venv db-up db-wait
 	$(ALEMBIC) stamp $(BASELINE_REVISION)
 	$(ALEMBIC) upgrade head
 
-migrate-stamp: check-venv db-wait
+migrate-stamp: check-venv db-up db-wait
 	$(ALEMBIC) stamp head
 
-migration: check-venv db-wait
+migration: check-venv db-up db-wait
 	@if [ -z "$(REVISION)" ]; then \
 		printf "Provide a revision message, for example: make migration REVISION='add admin roles'\n"; \
 		exit 1; \

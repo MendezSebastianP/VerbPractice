@@ -17,6 +17,13 @@ class Settings(BaseSettings):
     )
     database_use_null_pool: bool = Field(default=True, alias="DATABASE_USE_NULL_POOL")
     openai_api_key: str | None = Field(default=None, alias="OPENAI_API_KEY")
+    offline_sense_model_enabled: bool = Field(
+        default=True, alias="OFFLINE_SENSE_MODEL_ENABLED"
+    )
+    offline_sense_model_dir: str = Field(
+        default=".local/models/multilingual-e5-small",
+        alias="OFFLINE_SENSE_MODEL_DIR",
+    )
     default_theme: str = Field(default="arcade", alias="DEFAULT_THEME")
     rate_limit_per_minute: int = Field(default=80, alias="RATE_LIMIT_PER_MINUTE")
     log_level: str = Field(default="INFO", alias="LOG_LEVEL")

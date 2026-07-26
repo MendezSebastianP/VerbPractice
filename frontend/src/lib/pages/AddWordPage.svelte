@@ -32,6 +32,7 @@
 
   let inputText = '';
   let contextHint = '';
+  let questionHint = '';
   let adding = false;
 
   // Source → target language pair (any combination). Source = the language you
@@ -48,6 +49,7 @@
   let result: AddedWordResult | null = null;
   let notFound: AddedWordNotFound | null = null;
   let expanding = false;
+  let selectingSenseId: number | null = null;
   let reportTarget: { entry_type: 'lexical' | 'native'; entry_id: number } | null = null;
   let reportReason = '';
 
@@ -89,6 +91,7 @@
     result?: AddedWordResult;
     detail?: string;
     undoing?: boolean;
+    selectingSenseId?: number | null;
   }
 
   interface Token {
@@ -274,6 +277,8 @@
       const response = await api.addWord({
         input_text: text,
         context: contextHint.trim() || undefined,
+        question: questionHint.trim() || undefined,
+        context_source: 'manual',
         learning_lang_code: sourceCode,
         mother_lang_code: targetCode,
         csrf_token: csrfToken,
@@ -282,6 +287,7 @@
         result = response;
         inputText = '';
         contextHint = '';
+        questionHint = '';
         if (response.status === 'corrected') {
           notify(`Corrected "${response.original_input}" → "${response.text}".`, 'info');
         } else {
@@ -320,6 +326,24 @@
     }
   }
 
+  async function chooseResultSense(senseId: number): Promise<void> {
+    if (!result || result.selected_sense_id === senseId || selectingSenseId !== null) {
+      return;
+    }
+    selectingSenseId = senseId;
+    try {
+      const update = await api.selectWordSense(result.lookup_id, senseId, csrfToken);
+      result = { ...result, ...update };
+      const hist = await api.wordHistory(20);
+      history = hist.entries;
+      notify('Meaning updated for your lookup.', 'success');
+    } catch (err) {
+      notify(err instanceof ApiError ? err.message : 'Unable to change meaning', 'error');
+    } finally {
+      selectingSenseId = null;
+    }
+  }
+
   async function submitReport(): Promise<void> {
     if (!result || !reportTarget) {
       return;
@@ -346,16 +370,19 @@
     reportReason = '';
     inputText = '';
     contextHint = '';
+    questionHint = '';
   }
 
   function reportResult(): void {
-    if (!result) {
+    if (!result || !result.reportable) {
       return;
     }
     const primaryNative = result.natives[0];
-    reportTarget = primaryNative
+    reportTarget = primaryNative?.id != null
       ? { entry_type: 'native', entry_id: primaryNative.id }
-      : { entry_type: 'lexical', entry_id: result.lexical.id };
+      : result.lexical.id != null
+        ? { entry_type: 'lexical', entry_id: result.lexical.id }
+        : null;
   }
 
   async function loadManage(): Promise<void> {
@@ -765,6 +792,8 @@
         const response = await api.addWord({
           input_text: word,
           context,
+          question: questionHint.trim() || undefined,
+          context_source: 'photo',
           learning_lang_code: sourceCode,
           mother_lang_code: targetCode,
           csrf_token: csrfToken,
@@ -791,6 +820,7 @@
     const added = photoCards.filter((c) => c.state === 'done').length;
     if (added > 0) {
       notify(`${added} ${added === 1 ? 'entry' : 'entries'} defined and added to your pool.`, 'success');
+      questionHint = '';
       try {
         const hist = await api.wordHistory(20);
         history = hist.entries;
@@ -810,6 +840,30 @@
     } catch (err) {
       patchCard(card.id, { undoing: false });
       notify(err instanceof ApiError ? err.message : 'Could not remove the word', 'error');
+    }
+  }
+
+  async function chooseCardSense(card: PhotoCard, senseId: number): Promise<void> {
+    if (
+      !card.result ||
+      card.result.selected_sense_id === senseId ||
+      card.selectingSenseId != null
+    ) {
+      return;
+    }
+    patchCard(card.id, { selectingSenseId: senseId });
+    try {
+      const update = await api.selectWordSense(card.result.lookup_id, senseId, csrfToken);
+      patchCard(card.id, {
+        result: { ...card.result, ...update },
+        selectingSenseId: null,
+      });
+      const hist = await api.wordHistory(20);
+      history = hist.entries;
+      notify('Meaning updated for your lookup.', 'success');
+    } catch (err) {
+      patchCard(card.id, { selectingSenseId: null });
+      notify(err instanceof ApiError ? err.message : 'Unable to change meaning', 'error');
     }
   }
 
@@ -937,7 +991,20 @@
               class="answer-input"
               bind:value={contextHint}
               type="text"
+              maxlength={CONTEXT_MAX_CHARS}
               placeholder="e.g. 'in academic writing' or 'bank — riverside, not financial'"
+              disabled={adding}
+            />
+          </div>
+
+          <div style="margin-top: 0.75rem;">
+            <p class="eyebrow">Optional question</p>
+            <input
+              class="answer-input"
+              bind:value={questionHint}
+              type="text"
+              maxlength={CONTEXT_MAX_CHARS}
+              placeholder="e.g. Why does this word have this meaning here?"
               disabled={adding}
             />
           </div>
@@ -1136,6 +1203,18 @@
             </div>
           {/if}
 
+          <div style="margin-top: 0.75rem;">
+            <p class="eyebrow">Optional question about the selected word</p>
+            <input
+              class="answer-input"
+              bind:value={questionHint}
+              type="text"
+              maxlength={CONTEXT_MAX_CHARS}
+              placeholder="The photographed text stays context; write your question here."
+              disabled={photoSubmitting}
+            />
+          </div>
+
           <div class="photo-commit-bar">
             <div class="selection-summary" aria-live="polite">
               <strong>{selectedEntryLabel}</strong>
@@ -1204,6 +1283,34 @@
                 {#if card.result.natives[0].note}
                   <p class="card-detail">{card.result.natives[0].note}</p>
                 {/if}
+              </div>
+            {/if}
+
+            {#if card.result.sense_candidates.length > 1}
+              <div>
+                <p class="eyebrow">Meaning suggested from the photo context</p>
+                <div class="list-stack">
+                  {#each card.result.sense_candidates as candidate}
+                    <button
+                      class="ghost-button"
+                      type="button"
+                      disabled={card.selectingSenseId != null || candidate.id === card.result.selected_sense_id}
+                      on:click={() => void chooseCardSense(card, candidate.id)}
+                    >
+                      {candidate.part_of_speech ? `${candidate.part_of_speech}: ` : ''}{candidate.definition}
+                      {candidate.id === card.selectingSenseId
+                        ? ' — updating…'
+                        : candidate.id === card.result.selected_sense_id ? ' — selected' : ''}
+                    </button>
+                  {/each}
+                </div>
+              </div>
+            {/if}
+
+            {#if card.result.question_answer}
+              <div class="feedback-banner info-banner">
+                <p class="eyebrow">Answer to your question</p>
+                <p class="card-detail">{card.result.question_answer}</p>
               </div>
             {/if}
 
@@ -1340,6 +1447,37 @@
             </div>
           {/if}
 
+          {#if result.sense_candidates.length > 1}
+            <div>
+              <p class="eyebrow">Meaning suggested from your context</p>
+              <p style="margin: 0 0 0.5rem; opacity: 0.75;">
+                Check the selected meaning; choose another with one click if needed.
+              </p>
+              <div class="list-stack">
+                {#each result.sense_candidates as candidate}
+                  <button
+                    class="ghost-button"
+                    type="button"
+                    disabled={selectingSenseId !== null || candidate.id === result.selected_sense_id}
+                    on:click={() => void chooseResultSense(candidate.id)}
+                  >
+                    {candidate.part_of_speech ? `${candidate.part_of_speech}: ` : ''}{candidate.definition}
+                    {candidate.id === selectingSenseId
+                      ? ' — updating…'
+                      : candidate.id === result.selected_sense_id ? ' — selected' : ''}
+                  </button>
+                {/each}
+              </div>
+            </div>
+          {/if}
+
+          {#if result.question_answer}
+            <div class="feedback-banner info-banner">
+              <p class="eyebrow">Answer to your question</p>
+              <p>{result.question_answer}</p>
+            </div>
+          {/if}
+
           <div>
             <p class="eyebrow">Definition</p>
             <p>{result.lexical.definition}</p>
@@ -1429,18 +1567,20 @@
             class="secondary-button"
             type="button"
             on:click={expand}
-            disabled={expanding || !!result.lexical.extended_content}
+            disabled={expanding || !!result.lexical.extended_content || !result.reportable}
             title={result.lexical.extended_content ? 'Already expanded' : ''}
           >
             {expanding ? 'Loading…' : 'More info'}
           </button>
-          <button
-            class="ghost-button"
-            type="button"
-            on:click={reportResult}
-          >
-            Report
-          </button>
+          {#if result.reportable}
+            <button
+              class="ghost-button"
+              type="button"
+              on:click={reportResult}
+            >
+              Report
+            </button>
+          {/if}
           <button class="ghost-button" type="button" on:click={resetForAnother}>
             Add another
           </button>
@@ -1509,6 +1649,21 @@
               {#if expandedHistoryId === entry.added_id}
                 <div class="history-body">
                   <p class="history-def">{entry.lexical.definition}</p>
+                  {#if entry.context}
+                    <div>
+                      <p class="eyebrow">Your context</p>
+                      <p class="history-def">{entry.context}</p>
+                    </div>
+                  {/if}
+                  {#if entry.question}
+                    <div>
+                      <p class="eyebrow">Your question</p>
+                      <p class="history-def">{entry.question}</p>
+                      {#if entry.question_answer}
+                        <p class="history-def"><strong>Answer:</strong> {entry.question_answer}</p>
+                      {/if}
+                    </div>
+                  {/if}
                   {#if entry.natives.length}
                     <div>
                       <p class="eyebrow">Translation{entry.natives.length > 1 ? 's' : ''}</p>

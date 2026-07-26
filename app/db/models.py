@@ -153,6 +153,9 @@ class Word(Base):
     translations: Mapped[list[WordTranslation]] = relationship(
         "WordTranslation", back_populates="word", cascade="all, delete-orphan"
     )
+    senses: Mapped[list[WordSense]] = relationship(
+        "WordSense", back_populates="word", cascade="all, delete-orphan"
+    )
 
     __table_args__ = (UniqueConstraint("text", "language_id", name="uq_words_text_language"),)
 
@@ -481,12 +484,88 @@ class WordNativeTranslation(Base):
     )
 
 
+class WordSense(Base):
+    """A versioned, globally shared dictionary meaning for a headword."""
+
+    __tablename__ = "word_senses"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    word_id: Mapped[int] = mapped_column(
+        ForeignKey("words.id", ondelete="CASCADE"), index=True
+    )
+    sense_key: Mapped[str] = mapped_column(String(255))
+    part_of_speech: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    definition: Mapped[str] = mapped_column(Text)
+    synonyms: Mapped[list[dict[str, str]]] = mapped_column(JSON, default=list)
+    examples: Mapped[list[str]] = mapped_column(JSON, default=list)
+    source: Mapped[str] = mapped_column(String(64), default="offline_dictionary")
+    source_version: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    is_trusted: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_primary: Mapped[bool] = mapped_column(Boolean, default=False)
+    embedding: Mapped[list[float] | None] = mapped_column(JSON, nullable=True)
+    embedding_model: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    )
+
+    word: Mapped[Word] = relationship("Word", back_populates="senses")
+    translations: Mapped[list[WordSenseTranslation]] = relationship(
+        "WordSenseTranslation",
+        back_populates="sense",
+        cascade="all, delete-orphan",
+    )
+
+    __table_args__ = (
+        UniqueConstraint("word_id", "sense_key", name="uq_word_sense_key"),
+    )
+
+
+class WordSenseTranslation(Base):
+    """A trusted translation attached to one precise dictionary sense."""
+
+    __tablename__ = "word_sense_translations"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    sense_id: Mapped[int] = mapped_column(
+        ForeignKey("word_senses.id", ondelete="CASCADE"), index=True
+    )
+    target_language_id: Mapped[int] = mapped_column(
+        ForeignKey("languages.id", ondelete="RESTRICT"), index=True
+    )
+    translation: Mapped[str] = mapped_column(String(256))
+    note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    source: Mapped[str] = mapped_column(String(64), default="offline_dictionary")
+    priority: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+
+    sense: Mapped[WordSense] = relationship(
+        "WordSense", back_populates="translations"
+    )
+
+    __table_args__ = (
+        UniqueConstraint(
+            "sense_id",
+            "target_language_id",
+            "translation",
+            name="uq_word_sense_translation",
+        ),
+    )
+
+
 class UserAddedWord(Base):
     __tablename__ = "user_added_words"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
     word_id: Mapped[int] = mapped_column(ForeignKey("words.id", ondelete="CASCADE"), index=True)
+    selected_sense_id: Mapped[int | None] = mapped_column(
+        ForeignKey("word_senses.id", ondelete="SET NULL"), nullable=True, index=True
+    )
     language_pair: Mapped[str] = mapped_column(String(16), index=True)
     context_hint: Mapped[str | None] = mapped_column(Text, nullable=True)
     added_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
@@ -498,6 +577,47 @@ class UserAddedWord(Base):
 
     __table_args__ = (
         UniqueConstraint("user_id", "word_id", "language_pair", name="uq_user_added_word"),
+    )
+
+
+class UserWordLookup(Base):
+    """Private context, question, and result for one user's lookup."""
+
+    __tablename__ = "user_word_lookups"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True
+    )
+    word_id: Mapped[int] = mapped_column(
+        ForeignKey("words.id", ondelete="CASCADE"), index=True
+    )
+    selected_sense_id: Mapped[int | None] = mapped_column(
+        ForeignKey("word_senses.id", ondelete="SET NULL"), nullable=True, index=True
+    )
+    source_language_id: Mapped[int] = mapped_column(
+        ForeignKey("languages.id", ondelete="RESTRICT"), index=True
+    )
+    target_language_id: Mapped[int] = mapped_column(
+        ForeignKey("languages.id", ondelete="RESTRICT"), index=True
+    )
+    context: Mapped[str | None] = mapped_column(Text, nullable=True)
+    question: Mapped[str | None] = mapped_column(Text, nullable=True)
+    answer: Mapped[str | None] = mapped_column(Text, nullable=True)
+    context_source: Mapped[str] = mapped_column(String(16), default="manual")
+    result_data: Mapped[dict] = mapped_column(JSON, default=dict)
+    ranking_method: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    ranking_score: Mapped[float | None] = mapped_column(Float, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), index=True
+    )
+
+    __table_args__ = (
+        Index(
+            "ix_user_word_lookups_user_created",
+            "user_id",
+            "created_at",
+        ),
     )
 
 

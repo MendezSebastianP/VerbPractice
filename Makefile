@@ -33,7 +33,7 @@ POSTGRES_PASSWORD ?= postgres
 POSTGRES_DB ?= verbpractice
 POSTGRES_PORT ?= 5432
 
-.PHONY: help up venv install ocr-models sense-model sense-import check-venv env db-up db-wait db-down db-logs init-db migrate migrate-adopt migrate-stamp migration seed inventory batch-template import-curated validate-curated curated-report grant-admin spa-install spa-check spa-build visual-install e2e visual-check setup run health profile backup-db test validate smoke clean
+.PHONY: help up venv install ocr-models sense-model nli-model sense-import check-venv env db-up db-wait db-down db-logs init-db migrate migrate-adopt migrate-stamp migration seed inventory batch-template import-curated validate-curated curated-report grant-admin spa-install spa-check spa-build visual-install e2e visual-check setup run health profile backup-db test validate smoke clean
 
 help:
 	@printf "Important targets:\n"
@@ -50,6 +50,7 @@ help:
 	@printf "  make migrate-adopt Adopt an existing pre-Alembic FastAPI database, then apply deltas\n"
 	@printf "  make migrate-stamp Mark an existing database as already migrated\n"
 	@printf "  make sense-model Download the pinned CPU-only word-sense model\n"
+	@printf "  make nli-model   Download the pinned CPU-only multilingual contradiction model\n"
 	@printf "  make sense-import Import trusted Kaikki/Wiktionary senses for existing words\n"
 	@printf "  make sense-import SENSE_FILE=file.jsonl Import a custom normalized sense file\n"
 	@printf "  make migration REVISION='message'  Create a new Alembic migration\n"
@@ -95,6 +96,9 @@ ocr-models: check-venv
 
 sense-model: check-venv
 	$(PYTHON) scripts/download_offline_sense_model.py
+
+nli-model: check-venv
+	$(PYTHON) scripts/download_offline_nli_model.py
 
 sense-import: migrate
 	@if [ -n "$(SENSE_FILE)" ]; then \

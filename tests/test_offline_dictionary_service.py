@@ -12,16 +12,22 @@ from app.core.config import settings
 from app.db.base import Base
 from app.db.models import (
     Language,
+    Tag,
     User,
     UserAddedWord,
     UserPreference,
     UserProfile,
     UserWordLookup,
+    Verb,
+    VerbTag,
+    VerbTranslation,
     Word,
     WordLexicalEntry,
     WordNativeTranslation,
     WordSense,
     WordSenseTranslation,
+    WordTag,
+    WordTranslation,
 )
 from app.core.security import AuthContext
 from app.routers.words import add_word, select_word_sense
@@ -237,6 +243,8 @@ async def test_contextual_ai_result_does_not_write_global_lexical_cache(
         return {
             "status": "exact",
             "canonical_text": "bank",
+            "part_of_speech": "noun",
+            "cefr_level": "B1",
             "definition": "land beside a river",
             "synonyms": [],
             "examples": ["They sat on the bank."],
@@ -271,6 +279,9 @@ async def test_contextual_ai_result_does_not_write_global_lexical_cache(
     ) == 1
     assert await sqlite_session.scalar(select(func.count(WordSense.id))) == 1
     assert await sqlite_session.scalar(select(func.count(Word.id))) == 1
+    assert await sqlite_session.scalar(select(func.count(WordTranslation.id))) == 0
+    assert await sqlite_session.scalar(select(func.count(Verb.id))) == 0
+    assert word.cefr_level is None
     assert lexical.definition == "a financial institution"
 
 
@@ -315,6 +326,284 @@ async def test_plain_ai_lookup_populates_global_sense_cache(
     assert (
         await sqlite_session.scalar(select(func.count(WordSenseTranslation.id)))
     ) == 1
+
+
+@pytest.mark.asyncio
+async def test_plain_ai_verb_lookup_populates_level_tags_and_trainer_inventories(
+    sqlite_session, monkeypatch
+):
+    en, fr = await _languages(sqlite_session)
+    monkeypatch.setattr(settings, "openai_api_key", "test-key")
+
+    async def fake_json(*args, **kwargs):
+        return {
+            "status": "exact",
+            "canonical_text": "run",
+            "part_of_speech": "verb",
+            "cefr_level": "A1",
+            "definition": "to move quickly on foot",
+            "synonyms": [],
+            "examples": ["I run every morning."],
+            "native_translations": [{"translation": "courir", "note": None}],
+            "suggested_tags": ["verb_action", "verb_motion", "b2"],
+            "question_answer": "",
+        }
+
+    monkeypatch.setattr(
+        "app.services.word_ai_service._call_openai_json", fake_json
+    )
+    result = await translate_word(
+        sqlite_session,
+        input_text="ran",
+        learning_lang=en,
+        mother_tongue=fr,
+    )
+
+    word = (
+        await sqlite_session.execute(select(Word).where(Word.text == "run"))
+    ).scalar_one()
+    verb = (
+        await sqlite_session.execute(select(Verb).where(Verb.infinitive == "run"))
+    ).scalar_one()
+    word_translation = (
+        await sqlite_session.execute(
+            select(WordTranslation).where(WordTranslation.word_id == word.id)
+        )
+    ).scalar_one()
+    verb_translation = (
+        await sqlite_session.execute(
+            select(VerbTranslation).where(VerbTranslation.verb_id == verb.id)
+        )
+    ).scalar_one()
+    word_tags = {
+        slug
+        for (slug,) in (
+            await sqlite_session.execute(
+                select(Tag.slug)
+                .join(WordTag, WordTag.tag_id == Tag.id)
+                .where(WordTag.word_id == word.id)
+            )
+        ).all()
+    }
+    verb_tags = {
+        slug
+        for (slug,) in (
+            await sqlite_session.execute(
+                select(Tag.slug)
+                .join(VerbTag, VerbTag.tag_id == Tag.id)
+                .where(VerbTag.verb_id == verb.id)
+            )
+        ).all()
+    }
+
+    assert result.part_of_speech == "verb"
+    assert result.cefr_level == "A1"
+    assert word.cefr_level == "A1"
+    assert verb.cefr_level == "A1"
+    assert word_translation.translation == "courir"
+    assert word_translation.verified is False
+    assert word_translation.source == "openai_gpt4o"
+    assert verb_translation.translation == "courir"
+    assert verb_translation.verified is False
+    assert verb_translation.source == "openai_gpt4o"
+    assert {"verb", "verb_action", "verb_motion", "a1"} <= word_tags
+    assert "b2" not in word_tags
+    assert {"verb", "verb_action", "verb_motion", "a1"} <= verb_tags
+
+
+@pytest.mark.asyncio
+async def test_plain_ai_lookup_moves_existing_inflected_word_to_canonical_headword(
+    sqlite_session, monkeypatch
+):
+    en, fr = await _languages(sqlite_session)
+    monkeypatch.setattr(settings, "openai_api_key", "test-key")
+    inflected = Word(text="ran", language_id=en.id)
+    sqlite_session.add(inflected)
+    await sqlite_session.flush()
+
+    async def fake_json(*args, **kwargs):
+        return {
+            "status": "corrected",
+            "canonical_text": "run",
+            "original_input": "ran",
+            "part_of_speech": "verb",
+            "cefr_level": "A1",
+            "definition": "to move quickly on foot",
+            "synonyms": [],
+            "examples": ["I run every morning."],
+            "native_translations": [{"translation": "courir", "note": None}],
+            "suggested_tags": ["verb", "verb_action"],
+            "question_answer": "",
+        }
+
+    monkeypatch.setattr(
+        "app.services.word_ai_service._call_openai_json", fake_json
+    )
+    result = await translate_word(
+        sqlite_session,
+        input_text="ran",
+        learning_lang=en,
+        mother_tongue=fr,
+    )
+
+    canonical = (
+        await sqlite_session.execute(select(Word).where(Word.text == "run"))
+    ).scalar_one()
+    lexical = (
+        await sqlite_session.execute(select(WordLexicalEntry))
+    ).scalar_one()
+    sense = (await sqlite_session.execute(select(WordSense))).scalar_one()
+    verbs = (await sqlite_session.execute(select(Verb))).scalars().all()
+
+    assert result.word is canonical
+    assert lexical.word_id == canonical.id
+    assert sense.word_id == canonical.id
+    assert inflected.id != canonical.id
+    assert (
+        await sqlite_session.scalar(
+            select(func.count(WordLexicalEntry.id)).where(
+                WordLexicalEntry.word_id == inflected.id
+            )
+        )
+    ) == 0
+    assert [verb.infinitive for verb in verbs] == ["run"]
+
+
+@pytest.mark.asyncio
+async def test_explicit_nonverb_pos_overrides_conflicting_ai_verb_tags(
+    sqlite_session, monkeypatch
+):
+    en, fr = await _languages(sqlite_session)
+    monkeypatch.setattr(settings, "openai_api_key", "test-key")
+
+    async def fake_json(*args, **kwargs):
+        return {
+            "status": "exact",
+            "canonical_text": "bank",
+            "part_of_speech": "noun",
+            "cefr_level": "B1",
+            "definition": "a financial institution",
+            "synonyms": [],
+            "examples": ["The bank opens at nine."],
+            "native_translations": [{"translation": "banque", "note": None}],
+            "suggested_tags": ["verb", "verb_action", "food"],
+            "question_answer": "",
+        }
+
+    monkeypatch.setattr(
+        "app.services.word_ai_service._call_openai_json", fake_json
+    )
+    result = await translate_word(
+        sqlite_session,
+        input_text="bank",
+        learning_lang=en,
+        mother_tongue=fr,
+    )
+
+    word = (
+        await sqlite_session.execute(select(Word).where(Word.text == "bank"))
+    ).scalar_one()
+    word_tags = {
+        slug
+        for (slug,) in (
+            await sqlite_session.execute(
+                select(Tag.slug)
+                .join(WordTag, WordTag.tag_id == Tag.id)
+                .where(WordTag.word_id == word.id)
+            )
+        ).all()
+    }
+
+    assert result.part_of_speech == "noun"
+    assert result.suggested_tags == ["food", "b1"]
+    assert word_tags == {"food", "b1"}
+    assert await sqlite_session.scalar(select(func.count(Verb.id))) == 0
+
+
+@pytest.mark.asyncio
+async def test_plain_ai_lookup_preserves_existing_curated_levels_and_translation(
+    sqlite_session, monkeypatch
+):
+    en, fr = await _languages(sqlite_session)
+    monkeypatch.setattr(settings, "openai_api_key", "test-key")
+    word = Word(text="run", language_id=en.id, cefr_level="A1")
+    verb = Verb(infinitive="run", language_id=en.id, cefr_level="A2")
+    sqlite_session.add_all([word, verb])
+    await sqlite_session.flush()
+    curated = VerbTranslation(
+        verb_id=verb.id,
+        target_language_id=fr.id,
+        translation="courir",
+        synonyms=[],
+        verified=True,
+        source="curated_test",
+    )
+    sqlite_session.add(curated)
+    await sqlite_session.flush()
+
+    async def fake_json(*args, **kwargs):
+        return {
+            "status": "exact",
+            "canonical_text": "run",
+            "part_of_speech": "verb",
+            "cefr_level": "B2",
+            "definition": "to move quickly on foot",
+            "synonyms": [],
+            "examples": [],
+            "native_translations": [{"translation": "courir", "note": None}],
+            "suggested_tags": ["verb_action"],
+            "question_answer": "",
+        }
+
+    monkeypatch.setattr(
+        "app.services.word_ai_service._call_openai_json", fake_json
+    )
+    result = await translate_word(
+        sqlite_session,
+        input_text="run",
+        learning_lang=en,
+        mother_tongue=fr,
+    )
+
+    assert word.cefr_level == "A1"
+    assert verb.cefr_level == "A2"
+    translations = (
+        await sqlite_session.execute(
+            select(VerbTranslation).where(VerbTranslation.verb_id == verb.id)
+        )
+    ).scalars().all()
+    assert translations == [curated]
+    assert curated.verified is True
+    assert curated.source == "curated_test"
+    assert result.cefr_level == "A1"
+    word_difficulty_tags = {
+        slug
+        for (slug,) in (
+            await sqlite_session.execute(
+                select(Tag.slug)
+                .join(WordTag, WordTag.tag_id == Tag.id)
+                .where(
+                    WordTag.word_id == word.id,
+                    Tag.kind == "difficulty",
+                )
+            )
+        ).all()
+    }
+    verb_difficulty_tags = {
+        slug
+        for (slug,) in (
+            await sqlite_session.execute(
+                select(Tag.slug)
+                .join(VerbTag, VerbTag.tag_id == Tag.id)
+                .where(
+                    VerbTag.verb_id == verb.id,
+                    Tag.kind == "difficulty",
+                )
+            )
+        ).all()
+    }
+    assert word_difficulty_tags == {"a1"}
+    assert verb_difficulty_tags == {"a2"}
 
 
 @pytest.mark.asyncio

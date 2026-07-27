@@ -23,6 +23,7 @@ from app.routers import (
     chat,
     ops,
     pages,
+    playground,
     settings as settings_router,
     spa,
     tags,
@@ -77,6 +78,7 @@ app.include_router(settings_router.router)
 app.include_router(words.router)
 app.include_router(tags.router)
 app.include_router(word_sets.router)
+app.include_router(playground.router)
 app.include_router(spa.router)
 
 

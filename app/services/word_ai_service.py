@@ -7,16 +7,29 @@ from openai import AsyncOpenAI
 from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.cefr import CEFR_TAG_SLUGS, normalize_cefr_level
 from app.core.config import settings
 from app.core.languages import language_display_name
-from app.core.tags import TAG_BY_SLUG, WORD_ITEM, tag_prompt_list, tag_slugs_for_item_type
+from app.core.tags import (
+    TAG_BY_SLUG,
+    VERB_ITEM,
+    WORD_ITEM,
+    tag_prompt_list,
+    tag_slugs_for_item_type,
+)
 from app.db.models import (
     Language,
+    Tag,
+    Verb,
+    VerbTag,
+    VerbTranslation,
     Word,
     WordLexicalEntry,
     WordNativeTranslation,
     WordSense,
     WordSenseTranslation,
+    WordTag,
+    WordTranslation,
 )
 from app.services.ai_usage import record_ai_usage
 from app.services.offline_dictionary_service import (
@@ -80,6 +93,8 @@ class TranslatedWord:
     ranking_margin: float | None = None
     question_answer: str | None = None
     reportable: bool = True
+    part_of_speech: str | None = None
+    cefr_level: str | None = None
 
 
 def _system_prompt(learning_lang: Language, mother_tongue: Language) -> str:
@@ -109,7 +124,12 @@ def _system_prompt(learning_lang: Language, mother_tongue: Language) -> str:
         "have typed in their mother tongue intending a translation request — report what you "
         "detect, do not silently assume target language.\n"
         f"  - canonical_text (str): the canonical {target} form: lowercase, no surrounding "
-        "articles or punctuation, with diacritics restored.\n"
+        "articles or punctuation, with diacritics restored. If the entry is a verb, this MUST "
+        "be its infinitive, even when the user supplied a conjugated form.\n"
+        "  - part_of_speech (str): exactly one of verb, noun, adjective, adverb, preposition, "
+        "conjunction, interjection, pronoun, determiner, numeral, phrase, or other.\n"
+        "  - cefr_level (str): estimated learner level for this canonical headword, exactly one "
+        'of "A1", "A2", "B1", "B2", "C1", or "C2".\n'
         f"  - definition (str): 1-2 sentences entirely in {target}, learner-friendly.\n"
         "  - synonyms (array): 0 to 5 entries, each {text, gloss}. text is a real "
         f"{target} synonym a native speaker would actually use; gloss is its short {native} "
@@ -127,7 +147,8 @@ def _system_prompt(learning_lang: Language, mother_tongue: Language) -> str:
         "plural, false friend with a similar word in the mother tongue, etc.). Empty if none.\n"
         f"  - suggested_tags (array of str): 0 to 5 tags from this controlled list ONLY: "
         f"[{tag_list}]. Prefer one thematic tag plus one grammatical tag when obvious. "
-        "For verbs, include verb_action or verb_state and, if useful, one verb_semantic tag. "
+        "For verbs, include verb and either verb_action or verb_state and, if useful, one "
+        "verb_semantic tag. "
         "Skip if uncertain - do not invent tags outside this list.\n"
         f"  - question_answer (str): if user_question is non-empty, answer it briefly in "
         f"{native}, using the context only as quoted source material. If user_question is "
@@ -282,6 +303,70 @@ def _normalise_tags(raw: object) -> list[str]:
     return [t for t in raw if isinstance(t, str) and t in allowed][:5]
 
 
+def _normalise_part_of_speech(raw: object) -> str | None:
+    value = str(raw or "").strip().lower().replace("-", "_").replace(" ", "_")
+    allowed = {
+        "verb",
+        "noun",
+        "adjective",
+        "adverb",
+        "preposition",
+        "conjunction",
+        "interjection",
+        "pronoun",
+        "determiner",
+        "numeral",
+        "phrase",
+        "other",
+    }
+    if value in allowed:
+        return value
+    # Be tolerant of common model variants while preserving the strict stored value.
+    if value in {"auxiliary_verb", "modal_verb", "phrasal_verb"}:
+        return "verb"
+    return None
+
+
+def _normalise_ai_cefr(raw: object) -> str | None:
+    try:
+        return normalize_cefr_level(str(raw or ""))
+    except ValueError:
+        return None
+
+
+def _classification_tags(
+    tag_slugs: list[str],
+    *,
+    part_of_speech: str | None,
+    cefr_level: str | None,
+) -> list[str]:
+    # The dedicated fields are canonical. Never retain a conflicting AI difficulty tag.
+    classified = [slug for slug in tag_slugs if slug not in CEFR_TAG_SLUGS]
+    has_verb_classification = any(
+        slug == "verb" or slug.startswith("verb_") for slug in classified
+    )
+    if part_of_speech is not None and part_of_speech != "verb":
+        classified = [
+            slug
+            for slug in classified
+            if slug != "verb" and not slug.startswith("verb_")
+        ]
+    elif (
+        part_of_speech == "verb"
+        or (part_of_speech is None and has_verb_classification)
+    ) and "verb" not in classified:
+        classified.append("verb")
+    if cefr_level:
+        classified.append(cefr_level.lower())
+    return list(dict.fromkeys(classified))
+
+
+def _part_of_speech_from_tags(tag_slugs: list[str]) -> str | None:
+    if any(slug in {"verb", "verb_action", "verb_state"} for slug in tag_slugs):
+        return "verb"
+    return None
+
+
 def _sense_candidate(sense: WordSense) -> SenseCandidate:
     return SenseCandidate(
         id=sense.id,
@@ -329,6 +414,8 @@ def _translated_from_ranked(
         ranking_margin=ranked.margin,
         question_answer=question_answer,
         reportable=False,
+        part_of_speech=ranked.sense.part_of_speech,
+        cefr_level=word.cefr_level,
     )
 
 
@@ -414,6 +501,7 @@ async def _sync_primary_sense(
     word: Word,
     lexical: WordLexicalEntry,
     natives: list[WordNativeTranslation],
+    part_of_speech: str | None = None,
 ) -> WordSense:
     sense_key = f"legacy:{lexical.id}"
     lookup = await db.execute(
@@ -427,6 +515,7 @@ async def _sync_primary_sense(
         sense = WordSense(
             word_id=word.id,
             sense_key=sense_key,
+            part_of_speech=part_of_speech,
             definition=lexical.definition,
             synonyms=lexical.synonyms or [],
             examples=lexical.examples or [],
@@ -438,6 +527,8 @@ async def _sync_primary_sense(
         await db.flush()
     else:
         sense.definition = lexical.definition
+        if part_of_speech is not None:
+            sense.part_of_speech = part_of_speech
         sense.synonyms = lexical.synonyms or []
         sense.examples = lexical.examples or []
         sense.source = lexical.source
@@ -530,12 +621,32 @@ async def translate_word(
                     context=cleaned_context,
                     question=cleaned_question,
                 )
-            return _translated_from_ranked(
+            translated = _translated_from_ranked(
                 word=word_row,
                 ranked=ranked,
                 target_language_id=mother_tongue.id,
                 question_answer=question_answer,
             )
+            if allow_global_write:
+                tag_slugs = _classification_tags(
+                    await _word_tag_slugs(db, word_id=word_row.id),
+                    part_of_speech=translated.part_of_speech,
+                    cefr_level=translated.cefr_level,
+                )
+                await _attach_word_tags(
+                    db, word_id=word_row.id, tag_slugs=tag_slugs
+                )
+                await _sync_global_learning_inventory(
+                    db,
+                    word=word_row,
+                    target_language_id=mother_tongue.id,
+                    natives=translated.natives or [],
+                    part_of_speech=translated.part_of_speech,
+                    cefr_level=translated.cefr_level,
+                    tag_slugs=tag_slugs,
+                    source=ranked.sense.source,
+                )
+            return translated
 
         # Compatibility path for databases created without running the
         # backfill migration: an existing one-sense cache still works offline.
@@ -563,6 +674,28 @@ async def translate_word(
                         context=cleaned_context,
                         question=cleaned_question,
                     )
+                tag_slugs = await _word_tag_slugs(db, word_id=word_row.id)
+                part_of_speech = _part_of_speech_from_tags(tag_slugs)
+                cefr_level = word_row.cefr_level
+                classified_tags = _classification_tags(
+                    tag_slugs,
+                    part_of_speech=part_of_speech,
+                    cefr_level=cefr_level,
+                )
+                if allow_global_write:
+                    await _attach_word_tags(
+                        db, word_id=word_row.id, tag_slugs=classified_tags
+                    )
+                    await _sync_global_learning_inventory(
+                        db,
+                        word=word_row,
+                        target_language_id=mother_tongue.id,
+                        natives=existing_natives,
+                        part_of_speech=part_of_speech,
+                        cefr_level=cefr_level,
+                        tag_slugs=classified_tags,
+                        source=lexical.source,
+                    )
                 return TranslatedWord(
                     status="exact",
                     word=word_row,
@@ -572,6 +705,8 @@ async def translate_word(
                     ranking_method="legacy_single_sense",
                     fresh_lexical=False,
                     fresh_natives=False,
+                    part_of_speech=part_of_speech,
+                    cefr_level=cefr_level,
                 )
 
     if not settings.openai_api_key:
@@ -622,6 +757,8 @@ async def translate_word(
         detected_lang = str(payload.get("detected_input_language") or "").strip().upper() or None
         original_input = str(payload.get("original_input") or "").strip() or None
         suggested_tags = _normalise_tags(payload.get("suggested_tags"))
+        part_of_speech = _normalise_part_of_speech(payload.get("part_of_speech"))
+        cefr_level = _normalise_ai_cefr(payload.get("cefr_level"))
         question_answer = (
             str(payload.get("question_answer") or "").strip() or None
             if cleaned_question
@@ -631,8 +768,9 @@ async def translate_word(
         if not definition or not natives_raw:
             raise WordAIError("AI response missing required fields (definition, native_translations)")
 
-        # If a Word with the canonical_text already exists for this lang, reuse it.
-        if word_row is None or (word_row.text != canonical and not force):
+        # Canonical text is authoritative. A cached conjugated/spelling variant
+        # must never receive the canonical headword's definition or verb row.
+        if word_row is None or word_row.text != canonical:
             existing_lookup = await db.execute(
                 select(Word).where(
                     Word.text == canonical,
@@ -646,13 +784,19 @@ async def translate_word(
                     select(WordLexicalEntry).where(WordLexicalEntry.word_id == word_row.id)
                 )
                 lexical = lex_lookup.scalar_one_or_none()
-            elif word_row is None:
+            else:
                 word_row = Word(text=canonical, language_id=learning_lang.id)
                 db.add(word_row)
                 await db.flush()
+                lexical = None
 
         assert word_row is not None
         if not allow_global_write:
+            suggested_tags = _classification_tags(
+                suggested_tags,
+                part_of_speech=part_of_speech,
+                cefr_level=cefr_level,
+            )
             return TranslatedWord(
                 status=status,
                 word=word_row,
@@ -680,8 +824,16 @@ async def translate_word(
                 question_answer=question_answer,
                 ranking_method="private_ai",
                 reportable=False,
+                part_of_speech=part_of_speech,
+                cefr_level=cefr_level,
             )
 
+        cefr_level = word_row.cefr_level or cefr_level
+        suggested_tags = _classification_tags(
+            suggested_tags,
+            part_of_speech=part_of_speech,
+            cefr_level=cefr_level,
+        )
         fresh_lexical = False
         if lexical is None:
             lexical = WordLexicalEntry(
@@ -726,6 +878,17 @@ async def translate_word(
             word=word_row,
             lexical=lexical,
             natives=natives,
+            part_of_speech=part_of_speech,
+        )
+        await _sync_global_learning_inventory(
+            db,
+            word=word_row,
+            target_language_id=mother_tongue.id,
+            natives=natives,
+            part_of_speech=part_of_speech,
+            cefr_level=cefr_level,
+            tag_slugs=suggested_tags,
+            source=WORD_AI_SOURCE,
         )
         return TranslatedWord(
             status=status,
@@ -742,6 +905,8 @@ async def translate_word(
             sense_candidates=[_sense_candidate(sense)],
             ranking_method="global_ai_plain_lookup",
             question_answer=question_answer,
+            part_of_speech=part_of_speech,
+            cefr_level=word_row.cefr_level,
         )
 
     # A lexical entry exists but this target language is missing. Generate the
@@ -794,6 +959,29 @@ async def translate_word(
         sense = await _sync_primary_sense(
             db, word=word_row, lexical=lexical, natives=natives
         )
+        tag_slugs = await _word_tag_slugs(db, word_id=word_row.id)
+        part_of_speech = (
+            sense.part_of_speech or _part_of_speech_from_tags(tag_slugs)
+        )
+        cefr_level = word_row.cefr_level
+        classified_tags = _classification_tags(
+            tag_slugs,
+            part_of_speech=part_of_speech,
+            cefr_level=cefr_level,
+        )
+        await _attach_word_tags(
+            db, word_id=word_row.id, tag_slugs=classified_tags
+        )
+        await _sync_global_learning_inventory(
+            db,
+            word=word_row,
+            target_language_id=mother_tongue.id,
+            natives=natives,
+            part_of_speech=part_of_speech,
+            cefr_level=cefr_level,
+            tag_slugs=classified_tags,
+            source=WORD_AI_SOURCE,
+        )
         selected_sense_id = sense.id
         candidates = [_sense_candidate(sense)]
     else:
@@ -809,6 +997,9 @@ async def translate_word(
         ]
         selected_sense_id = None
         candidates = []
+        tag_slugs = await _word_tag_slugs(db, word_id=word_row.id)
+        part_of_speech = _part_of_speech_from_tags(tag_slugs)
+        cefr_level = word_row.cefr_level
     return TranslatedWord(
         status="exact",
         word=word_row,
@@ -824,6 +1015,8 @@ async def translate_word(
         ),
         question_answer=question_answer,
         reportable=allow_global_write,
+        part_of_speech=part_of_speech,
+        cefr_level=cefr_level,
     )
 
 
@@ -928,13 +1121,81 @@ async def _insert_natives(
 async def _attach_word_tags(
     db: AsyncSession, *, word_id: int, tag_slugs: list[str]
 ) -> None:
-    """Idempotent tag attachment. Imported lazily to avoid circular models."""
-    from app.db.models import Tag, WordTag
-
     if not tag_slugs:
         return
+    by_slug = await _ensure_tags(db, tag_slugs=tag_slugs)
+    desired_cefr = set(tag_slugs).intersection(CEFR_TAG_SLUGS)
+    if desired_cefr:
+        stale_tag_ids = (
+            await db.execute(
+                select(Tag.id).where(
+                    Tag.slug.in_(CEFR_TAG_SLUGS.difference(desired_cefr))
+                )
+            )
+        ).scalars().all()
+        if stale_tag_ids:
+            await db.execute(
+                delete(WordTag).where(
+                    WordTag.word_id == word_id,
+                    WordTag.tag_id.in_(stale_tag_ids),
+                )
+            )
+    existing_lookup = await db.execute(
+        select(WordTag.tag_id).where(WordTag.word_id == word_id)
+    )
+    existing_tag_ids = {row[0] for row in existing_lookup.all()}
+    for slug in tag_slugs:
+        tag = by_slug.get(slug)
+        if tag is None or tag.id in existing_tag_ids:
+            continue
+        db.add(WordTag(word_id=word_id, tag_id=tag.id, source="ai_suggested"))
+    await db.flush()
+
+
+async def _attach_verb_tags(
+    db: AsyncSession, *, verb_id: int, tag_slugs: list[str]
+) -> None:
+    applicable = [
+        slug
+        for slug in tag_slugs
+        if slug in set(tag_slugs_for_item_type(VERB_ITEM))
+    ]
+    if not applicable:
+        return
+    by_slug = await _ensure_tags(db, tag_slugs=applicable)
+    desired_cefr = set(applicable).intersection(CEFR_TAG_SLUGS)
+    if desired_cefr:
+        stale_tag_ids = (
+            await db.execute(
+                select(Tag.id).where(
+                    Tag.slug.in_(CEFR_TAG_SLUGS.difference(desired_cefr))
+                )
+            )
+        ).scalars().all()
+        if stale_tag_ids:
+            await db.execute(
+                delete(VerbTag).where(
+                    VerbTag.verb_id == verb_id,
+                    VerbTag.tag_id.in_(stale_tag_ids),
+                )
+            )
+    existing_lookup = await db.execute(
+        select(VerbTag.tag_id).where(VerbTag.verb_id == verb_id)
+    )
+    existing_tag_ids = {row[0] for row in existing_lookup.all()}
+    for slug in applicable:
+        tag = by_slug.get(slug)
+        if tag is None or tag.id in existing_tag_ids:
+            continue
+        db.add(VerbTag(verb_id=verb_id, tag_id=tag.id, source="ai_suggested"))
+    await db.flush()
+
+
+async def _ensure_tags(
+    db: AsyncSession, *, tag_slugs: list[str]
+) -> dict[str, Tag]:
     tag_lookup = await db.execute(select(Tag).where(Tag.slug.in_(tag_slugs)))
-    by_slug = {t.slug: t for t in tag_lookup.scalars().all()}
+    by_slug = {tag.slug: tag for tag in tag_lookup.scalars().all()}
     for slug in tag_slugs:
         if slug in by_slug or slug not in TAG_BY_SLUG:
             continue
@@ -948,16 +1209,113 @@ async def _attach_word_tags(
         db.add(tag)
         await db.flush()
         by_slug[slug] = tag
-    existing_lookup = await db.execute(
-        select(WordTag.tag_id).where(WordTag.word_id == word_id)
+    return by_slug
+
+
+async def _word_tag_slugs(db: AsyncSession, *, word_id: int) -> list[str]:
+    rows = await db.execute(
+        select(Tag.slug)
+        .join(WordTag, WordTag.tag_id == Tag.id)
+        .where(WordTag.word_id == word_id)
     )
-    existing_tag_ids = {row[0] for row in existing_lookup.all()}
-    for slug in tag_slugs:
-        tag = by_slug.get(slug)
-        if tag is None or tag.id in existing_tag_ids:
+    return [slug for (slug,) in rows.all()]
+
+
+async def _sync_global_learning_inventory(
+    db: AsyncSession,
+    *,
+    word: Word,
+    target_language_id: int,
+    natives: list[WordNativeTranslation | NativeContent],
+    part_of_speech: str | None,
+    cefr_level: str | None,
+    tag_slugs: list[str],
+    source: str,
+) -> Verb | None:
+    """Bridge a context-free dictionary lookup into the trainer inventories."""
+
+    if word.cefr_level is None and cefr_level is not None:
+        word.cefr_level = cefr_level
+
+    for native in natives:
+        translation = native.translation.strip()
+        # The legacy trainer inventory has a shorter column than the sense cache.
+        if not translation or len(translation) > 128:
             continue
-        db.add(WordTag(word_id=word_id, tag_id=tag.id, source="ai_suggested"))
+        existing_word_translation = await db.execute(
+            select(WordTranslation.id).where(
+                WordTranslation.word_id == word.id,
+                WordTranslation.target_language_id == target_language_id,
+                WordTranslation.translation == translation,
+            )
+        )
+        if existing_word_translation.scalar_one_or_none() is None:
+            db.add(
+                WordTranslation(
+                    word_id=word.id,
+                    target_language_id=target_language_id,
+                    translation=translation,
+                    synonyms=[],
+                    verified=False,
+                    source=source,
+                )
+            )
+
+    if part_of_speech != "verb" and "verb" not in tag_slugs:
+        await db.flush()
+        return None
+
+    verb_lookup = await db.execute(
+        select(Verb).where(
+            Verb.infinitive == word.text,
+            Verb.language_id == word.language_id,
+        )
+    )
+    verb = verb_lookup.scalar_one_or_none()
+    if verb is None:
+        verb = Verb(
+            infinitive=word.text,
+            language_id=word.language_id,
+            cefr_level=word.cefr_level or cefr_level,
+        )
+        db.add(verb)
+        await db.flush()
+    elif verb.cefr_level is None:
+        verb.cefr_level = word.cefr_level or cefr_level
+
+    for native in natives:
+        translation = native.translation.strip()
+        if not translation or len(translation) > 128:
+            continue
+        existing_verb_translation = await db.execute(
+            select(VerbTranslation.id).where(
+                VerbTranslation.verb_id == verb.id,
+                VerbTranslation.target_language_id == target_language_id,
+                VerbTranslation.translation == translation,
+            )
+        )
+        if existing_verb_translation.scalar_one_or_none() is None:
+            db.add(
+                VerbTranslation(
+                    verb_id=verb.id,
+                    target_language_id=target_language_id,
+                    translation=translation,
+                    synonyms=[],
+                    verified=False,
+                    source=source,
+                )
+            )
+
+    verb_tag_slugs = _classification_tags(
+        tag_slugs,
+        part_of_speech="verb",
+        cefr_level=verb.cefr_level,
+    )
+    await _attach_verb_tags(
+        db, verb_id=verb.id, tag_slugs=verb_tag_slugs
+    )
     await db.flush()
+    return verb
 
 
 async def expand_word(

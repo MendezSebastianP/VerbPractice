@@ -35,6 +35,11 @@ def test_normalize_cefr_level_is_strict_and_canonical():
         normalize_cefr_level("easy")
 
 
+def test_generic_verb_tag_applies_to_words_and_verbs():
+    assert TAG_BY_SLUG["verb"].display_name == "Verb"
+    assert TAG_BY_SLUG["verb"].applies_to == ("word", "verb")
+
+
 def test_seed_level_replaces_any_stale_difficulty_tag():
     slugs, level = seed_tag_slugs(
         {"tags": "food;a1;noun_thing", "cefr_level": "B1"}

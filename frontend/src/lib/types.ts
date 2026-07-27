@@ -641,6 +641,8 @@ export interface AddedWordResult {
   natives: NativeTranslation[];
   general_note: string | null;
   question_answer: string | null;
+  part_of_speech: string | null;
+  cefr_level: 'A1' | 'A2' | 'B1' | 'B2' | 'C1' | 'C2' | null;
   selected_sense_id: number | null;
   sense_candidates: {
     id: number;
@@ -665,6 +667,8 @@ export type SenseSelectionResult = Pick<
   | 'lexical'
   | 'natives'
   | 'question_answer'
+  | 'part_of_speech'
+  | 'cefr_level'
   | 'selected_sense_id'
   | 'sense_candidates'
   | 'ranking'
@@ -744,4 +748,63 @@ export interface CommunityPayload {
   weekly_leaderboard: DashboardPayload['gamification']['weekly_leaderboard'];
   circle: DashboardPayload['gamification']['circle'];
   recent_xp: DashboardPayload['gamification']['recent_xp'];
+}
+
+export interface SemanticGradePayload {
+  csrf_token: string;
+  challenge_id: 'depaysement' | 'sobremesa' | 'tutoyer';
+  answer: string;
+}
+
+export interface SemanticGradeResponse {
+  verdict: 'correct' | 'partial' | 'incorrect' | 'uncertain';
+  exact_match: boolean;
+  answer_quality: 'complete' | 'concise' | null;
+  method: string;
+  latency_ms: number;
+  model_available: boolean;
+  model_name: string;
+  positive_score: number;
+  negative_score: number | null;
+  margin: number | null;
+  concept_coverage: number;
+  matched_reference: {
+    text: string;
+    score: number;
+  };
+  required_concepts: Array<{
+    label: string;
+    score: number;
+    matched_example: string;
+    covered: boolean;
+    evidence: 'semantic' | 'explicit' | 'context' | 'optional_omitted' | 'missing';
+  }>;
+  hard_negatives: Array<{
+    label: string;
+    score: number;
+    matched_example: string;
+    triggered: boolean;
+    explicitly_rejected: boolean;
+  }>;
+  negation_guard: {
+    mismatch: boolean;
+    corrective_contrast: boolean;
+    answer_markers: string[];
+    reference_markers: string[];
+  };
+  verification: {
+    available: boolean;
+    model_name: string;
+    checked: boolean;
+    entailment_score: number | null;
+    contradiction_score: number | null;
+    negative_entailment_score: number | null;
+    entailment_margin: number | null;
+    matched_reference: string | null;
+    overflow: boolean;
+    safety_flags: string[];
+    confirmed_axes: string[];
+  };
+  thresholds: Record<string, number>;
+  reasons: string[];
 }

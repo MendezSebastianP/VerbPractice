@@ -24,6 +24,13 @@ class Settings(BaseSettings):
         default=".local/models/multilingual-e5-small",
         alias="OFFLINE_SENSE_MODEL_DIR",
     )
+    offline_nli_model_enabled: bool = Field(
+        default=True, alias="OFFLINE_NLI_MODEL_ENABLED"
+    )
+    offline_nli_model_dir: str = Field(
+        default=".local/models/multilingual-nli",
+        alias="OFFLINE_NLI_MODEL_DIR",
+    )
     default_theme: str = Field(default="arcade", alias="DEFAULT_THEME")
     rate_limit_per_minute: int = Field(default=80, alias="RATE_LIMIT_PER_MINUTE")
     log_level: str = Field(default="INFO", alias="LOG_LEVEL")

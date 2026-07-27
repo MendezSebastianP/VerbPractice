@@ -19,6 +19,8 @@ import type {
   MonitorPayload,
   OcrResponse,
   PriorityQueueEntry,
+  SemanticGradePayload,
+  SemanticGradeResponse,
   SenseSelectionResult,
   StudyPoolResponse,
   ThemeName,
@@ -248,6 +250,11 @@ export const api = {
       language_pair: string;
       force_unlocked: boolean;
     }>('/api/words/add-offline', { method: 'POST', body: JSON.stringify(payload) }),
+  gradeSemanticAnswer: (payload: SemanticGradePayload) =>
+    request<SemanticGradeResponse>('/api/playground/semantic-grade', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
   adminMonitor: () => request<MonitorPayload>('/api/admin/monitor'),
   adminAiUsage: (limit = 50) => request<AdminAiUsagePayload>(`/api/admin/ai/usage?limit=${limit}`),
   adminContentSummary: () => request<AdminContentSummaryPayload>('/api/admin/content/summary'),

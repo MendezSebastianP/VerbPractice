@@ -179,7 +179,10 @@
         <div class="page-shell" in:fade={{ duration: 140 }}>
           {#if $route === '/playground'}
             <!-- Public mobile experiment bench, reachable with or without a session. -->
-            <PlaygroundPage />
+            <PlaygroundPage
+              csrfToken={boot?.csrf_token || ''}
+              hasNavigation={Boolean(boot?.authenticated)}
+            />
           {:else if $route === '/playground2'}
             <!-- Independent Fable design bench. -->
             <Playground2Page />

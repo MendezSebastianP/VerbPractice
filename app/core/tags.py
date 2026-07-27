@@ -66,6 +66,7 @@ CURATED_TAGS: tuple[TagDefinition, ...] = (
     TagDefinition("abstract_concepts", "Abstract concepts", "thematic"),
 
     # Grammar and part of speech.
+    TagDefinition("verb", "Verb", "grammatical"),
     TagDefinition("verb_action", "Action verb", "grammatical"),
     TagDefinition("verb_state", "State verb", "grammatical"),
     TagDefinition("noun_person", "Noun - person", "grammatical", (WORD_ITEM,)),

@@ -1,610 +1,2170 @@
 <script lang="ts">
-  import { onDestroy, onMount, tick } from 'svelte';
+  import { onMount, tick } from 'svelte';
+  import { api, ApiError } from '../api';
+  import type { SemanticGradePayload, SemanticGradeResponse } from '../types';
 
-  type FeedbackTone = 'right' | 'wrong' | '';
+  export let csrfToken = '';
+  export let hasNavigation = false;
 
-  const playOptions = [
+  type PresetTone = 'valid' | 'partial' | 'trap';
+
+  interface RubricEntry {
+    label: string;
+    examples: string[];
+  }
+
+  interface AnswerPreset {
+    label: string;
+    tone: PresetTone;
+    answer: string;
+  }
+
+  interface MeaningChallenge {
+    id: string;
+    term: string;
+    language: string;
+    languageCode: string;
+    context: string;
+    prompt: string;
+    note: string;
+    acceptedLanguages: string[];
+    acceptedAnswers: string[];
+    requiredConcepts: RubricEntry[];
+    hardNegatives: RubricEntry[];
+    presets: AnswerPreset[];
+  }
+
+  const challenges: MeaningChallenge[] = [
     {
-      id: 'relay',
-      name: 'Saffron Relay',
-      note: 'A twelve-cell launch sequence. Crisp, quick and closest to the game grid.'
+      id: 'depaysement',
+      term: 'dépaysement',
+      language: 'French',
+      languageCode: 'FR',
+      context: 'Après trois mois à Kyoto, elle aimait ce dépaysement.',
+      prompt: 'Explain the idea carried by “dépaysement”.',
+      note: 'It names a change of familiar world, not simply a trip or homesickness.',
+      acceptedLanguages: ['English', 'Français', 'Español', 'Русский'],
+      acceptedAnswers: [
+        'the feeling of being outside one’s familiar surroundings and habits',
+        'the feeling of unfamiliarity or change caused by leaving one’s usual environment',
+        'le sentiment d’être hors de son environnement et de ses habitudes',
+        'la sensación de estar fuera del entorno y de las costumbres habituales',
+        'ощущение непривычности вдали от знакомого окружения и привычек',
+      ],
+      requiredConcepts: [
+        {
+          label: 'Away from the familiar',
+          examples: [
+            'outside one’s usual surroundings or environment',
+            'hors de son environnement habituel',
+            'fuera del entorno habitual',
+            'вне привычного окружения',
+          ],
+        },
+        {
+          label: 'A resulting feeling or shift',
+          examples: [
+            'a feeling of unfamiliarity, disorientation, or refreshing change',
+            'un sentiment de changement ou de perte de repères',
+            'una sensación de cambio o desorientación',
+            'ощущение перемены или непривычности',
+          ],
+        },
+      ],
+      hardNegatives: [
+        {
+          label: 'Comfort in familiar surroundings',
+          examples: [
+            'feeling completely at home in familiar surroundings',
+            'se sentir parfaitement chez soi dans un environnement familier',
+          ],
+        },
+        {
+          label: 'Travel alone',
+          examples: ['travelling to another country without describing a feeling'],
+        },
+        {
+          label: 'Homesickness alone',
+          examples: ['missing home and wanting to return home'],
+        },
+      ],
+      presets: [
+        {
+          label: 'Valid paraphrase',
+          tone: 'valid',
+          answer: 'The feeling of unfamiliarity that comes from being away from your usual surroundings and habits.',
+        },
+        {
+          label: 'Partial meaning',
+          tone: 'partial',
+          answer: 'Being somewhere far away from home.',
+        },
+        {
+          label: 'Related but wrong',
+          tone: 'trap',
+          answer: 'Feeling completely comfortable in familiar surroundings.',
+        },
+      ],
     },
     {
-      id: 'aperture',
-      name: 'Ink Aperture',
-      note: 'Two mechanical shutters close on the word, then release the session.'
+      id: 'sobremesa',
+      term: 'sobremesa',
+      language: 'Spanish',
+      languageCode: 'ES',
+      context: 'La comida terminó, pero la sobremesa duró dos horas.',
+      prompt: 'Explain what “sobremesa” means here.',
+      note: 'The meal has ended; the social moment around the table continues.',
+      acceptedLanguages: ['English', 'Français', 'Español', 'Русский'],
+      acceptedAnswers: [
+        'the time after a meal when people remain at the table talking together',
+        'the conversation and social time shared at the table after eating',
+        'le moment après le repas où l’on reste à table pour discuter',
+        'el tiempo después de comer que se pasa conversando en la mesa',
+        'время после еды, когда люди остаются за столом и разговаривают',
+      ],
+      requiredConcepts: [
+        {
+          label: 'After the meal',
+          examples: [
+            'after the meal has finished',
+            'après la fin du repas',
+            'después de terminar de comer',
+            'после окончания еды',
+          ],
+        },
+        {
+          label: 'Staying together at the table',
+          examples: [
+            'people remain together around the table',
+            'on reste ensemble à table',
+            'la gente permanece junta en la mesa',
+            'люди остаются вместе за столом',
+          ],
+        },
+        {
+          label: 'Conversation or social time',
+          examples: [
+            'talking and enjoying social time',
+            'discuter et passer un moment ensemble',
+            'conversar y compartir tiempo',
+            'разговаривать и общаться',
+          ],
+        },
+      ],
+      hardNegatives: [
+        {
+          label: 'Dessert',
+          examples: ['the dessert or sweet course served after a meal'],
+        },
+        {
+          label: 'Conversation during the meal',
+          examples: [
+            'talking while everyone is still eating dinner',
+            'parler pendant que tout le monde mange encore',
+            'hablar mientras todos siguen comiendo',
+            'разговаривать, пока все ещё едят',
+          ],
+        },
+        {
+          label: 'Before the meal',
+          examples: [
+            'talking together at the table before the meal begins',
+            'parler ensemble à table avant le début du repas',
+            'hablar juntos en la mesa antes de empezar a comer',
+            'разговаривать за столом до начала еды',
+          ],
+        },
+        {
+          label: 'Leaving immediately',
+          examples: ['leaving the table immediately when the meal ends'],
+        },
+      ],
+      presets: [
+        {
+          label: 'Valid paraphrase',
+          tone: 'valid',
+          answer: 'Le moment après le repas où tout le monde reste à table pour parler ensemble.',
+        },
+        {
+          label: 'Partial meaning',
+          tone: 'partial',
+          answer: 'It is a social moment after a meal.',
+        },
+        {
+          label: 'Related but wrong',
+          tone: 'trap',
+          answer: 'The dessert served at the end of a meal.',
+        },
+      ],
     },
     {
-      id: 'needle',
-      name: 'Signal Needle',
-      note: 'A playable instrument: the dial winds, the needle fires, the signal travels.'
-    }
-  ] as const;
-
-  const feedbackOptions = [
-    {
-      id: 'reeds',
-      name: 'Reed Wave',
-      note: 'Razor Line over a field of fine vertical reeds: radiating when right, whipping when wrong.'
+      id: 'tutoyer',
+      term: 'tutoyer',
+      language: 'French',
+      languageCode: 'FR',
+      context: 'Vous pouvez me tutoyer, nous travaillons ensemble depuis longtemps.',
+      prompt: 'Explain the social action expressed by “tutoyer”.',
+      note: 'It is about the form of address chosen for another person.',
+      acceptedLanguages: ['English', 'Français', 'Español', 'Русский'],
+      acceptedAnswers: [
+        'to address someone using the informal singular tu rather than formal vous',
+        'to use the familiar second-person form when speaking to someone',
+        's’adresser à quelqu’un en utilisant tu plutôt que vous',
+        'dirigirse a alguien usando tú en lugar de la forma formal',
+        'обращаться к человеку на ты, а не на вы',
+      ],
+      requiredConcepts: [
+        {
+          label: 'Addressing another person',
+          examples: [
+            'the way one addresses or speaks to someone',
+            'la manière de s’adresser à quelqu’un',
+            'la forma de dirigirse a otra persona',
+            'форма обращения к другому человеку',
+          ],
+        },
+        {
+          label: 'Using the informal singular form',
+          examples: [
+            'using informal singular tu instead of formal vous',
+            'employer tu plutôt que vous',
+            'usar tú en vez de la forma formal',
+            'использовать ты вместо вежливого вы',
+          ],
+        },
+      ],
+      hardNegatives: [
+        {
+          label: 'Giving a nickname',
+          examples: ['giving someone a friendly nickname'],
+        },
+        {
+          label: 'Being generally rude',
+          examples: ['speaking rudely or insulting someone'],
+        },
+        {
+          label: 'Formal address',
+          examples: [
+            'addressing someone using formal vous rather than informal tu',
+            's’adresser à quelqu’un avec vous plutôt que tu',
+            'dirigirse a alguien con la forma formal en lugar de tú',
+            'обращаться к человеку на вы, а не на ты',
+          ],
+        },
+      ],
+      presets: [
+        {
+          label: 'Valid paraphrase',
+          tone: 'valid',
+          answer: 'Tratar a alguien de tú en lugar de usar una forma formal.',
+        },
+        {
+          label: 'Partial meaning',
+          tone: 'partial',
+          answer: 'It is a way of addressing another person.',
+        },
+        {
+          label: 'Related but wrong',
+          tone: 'trap',
+          answer: 'Giving someone a friendly nickname.',
+        },
+      ],
     },
-    {
-      id: 'contours',
-      name: 'Contour Wave',
-      note: 'Razor Line over drawn contours: expanding when right, collapsing off-axis when wrong.'
+  ];
+
+  const verdictCopy = {
+    correct: {
+      eyebrow: 'Backend verdict · correct',
+      title: 'Counted as correct.',
+      body: 'The answer is close to a valid explanation, covers the essential idea, and stays clear of the known traps.',
     },
-    {
-      id: 'horizons',
-      name: 'Horizon Wave',
-      note: 'Razor Line over broad ink ribbons: flowing through a hit, tearing apart on a miss.'
-    }
-  ] as const;
+    partial: {
+      eyebrow: 'Backend verdict · partial',
+      title: 'Counted as partly correct.',
+      body: 'The answer reaches the concept but does not clearly carry every required part of the meaning.',
+    },
+    incorrect: {
+      eyebrow: 'Backend verdict · incorrect',
+      title: 'Counted as incorrect.',
+      body: 'Related vocabulary is present, but the explanation conflicts with the rubric or misses its core.',
+    },
+    uncertain: {
+      eyebrow: 'Backend verdict · uncertain',
+      title: 'Not counted right or wrong.',
+      body: 'The backend abstained. A human decision is required before this answer can affect a score or training.',
+    },
+  } as const;
 
-  let playRun = '';
-  let feedbackState: Record<string, FeedbackTone> = {};
-  const timers = new Map<string, ReturnType<typeof setTimeout>>();
+  const conciseCorrectCopy = {
+    eyebrow: 'Backend verdict · correct',
+    title: 'Correct — concise gloss.',
+    body: 'This carries enough meaning to count as correct here. The component trace shows what was explicit, supplied by context, or optional.',
+  } as const;
 
-  function clearTimer(key: string): void {
-    const timer = timers.get(key);
-    if (timer) clearTimeout(timer);
-    timers.delete(key);
-  }
-
-  async function runPlay(id: string): Promise<void> {
-    clearTimer('play');
-    playRun = '';
-    await tick();
-    requestAnimationFrame(() => {
-      playRun = id;
-      timers.set('play', setTimeout(() => (playRun = ''), 1450));
-    });
-  }
-
-  async function runFeedback(id: string, tone: Exclude<FeedbackTone, ''>): Promise<void> {
-    clearTimer(`feedback-${id}`);
-    feedbackState = { ...feedbackState, [id]: '' };
-    await tick();
-    requestAnimationFrame(() => {
-      feedbackState = { ...feedbackState, [id]: tone };
-      timers.set(`feedback-${id}`, setTimeout(() => {
-        feedbackState = { ...feedbackState, [id]: '' };
-      }, 1700));
-    });
-  }
-
-  function moveAperturePointer(event: PointerEvent): void {
-    const button = event.currentTarget as HTMLButtonElement;
-    const rect = button.getBoundingClientRect();
-    const x = Math.max(0, Math.min(rect.width, event.clientX - rect.left));
-    const y = Math.max(0, Math.min(rect.height, event.clientY - rect.top));
-    const nx = rect.width ? x / rect.width : 0.5;
-    const ny = rect.height ? y / rect.height : 0.5;
-    button.style.setProperty('--pointer-x', `${x.toFixed(1)}px`);
-    button.style.setProperty('--pointer-y', `${y.toFixed(1)}px`);
-    button.style.setProperty('--left-pull', `${((1 - nx) * 15).toFixed(1)}px`);
-    button.style.setProperty('--right-pull', `${(nx * 15).toFixed(1)}px`);
-    button.style.setProperty('--slat-y', `${((ny - 0.5) * 9).toFixed(1)}px`);
-    button.style.setProperty('--core-x', `${((nx - 0.5) * 7).toFixed(1)}px`);
-    button.style.setProperty('--core-y', `${((ny - 0.5) * 4).toFixed(1)}px`);
-    button.classList.add('tracking');
-  }
-
-  function resetAperturePointer(event: PointerEvent): void {
-    const button = event.currentTarget as HTMLButtonElement;
-    button.classList.remove('tracking');
-    button.style.removeProperty('--pointer-x');
-    button.style.removeProperty('--pointer-y');
-    button.style.removeProperty('--left-pull');
-    button.style.removeProperty('--right-pull');
-    button.style.removeProperty('--slat-y');
-    button.style.removeProperty('--core-x');
-    button.style.removeProperty('--core-y');
-  }
+  let active = challenges[0];
+  let answer = '';
+  let result: SemanticGradeResponse | null = null;
+  let busy = false;
+  let error = '';
+  let showRubric = false;
+  let selfResolution: 'same' | 'different' | '' = '';
+  let loadedPreset: AnswerPreset | null = null;
+  let resultRegion: HTMLElement | null = null;
 
   onMount(() => {
     const root = document.documentElement;
     const previousTheme = root.getAttribute('data-theme');
     const previousPlayground = root.getAttribute('data-playground');
-    root.setAttribute('data-theme', 'dark');
-    root.setAttribute('data-playground', 'ink-interactions');
+    const previousPlaygroundNav = root.getAttribute('data-playground-nav');
+    root.setAttribute('data-theme', 'light');
+    root.setAttribute('data-playground', 'meaning-lab');
+    root.setAttribute('data-playground-nav', hasNavigation ? 'present' : 'absent');
 
     return () => {
       if (previousTheme) root.setAttribute('data-theme', previousTheme);
       else root.removeAttribute('data-theme');
       if (previousPlayground) root.setAttribute('data-playground', previousPlayground);
       else root.removeAttribute('data-playground');
+      if (previousPlaygroundNav) root.setAttribute('data-playground-nav', previousPlaygroundNav);
+      else root.removeAttribute('data-playground-nav');
     };
   });
 
-  onDestroy(() => {
-    for (const timer of timers.values()) clearTimeout(timer);
-  });
+  function chooseChallenge(challenge: MeaningChallenge): void {
+    if (busy) return;
+    active = challenge;
+    answer = '';
+    result = null;
+    error = '';
+    showRubric = false;
+    selfResolution = '';
+    loadedPreset = null;
+  }
+
+  function usePreset(preset: AnswerPreset): void {
+    if (busy) return;
+    answer = preset.answer;
+    result = null;
+    error = '';
+    selfResolution = '';
+    loadedPreset = preset;
+  }
+
+  function handleAnswerInput(): void {
+    if (busy) return;
+    result = null;
+    error = '';
+    selfResolution = '';
+    loadedPreset = null;
+  }
+
+  async function gradeAnswer(): Promise<void> {
+    const cleaned = answer.trim();
+    if (!cleaned) {
+      error = 'Write an explanation first, or load one of the test answers.';
+      return;
+    }
+    if (!csrfToken) {
+      error = 'The playground session is not ready yet. Refresh and try again.';
+      return;
+    }
+
+    const requestChallengeId = active.id as SemanticGradePayload['challenge_id'];
+    const requestAnswer = cleaned;
+    busy = true;
+    error = '';
+    result = null;
+    selfResolution = '';
+    try {
+      const response = await api.gradeSemanticAnswer({
+        csrf_token: csrfToken,
+        challenge_id: requestChallengeId,
+        answer: requestAnswer,
+      });
+      if (active.id === requestChallengeId && answer.trim() === requestAnswer) {
+        result = response;
+      }
+    } catch (err) {
+      error = err instanceof ApiError ? err.message : 'The local grader could not check this answer.';
+    } finally {
+      busy = false;
+    }
+    if (result) {
+      await tick();
+      resultRegion?.focus({ preventScroll: true });
+      resultRegion?.scrollIntoView({
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        block: 'start',
+      });
+    }
+  }
+
+  function handleAnswerKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+      event.preventDefault();
+      void gradeAnswer();
+    }
+  }
+
+  function resetRun(): void {
+    if (busy) return;
+    answer = '';
+    result = null;
+    error = '';
+    selfResolution = '';
+    loadedPreset = null;
+  }
+
+  function scoreText(value: number | null): string {
+    return value === null ? '—' : value.toFixed(3);
+  }
+
+  function tracePosition(value: number | null): number {
+    if (value === null) return 0;
+    return Math.max(2, Math.min(98, ((value - 0.68) / 0.28) * 100));
+  }
+
+  function coveragePercent(value: number | null): number {
+    if (value === null) return 0;
+    return Math.max(0, Math.min(100, value * 100));
+  }
+
+  function probabilityPosition(value: number | null): number {
+    if (value === null) return 0;
+    return Math.max(2, Math.min(98, value * 100));
+  }
+
+  function conceptIsCovered(concept: SemanticGradeResponse['required_concepts'][number]): boolean {
+    return concept.covered;
+  }
+
+  function conceptEvidenceLabel(
+    concept: SemanticGradeResponse['required_concepts'][number],
+  ): string {
+    if (concept.evidence === 'explicit') return 'explicit';
+    if (concept.evidence === 'context') return 'from context';
+    if (concept.evidence === 'optional_omitted') return 'optional detail';
+    if (concept.evidence === 'missing') return 'not clear';
+    return scoreText(concept.score);
+  }
+
+  function conceptEvidenceIcon(
+    concept: SemanticGradeResponse['required_concepts'][number],
+  ): string {
+    if (concept.evidence === 'context') return '↳';
+    if (concept.evidence === 'optional_omitted') return '+';
+    return concept.covered ? '✓' : '·';
+  }
+
+  function expectedVerdict(tone: PresetTone): SemanticGradeResponse['verdict'] {
+    if (tone === 'valid') return 'correct';
+    if (tone === 'partial') return 'partial';
+    return 'incorrect';
+  }
+
+  function methodLabel(value: SemanticGradeResponse): string {
+    if (value.answer_quality === 'concise') return 'curated concise gloss';
+    if (value.exact_match) return 'exact normalized match';
+    if (!value.model_available) return 'safe fallback only';
+    if (value.verification.checked) return 'embedding + entailment';
+    if (!value.verification.available) return 'embedding; verifier offline';
+    return 'semantic rubric';
+  }
 </script>
 
 <svelte:head>
-  <title>Ink Saffron Interaction Forge · VerbPractice</title>
-  <meta name="description" content="Three Play controls and three right/wrong feedback systems for VerbPractice Ink Saffron mode." />
+  <title>Meaning Lab · VerbPractice Playground</title>
+  <meta
+    name="description"
+    content="Test a fully local semantic answer grader against multilingual explanations, partial answers, and meaning traps."
+  />
 </svelte:head>
 
-<section class="interaction-lab" id="forge-top">
-  <header class="forge-hero">
-    <div class="hero-status">
-      <span><i></i> MOON_MODE / INTERACTION FORGE</span>
-      <span>INK SAFFRON · ROUND 02</span>
-    </div>
-    <div class="hero-main">
-      <p class="hero-kicker">Press them. Miss on purpose.</p>
-      <h1>Find the game’s<br /><em>fingerprint.</em></h1>
-      <div class="hero-brief">
-        <span>06 LIVE TESTS</span>
-        <p>Same logic. Same space. Six new ways for the game to answer your hand.</p>
+<section class="meaning-lab">
+  <header class="lab-hero">
+    <div class="hero-copy">
+      <div class="lab-kicker">
+        <span class="live-dot" aria-hidden="true"></span>
+        Playground / local experiment
       </div>
+      <h1>Does the answer carry<br /><em>the same idea?</em></h1>
+      <p>
+        Test explanations that cannot be graded word-for-word. The model runs on this machine,
+        shows its evidence, and can choose not to decide.
+      </p>
     </div>
-    <nav class="hero-nav" aria-label="Playground sections">
-      <a href="#play-options"><b>01</b> Play controls</a>
-      <a href="#feedback-options"><b>02</b> Right / wrong</a>
-    </nav>
+
+    <aside class="local-note" aria-label="Experiment boundaries">
+      <div class="model-mark" aria-hidden="true">
+        <span>e5+nli</span>
+        <i></i>
+      </div>
+      <div>
+        <strong>Local meaning model</strong>
+        <span>No paid API · no progress changes</span>
+      </div>
+      <p>
+        This is a prototype, not the live trainer. Its job is to expose where lightweight
+        grading feels trustworthy—and where it does not.
+      </p>
+    </aside>
   </header>
 
-  <main>
-    <section class="forge-section" id="play-options">
-      <header class="section-heading">
-        <div><span>01 / LAUNCH</span><h2>Three ways to say Play.</h2></div>
-        <p>Every control below is exactly <strong>274 × 106</strong>—the current game footprint. Click repeatedly; each launch rearms itself.</p>
+  <nav class="challenge-strip" aria-label="Meaning challenges">
+    {#each challenges as challenge, index (challenge.id)}
+      <button
+        type="button"
+        class:active={active.id === challenge.id}
+        aria-pressed={active.id === challenge.id}
+        on:click={() => chooseChallenge(challenge)}
+        disabled={busy}
+      >
+        <span>{String(index + 1).padStart(2, '0')} · {challenge.languageCode}</span>
+        <strong>{challenge.term}</strong>
+        <small>{challenge.note}</small>
+      </button>
+    {/each}
+  </nav>
+
+  <div class="workbench">
+    <section class="answer-bench" aria-labelledby="active-term">
+      <header class="word-card">
+        <div class="word-meta">
+          <span>{active.language} · sense test</span>
+          <button type="button" on:click={() => (showRubric = !showRubric)} disabled={busy}>
+            {showRubric ? 'Hide rubric' : 'Inspect rubric'}
+          </button>
+        </div>
+        <h2 id="active-term">{active.term}</h2>
+        <blockquote lang={active.languageCode.toLowerCase()}>{active.context}</blockquote>
+        <p>{active.prompt}</p>
       </header>
 
-      <div class="play-grid">
-        {#each playOptions as option, index (option.id)}
-          <article class={`concept play-concept ${option.id}`}>
-            <header class="concept-head">
-              <span>A{index + 1}</span>
-              <div><h3>{option.name}</h3><p>{option.note}</p></div>
-            </header>
+      {#if showRubric}
+        <aside class="rubric-sheet">
+          <div class="rubric-heading">
+            <span>What “right” means</span>
+            <p>The model is not inventing a definition; it compares against this small human-written rubric.</p>
+          </div>
+          <div class="rubric-columns">
+            <div>
+              <strong>Essential ideas</strong>
+              <ul>
+                {#each active.requiredConcepts as concept}
+                  <li><i aria-hidden="true"></i>{concept.label}</li>
+                {/each}
+              </ul>
+            </div>
+            <div>
+              <strong>Nearby traps</strong>
+              <ul class="trap-list">
+                {#each active.hardNegatives as negative}
+                  <li><i aria-hidden="true"></i>{negative.label}</li>
+                {/each}
+              </ul>
+            </div>
+          </div>
+        </aside>
+      {/if}
 
-            <div class="button-bay">
-              {#if option.id === 'relay'}
-                <button class:running={playRun === option.id} class="play-button relay-button" type="button" on:click={() => runPlay(option.id)}>
-                  <span class="relay-grid" aria-hidden="true">
-                    {#each Array(12) as _, cellIndex}
-                      <i style={`--i:${cellIndex}`}></i>
-                    {/each}
-                  </span>
-                  <span class="button-copy"><b>▶</b> PLAY</span>
-                  <small>12 / READY</small>
-                </button>
-              {:else if option.id === 'aperture'}
-                <button
-                  class:running={playRun === option.id}
-                  class="play-button aperture-button"
-                  type="button"
-                  on:click={() => runPlay(option.id)}
-                  on:pointermove={moveAperturePointer}
-                  on:pointerleave={resetAperturePointer}
-                  on:pointercancel={resetAperturePointer}
+      <form class="answer-form" on:submit|preventDefault={gradeAnswer}>
+        <div class="answer-heading">
+          <label for="semantic-answer">Explain it in your own words</label>
+          <span>Any of these languages can carry the meaning</span>
+        </div>
+        <div class="language-row" aria-label="Accepted answer languages">
+          {#each active.acceptedLanguages as language}
+            <span>{language}</span>
+          {/each}
+        </div>
+        <textarea
+          id="semantic-answer"
+          bind:value={answer}
+          on:input={handleAnswerInput}
+          on:keydown={handleAnswerKeydown}
+          maxlength="600"
+          rows="5"
+          placeholder="A phrase or short explanation…"
+          aria-describedby="answer-help"
+          disabled={busy}
+        ></textarea>
+        <div class="answer-foot">
+          <span id="answer-help"><kbd>Ctrl</kbd> <b>+</b> <kbd>Enter</kbd> to check</span>
+          <span>{answer.length} / 600</span>
+        </div>
+
+        <div class="preset-group">
+          <span>Load a stress test</span>
+          <div>
+            {#each active.presets as preset}
+              <button
+                type="button"
+                class={`preset-${preset.tone}`}
+                on:click={() => usePreset(preset)}
+                disabled={busy}
+              >
+                <i aria-hidden="true"></i>{preset.label}
+              </button>
+            {/each}
+          </div>
+        </div>
+
+        {#if error}
+          <p class="form-error" role="alert">{error}</p>
+        {/if}
+
+        <div class="form-actions">
+          <button class="grade-button" type="submit" disabled={busy || !answer.trim()}>
+            {#if busy}
+              <span class="button-spinner" aria-hidden="true"></span>
+              Reading the meaning…
+            {:else}
+              Check the meaning
+              <span aria-hidden="true">→</span>
+            {/if}
+          </button>
+          <button class="reset-button" type="button" on:click={resetRun} disabled={busy}>
+            Clear
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section class="evidence-bench" class:has-result={Boolean(result)} aria-busy={busy}>
+      <div class="trace-header">
+        <div>
+          <span>Semantic trace</span>
+          <strong>{result ? 'Run complete' : busy ? 'Reading answer' : 'Waiting for an answer'}</strong>
+        </div>
+        <small>Similarity is evidence, not probability.</small>
+      </div>
+
+      {#if busy}
+        <div class="reading-state" aria-live="polite">
+          <div class="scan-field" aria-hidden="true">
+            <i></i>
+            <span></span>
+            <b></b>
+          </div>
+          <strong>Comparing ideas across languages</strong>
+          <p>One answer, several valid explanations, essential concepts, and known traps.</p>
+        </div>
+      {:else if result}
+        {@const copy = result.answer_quality === 'concise' ? conciseCorrectCopy : verdictCopy[result.verdict]}
+        <div
+          class={`result-sheet verdict-${result.verdict}`}
+          bind:this={resultRegion}
+          tabindex="-1"
+          aria-live="polite"
+        >
+          <header class="verdict-head">
+            <div class="verdict-symbol" aria-hidden="true">
+              {result.verdict === 'correct' ? '✓' : result.verdict === 'partial' ? '≈' : result.verdict === 'incorrect' ? '×' : '?'}
+            </div>
+            <div>
+              <span>{copy.eyebrow}</span>
+              <h3>{copy.title}</h3>
+              <p>{copy.body}</p>
+            </div>
+          </header>
+
+          {#if loadedPreset}
+            {@const expected = expectedVerdict(loadedPreset.tone)}
+            <div class:matched={result.verdict === expected} class="fixture-check">
+              <span>Test fixture</span>
+              <p>
+                <strong>Expected {expected}</strong>
+                <i aria-hidden="true">→</i>
+                <strong>Observed {result.verdict}</strong>
+              </p>
+              <small>
+                {result.verdict === expected
+                  ? 'The grader agrees with this human-labelled example.'
+                  : 'Useful disagreement: this case should stay visible during calibration.'}
+              </small>
+            </div>
+          {/if}
+
+          <div class="meaning-traces">
+            <article>
+              <div class="trace-label">
+                <span>Nearest valid explanation</span>
+                <strong>{scoreText(result.positive_score)}</strong>
+              </div>
+              <div class="score-track positive-track" aria-hidden="true">
+                <i style={`left:${tracePosition(result.positive_score)}%`}></i>
+              </div>
+              <small>Higher means more related; it does not prove correctness.</small>
+            </article>
+
+            <article>
+              <div class="trace-label">
+                <span>Meaning-component evidence</span>
+                <strong>{Math.round(coveragePercent(result.concept_coverage))}%</strong>
+              </div>
+              <div class="coverage-track" aria-hidden="true">
+                <i style={`width:${coveragePercent(result.concept_coverage)}%`}></i>
+              </div>
+              <small>
+                {result.answer_quality === 'concise'
+                  ? `${result.required_concepts.filter(conceptIsCovered).length} of ${result.required_concepts.length} explicit or supplied by context; omitted supporting detail stays optional.`
+                  : `${result.required_concepts.filter(conceptIsCovered).length} of ${result.required_concepts.length} components cleared the current checks.`}
+              </small>
+            </article>
+
+            <article>
+              <div class="trace-label">
+                <span>Nearest known trap</span>
+                <strong>{scoreText(result.negative_score)}</strong>
+              </div>
+              <div class="score-track negative-track" aria-hidden="true">
+                <i style={`left:${tracePosition(result.negative_score)}%`}></i>
+              </div>
+              <small>Lower is safer. The valid-vs-trap margin is {result.margin === null ? '—' : result.margin.toFixed(3)}.</small>
+            </article>
+
+            <article>
+              <div class="trace-label">
+                <span>Entailment verifier</span>
+                <strong>{result.verification.checked ? scoreText(result.verification.entailment_score) : '—'}</strong>
+              </div>
+              <div class="score-track verifier-track" aria-hidden="true">
+                <i style={`left:${probabilityPosition(result.verification.entailment_score)}%`}></i>
+              </div>
+              <small>
+                {result.verification.checked
+                  ? `Contradiction ${scoreText(result.verification.contradiction_score)} · valid-over-trap lead ${scoreText(result.verification.entailment_margin)}.`
+                  : result.verification.available
+                    ? 'Runs only after the embedding rubric clears every safety gate.'
+                    : 'Not installed; semantic similarity cannot auto-accept a paraphrase.'}
+              </small>
+            </article>
+          </div>
+
+          <div class="concept-audit">
+            <span>Meaning components</span>
+            <div>
+              {#each result.required_concepts as concept}
+                <article
+                  class:covered={concept.covered}
+                  class:optional={concept.evidence === 'optional_omitted'}
                 >
-                  <span class="gate gate-left" aria-hidden="true"><i></i><i></i><i></i></span>
-                  <span class="gate gate-right" aria-hidden="true"><i></i><i></i><i></i></span>
-                  <span class="aperture-response" aria-hidden="true"><i></i></span>
-                  <span class="aperture-core"><b>PLAY</b><i>ENTER</i></span>
-                  <span class="corner-index">OPEN / 01</span>
-                </button>
-              {:else}
-                <button class:running={playRun === option.id} class="play-button needle-button" type="button" on:click={() => runPlay(option.id)}>
-                  <span class="needle-dial" aria-hidden="true"><i></i><b>▶</b></span>
-                  <span class="needle-track" aria-hidden="true"><i></i><b></b></span>
-                  <span class="needle-copy"><b>PLAY</b><small>SIGNAL READY</small></span>
-                </button>
-              {/if}
+                  <i aria-hidden="true">{conceptEvidenceIcon(concept)}</i>
+                  <p><strong>{concept.label}</strong><small>{conceptEvidenceLabel(concept)}</small></p>
+                </article>
+              {/each}
             </div>
+          </div>
 
-            <footer class="concept-foot"><span>{option.id === 'aperture' ? 'MOVE + CLICK' : 'CLICK TO FIRE'}</span><i></i><span>274 × 106</span></footer>
-          </article>
-        {/each}
-      </div>
-    </section>
+          {#if result.reasons.length}
+            <div class="reason-note">
+              <span>Why this verdict</span>
+              <ul>
+                {#each result.reasons as reason}
+                  <li>{reason}</li>
+                {/each}
+              </ul>
+            </div>
+          {/if}
 
-    <section class="forge-section feedback-section" id="feedback-options">
-      <header class="section-heading">
-        <div><span>02 / GRADING</span><h2>One verdict. Three waves.</h2></div>
-        <p>Every card keeps B1’s Razor Line foreground. Only the Ink Saffron wave behind it changes—and each wave behaves differently for right and wrong.</p>
-      </header>
+          <details class="reference-detail">
+            <summary>Closest accepted explanation</summary>
+            <p>{result.matched_reference.text}</p>
+            <span>Similarity {scoreText(result.matched_reference.score)}</span>
+          </details>
 
-      <div class="feedback-grid">
-        {#each feedbackOptions as option, index (option.id)}
-          <article class={`concept feedback-concept ${option.id}`}>
-            <header class="concept-head">
-              <span>B{index + 1}</span>
-              <div><h3>{option.name}</h3><p>{option.note}</p></div>
-            </header>
-
-            <div
-              class="answer-stage"
-              class:right={feedbackState[option.id] === 'right'}
-              class:wrong={feedbackState[option.id] === 'wrong'}
-              aria-live="polite"
-            >
-              {#if option.id === 'reeds'}
-                <div class="background-wave reed-wave" aria-hidden="true">
-                  {#each Array(21) as _, waveIndex}
-                    <i style={`--i:${waveIndex};--distance:${Math.abs(waveIndex - 10)};--height:${24 + ((waveIndex * 13) % 58)}px`}></i>
-                  {/each}
-                </div>
-              {:else if option.id === 'contours'}
-                <div class="background-wave contour-wave" aria-hidden="true">
-                  {#each Array(7) as _, waveIndex}
-                    <i style={`--i:${waveIndex};--offset:${waveIndex % 2 ? 14 : -14}px;--contour-width:${112 + waveIndex * 31}px;--contour-height:${46 + waveIndex * 17}px`}></i>
-                  {/each}
+          {#if result.verdict === 'uncertain'}
+            <div class="human-call">
+              <span>The reference says</span>
+              <p>{active.acceptedAnswers[0]}</p>
+              {#if !selfResolution}
+                <strong>Choose a demo-only outcome</strong>
+                <div>
+                  <button type="button" on:click={() => (selfResolution = 'same')}>Treat as correct</button>
+                  <button type="button" on:click={() => (selfResolution = 'different')}>Treat as incorrect</button>
                 </div>
               {:else}
-                <div class="background-wave horizon-wave" aria-hidden="true">
-                  {#each Array(6) as _, waveIndex}
-                    <i style={`--i:${waveIndex};--from:${waveIndex % 2 ? 112 : -112}%;--to:${waveIndex % 2 ? -112 : 112}%`}></i>
-                  {/each}
+                <div class={`self-resolution ${selfResolution}`}>
+                  <i aria-hidden="true">{selfResolution === 'same' ? '✓' : '↺'}</i>
+                  <p>
+                    <strong>{selfResolution === 'same' ? 'Demo override: correct.' : 'Demo override: incorrect.'}</strong>
+                    <span>The backend verdict remains uncertain; no training score was changed.</span>
+                  </p>
                 </div>
               {/if}
-
-              <div class="stage-hud"><span>6 / 10</span><span>EN → ES</span><b>COMBO ×5</b></div>
-              <h4>still</h4>
-
-              <div class="razor-answer">
-                <span class="typed-word">todavía</span>
-                <i class="razor-rule" aria-hidden="true"></i>
-                <b class="verdict right-verdict">LOCKED ✓</b>
-                <b class="verdict wrong-verdict">CUT / AGAIN</b>
-              </div>
-
-              <div class="stage-feedback" aria-hidden="true">
-                <span class="right-message">Correct. Keep the run alive.</span>
-                <span class="wrong-message">Not yet. Your hint is ready.</span>
-              </div>
             </div>
+          {/if}
 
-            <div class="test-controls" aria-label={`Test ${option.name}`}>
-              <button type="button" class="right-trigger" on:click={() => runFeedback(option.id, 'right')}><span>✓</span> Run right</button>
-              <button type="button" class="wrong-trigger" on:click={() => runFeedback(option.id, 'wrong')}><span>×</span> Run wrong</button>
-            </div>
-          </article>
-        {/each}
-      </div>
+          <footer class="run-meta">
+            <span>
+              <i class:offline={!result.model_available}></i>
+              {result.model_available ? result.model_name : 'Model unavailable'}
+            </span>
+            <span>{methodLabel(result)}</span>
+            <span>{Math.round(result.latency_ms)} ms</span>
+          </footer>
+        </div>
+      {:else}
+        <div class="empty-trace">
+          <div class="trace-map" aria-hidden="true">
+            <span class="map-answer">your answer</span>
+            <i class="map-line line-one"></i>
+            <i class="map-line line-two"></i>
+            <i class="map-line line-three"></i>
+            <span class="map-node node-one"><b>A</b> valid explanations</span>
+            <span class="map-node node-two"><b>B</b> essential ideas</span>
+            <span class="map-node node-three"><b>C</b> nearby traps</span>
+          </div>
+          <div class="empty-copy">
+            <strong>One score is not enough.</strong>
+            <p>
+              The lab looks for resemblance, completeness, and contradictions separately,
+              then returns correct, partial, incorrect, or uncertain.
+            </p>
+          </div>
+        </div>
+      {/if}
     </section>
-  </main>
+  </div>
 
-  <footer class="forge-footer">
-    <div><span>MAKE THE CALL</span><h2>Choose one A<br />and one wave.</h2></div>
-    <p>The foreground verdict is settled. Now choose which background motion gives that verdict the right amount of force.</p>
-    <a href="#forge-top">Back to top ↑</a>
+  <footer class="lab-footer">
+    <span>Prototype boundary</span>
+    <p>
+      Answers stay in this request. The demo does not save them, change spaced-repetition
+      scores, or call a paid model.
+    </p>
+    <a href="#main-content">Back to top ↑</a>
   </footer>
 </section>
 
 <style>
-  :global(html[data-playground='ink-interactions']) {
-    scroll-behavior: smooth;
-    background: #0b0906;
+  :global(html[data-playground='meaning-lab']) {
+    --lab-paper: #edf2ff;
+    --lab-paper-deep: #dce5fa;
+    --lab-sheet: #f9fbff;
+    --lab-ink: #172033;
+    --lab-muted: #4f5c75;
+    --lab-line: #c8d3ea;
+    --lab-cobalt: #3656d4;
+    --lab-cobalt-soft: #dfe6ff;
+    --lab-jade: #176c59;
+    --lab-jade-soft: #ddf3eb;
+    --lab-coral: #b64038;
+    --lab-coral-soft: #ffe4df;
+    --lab-amber: #8c4d0b;
+    --lab-amber-soft: #fff0d6;
+    color-scheme: light;
   }
 
-  :global(html[data-playground='ink-interactions'] body) {
+  :global(html[data-playground='meaning-lab'] body) {
+    color: var(--lab-ink);
     background:
-      linear-gradient(90deg, rgba(230, 165, 40, .025) 1px, transparent 1px),
-      #0b0906;
-    background-size: 46px 100%;
+      linear-gradient(rgba(54, 86, 212, 0.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(54, 86, 212, 0.055) 1px, transparent 1px),
+      radial-gradient(circle at 8% 4%, rgba(89, 124, 238, 0.18), transparent 28rem),
+      radial-gradient(circle at 94% 24%, rgba(35, 128, 105, 0.11), transparent 30rem),
+      var(--lab-paper);
+    background-size: 28px 28px, 28px 28px, auto, auto, auto;
+    background-attachment: fixed;
   }
 
-  :global(html[data-playground='ink-interactions'] body::after),
-  :global(html[data-playground='ink-interactions'] .page-floor) { display: none; }
-
-  :global(html[data-playground='ink-interactions'] .workspace-shell) {
-    max-width: 1500px;
-    padding-top: 1rem;
-    padding-bottom: 5rem;
+  :global(html[data-playground='meaning-lab'] body::before),
+  :global(html[data-playground='meaning-lab'] body::after) {
+    display: none;
   }
 
-  .interaction-lab {
-    --field: #0b0906;
-    --panel: #16110c;
-    --raised: #211a11;
-    --ivory: #f0e7d8;
-    --muted: #9e9181;
-    --saffron: #e6a528;
-    --saffron-hi: #f0bd52;
-    --vermilion: #d75b4b;
-    --sage: #89b879;
-    --line: rgba(240, 231, 216, .14);
-    width: min(100%, 1440px);
+  :global(html[data-playground='meaning-lab'] .page-floor) {
+    border-color: rgba(54, 86, 212, 0.14);
+    background: linear-gradient(180deg, transparent, rgba(54, 86, 212, 0.08));
+  }
+
+  :global(html[data-playground='meaning-lab'][data-playground-nav='absent'] .workspace-shell) {
+    padding-top: 2rem;
+  }
+
+  .meaning-lab {
+    width: min(100%, 1180px);
     margin-inline: auto;
-    color: var(--ivory);
-    font-family: "Schibsted Grotesk", sans-serif;
+    color: var(--lab-ink);
+    font-family: "Figtree", sans-serif;
   }
 
-  .forge-hero {
-    position: relative;
-    overflow: hidden;
-    min-height: 650px;
-    border: 1px solid var(--line);
-    border-radius: 0 28px 0 28px;
-    background:
-      linear-gradient(90deg, transparent 0 65%, rgba(230,165,40,.045) 65% 65.2%, transparent 65.2%),
-      radial-gradient(circle at 74% 54%, rgba(230,165,40,.13), transparent 26rem),
-      var(--panel);
-    box-shadow: inset 6px 0 0 var(--vermilion), 0 28px 90px rgba(0,0,0,.34);
+  button,
+  textarea {
+    font: inherit;
   }
 
-  .forge-hero::after {
-    content: 'PLAY / FAIL / LEARN / REPEAT';
-    position: absolute;
-    right: -5.5rem;
-    bottom: 8.5rem;
-    transform: rotate(-90deg);
-    color: rgba(240,231,216,.14);
-    font: 600 .62rem/1 "IBM Plex Mono", monospace;
-    letter-spacing: .25em;
+  button:disabled,
+  textarea:disabled {
+    cursor: not-allowed;
+    opacity: 0.58;
   }
 
-  .hero-status {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 1rem 1.3rem 1rem 1.55rem;
-    border-bottom: 1px solid var(--line);
-    color: var(--muted);
-    font: 500 .62rem/1 "IBM Plex Mono", monospace;
-    letter-spacing: .12em;
+  button:focus-visible,
+  textarea:focus-visible,
+  .result-sheet:focus-visible,
+  a:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--lab-cobalt) 65%, white);
+    outline-offset: 3px;
   }
 
-  .hero-status span:first-child { display: flex; align-items: center; gap: .65rem; }
-  .hero-status i { width: 7px; height: 7px; border-radius: 50%; background: var(--saffron); animation: status-blink 1.8s steps(1) infinite; }
-
-  .hero-main {
+  .lab-hero {
     display: grid;
-    min-height: 510px;
-    grid-template-columns: minmax(0, 1.2fr) minmax(230px, .38fr);
-    gap: 3rem;
-    align-content: center;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 380px);
+    gap: clamp(2rem, 7vw, 6rem);
     align-items: end;
-    padding: clamp(2rem, 6vw, 6rem);
+    padding: clamp(1rem, 4vw, 3.2rem) 0 clamp(2.3rem, 5vw, 4.2rem);
+    border-bottom: 1px solid var(--lab-line);
   }
 
-  .hero-kicker {
-    grid-column: 1 / -1;
-    margin: 0 0 -1rem;
-    color: var(--saffron);
-    font: 600 .68rem/1 "IBM Plex Mono", monospace;
-    letter-spacing: .15em;
+  .hero-copy {
+    max-width: 770px;
+  }
+
+  .lab-kicker,
+  .word-meta,
+  .trace-header span,
+  .rubric-heading > span,
+  .preset-group > span,
+  .concept-audit > span,
+  .reason-note > span,
+  .human-call > span,
+  .lab-footer > span {
+    font: 600 0.7rem/1.2 "IBM Plex Mono", monospace;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
   }
 
-  .hero-main h1 {
+  .lab-kicker {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    color: var(--lab-cobalt);
+  }
+
+  .live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--lab-jade);
+    box-shadow: 0 0 0 5px rgba(35, 128, 105, 0.12);
+  }
+
+  .hero-copy h1 {
+    margin: 1.3rem 0 1.15rem;
+    color: var(--lab-ink);
+    font: 700 clamp(3.2rem, 7.4vw, 7.3rem)/0.86 "Space Grotesk", sans-serif;
+    letter-spacing: -0.078em;
+  }
+
+  .hero-copy h1 em {
+    color: var(--lab-cobalt);
+    font-style: normal;
+  }
+
+  .hero-copy > p {
+    max-width: 660px;
     margin: 0;
-    font: 650 clamp(4rem, 9vw, 9rem)/.8 "Syne", sans-serif;
-    letter-spacing: -.075em;
+    color: var(--lab-muted);
+    font-size: clamp(1rem, 1.7vw, 1.2rem);
+    line-height: 1.55;
   }
 
-  .hero-main h1 em { color: var(--saffron); font-style: normal; }
-  .hero-brief { max-width: 280px; padding: 1.2rem 0 0 1.2rem; border-left: 3px solid var(--vermilion); }
-  .hero-brief span { color: var(--saffron); font: 600 .6rem/1 "IBM Plex Mono", monospace; letter-spacing: .12em; }
-  .hero-brief p { margin: .9rem 0 0; color: var(--muted); font-size: 1rem; line-height: 1.55; }
-
-  .hero-nav { display: grid; grid-template-columns: repeat(2, 1fr); border-top: 1px solid var(--line); }
-  .hero-nav a { display: flex; min-height: 70px; gap: .9rem; align-items: center; padding: 1rem 1.4rem; color: var(--ivory); text-decoration: none; transition: color 180ms ease, background 180ms ease; }
-  .hero-nav a + a { border-left: 1px solid var(--line); }
-  .hero-nav b { color: var(--saffron); font: 600 .62rem/1 "IBM Plex Mono", monospace; }
-  .hero-nav a:hover { color: var(--saffron-hi); background: rgba(230,165,40,.045); }
-  .hero-nav a:focus-visible { outline: 2px solid var(--saffron); outline-offset: -4px; }
-
-  .forge-section { scroll-margin-top: 1rem; padding-top: clamp(5rem, 10vw, 10rem); }
-  .section-heading { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, .38fr); gap: 3rem; align-items: end; margin-bottom: 2rem; }
-  .section-heading span { color: var(--saffron); font: 600 .63rem/1 "IBM Plex Mono", monospace; letter-spacing: .14em; }
-  .section-heading h2 { margin: .8rem 0 0; font: 650 clamp(2.7rem, 5vw, 5.5rem)/.9 "Syne", sans-serif; letter-spacing: -.06em; }
-  .section-heading p { margin: 0; color: var(--muted); line-height: 1.58; }
-  .section-heading strong { color: var(--ivory); font-family: "IBM Plex Mono", monospace; font-size: .82em; }
-
-  .play-grid, .feedback-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
-  .concept { min-width: 0; overflow: hidden; border: 1px solid var(--line); background: var(--panel); }
-  .concept:nth-child(2) { border-radius: 0 20px 0 20px; }
-  .concept:nth-child(3) { border-top-color: rgba(230,165,40,.38); }
-  .concept-head { display: grid; min-height: 140px; grid-template-columns: auto 1fr; gap: 1rem; padding: 1.25rem; border-bottom: 1px solid var(--line); }
-  .concept-head > span { color: var(--vermilion); font: 700 .66rem/1 "IBM Plex Mono", monospace; }
-  .concept-head h3 { margin: 0; font: 650 1.65rem/1 "Syne", sans-serif; letter-spacing: -.035em; }
-  .concept-head p { margin: .7rem 0 0; color: var(--muted); font-size: .88rem; line-height: 1.5; }
-
-  .button-bay { display: grid; min-height: 290px; place-items: center; padding: 2rem 1rem; background: linear-gradient(transparent 49.7%, rgba(230,165,40,.07) 49.7% 50.3%, transparent 50.3%), var(--field); }
-  .play-button { position: relative; display: block; width: 274px; height: 106px; max-width: 100%; overflow: hidden; padding: 0; color: var(--ivory); cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
-  .play-button:focus-visible { outline: 3px solid var(--saffron-hi); outline-offset: 5px; }
-  .play-button:active { transform: scale(.98); }
-
-  .relay-button { border: 1px solid rgba(230,165,40,.58); border-radius: 0 16px 0 16px; background: var(--panel); box-shadow: inset 4px 0 var(--vermilion); }
-  .relay-grid { position: absolute; inset: 9px; display: grid; grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(2, 1fr); gap: 4px; }
-  .relay-grid i { opacity: .22; background: var(--saffron); transform: scale(.72); transition: opacity 140ms ease, transform 140ms ease; }
-  .relay-button:hover .relay-grid i { opacity: calc(.25 + var(--i) * .025); transform: scale(.82); }
-  .relay-button .button-copy { position: absolute; z-index: 2; inset: 25px 55px; display: flex; align-items: center; justify-content: center; gap: .65rem; color: var(--ivory); background: rgba(11,9,6,.88); font: 700 .92rem/1 "Syne", sans-serif; letter-spacing: .16em; }
-  .relay-button .button-copy b { color: var(--saffron); font-size: .7rem; }
-  .relay-button small { position: absolute; z-index: 3; right: 9px; bottom: 5px; color: var(--muted); font: 500 .48rem/1 "IBM Plex Mono", monospace; letter-spacing: .08em; }
-  .relay-button.running .relay-grid i { animation: relay-fire 560ms cubic-bezier(.2,.8,.2,1) calc(var(--i) * 36ms) both; }
-  .relay-button.running .button-copy { animation: relay-copy 900ms cubic-bezier(.2,.8,.2,1) 180ms both; }
-
-  .aperture-button { --pointer-x: 137px; --pointer-y: 53px; border: 1px solid rgba(230,165,40,.48); border-radius: 53px; background: var(--field); }
-  .aperture-button::after { content: ''; position: absolute; z-index: 1; inset: 8px; border: 1px solid rgba(240,231,216,.13); border-radius: 45px; }
-  .gate { position: absolute; z-index: 2; top: 0; bottom: 0; width: 50.5%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; padding: 8px 3px; transition: transform 110ms cubic-bezier(.2,.8,.2,1); }
-  .gate i { background: linear-gradient(180deg, var(--saffron-hi), #b97608); transition: transform 90ms ease-out, filter 120ms ease; }
-  .gate-left { left: 0; transform: translateX(calc(-78% + var(--left-pull, 0px))); }
-  .gate-right { right: 0; transform: translateX(calc(78% - var(--right-pull, 0px))); }
-  .gate-left i:first-child, .gate-right i:last-child { background: var(--vermilion); }
-  .gate-left i:nth-child(2) { transform: translateY(var(--slat-y, 0px)); }
-  .gate-right i:nth-child(2) { transform: translateY(calc(0px - var(--slat-y, 0px))); }
-  .aperture-response { position: absolute; z-index: 5; left: var(--pointer-x); top: var(--pointer-y); width: 19px; height: 19px; opacity: 0; transform: translate(-50%, -50%) scale(.65); border: 1px solid rgba(240,189,82,.8); border-radius: 50%; pointer-events: none; transition: opacity 100ms ease, transform 100ms ease; }
-  .aperture-response::before, .aperture-response::after { content: ''; position: absolute; left: 50%; top: 50%; background: rgba(240,189,82,.46); transform: translate(-50%, -50%); }
-  .aperture-response::before { width: 39px; height: 1px; }
-  .aperture-response::after { width: 1px; height: 39px; }
-  .aperture-response i { position: absolute; inset: 6px; border-radius: 50%; background: var(--vermilion); }
-  .aperture-button.tracking .aperture-response { opacity: .88; transform: translate(-50%, -50%) scale(1); }
-  .aperture-button.tracking .gate i { filter: brightness(1.08); }
-  .aperture-core { position: absolute; z-index: 3; inset: 0; display: grid; place-content: center; gap: .48rem; transform: translate(var(--core-x, 0), var(--core-y, 0)); transition: transform 100ms ease-out; }
-  .aperture-core b { font: 750 1rem/1 "Syne", sans-serif; letter-spacing: .18em; }
-  .aperture-core i { color: var(--saffron); font: 500 .48rem/1 "IBM Plex Mono", monospace; font-style: normal; letter-spacing: .16em; }
-  .corner-index { position: absolute; z-index: 4; right: 26px; bottom: 13px; color: var(--muted); font: 500 .45rem/1 "IBM Plex Mono", monospace; letter-spacing: .08em; }
-  .aperture-button.running .gate-left { animation: gate-left-fire 1s cubic-bezier(.7,0,.2,1) both; }
-  .aperture-button.running .gate-right { animation: gate-right-fire 1s cubic-bezier(.7,0,.2,1) both; }
-  .aperture-button.running .aperture-core { animation: aperture-word 1s steps(1) both; }
-
-  .needle-button { border: 1px solid rgba(240,231,216,.18); border-radius: 0 16px 0 16px; background: var(--raised); box-shadow: inset 0 -3px var(--vermilion); }
-  .needle-dial { position: absolute; left: 14px; top: 14px; width: 76px; height: 76px; border: 1px solid var(--saffron); border-radius: 50%; background: repeating-radial-gradient(circle, transparent 0 7px, rgba(230,165,40,.16) 8px 9px); }
-  .needle-dial::before { content: ''; position: absolute; inset: 19px; border: 1px solid var(--saffron); border-radius: 50%; background: var(--field); }
-  .needle-dial i { position: absolute; z-index: 2; left: 50%; top: 5px; width: 2px; height: 33px; transform-origin: 50% 33px; transform: rotate(42deg); background: var(--vermilion); }
-  .needle-dial b { position: absolute; z-index: 3; inset: 0; display: grid; place-items: center; color: var(--saffron); font-size: .65rem; }
-  .needle-track { position: absolute; left: 104px; right: 14px; top: 30px; height: 25px; overflow: hidden; border-bottom: 1px solid rgba(230,165,40,.32); }
-  .needle-track::before { content: ''; position: absolute; inset: 10px 0 auto; height: 1px; background: repeating-linear-gradient(90deg, var(--muted) 0 3px, transparent 3px 8px); opacity: .45; }
-  .needle-track i { position: absolute; z-index: 2; left: 0; top: 3px; width: 9px; height: 17px; background: var(--saffron); clip-path: polygon(0 45%, 65% 45%, 100% 0, 100% 100%, 65% 55%, 0 55%); }
-  .needle-track b { position: absolute; right: 0; top: 7px; width: 5px; height: 5px; border-radius: 50%; background: var(--vermilion); }
-  .needle-copy { position: absolute; left: 105px; right: 15px; bottom: 13px; display: flex; justify-content: space-between; align-items: baseline; }
-  .needle-copy > b { font: 750 .96rem/1 "Syne", sans-serif; letter-spacing: .16em; }
-  .needle-copy small { color: var(--muted); font: 500 .45rem/1 "IBM Plex Mono", monospace; letter-spacing: .08em; }
-  .needle-button:hover .needle-dial { border-color: var(--saffron-hi); }
-  .needle-button.running .needle-dial { animation: dial-fire 1.1s cubic-bezier(.2,.8,.2,1) both; }
-  .needle-button.running .needle-dial i { animation: needle-wind 1.1s cubic-bezier(.2,.8,.2,1) both; }
-  .needle-button.running .needle-track i { animation: signal-run 900ms cubic-bezier(.15,.8,.2,1) 180ms both; }
-  .needle-button.running .needle-track b { animation: receiver-hit 1.1s ease 250ms both; }
-
-  .concept-foot { display: grid; min-height: 39px; grid-template-columns: auto 1fr auto; gap: .7rem; align-items: center; padding: .7rem 1rem; border-top: 1px solid var(--line); color: var(--muted); font: 500 .48rem/1 "IBM Plex Mono", monospace; letter-spacing: .1em; }
-  .concept-foot i { height: 1px; background: var(--line); }
-
-  .feedback-section { padding-top: clamp(7rem, 12vw, 12rem); }
-  .answer-stage { position: relative; isolation: isolate; min-height: 356px; overflow: hidden; margin: 1rem; padding: 1rem; border: 1px solid rgba(230,165,40,.28); border-radius: 0 18px 0 18px; background: radial-gradient(circle at 50% 42%, rgba(230,165,40,.055), transparent 12rem), var(--field); box-shadow: inset 4px 0 0 var(--vermilion); }
-  .stage-hud { position: relative; z-index: 2; display: flex; justify-content: space-between; gap: .7rem; color: var(--muted); font: 600 .54rem/1 "IBM Plex Mono", monospace; letter-spacing: .08em; }
-  .stage-hud b { color: var(--saffron); }
-  .answer-stage h4 { position: relative; z-index: 2; margin: 3.7rem 0 2.5rem; text-align: center; font: 650 2.8rem/1 "Syne", sans-serif; letter-spacing: -.04em; }
-  .typed-word { display: block; font: 650 1.45rem/1 "Schibsted Grotesk", sans-serif; }
-  .verdict { opacity: 0; }
-
-  .razor-answer { position: relative; z-index: 2; width: min(100%, 300px); min-height: 64px; margin-inline: auto; padding: 0 .75rem 1rem; border-bottom: 2px solid var(--saffron); }
-  .razor-rule { position: absolute; z-index: 3; left: 0; right: 0; bottom: -2px; height: 2px; transform-origin: left; background: var(--saffron-hi); }
-  .feedback-concept .verdict { position: absolute; right: .6rem; top: .25rem; font: 700 .55rem/1 "IBM Plex Mono", monospace; letter-spacing: .08em; }
-  .feedback-concept .right-verdict { color: var(--sage); }
-  .feedback-concept .wrong-verdict { color: var(--vermilion); }
-  .feedback-concept .answer-stage.right .razor-rule { animation: razor-lock 760ms cubic-bezier(.2,.8,.2,1) both; }
-  .feedback-concept .answer-stage.right .typed-word { animation: word-seat 620ms cubic-bezier(.2,.9,.2,1) 160ms both; }
-  .feedback-concept .answer-stage.right .right-verdict { animation: verdict-in 430ms steps(4) 540ms both; }
-  .feedback-concept .answer-stage.wrong .razor-rule { background: var(--vermilion); animation: razor-cut 620ms cubic-bezier(.8,0,.2,1) both; }
-  .feedback-concept .answer-stage.wrong .typed-word { animation: word-shear 620ms cubic-bezier(.8,0,.2,1) both; }
-  .feedback-concept .answer-stage.wrong .wrong-verdict { animation: verdict-in 430ms steps(4) 500ms both; }
-
-  .background-wave { position: absolute; z-index: 0; inset: 43px 0 55px; overflow: hidden; pointer-events: none; }
-
-  .reed-wave { display: flex; align-items: center; justify-content: center; gap: 6px; padding-inline: 22px; mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
-  .reed-wave i { width: 2px; height: var(--height); flex: 1 1 2px; max-width: 3px; opacity: 0; background: var(--saffron); transform: scaleY(.08); }
-  .reeds .answer-stage.right .reed-wave i { animation: reeds-right 1s cubic-bezier(.2,.8,.2,1) calc(var(--distance) * 28ms) both; }
-  .reeds .answer-stage.wrong .reed-wave i { animation: reeds-wrong 780ms cubic-bezier(.7,0,.2,1) calc(var(--i) * 14ms) both; }
-
-  .contour-wave { inset: 40px 0 52px; overflow: visible; }
-  .contour-wave i { position: absolute; left: 50%; top: 57%; width: var(--contour-width); height: var(--contour-height); opacity: 0; transform: translate(-50%, -50%) scale(.45); border: 1px solid var(--saffron); border-radius: 0 20px 0 20px; }
-  .contours .answer-stage.right .contour-wave i { animation: contours-right 1.05s cubic-bezier(.2,.8,.2,1) calc(var(--i) * 62ms) both; }
-  .contours .answer-stage.wrong .contour-wave i { animation: contours-wrong 820ms cubic-bezier(.7,0,.2,1) calc(var(--i) * 38ms) both; }
-
-  .horizon-wave { inset: 46px -16% 58px; display: grid; align-content: center; gap: 4px; transform: rotate(-3deg); }
-  .horizon-wave i { display: block; height: 17px; opacity: 0; background: linear-gradient(90deg, transparent, rgba(230,165,40,.72) 16% 84%, transparent); clip-path: polygon(0 25%, 12% 5%, 28% 30%, 43% 0, 62% 35%, 78% 8%, 100% 28%, 100% 78%, 83% 95%, 66% 68%, 45% 100%, 23% 66%, 0 90%); }
-  .horizons .answer-stage.right .horizon-wave i { animation: horizons-right 1.05s cubic-bezier(.2,.8,.2,1) calc(var(--i) * 58ms) both; }
-  .horizons .answer-stage.wrong .horizon-wave i { animation: horizons-wrong 820ms cubic-bezier(.75,0,.2,1) calc(var(--i) * 34ms) both; }
-
-  .stage-feedback { position: absolute; z-index: 2; right: 1rem; bottom: 1rem; left: 1.35rem; min-height: 24px; padding-top: .75rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .72rem; }
-  .stage-feedback span { display: none; }
-  .answer-stage.right .right-message, .answer-stage.wrong .wrong-message { display: block; animation: message-in 420ms ease 600ms both; }
-  .answer-stage.right .right-message { color: var(--sage); }
-  .answer-stage.wrong .wrong-message { color: #dc7b6e; }
-
-  .test-controls { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--line); }
-  .test-controls button { display: flex; min-height: 58px; align-items: center; justify-content: center; gap: .55rem; border: 0; color: var(--ivory); background: transparent; cursor: pointer; font: 650 .76rem/1 "Schibsted Grotesk", sans-serif; transition: background 150ms ease, color 150ms ease; }
-  .test-controls button + button { border-left: 1px solid var(--line); }
-  .test-controls span { font-family: "IBM Plex Mono", monospace; }
-  .right-trigger:hover { color: var(--field); background: var(--sage); }
-  .wrong-trigger:hover { color: var(--field); background: var(--vermilion); }
-  .test-controls button:focus-visible { outline: 2px solid var(--saffron); outline-offset: -4px; }
-
-  .forge-footer { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, .38fr); gap: 3rem; align-items: end; margin-top: clamp(7rem, 13vw, 13rem); padding: clamp(2rem, 5vw, 5rem); border: 1px solid var(--line); border-radius: 0 28px 0 28px; background: linear-gradient(125deg, rgba(230,165,40,.09), transparent 42%), var(--panel); box-shadow: inset 6px 0 var(--vermilion); }
-  .forge-footer span { color: var(--saffron); font: 600 .62rem/1 "IBM Plex Mono", monospace; letter-spacing: .14em; }
-  .forge-footer h2 { margin: .9rem 0 0; font: 650 clamp(3rem, 6vw, 6.5rem)/.84 "Syne", sans-serif; letter-spacing: -.065em; }
-  .forge-footer p { margin: 0; color: var(--muted); line-height: 1.6; }
-  .forge-footer a { grid-column: 2; color: var(--ivory); font: 500 .58rem/1 "IBM Plex Mono", monospace; letter-spacing: .08em; text-decoration: none; }
-
-  @keyframes status-blink { 0%, 58% { opacity: 1; } 59%, 100% { opacity: .25; } }
-  @keyframes relay-fire { 0% { opacity: .18; transform: scale(.72); } 45% { opacity: 1; transform: scale(1); background: var(--saffron-hi); } 100% { opacity: .3; transform: scale(.82); } }
-  @keyframes relay-copy { 0%, 100% { color: var(--ivory); background: rgba(11,9,6,.88); } 35%, 58% { color: var(--field); background: var(--saffron-hi); letter-spacing: .24em; } }
-  @keyframes gate-left-fire { 0%, 100% { transform: translateX(-78%); } 38%, 58% { transform: translateX(0); } }
-  @keyframes gate-right-fire { 0%, 100% { transform: translateX(78%); } 38%, 58% { transform: translateX(0); } }
-  @keyframes aperture-word { 0%, 37%, 60%, 100% { opacity: 1; } 38%, 59% { opacity: 0; } }
-  @keyframes dial-fire { 0% { transform: rotate(0); } 65% { transform: rotate(300deg); } 100% { transform: rotate(360deg); } }
-  @keyframes needle-wind { 0% { transform: rotate(42deg); } 38% { transform: rotate(-34deg); } 66%, 100% { transform: rotate(138deg); } }
-  @keyframes signal-run { 0% { left: 0; transform: scaleX(1); } 72% { left: calc(100% - 9px); transform: scaleX(2.4); } 100% { left: calc(100% - 9px); transform: scaleX(.4); opacity: 0; } }
-  @keyframes receiver-hit { 0%, 52%, 100% { transform: scale(1); box-shadow: none; } 70% { transform: scale(2.7); box-shadow: 0 0 0 7px rgba(215,91,75,.18); } }
-  @keyframes razor-lock { 0% { transform: scaleX(0); } 48% { transform: scaleX(1); height: 2px; } 70% { transform: scaleX(1); height: 8px; background: var(--sage); } 100% { transform: scaleX(1); height: 2px; background: var(--sage); } }
-  @keyframes razor-cut { 0% { transform: translateX(105%) scaleX(.1); } 52% { transform: translateX(0) scaleX(1); height: 4px; } 100% { transform: translateX(-8%) scaleX(.84); height: 2px; } }
-  @keyframes word-seat { 0% { transform: translateY(0); } 48% { transform: translateY(-7px); color: var(--saffron-hi); } 100% { transform: translateY(-3px); color: var(--ivory); } }
-  @keyframes word-shear { 0%, 100% { transform: translateX(0) skewX(0); } 35% { transform: translateX(-6px) skewX(-12deg); color: var(--vermilion); } 56% { transform: translateX(5px) skewX(9deg); color: var(--vermilion); } }
-  @keyframes verdict-in { 0% { opacity: 0; transform: translateY(4px); } 100% { opacity: 1; transform: translateY(0); } }
-  @keyframes reeds-right {
-    0% { opacity: 0; transform: scaleY(.08); background: var(--saffron); }
-    38% { opacity: .32; transform: scaleY(1.2); background: var(--saffron-hi); }
-    66% { opacity: .2; transform: scaleY(.72); background: var(--sage); }
-    100% { opacity: 0; transform: scaleY(.18); background: var(--sage); }
-  }
-  @keyframes reeds-wrong {
-    0% { opacity: 0; transform: translateX(-12px) scaleY(.18) skewX(0); background: var(--vermilion); }
-    34% { opacity: .34; transform: translateX(6px) scaleY(1.15) skewX(-24deg); background: var(--vermilion); }
-    58% { opacity: .22; transform: translateX(-4px) scaleY(.65) skewX(18deg); background: #b9473c; }
-    100% { opacity: 0; transform: translateX(14px) scaleY(.24) skewX(-9deg); background: #b9473c; }
-  }
-  @keyframes contours-right {
-    0% { opacity: 0; transform: translate(-50%, -50%) scale(.45); border-color: var(--saffron); }
-    34% { opacity: .24; transform: translate(-50%, -50%) scale(.7); border-color: var(--saffron-hi); }
-    70% { opacity: .15; transform: translate(-50%, -50%) scale(1); border-color: var(--sage); }
-    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.15); border-color: var(--sage); }
-  }
-  @keyframes contours-wrong {
-    0% { opacity: 0; transform: translate(-50%, -50%) scale(1.12) rotate(0); border-color: var(--vermilion); }
-    42% { opacity: .28; transform: translate(calc(-50% + var(--offset)), calc(-50% + 7px)) scale(.62) rotate(-3deg); border-color: var(--vermilion); }
-    68% { opacity: .18; transform: translate(calc(-50% - var(--offset)), calc(-50% - 4px)) scale(.4) rotate(2deg); border-color: #b9473c; }
-    100% { opacity: 0; transform: translate(-50%, -50%) scale(.16) rotate(-4deg); border-color: #b9473c; }
-  }
-  @keyframes horizons-right {
-    0% { opacity: 0; transform: translateX(-86%) scaleX(.7); }
-    44% { opacity: .22; transform: translateX(0) scaleX(1); }
-    68% { opacity: .14; transform: translateX(18%) scaleX(.92); background-color: var(--sage); }
-    100% { opacity: 0; transform: translateX(86%) scaleX(.7); background-color: var(--sage); }
-  }
-  @keyframes horizons-wrong {
-    0% { opacity: 0; transform: translateX(var(--from)) scaleX(.6) skewX(-18deg); background: var(--vermilion); }
-    42% { opacity: .28; transform: translateX(0) scaleX(1) skewX(12deg); background: var(--vermilion); }
-    62% { opacity: .2; transform: translateX(0) scaleX(.7) skewX(-20deg); background: #b9473c; }
-    100% { opacity: 0; transform: translateX(var(--to)) scaleX(.35) skewX(24deg); background: #b9473c; }
-  }
-  @keyframes message-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-
-  @media (max-width: 1100px) {
-    .play-grid, .feedback-grid { grid-template-columns: 1fr; }
-    .concept { display: grid; grid-template-columns: minmax(240px, .48fr) 1fr; }
-    .concept-head { min-height: 0; border-bottom: 0; border-right: 1px solid var(--line); }
-    .button-bay { min-height: 250px; }
-    .concept-foot, .test-controls { grid-column: 1 / -1; }
-    .answer-stage { min-height: 325px; }
+  .local-note {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.8rem 0.9rem;
+    padding: 1.15rem;
+    border: 1px solid var(--lab-line);
+    border-radius: 4px 22px 4px 4px;
+    background: rgba(249, 251, 255, 0.82);
+    box-shadow: 12px 12px 0 rgba(54, 86, 212, 0.08);
   }
 
-  @media (max-width: 700px) {
-    :global(html[data-playground='ink-interactions'] .workspace-shell) { padding: .55rem; padding-top: .55rem; }
-    .forge-hero { min-height: auto; }
-    .hero-status span:last-child { display: none; }
-    .hero-main { min-height: 510px; grid-template-columns: 1fr; gap: 2rem; padding: 2.4rem 1.4rem; }
-    .hero-kicker { margin-bottom: -1rem; }
-    .hero-main h1 { font-size: clamp(3.9rem, 18vw, 6.5rem); }
-    .hero-brief { max-width: 250px; }
-    .section-heading { grid-template-columns: 1fr; gap: 1.2rem; }
-    .concept { display: block; }
-    .concept-head { min-height: 130px; border-right: 0; border-bottom: 1px solid var(--line); }
-    .button-bay { min-height: 245px; padding-inline: .7rem; }
-    .answer-stage { min-height: 340px; margin: .55rem; }
-    .answer-stage h4 { margin-top: 3.25rem; }
-    .forge-footer { grid-template-columns: 1fr; padding: 2rem 1.4rem; }
-    .forge-footer a { grid-column: 1; }
+  .model-mark {
+    position: relative;
+    display: grid;
+    width: 46px;
+    height: 46px;
+    place-items: center;
+    overflow: hidden;
+    border: 1px solid var(--lab-cobalt);
+    border-radius: 50%;
+    color: var(--lab-cobalt);
+    background: var(--lab-cobalt-soft);
+    font: 700 0.57rem/1 "IBM Plex Mono", monospace;
+  }
+
+  .model-mark i {
+    position: absolute;
+    width: 52px;
+    height: 1px;
+    background: var(--lab-cobalt);
+    transform: rotate(-34deg);
+  }
+
+  .local-note > div:nth-child(2) {
+    display: grid;
+    align-content: center;
+    gap: 0.18rem;
+  }
+
+  .local-note strong {
+    font: 700 0.92rem/1.2 "Space Grotesk", sans-serif;
+  }
+
+  .local-note span {
+    color: var(--lab-jade);
+    font: 600 0.66rem/1.3 "IBM Plex Mono", monospace;
+  }
+
+  .local-note p {
+    grid-column: 1 / -1;
+    margin: 0.25rem 0 0;
+    color: var(--lab-muted);
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  .challenge-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    margin: 1.35rem 0;
+    padding: 1px;
+    background: var(--lab-line);
+  }
+
+  .challenge-strip button {
+    position: relative;
+    display: grid;
+    min-height: 142px;
+    gap: 0.4rem;
+    align-content: start;
+    padding: 1rem;
+    border: 0;
+    color: var(--lab-ink);
+    background: rgba(249, 251, 255, 0.84);
+    text-align: left;
+    transition: background 160ms ease, transform 160ms ease;
+  }
+
+  .challenge-strip button::after {
+    position: absolute;
+    right: 1rem;
+    bottom: 0.85rem;
+    width: 9px;
+    height: 9px;
+    border: 1px solid var(--lab-line);
+    border-radius: 50%;
+    content: '';
+  }
+
+  .challenge-strip button.active {
+    z-index: 1;
+    background: var(--lab-cobalt-soft);
+    box-shadow: inset 0 -4px 0 var(--lab-cobalt);
+  }
+
+  .challenge-strip button.active::after {
+    border-color: var(--lab-cobalt);
+    background: var(--lab-cobalt);
+    box-shadow: 0 0 0 4px rgba(54, 86, 212, 0.12);
+  }
+
+  .challenge-strip button:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--lab-cobalt-soft) 60%, white);
+  }
+
+  .challenge-strip span {
+    color: var(--lab-cobalt);
+    font: 650 0.66rem/1 "IBM Plex Mono", monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .challenge-strip strong {
+    font: 700 1.35rem/1.1 "Space Grotesk", sans-serif;
+    letter-spacing: -0.035em;
+  }
+
+  .challenge-strip small {
+    max-width: 31ch;
+    color: var(--lab-muted);
+    font-size: 0.74rem;
+    line-height: 1.4;
+  }
+
+  .workbench {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(390px, 0.95fr);
+    border: 1px solid var(--lab-line);
+    background: var(--lab-sheet);
+    box-shadow: 0 24px 60px -42px rgba(23, 32, 51, 0.45);
+  }
+
+  .answer-bench,
+  .evidence-bench {
+    min-width: 0;
+    padding: clamp(1.2rem, 3vw, 2.2rem);
+  }
+
+  .answer-bench {
+    border-right: 1px solid var(--lab-line);
+  }
+
+  .word-card {
+    padding-bottom: 1.4rem;
+    border-bottom: 1px solid var(--lab-line);
+  }
+
+  .word-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+    color: var(--lab-cobalt);
+  }
+
+  .word-meta button {
+    min-height: 38px;
+    padding: 0.45rem 0.7rem;
+    border: 1px solid var(--lab-line);
+    border-radius: 999px;
+    color: var(--lab-cobalt);
+    background: transparent;
+    font: 600 0.66rem/1 "Figtree", sans-serif;
+  }
+
+  .word-card h2 {
+    margin: 1.2rem 0 0.7rem;
+    color: var(--lab-ink);
+    font: 700 clamp(3rem, 7vw, 5.7rem)/0.86 "Space Grotesk", sans-serif;
+    letter-spacing: -0.075em;
+  }
+
+  .word-card blockquote {
+    margin: 0;
+    padding-left: 0.85rem;
+    border-left: 3px solid var(--lab-cobalt);
+    color: var(--lab-muted);
+    font-size: 0.86rem;
+    font-style: italic;
+    line-height: 1.45;
+  }
+
+  .word-card > p {
+    margin: 1rem 0 0;
+    font: 650 1rem/1.35 "Space Grotesk", sans-serif;
+  }
+
+  .rubric-sheet {
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px dashed color-mix(in srgb, var(--lab-cobalt) 45%, var(--lab-line));
+    background: color-mix(in srgb, var(--lab-cobalt-soft) 42%, white);
+    animation: sheet-open 180ms ease-out both;
+  }
+
+  @keyframes sheet-open {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .rubric-heading {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .rubric-heading > span {
+    color: var(--lab-cobalt);
+  }
+
+  .rubric-heading p {
+    margin: 0;
+    color: var(--lab-muted);
+    font-size: 0.76rem;
+    line-height: 1.45;
+  }
+
+  .rubric-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 0.9rem;
+  }
+
+  .rubric-columns strong {
+    font-size: 0.75rem;
+  }
+
+  .rubric-columns ul {
+    display: grid;
+    gap: 0.35rem;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .rubric-columns li {
+    display: flex;
+    gap: 0.45rem;
+    color: var(--lab-muted);
+    font-size: 0.72rem;
+    line-height: 1.35;
+  }
+
+  .rubric-columns li i {
+    flex: 0 0 auto;
+    width: 7px;
+    height: 7px;
+    margin-top: 0.25rem;
+    border-radius: 50%;
+    background: var(--lab-jade);
+  }
+
+  .rubric-columns .trap-list i {
+    background: var(--lab-coral);
+  }
+
+  .answer-form {
+    display: grid;
+    gap: 0.85rem;
+    padding-top: 1.4rem;
+  }
+
+  .answer-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: end;
+  }
+
+  .answer-heading label {
+    color: var(--lab-ink);
+    font: 700 0.94rem/1.2 "Space Grotesk", sans-serif;
+  }
+
+  .answer-heading span {
+    max-width: 190px;
+    color: var(--lab-muted);
+    font-size: 0.68rem;
+    line-height: 1.35;
+    text-align: right;
+  }
+
+  .language-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .language-row span {
+    padding: 0.3rem 0.48rem;
+    border: 1px solid var(--lab-line);
+    border-radius: 999px;
+    color: var(--lab-muted);
+    background: var(--lab-paper);
+    font: 600 0.62rem/1 "IBM Plex Mono", monospace;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 140px;
+    box-sizing: border-box;
+    padding: 1rem;
+    border: 1px solid var(--lab-line);
+    border-radius: 3px 16px 3px 3px;
+    outline: 0;
+    color: var(--lab-ink);
+    background:
+      linear-gradient(transparent 31px, rgba(54, 86, 212, 0.08) 32px),
+      white;
+    background-size: 100% 32px;
+    font-size: 1rem;
+    line-height: 2;
+    resize: vertical;
+    transition: border-color 160ms ease, box-shadow 160ms ease;
+  }
+
+  textarea:focus {
+    border-color: var(--lab-cobalt);
+    box-shadow: 0 0 0 4px rgba(54, 86, 212, 0.09);
+  }
+
+  textarea::placeholder {
+    color: #929db2;
+  }
+
+  textarea:disabled {
+    background-color: #f2f5fb;
+  }
+
+  .answer-foot {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    color: var(--lab-muted);
+    font-size: 0.64rem;
+  }
+
+  .answer-foot kbd {
+    padding: 0.14rem 0.3rem;
+    border: 1px solid var(--lab-line);
+    border-bottom-width: 2px;
+    border-radius: 3px;
+    background: white;
+    font: 600 0.58rem/1 "IBM Plex Mono", monospace;
+  }
+
+  .answer-foot b {
+    font-weight: 500;
+  }
+
+  .preset-group {
+    display: grid;
+    gap: 0.55rem;
+    padding-top: 0.35rem;
+  }
+
+  .preset-group > span {
+    color: var(--lab-muted);
+  }
+
+  .preset-group > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .preset-group button {
+    display: flex;
+    min-height: 40px;
+    gap: 0.4rem;
+    align-items: center;
+    padding: 0.5rem 0.7rem;
+    border: 1px solid var(--lab-line);
+    border-radius: 999px;
+    color: var(--lab-ink);
+    background: white;
+    font-size: 0.68rem;
+  }
+
+  .preset-group button i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+  }
+
+  .preset-valid i { background: var(--lab-jade); }
+  .preset-partial i { background: var(--lab-amber); }
+  .preset-trap i { background: var(--lab-coral); }
+
+  .preset-group button:hover:not(:disabled) {
+    border-color: var(--lab-cobalt);
+    background: var(--lab-cobalt-soft);
+  }
+
+  .form-error {
+    margin: 0;
+    padding: 0.7rem 0.8rem;
+    border-left: 3px solid var(--lab-coral);
+    color: #8d302c;
+    background: var(--lab-coral-soft);
+    font-size: 0.76rem;
+    line-height: 1.4;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 0.25rem;
+  }
+
+  .grade-button,
+  .reset-button {
+    min-height: 50px;
+    border-radius: 3px;
+    font-weight: 700;
+  }
+
+  .grade-button {
+    display: flex;
+    flex: 1;
+    gap: 0.7rem;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--lab-cobalt);
+    color: white;
+    background: var(--lab-cobalt);
+    box-shadow: 5px 5px 0 #b9c6f6;
+  }
+
+  .grade-button:hover:not(:disabled) {
+    transform: translate(-1px, -1px);
+    box-shadow: 7px 7px 0 #b9c6f6;
+  }
+
+  .grade-button:disabled,
+  .reset-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .reset-button {
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--lab-line);
+    color: var(--lab-muted);
+    background: transparent;
+  }
+
+  .button-spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 700ms linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .evidence-bench {
+    display: flex;
+    min-height: 690px;
+    flex-direction: column;
+    background:
+      linear-gradient(rgba(54, 86, 212, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(54, 86, 212, 0.04) 1px, transparent 1px),
+      #f4f7ff;
+    background-size: 22px 22px;
+  }
+
+  .trace-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: start;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--lab-line);
+  }
+
+  .trace-header > div {
+    display: grid;
+    gap: 0.3rem;
+  }
+
+  .trace-header span {
+    color: var(--lab-cobalt);
+  }
+
+  .trace-header strong {
+    font: 700 0.9rem/1.2 "Space Grotesk", sans-serif;
+  }
+
+  .trace-header small {
+    max-width: 150px;
+    color: var(--lab-muted);
+    font-size: 0.62rem;
+    line-height: 1.35;
+    text-align: right;
+  }
+
+  .empty-trace,
+  .reading-state {
+    display: grid;
+    flex: 1;
+    place-content: center;
+    gap: 2rem;
+  }
+
+  .trace-map {
+    position: relative;
+    width: min(100%, 390px);
+    height: 295px;
+    margin-inline: auto;
+  }
+
+  .map-answer {
+    position: absolute;
+    z-index: 2;
+    left: 50%;
+    top: 50%;
+    display: grid;
+    width: 90px;
+    height: 90px;
+    place-items: center;
+    border: 1px solid var(--lab-cobalt);
+    border-radius: 50%;
+    color: var(--lab-cobalt);
+    background: var(--lab-cobalt-soft);
+    font: 650 0.67rem/1.2 "IBM Plex Mono", monospace;
+    text-align: center;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 12px rgba(54, 86, 212, 0.06);
+  }
+
+  .map-node {
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    width: 132px;
+    gap: 0.45rem;
+    align-items: center;
+    color: var(--lab-muted);
+    font-size: 0.68rem;
+    line-height: 1.25;
+  }
+
+  .map-node b {
+    display: grid;
+    flex: 0 0 auto;
+    width: 27px;
+    height: 27px;
+    place-items: center;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    color: var(--lab-cobalt);
+    background: var(--lab-sheet);
+    font: 700 0.62rem/1 "IBM Plex Mono", monospace;
+  }
+
+  .node-one { left: 0; top: 22px; }
+  .node-two { right: 0; top: 24px; }
+  .node-three { left: 50%; bottom: 0; transform: translateX(-50%); }
+  .node-three b { color: var(--lab-coral); }
+
+  .map-line {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 150px;
+    height: 1px;
+    transform-origin: left center;
+    background: repeating-linear-gradient(90deg, var(--lab-line) 0 5px, transparent 5px 9px);
+  }
+
+  .line-one { transform: rotate(-145deg); }
+  .line-two { transform: rotate(-35deg); }
+  .line-three { transform: rotate(90deg); }
+
+  .empty-copy {
+    max-width: 400px;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .empty-copy strong {
+    font: 700 1.2rem/1.2 "Space Grotesk", sans-serif;
+  }
+
+  .empty-copy p,
+  .reading-state p {
+    margin: 0.55rem 0 0;
+    color: var(--lab-muted);
+    font-size: 0.78rem;
+    line-height: 1.5;
+  }
+
+  .reading-state {
+    justify-items: center;
+    gap: 0.7rem;
+    text-align: center;
+  }
+
+  .scan-field {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    overflow: hidden;
+    border: 1px solid var(--lab-line);
+    border-radius: 50%;
+    background:
+      linear-gradient(var(--lab-line), var(--lab-line)) center/1px 100% no-repeat,
+      linear-gradient(90deg, var(--lab-line), var(--lab-line)) center/100% 1px no-repeat,
+      var(--lab-cobalt-soft);
+  }
+
+  .scan-field::after {
+    position: absolute;
+    inset: 18px;
+    border: 1px solid rgba(54, 86, 212, 0.25);
+    border-radius: 50%;
+    content: '';
+  }
+
+  .scan-field i {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 50%;
+    height: 1px;
+    transform-origin: left;
+    background: var(--lab-cobalt);
+    animation: scan 1.4s linear infinite;
+  }
+
+  .scan-field span,
+  .scan-field b {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--lab-jade);
+  }
+
+  .scan-field span { left: 38px; top: 52px; }
+  .scan-field b { right: 34px; bottom: 46px; background: var(--lab-coral); }
+
+  @keyframes scan {
+    to { transform: rotate(360deg); }
+  }
+
+  .reading-state strong {
+    margin-top: 0.5rem;
+    font: 700 1.05rem/1.2 "Space Grotesk", sans-serif;
+  }
+
+  .reading-state p {
+    max-width: 350px;
+  }
+
+  .result-sheet {
+    padding-top: 1.2rem;
+    scroll-margin-top: 1rem;
+    outline: 0;
+    animation: result-in 240ms ease-out both;
+  }
+
+  @keyframes result-in {
+    from { opacity: 0; transform: translateY(7px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .verdict-head {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.9rem;
+    align-items: start;
+    padding-bottom: 1.1rem;
+  }
+
+  .verdict-symbol {
+    display: grid;
+    width: 47px;
+    height: 47px;
+    place-items: center;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    font: 700 1.25rem/1 "IBM Plex Mono", monospace;
+  }
+
+  .verdict-head > div:last-child {
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .verdict-head span {
+    font: 650 0.65rem/1 "IBM Plex Mono", monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .verdict-head h3 {
+    margin: 0;
+    font: 700 clamp(1.45rem, 3vw, 2rem)/1.05 "Space Grotesk", sans-serif;
+    letter-spacing: -0.045em;
+  }
+
+  .verdict-head p {
+    margin: 0.25rem 0 0;
+    color: var(--lab-muted);
+    font-size: 0.74rem;
+    line-height: 1.45;
+  }
+
+  .verdict-correct .verdict-head { color: var(--lab-jade); }
+  .verdict-partial .verdict-head { color: var(--lab-amber); }
+  .verdict-incorrect .verdict-head { color: var(--lab-coral); }
+  .verdict-uncertain .verdict-head { color: var(--lab-cobalt); }
+  .verdict-head h3,
+  .verdict-head p { color: var(--lab-ink); }
+  .verdict-head p { color: var(--lab-muted); }
+
+  .fixture-check {
+    display: grid;
+    gap: 0.35rem;
+    margin-bottom: 0.9rem;
+    padding: 0.75rem 0.8rem;
+    border: 1px solid color-mix(in srgb, var(--lab-coral) 42%, var(--lab-line));
+    background: var(--lab-coral-soft);
+  }
+
+  .fixture-check.matched {
+    border-color: color-mix(in srgb, var(--lab-jade) 42%, var(--lab-line));
+    background: var(--lab-jade-soft);
+  }
+
+  .fixture-check > span {
+    color: var(--lab-muted);
+    font: 600 0.66rem/1 "IBM Plex Mono", monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .fixture-check p {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    align-items: center;
+    margin: 0;
+    color: var(--lab-coral);
+    font: 650 0.7rem/1.2 "IBM Plex Mono", monospace;
+  }
+
+  .fixture-check.matched p {
+    color: var(--lab-jade);
+  }
+
+  .fixture-check p i {
+    color: var(--lab-muted);
+    font-style: normal;
+  }
+
+  .fixture-check small {
+    color: var(--lab-muted);
+    font-size: 0.68rem;
+    line-height: 1.35;
+  }
+
+  .meaning-traces {
+    display: grid;
+    gap: 0.9rem;
+    padding: 1rem 0;
+    border-block: 1px solid var(--lab-line);
+  }
+
+  .meaning-traces article {
+    display: grid;
+    gap: 0.38rem;
+  }
+
+  .trace-label {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .trace-label span {
+    color: var(--lab-muted);
+    font-size: 0.7rem;
+  }
+
+  .trace-label strong {
+    font: 700 0.75rem/1 "IBM Plex Mono", monospace;
+  }
+
+  .score-track,
+  .coverage-track {
+    position: relative;
+    height: 9px;
+    border: 1px solid var(--lab-line);
+    background:
+      linear-gradient(90deg, transparent 24%, var(--lab-line) 25%, transparent 26%, transparent 49%, var(--lab-line) 50%, transparent 51%, transparent 74%, var(--lab-line) 75%, transparent 76%),
+      white;
+  }
+
+  .score-track::before,
+  .score-track::after {
+    position: absolute;
+    top: 14px;
+    color: var(--lab-muted);
+    font: 500 0.62rem/1 "IBM Plex Mono", monospace;
+  }
+
+  .score-track::before { left: 0; content: '.68'; }
+  .score-track::after { right: 0; content: '.96'; }
+
+  .score-track {
+    margin-bottom: 0.72rem;
+  }
+
+  .score-track i {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    width: 13px;
+    height: 13px;
+    border: 3px solid white;
+    border-radius: 50%;
+    background: var(--lab-jade);
+    box-shadow: 0 0 0 1px var(--lab-jade);
+    transform: translate(-50%, -50%);
+  }
+
+  .negative-track i {
+    background: var(--lab-coral);
+    box-shadow: 0 0 0 1px var(--lab-coral);
+  }
+
+  .verifier-track::before { content: '0'; }
+  .verifier-track::after { content: '1'; }
+
+  .verifier-track i {
+    background: var(--lab-cobalt);
+    box-shadow: 0 0 0 1px var(--lab-cobalt);
+  }
+
+  .coverage-track i {
+    display: block;
+    height: 100%;
+    background: var(--lab-cobalt);
+    transition: width 420ms ease;
+  }
+
+  .meaning-traces article > small {
+    color: var(--lab-muted);
+    font-size: 0.68rem;
+    line-height: 1.35;
+  }
+
+  .concept-audit {
+    display: grid;
+    gap: 0.65rem;
+    padding: 1rem 0;
+  }
+
+  .concept-audit > span {
+    color: var(--lab-muted);
+  }
+
+  .concept-audit > div {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.45rem;
+  }
+
+  .concept-audit article {
+    display: flex;
+    min-width: 0;
+    gap: 0.5rem;
+    align-items: center;
+    padding: 0.6rem;
+    border: 1px solid var(--lab-line);
+    color: var(--lab-coral);
+    background: rgba(255, 255, 255, 0.7);
+  }
+
+  .concept-audit article.covered {
+    color: var(--lab-jade);
+    background: var(--lab-jade-soft);
+  }
+
+  .concept-audit article.optional {
+    color: var(--lab-amber);
+    background: var(--lab-amber-soft);
+  }
+
+  .concept-audit article > i {
+    display: grid;
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    place-items: center;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    font: 700 0.66rem/1 "IBM Plex Mono", monospace;
+    font-style: normal;
+  }
+
+  .concept-audit p {
+    display: grid;
+    min-width: 0;
+    gap: 0.15rem;
+    margin: 0;
+  }
+
+  .concept-audit strong {
+    overflow: hidden;
+    color: var(--lab-ink);
+    font-size: 0.65rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .concept-audit small {
+    color: currentColor;
+    font: 600 0.65rem/1 "IBM Plex Mono", monospace;
+  }
+
+  .reason-note,
+  .human-call,
+  .reference-detail {
+    padding: 0.85rem;
+    border: 1px solid var(--lab-line);
+    background: rgba(255, 255, 255, 0.72);
+  }
+
+  .reason-note > span,
+  .human-call > span {
+    color: var(--lab-cobalt);
+  }
+
+  .reason-note ul {
+    display: grid;
+    gap: 0.28rem;
+    margin: 0.55rem 0 0;
+    padding-left: 1rem;
+    color: var(--lab-muted);
+    font-size: 0.68rem;
+    line-height: 1.4;
+  }
+
+  .reference-detail {
+    margin-top: 0.55rem;
+  }
+
+  .reference-detail summary {
+    color: var(--lab-cobalt);
+    cursor: pointer;
+    font: 650 0.66rem/1.2 "Space Grotesk", sans-serif;
+  }
+
+  .reference-detail p {
+    margin: 0.65rem 0 0.35rem;
+    color: var(--lab-ink);
+    font-size: 0.7rem;
+    font-style: italic;
+    line-height: 1.45;
+  }
+
+  .reference-detail span {
+    color: var(--lab-muted);
+    font: 550 0.65rem/1 "IBM Plex Mono", monospace;
+  }
+
+  .human-call {
+    display: grid;
+    gap: 0.6rem;
+    margin-top: 0.7rem;
+    border-color: color-mix(in srgb, var(--lab-cobalt) 38%, var(--lab-line));
+    background: var(--lab-cobalt-soft);
+  }
+
+  .human-call > p {
+    margin: 0;
+    color: var(--lab-ink);
+    font-size: 0.76rem;
+    font-style: italic;
+    line-height: 1.45;
+  }
+
+  .human-call > strong {
+    font-size: 0.72rem;
+  }
+
+  .human-call > div:not(.self-resolution) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .human-call button {
+    min-height: 40px;
+    padding: 0.5rem 0.7rem;
+    border: 1px solid var(--lab-cobalt);
+    border-radius: 3px;
+    color: var(--lab-cobalt);
+    background: white;
+    font-size: 0.66rem;
+    font-weight: 700;
+  }
+
+  .self-resolution {
+    display: flex;
+    gap: 0.55rem;
+    align-items: center;
+    padding-top: 0.35rem;
+    border-top: 1px solid rgba(54, 86, 212, 0.2);
+  }
+
+  .self-resolution > i {
+    display: grid;
+    width: 30px;
+    height: 30px;
+    place-items: center;
+    border-radius: 50%;
+    color: white;
+    background: var(--lab-jade);
+    font-style: normal;
+  }
+
+  .self-resolution.different > i {
+    background: var(--lab-coral);
+  }
+
+  .self-resolution p {
+    display: grid;
+    gap: 0.12rem;
+    margin: 0;
+  }
+
+  .self-resolution strong {
+    font-size: 0.68rem;
+  }
+
+  .self-resolution span {
+    color: var(--lab-muted);
+    font-size: 0.68rem;
+  }
+
+  .run-meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-top: 0.8rem;
+    padding-top: 0.7rem;
+    border-top: 1px solid var(--lab-line);
+    color: var(--lab-muted);
+    font: 550 0.65rem/1.25 "IBM Plex Mono", monospace;
+  }
+
+  .run-meta span:first-child {
+    display: flex;
+    gap: 0.35rem;
+    align-items: center;
+  }
+
+  .run-meta i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--lab-jade);
+  }
+
+  .run-meta i.offline {
+    background: var(--lab-coral);
+  }
+
+  .lab-footer {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 1.2rem;
+    align-items: center;
+    margin-top: 1.35rem;
+    padding: 1.15rem 0 0.25rem;
+    border-top: 1px solid var(--lab-line);
+  }
+
+  .lab-footer > span {
+    color: var(--lab-cobalt);
+  }
+
+  .lab-footer p {
+    max-width: 660px;
+    margin: 0;
+    color: var(--lab-muted);
+    font-size: 0.7rem;
+    line-height: 1.45;
+  }
+
+  .lab-footer a {
+    color: var(--lab-cobalt);
+    font: 650 0.68rem/1 "IBM Plex Mono", monospace;
+    text-decoration: none;
+  }
+
+  @media (max-width: 900px) {
+    .lab-hero {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .local-note {
+      width: min(100%, 440px);
+      box-sizing: border-box;
+    }
+
+    .workbench {
+      grid-template-columns: 1fr;
+    }
+
+    .answer-bench {
+      border-right: 0;
+      border-bottom: 1px solid var(--lab-line);
+    }
+
+    .evidence-bench {
+      min-height: 580px;
+    }
+  }
+
+  @media (max-width: 650px) {
+    .hero-copy h1 {
+      font-size: clamp(3rem, 15vw, 5rem);
+    }
+
+    .challenge-strip {
+      grid-template-columns: 1fr;
+    }
+
+    .challenge-strip button {
+      min-height: 112px;
+    }
+
+    .rubric-columns,
+    .concept-audit > div {
+      grid-template-columns: 1fr;
+    }
+
+    .answer-heading,
+    .trace-header {
+      align-items: start;
+      flex-direction: column;
+    }
+
+    .answer-heading {
+      display: grid;
+    }
+
+    .answer-heading span,
+    .trace-header small {
+      max-width: none;
+      text-align: left;
+    }
+
+    .form-actions {
+      flex-direction: column;
+    }
+
+    .reset-button {
+      width: 100%;
+    }
+
+    .trace-map {
+      transform: scale(0.84);
+    }
+
+    .lab-footer {
+      grid-template-columns: 1fr;
+      gap: 0.55rem;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    :global(html[data-playground='ink-interactions']) { scroll-behavior: auto; }
-    .hero-status i, .relay-button.running *, .aperture-button.running *, .needle-button.running *, .answer-stage *, .answer-stage { animation-duration: 1ms !important; animation-delay: 0ms !important; }
-    .gate, .test-controls button, .hero-nav a { transition: none; }
+    *,
+    *::before,
+    *::after {
+      scroll-behavior: auto !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 </style>

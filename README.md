@@ -96,6 +96,7 @@ make spa-build
 
 Useful endpoints while testing:
 - SPA app: `http://127.0.0.1:8000/app`
+- Local semantic-grading lab: `http://127.0.0.1:8000/app/playground`
 - SPA admin workbench: `http://127.0.0.1:8000/app/monitor` (admin only)
 - Legacy HTML fallback: `http://127.0.0.1:8000/legacy`
 - Internal monitor: `http://127.0.0.1:8000/admin/monitor` (admin only)
@@ -103,6 +104,19 @@ Useful endpoints while testing:
 - JSON API bootstrap: `http://127.0.0.1:8000/api/bootstrap`
 - Health: `http://127.0.0.1:8000/healthz`
 - Ready check: `http://127.0.0.1:8000/readyz`
+
+The Meaning Lab uses two pinned, quantized CPU models: multilingual E5 for
+retrieval and a multilingual NLI verifier for contradiction checking. Install
+both local assets before testing non-exact explanations:
+
+```bash
+make sense-model
+make nli-model
+```
+
+No paid API is used. If either verifier is unavailable or the evidence is
+ambiguous, the playground returns `uncertain` instead of auto-accepting the
+answer.
 
 Seeded credentials:
 - admin demo user: `demo` / `demo12345`

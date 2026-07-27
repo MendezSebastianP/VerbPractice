@@ -81,6 +81,8 @@ def _serialize_translated_result(result, mother_code: str) -> dict:
             for native in (result.natives or [])
         ],
         "question_answer": result.question_answer,
+        "part_of_speech": result.part_of_speech,
+        "cefr_level": result.cefr_level,
         "selected_sense_id": result.selected_sense_id,
         "sense_candidates": [
             {

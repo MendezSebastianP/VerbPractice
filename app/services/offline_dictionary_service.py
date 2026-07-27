@@ -49,6 +49,14 @@ class LocalSenseRanker:
     def available(self) -> bool:
         return self._ensure_loaded()
 
+    @property
+    def configured(self) -> bool:
+        return (
+            settings.offline_sense_model_enabled
+            and (self.model_dir / "tokenizer.json").is_file()
+            and self._resolve_model_path().is_file()
+        )
+
     def _resolve_model_path(self) -> Path:
         nested = self.model_dir / "onnx" / MODEL_FILE
         return nested if nested.exists() else self.model_dir / MODEL_FILE
@@ -56,7 +64,7 @@ class LocalSenseRanker:
     def _ensure_loaded(self) -> bool:
         if self._session is not None and self._tokenizer is not None:
             return True
-        if self._load_attempted or not settings.offline_sense_model_enabled:
+        if not settings.offline_sense_model_enabled:
             return False
         with self._lock:
             if self._session is not None and self._tokenizer is not None:
@@ -80,6 +88,8 @@ class LocalSenseRanker:
                 options = ort.SessionOptions()
                 options.intra_op_num_threads = min(6, max(1, os.cpu_count() or 1))
                 options.inter_op_num_threads = 1
+                options.enable_cpu_mem_arena = False
+                options.enable_mem_pattern = False
                 session = ort.InferenceSession(
                     str(model_path),
                     sess_options=options,
@@ -91,6 +101,14 @@ class LocalSenseRanker:
             self._tokenizer = tokenizer
             self._session = session
             return True
+
+    def would_truncate(self, texts: list[str], *, kind: str) -> bool:
+        if not texts or not self._ensure_loaded():
+            return False
+        assert self._tokenizer is not None
+        prefix = "query: " if kind == "query" else "passage: "
+        encodings = self._tokenizer.encode_batch([f"{prefix}{text}" for text in texts])
+        return any(encoding.overflowing for encoding in encodings)
 
     def encode(self, texts: list[str], *, kind: str) -> np.ndarray | None:
         if not texts or not self._ensure_loaded():

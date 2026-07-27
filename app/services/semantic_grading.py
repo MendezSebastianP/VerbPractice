@@ -288,6 +288,36 @@ _SEMANTIC_AXES: dict[str, dict[str, tuple[str, ...]]] = {
             r"\bвежлив\w*\b",
         ),
     },
+    "start of day action": {
+        "getting up": (
+            r"\bget(?:ting)? up\b",
+            r"\brise at (?:dawn|sunrise)\b",
+            r"\bwake up\b",
+            r"\bleave (?:the )?bed\b",
+            r"\bse lev\w*\b",
+            r"\bse reveill\w*\b",
+            r"\blevant\w*\b",
+            r"\bdespert\w*\b",
+            r"\bвста\w*\b",
+            r"\bпросып\w*\b",
+        ),
+        "going to bed or staying awake": (
+            r"\bgo(?:ing)? to bed\b",
+            r"\bstay\w* awake\b",
+            r"\bse couch\w*\b",
+            r"\brester eveill\w*\b",
+            r"\bacost\w*\b",
+            r"\bqued\w* despiert\w*\b",
+            r"\bлож\w* спать\b",
+            r"\bне спать\b",
+        ),
+        "sleeping late": (
+            r"\bsleep\w* (?:in|late)\b",
+            r"\bdorm\w* (?:jusque|tres )?tard\b",
+            r"\bdorm\w* hasta tarde\b",
+            r"\bспать допоздна\b",
+        ),
+    },
     "relation to familiar surroundings": {
         "away": (
             r"\boutside\b",

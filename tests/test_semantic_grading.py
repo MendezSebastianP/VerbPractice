@@ -217,51 +217,48 @@ def test_normalized_exact_match_does_not_need_the_model(monkeypatch):
     ("challenge_id", "answer", "expected_coverage", "expected_evidence"),
     [
         (
-            "sobremesa",
-            "quedarse en la mesa",
-            2 / 3,
-            {
-                "After the meal": "context",
-                "Staying together at the table": "explicit",
-                "Conversation or social time": "optional_omitted",
-            },
-        ),
-        (
-            "sobremesa",
-            "tiempo despues de comer",
-            1 / 3,
-            {
-                "After the meal": "explicit",
-                "Staying together at the table": "optional_omitted",
-                "Conversation or social time": "optional_omitted",
-            },
-        ),
-        (
-            "sobremesa",
-            "quedarse hablando despues de comer",
-            2 / 3,
-            {
-                "After the meal": "explicit",
-                "Staying together at the table": "optional_omitted",
-                "Conversation or social time": "explicit",
-            },
-        ),
-        (
-            "tutoyer",
-            "hablarse de tu",
+            "retrouvailles",
+            "se revoir",
             1.0,
             {
-                "Addressing another person": "explicit",
-                "Using the informal singular form": "explicit",
+                "Meeting one another again": "explicit",
+                "After time apart": "context",
             },
         ),
         (
-            "tutoyer",
-            "hablar de tu",
+            "esprit_escalier",
+            "trouver la bonne reponse trop tard",
             1.0,
             {
-                "Addressing another person": "explicit",
-                "Using the informal singular form": "explicit",
+                "Thinking of the fitting reply": "explicit",
+                "Only after the opportunity has passed": "explicit",
+            },
+        ),
+        (
+            "madrugar",
+            "levantarse muy temprano",
+            1.0,
+            {
+                "Getting out of bed": "explicit",
+                "At a very early hour": "explicit",
+            },
+        ),
+        (
+            "estrenar",
+            "usarlo por primera vez",
+            1.0,
+            {
+                "Using or wearing something": "explicit",
+                "For the first time": "explicit",
+            },
+        ),
+        (
+            "empalagar",
+            "demasiado dulce",
+            0.5,
+            {
+                "Excessive sweetness or richness": "explicit",
+                "Causing weariness or dislike": "optional_omitted",
             },
         ),
     ],
@@ -298,15 +295,19 @@ def test_curated_minimum_gloss_is_correct_without_models(
 @pytest.mark.parametrize(
     ("challenge_id", "answer"),
     [
-        ("tutoyer", "hablarse de tu pero formalmente"),
-        ("tutoyer", "hablar de tu pero formalmente"),
-        ("tutoyer", "hablar de tu usando usted"),
-        ("tutoyer", "hablar de tu familia"),
-        ("sobremesa", "quedarse en la mesa antes de comer"),
-        ("sobremesa", "postre y quedarse en la mesa"),
-        ("sobremesa", "tiempo despues de comer, o sea el postre"),
-        ("sobremesa", "tiempo despues de comer y levantarse de la mesa"),
-        ("sobremesa", "tiempo despues de comer en silencio"),
+        ("retrouvailles", "se revoir pour la premiere fois"),
+        ("retrouvailles", "se revoir puis se dire adieu"),
+        (
+            "esprit_escalier",
+            "trouver la bonne reponse trop tard, donc immediatement",
+        ),
+        ("esprit_escalier", "trouver la bonne reponse dans un escalier"),
+        ("madrugar", "levantarse muy temprano después de dormir hasta tarde"),
+        ("madrugar", "levantarse muy temprano para acostarse"),
+        ("estrenar", "usarlo por primera vez pero ya estaba usado"),
+        ("estrenar", "usarlo por primera vez significa comprarlo"),
+        ("empalagar", "demasiado dulce pero muy agradable"),
+        ("empalagar", "demasiado dulce por una alergia"),
     ],
 )
 def test_minimum_gloss_requires_a_whole_answer_match(
@@ -823,6 +824,38 @@ def test_reversed_form_of_address_cannot_be_marked_correct(
     )
 
 
+def test_getting_up_cannot_be_equated_with_going_to_bed(monkeypatch):
+    reference = "To get up very early in the morning."
+    concept_en = "Getting up from bed at dawn."
+    concept_es = "Levantarse de la cama al amanecer."
+    negative = "Going to bed at dawn."
+    _patch_ranker(
+        monkeypatch,
+        {
+            reference: 0.94,
+            concept_en: 0.92,
+            concept_es: 0.92,
+            negative: 0.72,
+        },
+    )
+    _patch_verifier(monkeypatch)
+
+    result = semantic_grading.grade_semantic_answer(
+        answer="Levantarse muy temprano significa acostarse al amanecer.",
+        accepted_answers=[reference],
+        required_concepts=[
+            ("getting out of bed early", [concept_en, concept_es]),
+        ],
+        hard_negatives=[("going to bed", [negative])],
+    )
+
+    assert result["verdict"] == "uncertain"
+    assert any(
+        "start of day action" in flag
+        for flag in result["verification"]["safety_flags"]
+    )
+
+
 def test_non_exact_similarity_abstains_when_nli_verifier_is_missing(monkeypatch):
     reference = "A feeling of being outside familiar surroundings."
     concept = "away from the usual environment"
@@ -873,7 +906,7 @@ def test_payload_uses_server_owned_challenge_and_caps_answer():
     with pytest.raises(ValidationError):
         SemanticGradePayload(
             csrf_token="token",
-            challenge_id="depaysement",
+            challenge_id="retrouvailles",
             answer="x" * 601,
         )
 
@@ -884,12 +917,33 @@ def test_payload_uses_server_owned_challenge_and_caps_answer():
             answer="answer",
         )
 
-    payload = SemanticGradePayload(
-        csrf_token="token",
-        challenge_id="sobremesa",
-        answer="answer",
-    )
-    assert set(payload.model_dump()) == {"csrf_token", "challenge_id", "answer"}
+    expected_ids = {
+        "retrouvailles",
+        "esprit_escalier",
+        "madrugar",
+        "estrenar",
+        "empalagar",
+    }
+    assert set(PLAYGROUND_CHALLENGES) == expected_ids
+    for challenge_id in expected_ids:
+        payload = SemanticGradePayload(
+            csrf_token="token",
+            challenge_id=challenge_id,
+            answer="answer",
+        )
+        assert set(payload.model_dump()) == {
+            "csrf_token",
+            "challenge_id",
+            "answer",
+        }
+
+    for retired_id in ("depaysement", "sobremesa", "tutoyer"):
+        with pytest.raises(ValidationError):
+            SemanticGradePayload(
+                csrf_token="token",
+                challenge_id=retired_id,
+                answer="answer",
+            )
 
 
 def test_installed_models_never_accept_curated_multilingual_opposites():
@@ -899,35 +953,50 @@ def test_installed_models_never_accept_curated_multilingual_opposites():
         pytest.skip("Pinned local semantic models are not installed.")
 
     cases = {
-        "depaysement": [
-            "It is not being away from familiar surroundings, but feeling completely at home.",
-            "Se sentir parfaitement chez soi dans un environnement familier.",
-            "Sentirse completamente a gusto en un entorno familiar.",
-            "Чувствовать себя уютно в знакомом окружении.",
+        "retrouvailles": [
+            "Two strangers meeting and introducing themselves for the first time.",
+            "Deux inconnus qui font connaissance pour la première fois.",
+            "Dos desconocidos que se conocen por primera vez.",
+            "Первая встреча незнакомых людей.",
+            "Se revoir pour la première fois.",
+            "Volver a verse para despedirse antes de separarse.",
+            "Retrouver un objet perdu.",
         ],
-        "sobremesa": [
-            "People talk together at the table before the meal begins.",
-            "Les gens parlent à table avant le début du repas.",
-            "La gente habla en la mesa antes de empezar a comer.",
-            "Люди разговаривают за столом до начала еды.",
-            "tiempo despues de comer, o sea el postre",
-            "tiempo despues de comer y levantarse de la mesa",
-            "tiempo despues de comer para irse inmediatamente",
-            "tiempo despues de comer, no quedarse en la mesa",
-            "tiempo despues de comer en silencio",
+        "esprit_escalier": [
+            "Giving the perfect reply immediately during the conversation.",
+            "Donner immédiatement la réplique parfaite pendant la conversation.",
+            "Dar inmediatamente la respuesta perfecta durante la conversación.",
+            "Сразу дать меткий ответ во время разговора.",
+            "Never thinking of anything to say.",
+            "Une pensée à propos d’un escalier.",
+            "Trouver la bonne réponse trop tard, c’est-à-dire immédiatement.",
         ],
-        "tutoyer": [
-            "Use formal vous rather than informal tu.",
-            "Employer le vous formel plutôt que le tu informel.",
-            "Usar la forma formal en lugar de tú.",
-            "Hablarse de tú pero formalmente.",
-            "Hablar de tú usando usted.",
-            "Hablar de tú significa ser grosero.",
-            "Hablar de tu apodo.",
-            "Hablar de tu familia.",
-            "Hablar de tú, no usar tú.",
-            "Hablar de tú y de usted.",
-            "Обращаться на вы, а не на ты.",
+        "madrugar": [
+            "Going to bed early in the evening.",
+            "Se coucher tôt le soir.",
+            "Acostarse temprano por la noche.",
+            "Рано ложиться спать вечером.",
+            "Quedarse despierto toda la noche hasta el amanecer.",
+            "Dormir hasta tarde por la mañana.",
+            "Levantarse muy temprano significa acostarse al amanecer.",
+        ],
+        "estrenar": [
+            "Buying something new without using it.",
+            "Acheter quelque chose de neuf sans l’utiliser.",
+            "Comprar algo nuevo sin usarlo.",
+            "Купить новую вещь, не используя её.",
+            "Volver a usar algo que ya se ha usado muchas veces.",
+            "Presentar una película al público por primera vez.",
+            "Usarlo por primera vez, pero ya se había usado muchas veces.",
+        ],
+        "empalagar": [
+            "Being pleasantly sweet and enjoyable.",
+            "Être agréablement sucré et plaisant.",
+            "Ser agradablemente dulce y apetecible.",
+            "Быть приятно сладким и вкусным.",
+            "Tener una reacción alérgica a un ingrediente.",
+            "Saber amargo porque la comida está estropeada.",
+            "Demasiado dulce, pero agradable y quiero seguir comiendo.",
         ],
     }
     for challenge_id, answers in cases.items():
@@ -938,45 +1007,26 @@ def test_installed_models_never_accept_curated_multilingual_opposites():
             )
             assert result["verdict"] != "correct", (challenge_id, answer, result)
 
-    concise_valid = semantic_grading.grade_semantic_answer(
-        answer="quedarse hablando despues de comer",
-        **_challenge_rubric("sobremesa"),
-    )
-    assert concise_valid["verdict"] == "correct", concise_valid
-    assert concise_valid["answer_quality"] == "concise"
-
-    concise_minimum = semantic_grading.grade_semantic_answer(
-        answer="quedarse en la mesa",
-        **_challenge_rubric("sobremesa"),
-    )
-    assert concise_minimum["verdict"] == "correct", concise_minimum
-    assert concise_minimum["answer_quality"] == "concise"
-    assert concise_minimum["concept_coverage"] == pytest.approx(
-        2 / 3,
-        abs=0.0001,
-    )
-
-    dessert_trap = semantic_grading.grade_semantic_answer(
-        answer="el postre despues de comer",
-        **_challenge_rubric("sobremesa"),
-    )
-    assert dessert_trap["verdict"] == "incorrect", dessert_trap
-
-    unsafe_partial_answers = [
-        "un postre que se comparte quedandose en la mesa",
-        "comer postre en la mesa despues de comer",
-        "un dulce compartido en la mesa",
-        "quedarse en silencio despues de comer",
-        "levantarse de la mesa despues de comer",
-        "hablar antes de comer",
-        "hablar durante la comida",
-    ]
-    for answer in unsafe_partial_answers:
-        result = semantic_grading.grade_semantic_answer(
-            answer=answer,
-            **_challenge_rubric("sobremesa"),
+    for challenge_id, challenge in PLAYGROUND_CHALLENGES.items():
+        accepted = semantic_grading.grade_semantic_answer(
+            answer=challenge.accepted_answers[0],
+            **_challenge_rubric(challenge_id),
         )
-        assert result["verdict"] in {"uncertain", "incorrect"}, (answer, result)
+        assert accepted["verdict"] == "correct", (challenge_id, accepted)
+        assert accepted["answer_quality"] == "complete"
+
+        concise = semantic_grading.grade_semantic_answer(
+            answer=challenge.minimum_glosses[0].text,
+            **_challenge_rubric(challenge_id),
+        )
+        assert concise["verdict"] == "correct", (challenge_id, concise)
+        assert concise["answer_quality"] == "concise"
+
+        trap = semantic_grading.grade_semantic_answer(
+            answer=challenge.hard_negatives[0][1][0],
+            **_challenge_rubric(challenge_id),
+        )
+        assert trap["verdict"] == "incorrect", (challenge_id, trap)
 
 
 def _component_is_configured(component) -> bool:
@@ -1013,8 +1063,8 @@ async def test_playground_endpoint_is_public_but_csrf_protected(monkeypatch):
     )
     payload = SemanticGradePayload(
         csrf_token="token",
-        challenge_id="sobremesa",
-        answer="quedarse en la mesa",
+        challenge_id="empalagar",
+        answer="demasiado dulce",
     )
     # Call through the route's undecorated function so this unit test does not
     # depend on SlowAPI's process-global counter. The absence of auth
@@ -1031,9 +1081,8 @@ async def test_playground_endpoint_is_public_but_csrf_protected(monkeypatch):
         item.label: item.evidence
         for item in response.required_concepts
     } == {
-        "After the meal": "context",
-        "Staying together at the table": "explicit",
-        "Conversation or social time": "optional_omitted",
+        "Excessive sweetness or richness": "explicit",
+        "Causing weariness or dislike": "optional_omitted",
     }
     assert response.model_name == semantic_grading.MODEL_NAME
     route = next(
@@ -1085,9 +1134,9 @@ async def test_playground_rate_limit_is_enforced_through_asgi(monkeypatch):
             csrf_token = (await client.get("/token")).json()["csrf_token"]
             payload = {
                 "csrf_token": csrf_token,
-                "challenge_id": "depaysement",
+                "challenge_id": "retrouvailles",
                 "answer": PLAYGROUND_CHALLENGES[
-                    "depaysement"
+                    "retrouvailles"
                 ].accepted_answers[0],
             }
             responses = [

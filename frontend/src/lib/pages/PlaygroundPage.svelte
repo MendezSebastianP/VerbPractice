@@ -6,11 +6,10 @@
   export let csrfToken = '';
   export let hasNavigation = false;
 
-  type PresetTone = 'valid' | 'partial' | 'trap';
+  type PresetTone = 'valid' | 'trap';
 
   interface RubricEntry {
     label: string;
-    examples: string[];
   }
 
   interface AnswerPreset {
@@ -20,7 +19,7 @@
   }
 
   interface MeaningChallenge {
-    id: string;
+    id: SemanticGradePayload['challenge_id'];
     term: string;
     language: string;
     languageCode: string;
@@ -28,7 +27,7 @@
     prompt: string;
     note: string;
     acceptedLanguages: string[];
-    acceptedAnswers: string[];
+    reference: string;
     requiredConcepts: RubricEntry[];
     hardNegatives: RubricEntry[];
     presets: AnswerPreset[];
@@ -36,237 +35,188 @@
 
   const challenges: MeaningChallenge[] = [
     {
-      id: 'depaysement',
-      term: 'dépaysement',
+      id: 'retrouvailles',
+      term: 'retrouvailles',
       language: 'French',
       languageCode: 'FR',
-      context: 'Après trois mois à Kyoto, elle aimait ce dépaysement.',
-      prompt: 'Explain the idea carried by “dépaysement”.',
-      note: 'It names a change of familiar world, not simply a trip or homesickness.',
+      context: 'Après quinze ans sans se voir, leurs retrouvailles sur le quai furent pleines de rires et de larmes.',
+      prompt: 'Explain what “retrouvailles” refers to here.',
+      note: 'People who already know one another meet again after time apart.',
       acceptedLanguages: ['English', 'Français', 'Español', 'Русский'],
-      acceptedAnswers: [
-        'the feeling of being outside one’s familiar surroundings and habits',
-        'the feeling of unfamiliarity or change caused by leaving one’s usual environment',
-        'le sentiment d’être hors de son environnement et de ses habitudes',
-        'la sensación de estar fuera del entorno y de las costumbres habituales',
-        'ощущение непривычности вдали от знакомого окружения и привычек',
-      ],
+      reference: 'the meeting again of people who have been apart, often with strong emotion',
       requiredConcepts: [
-        {
-          label: 'Away from the familiar',
-          examples: [
-            'outside one’s usual surroundings or environment',
-            'hors de son environnement habituel',
-            'fuera del entorno habitual',
-            'вне привычного окружения',
-          ],
-        },
-        {
-          label: 'A resulting feeling or shift',
-          examples: [
-            'a feeling of unfamiliarity, disorientation, or refreshing change',
-            'un sentiment de changement ou de perte de repères',
-            'una sensación de cambio o desorientación',
-            'ощущение перемены или непривычности',
-          ],
-        },
+        { label: 'Meeting one another again' },
+        { label: 'After time apart' },
       ],
       hardNegatives: [
-        {
-          label: 'Comfort in familiar surroundings',
-          examples: [
-            'feeling completely at home in familiar surroundings',
-            'se sentir parfaitement chez soi dans un environnement familier',
-          ],
-        },
-        {
-          label: 'Travel alone',
-          examples: ['travelling to another country without describing a feeling'],
-        },
-        {
-          label: 'Homesickness alone',
-          examples: ['missing home and wanting to return home'],
-        },
+        { label: 'First introduction' },
+        { label: 'Farewell' },
+        { label: 'Finding a lost object' },
       ],
       presets: [
         {
           label: 'Valid paraphrase',
           tone: 'valid',
-          answer: 'The feeling of unfamiliarity that comes from being away from your usual surroundings and habits.',
+          answer: 'Es volver a verse después de haber pasado mucho tiempo separados.',
         },
         {
-          label: 'Partial meaning',
-          tone: 'partial',
-          answer: 'Being somewhere far away from home.',
+          label: 'Concise meaning',
+          tone: 'valid',
+          answer: 'Se revoir.',
         },
         {
           label: 'Related but wrong',
           tone: 'trap',
-          answer: 'Feeling completely comfortable in familiar surroundings.',
+          answer: 'Deux inconnus qui font connaissance pour la première fois.',
         },
       ],
     },
     {
-      id: 'sobremesa',
-      term: 'sobremesa',
+      id: 'esprit_escalier',
+      term: 'l’esprit d’escalier',
+      language: 'French',
+      languageCode: 'FR',
+      context: 'La réunion était finie depuis dix minutes quand Nora trouva enfin la réponse parfaite : encore un cas d’esprit d’escalier.',
+      prompt: 'Explain the experience described by “l’esprit d’escalier”.',
+      note: 'The fitting reply arrives only after the moment to say it has passed.',
+      acceptedLanguages: ['English', 'Français', 'Español', 'Русский'],
+      reference: 'the experience of thinking of the perfect reply only after the conversation has ended',
+      requiredConcepts: [
+        { label: 'Thinking of the fitting reply' },
+        { label: 'Only after the opportunity has passed' },
+      ],
+      hardNegatives: [
+        { label: 'Immediate wit' },
+        { label: 'Never finding a reply' },
+        { label: 'Literal staircase' },
+      ],
+      presets: [
+        {
+          label: 'Valid paraphrase',
+          tone: 'valid',
+          answer: 'La respuesta perfecta se te ocurre cuando la conversación ya ha terminado.',
+        },
+        {
+          label: 'Concise meaning',
+          tone: 'valid',
+          answer: 'Trouver la bonne réponse trop tard.',
+        },
+        {
+          label: 'Related but wrong',
+          tone: 'trap',
+          answer: 'Donner immédiatement la réplique parfaite pendant la conversation.',
+        },
+      ],
+    },
+    {
+      id: 'madrugar',
+      term: 'madrugar',
       language: 'Spanish',
       languageCode: 'ES',
-      context: 'La comida terminó, pero la sobremesa duró dos horas.',
-      prompt: 'Explain what “sobremesa” means here.',
-      note: 'The meal has ended; the social moment around the table continues.',
+      context: 'Para coger el primer tren, Inés tuvo que madrugar: salió de casa cuando todavía estaba oscuro.',
+      prompt: 'Explain what “madrugar” means here.',
+      note: 'It means getting out of bed and starting the day unusually early.',
       acceptedLanguages: ['English', 'Français', 'Español', 'Русский'],
-      acceptedAnswers: [
-        'the time after a meal when people remain at the table talking together',
-        'the conversation and social time shared at the table after eating',
-        'le moment après le repas où l’on reste à table pour discuter',
-        'el tiempo después de comer que se pasa conversando en la mesa',
-        'время после еды, когда люди остаются за столом и разговаривают',
-      ],
+      reference: 'to get up at dawn or very early in the morning',
       requiredConcepts: [
-        {
-          label: 'After the meal',
-          examples: [
-            'after the meal has finished',
-            'après la fin du repas',
-            'después de terminar de comer',
-            'после окончания еды',
-          ],
-        },
-        {
-          label: 'Staying together at the table',
-          examples: [
-            'people remain together around the table',
-            'on reste ensemble à table',
-            'la gente permanece junta en la mesa',
-            'люди остаются вместе за столом',
-          ],
-        },
-        {
-          label: 'Conversation or social time',
-          examples: [
-            'talking and enjoying social time',
-            'discuter et passer un moment ensemble',
-            'conversar y compartir tiempo',
-            'разговаривать и общаться',
-          ],
-        },
+        { label: 'Getting out of bed' },
+        { label: 'At a very early hour' },
       ],
       hardNegatives: [
-        {
-          label: 'Dessert',
-          examples: ['the dessert or sweet course served after a meal'],
-        },
-        {
-          label: 'Conversation during the meal',
-          examples: [
-            'talking while everyone is still eating dinner',
-            'parler pendant que tout le monde mange encore',
-            'hablar mientras todos siguen comiendo',
-            'разговаривать, пока все ещё едят',
-          ],
-        },
-        {
-          label: 'Before the meal',
-          examples: [
-            'talking together at the table before the meal begins',
-            'parler ensemble à table avant le début du repas',
-            'hablar juntos en la mesa antes de empezar a comer',
-            'разговаривать за столом до начала еды',
-          ],
-        },
-        {
-          label: 'Leaving immediately',
-          examples: ['leaving the table immediately when the meal ends'],
-        },
+        { label: 'Going to bed early' },
+        { label: 'Staying awake until dawn' },
+        { label: 'Sleeping late' },
       ],
       presets: [
         {
           label: 'Valid paraphrase',
           tone: 'valid',
-          answer: 'Le moment après le repas où tout le monde reste à table pour parler ensemble.',
+          answer: 'Levantarse mucho antes de lo normal, cuando todavía está amaneciendo.',
         },
         {
-          label: 'Partial meaning',
-          tone: 'partial',
-          answer: 'It is a social moment after a meal.',
+          label: 'Concise meaning',
+          tone: 'valid',
+          answer: 'Levantarse muy temprano.',
         },
         {
           label: 'Related but wrong',
           tone: 'trap',
-          answer: 'The dessert served at the end of a meal.',
+          answer: 'Quedarse despierto toda la noche hasta el amanecer.',
         },
       ],
     },
     {
-      id: 'tutoyer',
-      term: 'tutoyer',
-      language: 'French',
-      languageCode: 'FR',
-      context: 'Vous pouvez me tutoyer, nous travaillons ensemble depuis longtemps.',
-      prompt: 'Explain the social action expressed by “tutoyer”.',
-      note: 'It is about the form of address chosen for another person.',
+      id: 'estrenar',
+      term: 'estrenar',
+      language: 'Spanish',
+      languageCode: 'ES',
+      context: 'Clara llevaba semanas guardando el abrigo nuevo y hoy, con el frío, por fin lo estrenó.',
+      prompt: 'Explain what “estrenó” means here.',
+      note: 'The coat moves from being merely new to being worn for the first time.',
       acceptedLanguages: ['English', 'Français', 'Español', 'Русский'],
-      acceptedAnswers: [
-        'to address someone using the informal singular tu rather than formal vous',
-        'to use the familiar second-person form when speaking to someone',
-        's’adresser à quelqu’un en utilisant tu plutôt que vous',
-        'dirigirse a alguien usando tú en lugar de la forma formal',
-        'обращаться к человеку на ты, а не на вы',
-      ],
+      reference: 'to use or wear something for the first time',
       requiredConcepts: [
-        {
-          label: 'Addressing another person',
-          examples: [
-            'the way one addresses or speaks to someone',
-            'la manière de s’adresser à quelqu’un',
-            'la forma de dirigirse a otra persona',
-            'форма обращения к другому человеку',
-          ],
-        },
-        {
-          label: 'Using the informal singular form',
-          examples: [
-            'using informal singular tu instead of formal vous',
-            'employer tu plutôt que vous',
-            'usar tú en vez de la forma formal',
-            'использовать ты вместо вежливого вы',
-          ],
-        },
+        { label: 'Using or wearing something' },
+        { label: 'For the first time' },
       ],
       hardNegatives: [
-        {
-          label: 'Giving a nickname',
-          examples: ['giving someone a friendly nickname'],
-        },
-        {
-          label: 'Being generally rude',
-          examples: ['speaking rudely or insulting someone'],
-        },
-        {
-          label: 'Formal address',
-          examples: [
-            'addressing someone using formal vous rather than informal tu',
-            's’adresser à quelqu’un avec vous plutôt que tu',
-            'dirigirse a alguien con la forma formal en lugar de tú',
-            'обращаться к человеку на вы, а не на ты',
-          ],
-        },
+        { label: 'Buying something' },
+        { label: 'Using it again' },
+        { label: 'Repairing it' },
+        { label: 'Premiering a performance' },
       ],
       presets: [
         {
           label: 'Valid paraphrase',
           tone: 'valid',
-          answer: 'Tratar a alguien de tú en lugar de usar una forma formal.',
+          answer: 'Ponerse de verdad el abrigo por primera vez.',
         },
         {
-          label: 'Partial meaning',
-          tone: 'partial',
-          answer: 'It is a way of addressing another person.',
+          label: 'Concise meaning',
+          tone: 'valid',
+          answer: 'Usarlo por primera vez.',
         },
         {
           label: 'Related but wrong',
           tone: 'trap',
-          answer: 'Giving someone a friendly nickname.',
+          answer: 'Volver a usar algo que ya se ha usado muchas veces.',
+        },
+      ],
+    },
+    {
+      id: 'empalagar',
+      term: 'empalagar',
+      language: 'Spanish',
+      languageCode: 'ES',
+      context: 'El batido parecía rico, pero era tan dulce y espeso que después de dos sorbos me empalagó.',
+      prompt: 'Explain what “me empalagó” means here.',
+      note: 'Excessive sweetness turns enjoyment into weariness or aversion.',
+      acceptedLanguages: ['English', 'Français', 'Español', 'Русский'],
+      reference: 'for something sweet or rich to become cloying and cause weariness or dislike',
+      requiredConcepts: [
+        { label: 'Excessive sweetness or richness' },
+        { label: 'Causing weariness or dislike' },
+      ],
+      hardNegatives: [
+        { label: 'Pleasant sweetness' },
+        { label: 'Spoiled or bitter food' },
+        { label: 'Food allergy' },
+      ],
+      presets: [
+        {
+          label: 'Valid paraphrase',
+          tone: 'valid',
+          answer: 'Ser tan dulce que acaba cansando y quita las ganas de seguir tomándolo.',
+        },
+        {
+          label: 'Concise meaning',
+          tone: 'valid',
+          answer: 'Demasiado dulce.',
+        },
+        {
+          label: 'Related but wrong',
+          tone: 'trap',
+          answer: 'Ser agradablemente dulce y apetecible.',
         },
       ],
     },
@@ -369,7 +319,7 @@
       return;
     }
 
-    const requestChallengeId = active.id as SemanticGradePayload['challenge_id'];
+    const requestChallengeId = active.id;
     const requestAnswer = cleaned;
     busy = true;
     error = '';
@@ -457,9 +407,7 @@
   }
 
   function expectedVerdict(tone: PresetTone): SemanticGradeResponse['verdict'] {
-    if (tone === 'valid') return 'correct';
-    if (tone === 'partial') return 'partial';
-    return 'incorrect';
+    return tone === 'valid' ? 'correct' : 'incorrect';
   }
 
   function methodLabel(value: SemanticGradeResponse): string {
@@ -776,7 +724,7 @@
           {#if result.verdict === 'uncertain'}
             <div class="human-call">
               <span>The reference says</span>
-              <p>{active.acceptedAnswers[0]}</p>
+              <p>{active.reference}</p>
               {#if !selfResolution}
                 <strong>Choose a demo-only outcome</strong>
                 <div>
@@ -1029,7 +977,7 @@
 
   .challenge-strip {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 1px;
     margin: 1.35rem 0;
     padding: 1px;
@@ -2080,6 +2028,12 @@
     text-decoration: none;
   }
 
+  @media (max-width: 1050px) {
+    .challenge-strip {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
   @media (max-width: 900px) {
     .lab-hero {
       grid-template-columns: 1fr;
@@ -2111,11 +2065,22 @@
     }
 
     .challenge-strip {
-      grid-template-columns: 1fr;
+      grid-template-columns: none;
+      grid-auto-columns: minmax(250px, 82vw);
+      grid-auto-flow: column;
+      gap: 0.55rem;
+      overflow-x: auto;
+      padding: 1px 1px 0.7rem;
+      background: transparent;
+      overscroll-behavior-inline: contain;
+      scroll-snap-type: inline proximity;
+      scrollbar-color: var(--lab-cobalt) var(--lab-paper-deep);
     }
 
     .challenge-strip button {
       min-height: 112px;
+      border: 1px solid var(--lab-line);
+      scroll-snap-align: start;
     }
 
     .rubric-columns,

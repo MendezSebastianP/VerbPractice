@@ -17,7 +17,13 @@ AnswerText = Annotated[
 
 class SemanticGradePayload(BaseModel):
     csrf_token: CsrfToken
-    challenge_id: Literal["depaysement", "sobremesa", "tutoyer"]
+    challenge_id: Literal[
+        "retrouvailles",
+        "esprit_escalier",
+        "madrugar",
+        "estrenar",
+        "empalagar",
+    ]
     answer: AnswerText = ""
 
 

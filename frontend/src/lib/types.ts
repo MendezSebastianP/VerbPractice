@@ -752,7 +752,7 @@ export interface CommunityPayload {
 
 export interface SemanticGradePayload {
   csrf_token: string;
-  challenge_id: 'depaysement' | 'sobremesa' | 'tutoyer';
+  challenge_id: 'retrouvailles' | 'esprit_escalier' | 'madrugar' | 'estrenar' | 'empalagar';
   answer: string;
 }
 

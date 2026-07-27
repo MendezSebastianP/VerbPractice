@@ -26,7 +26,6 @@
     context: string;
     prompt: string;
     note: string;
-    acceptedLanguages: string[];
     reference: string;
     requiredConcepts: RubricEntry[];
     hardNegatives: RubricEntry[];
@@ -42,7 +41,6 @@
       context: 'Après quinze ans sans se voir, leurs retrouvailles sur le quai furent pleines de rires et de larmes.',
       prompt: 'Explain what “retrouvailles” refers to here.',
       note: 'People who already know one another meet again after time apart.',
-      acceptedLanguages: ['English', 'Français', 'Español', 'Русский'],
       reference: 'the meeting again of people who have been apart, often with strong emotion',
       requiredConcepts: [
         { label: 'Meeting one another again' },
@@ -79,7 +77,6 @@
       context: 'La réunion était finie depuis dix minutes quand Nora trouva enfin la réponse parfaite : encore un cas d’esprit d’escalier.',
       prompt: 'Explain the experience described by “l’esprit d’escalier”.',
       note: 'The fitting reply arrives only after the moment to say it has passed.',
-      acceptedLanguages: ['English', 'Français', 'Español', 'Русский'],
       reference: 'the experience of thinking of the perfect reply only after the conversation has ended',
       requiredConcepts: [
         { label: 'Thinking of the fitting reply' },
@@ -116,7 +113,6 @@
       context: 'Para coger el primer tren, Inés tuvo que madrugar: salió de casa cuando todavía estaba oscuro.',
       prompt: 'Explain what “madrugar” means here.',
       note: 'It means getting out of bed and starting the day unusually early.',
-      acceptedLanguages: ['English', 'Français', 'Español', 'Русский'],
       reference: 'to get up at dawn or very early in the morning',
       requiredConcepts: [
         { label: 'Getting out of bed' },
@@ -153,7 +149,6 @@
       context: 'Clara llevaba semanas guardando el abrigo nuevo y hoy, con el frío, por fin lo estrenó.',
       prompt: 'Explain what “estrenó” means here.',
       note: 'The coat moves from being merely new to being worn for the first time.',
-      acceptedLanguages: ['English', 'Français', 'Español', 'Русский'],
       reference: 'to use or wear something for the first time',
       requiredConcepts: [
         { label: 'Using or wearing something' },
@@ -191,7 +186,6 @@
       context: 'El batido parecía rico, pero era tan dulce y espeso que después de dos sorbos me empalagó.',
       prompt: 'Explain what “me empalagó” means here.',
       note: 'Excessive sweetness turns enjoyment into weariness or aversion.',
-      acceptedLanguages: ['English', 'Français', 'Español', 'Русский'],
       reference: 'for something sweet or rich to become cloying and cause weariness or dislike',
       requiredConcepts: [
         { label: 'Excessive sweetness or richness' },
@@ -518,12 +512,9 @@
       <form class="answer-form" on:submit|preventDefault={gradeAnswer}>
         <div class="answer-heading">
           <label for="semantic-answer">Explain it in your own words</label>
-          <span>Any of these languages can carry the meaning</span>
-        </div>
-        <div class="language-row" aria-label="Accepted answer languages">
-          {#each active.acceptedLanguages as language}
-            <span>{language}</span>
-          {/each}
+          <span id="language-help">
+            Write in any language. Low-confidence grading may return uncertain.
+          </span>
         </div>
         <textarea
           id="semantic-answer"
@@ -533,7 +524,7 @@
           maxlength="600"
           rows="5"
           placeholder="A phrase or short explanation…"
-          aria-describedby="answer-help"
+          aria-describedby="language-help answer-help"
           disabled={busy}
         ></textarea>
         <div class="answer-foot">
@@ -1200,21 +1191,6 @@
     font-size: 0.68rem;
     line-height: 1.35;
     text-align: right;
-  }
-
-  .language-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem;
-  }
-
-  .language-row span {
-    padding: 0.3rem 0.48rem;
-    border: 1px solid var(--lab-line);
-    border-radius: 999px;
-    color: var(--lab-muted);
-    background: var(--lab-paper);
-    font: 600 0.62rem/1 "IBM Plex Mono", monospace;
   }
 
   textarea {

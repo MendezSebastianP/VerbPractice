@@ -1029,6 +1029,109 @@ def test_installed_models_never_accept_curated_multilingual_opposites():
         assert trap["verdict"] == "incorrect", (challenge_id, trap)
 
 
+@pytest.mark.parametrize(
+    ("language", "challenge_id", "valid_answer", "wrong_answer"),
+    [
+        (
+            "German",
+            "retrouvailles",
+            (
+                "Wenn Menschen, die sich kennen, nach langer Trennung "
+                "wieder zusammenkommen."
+            ),
+            "Wenn zwei Fremde sich zum ersten Mal kennenlernen.",
+        ),
+        (
+            "Italian",
+            "esprit_escalier",
+            (
+                "Quando la risposta perfetta ti viene in mente solo dopo "
+                "che la conversazione è finita."
+            ),
+            (
+                "Quando trovi subito la risposta perfetta durante "
+                "la conversazione."
+            ),
+        ),
+        (
+            "Portuguese",
+            "madrugar",
+            "Levantar-se da cama ao amanhecer ou muito cedo de manhã.",
+            "Ficar acordado a noite toda até o amanhecer.",
+        ),
+        (
+            "Chinese",
+            "estrenar",
+            "第一次穿上或使用某样东西。",
+            "买了新东西，但还没有使用。",
+        ),
+        (
+            "Arabic",
+            "empalagar",
+            (
+                "أن يكون الطعام شديد الحلاوة أو الدسامة إلى حدّ يصبح "
+                "منفّرًا وتفقد الرغبة في تناوله."
+            ),
+            (
+                "أن يكون الطعام حلوًا ولذيذًا بحيث ترغب في تناول "
+                "المزيد منه."
+            ),
+        ),
+        (
+            "Japanese",
+            "esprit_escalier",
+            "会話が終わってから、言うべきだった気の利いた返事を思いつくこと。",
+            "会話中に、その場ですぐ気の利いた返事をすること。",
+        ),
+        (
+            "Korean",
+            "empalagar",
+            "너무 달고 진해서 금방 질리고 더 먹고 싶지 않게 되는 것.",
+            "기분 좋게 달고 맛있어서 더 먹고 싶어지는 것.",
+        ),
+    ],
+)
+def test_installed_models_process_unlisted_languages_conservatively(
+    language: str,
+    challenge_id: str,
+    valid_answer: str,
+    wrong_answer: str,
+):
+    """Arbitrary-language input is accepted without sacrificing trap safety.
+
+    The pinned models do not perform equally in every language. A complete
+    valid explanation may therefore abstain, but must not be counted wrong;
+    the nearby wrong meaning must never be counted correct.
+    """
+
+    ranker = semantic_grading.get_local_sense_ranker()
+    verifier = semantic_grading.get_local_nli_verifier()
+    if not _component_is_configured(ranker) or not _component_is_configured(
+        verifier
+    ):
+        pytest.skip("Pinned local semantic models are not installed.")
+
+    valid = semantic_grading.grade_semantic_answer(
+        answer=valid_answer,
+        **_challenge_rubric(challenge_id),
+    )
+    wrong = semantic_grading.grade_semantic_answer(
+        answer=wrong_answer,
+        **_challenge_rubric(challenge_id),
+    )
+
+    assert valid["verdict"] in {"correct", "uncertain"}, (
+        language,
+        challenge_id,
+        valid,
+    )
+    assert wrong["verdict"] != "correct", (
+        language,
+        challenge_id,
+        wrong,
+    )
+
+
 def _component_is_configured(component) -> bool:
     return bool(getattr(component, "configured", False))
 

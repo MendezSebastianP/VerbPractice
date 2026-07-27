@@ -699,15 +699,15 @@
 
             <article>
               <div class="trace-label">
-                <span>Meaning-component evidence</span>
-                <strong>{Math.round(coveragePercent(result.concept_coverage))}%</strong>
+                <span>{result.answer_quality === 'concise' ? 'Minimum meaning carried' : 'Meaning-component evidence'}</span>
+                <strong>{result.answer_quality === 'concise' ? 'Yes' : `${Math.round(coveragePercent(result.concept_coverage))}%`}</strong>
               </div>
               <div class="coverage-track" aria-hidden="true">
-                <i style={`width:${coveragePercent(result.concept_coverage)}%`}></i>
+                <i style={`width:${result.answer_quality === 'concise' ? 100 : coveragePercent(result.concept_coverage)}%`}></i>
               </div>
               <small>
                 {result.answer_quality === 'concise'
-                  ? `${result.required_concepts.filter(conceptIsCovered).length} of ${result.required_concepts.length} explicit or supplied by context; omitted supporting detail stays optional.`
+                  ? `${result.required_concepts.filter(conceptIsCovered).length} of ${result.required_concepts.length} meaning signals are explicit or supplied by context. This answer meets the curated minimum; omitted detail stays optional.`
                   : `${result.required_concepts.filter(conceptIsCovered).length} of ${result.required_concepts.length} components cleared the current checks.`}
               </small>
             </article>

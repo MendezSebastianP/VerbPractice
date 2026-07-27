@@ -159,21 +159,56 @@ PLAYGROUND_CHALLENGES: dict[str, PlaygroundChallenge] = {
                 ),
             ),
         ),
-        minimum_glosses=tuple(
+        minimum_glosses=(
+            *(
+                MinimumGloss(
+                    text=text,
+                    concept_evidence=(
+                        ("After the meal", "context"),
+                        ("Staying together at the table", "explicit"),
+                        ("Conversation or social time", "optional_omitted"),
+                    ),
+                )
+                for text in (
+                    "staying at the table",
+                    "rester à table",
+                    "quedarse en la mesa",
+                    "оставаться за столом",
+                )
+            ),
+            *(
+                MinimumGloss(
+                    text=text,
+                    concept_evidence=(
+                        ("After the meal", "explicit"),
+                        ("Staying together at the table", "optional_omitted"),
+                        ("Conversation or social time", "optional_omitted"),
+                    ),
+                )
+                for text in (
+                    "the time after eating",
+                    "the time after a meal",
+                    "the time after the meal",
+                    "le moment après le repas",
+                    "le temps après le repas",
+                    "tiempo después de comer",
+                    "el tiempo después de comer",
+                    "tiempo después de la comida",
+                    "el rato después de comer",
+                    "el momento después de comer",
+                    "el tiempo tras la comida",
+                    "время после еды",
+                    "время после приёма пищи",
+                )
+            ),
             MinimumGloss(
-                text=text,
+                text="quedarse hablando después de comer",
                 concept_evidence=(
-                    ("After the meal", "context"),
-                    ("Staying together at the table", "explicit"),
-                    ("Conversation or social time", "optional_omitted"),
+                    ("After the meal", "explicit"),
+                    ("Staying together at the table", "optional_omitted"),
+                    ("Conversation or social time", "explicit"),
                 ),
-            )
-            for text in (
-                "staying at the table",
-                "rester à table",
-                "quedarse en la mesa",
-                "оставаться за столом",
-            )
+            ),
         ),
         context_concepts=("After the meal",),
     ),
@@ -244,9 +279,19 @@ PLAYGROUND_CHALLENGES: dict[str, PlaygroundChallenge] = {
             )
             for text in (
                 "use tu with someone",
+                "use informal tu",
+                "address someone with tu",
+                "talk using tu",
                 "utiliser tu avec quelqu’un",
+                "dire tu à quelqu’un",
+                "employer tu",
+                "hablar de tú",
+                "tratar de tú",
+                "hablarle de tú",
                 "hablarse de tú",
                 "tratarse de tú",
+                "usar tú con alguien",
+                "говорить на ты",
                 "обращаться на ты",
             )
         ),

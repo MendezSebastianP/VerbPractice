@@ -227,8 +227,37 @@ def test_normalized_exact_match_does_not_need_the_model(monkeypatch):
             },
         ),
         (
+            "sobremesa",
+            "tiempo despues de comer",
+            1 / 3,
+            {
+                "After the meal": "explicit",
+                "Staying together at the table": "optional_omitted",
+                "Conversation or social time": "optional_omitted",
+            },
+        ),
+        (
+            "sobremesa",
+            "quedarse hablando despues de comer",
+            2 / 3,
+            {
+                "After the meal": "explicit",
+                "Staying together at the table": "optional_omitted",
+                "Conversation or social time": "explicit",
+            },
+        ),
+        (
             "tutoyer",
             "hablarse de tu",
+            1.0,
+            {
+                "Addressing another person": "explicit",
+                "Using the informal singular form": "explicit",
+            },
+        ),
+        (
+            "tutoyer",
+            "hablar de tu",
             1.0,
             {
                 "Addressing another person": "explicit",
@@ -270,8 +299,14 @@ def test_curated_minimum_gloss_is_correct_without_models(
     ("challenge_id", "answer"),
     [
         ("tutoyer", "hablarse de tu pero formalmente"),
+        ("tutoyer", "hablar de tu pero formalmente"),
+        ("tutoyer", "hablar de tu usando usted"),
+        ("tutoyer", "hablar de tu familia"),
         ("sobremesa", "quedarse en la mesa antes de comer"),
         ("sobremesa", "postre y quedarse en la mesa"),
+        ("sobremesa", "tiempo despues de comer, o sea el postre"),
+        ("sobremesa", "tiempo despues de comer y levantarse de la mesa"),
+        ("sobremesa", "tiempo despues de comer en silencio"),
     ],
 )
 def test_minimum_gloss_requires_a_whole_answer_match(
@@ -875,12 +910,23 @@ def test_installed_models_never_accept_curated_multilingual_opposites():
             "Les gens parlent à table avant le début du repas.",
             "La gente habla en la mesa antes de empezar a comer.",
             "Люди разговаривают за столом до начала еды.",
+            "tiempo despues de comer, o sea el postre",
+            "tiempo despues de comer y levantarse de la mesa",
+            "tiempo despues de comer para irse inmediatamente",
+            "tiempo despues de comer, no quedarse en la mesa",
+            "tiempo despues de comer en silencio",
         ],
         "tutoyer": [
             "Use formal vous rather than informal tu.",
             "Employer le vous formel plutôt que le tu informel.",
             "Usar la forma formal en lugar de tú.",
             "Hablarse de tú pero formalmente.",
+            "Hablar de tú usando usted.",
+            "Hablar de tú significa ser grosero.",
+            "Hablar de tu apodo.",
+            "Hablar de tu familia.",
+            "Hablar de tú, no usar tú.",
+            "Hablar de tú y de usted.",
             "Обращаться на вы, а не на ты.",
         ],
     }
@@ -897,7 +943,7 @@ def test_installed_models_never_accept_curated_multilingual_opposites():
         **_challenge_rubric("sobremesa"),
     )
     assert concise_valid["verdict"] == "correct", concise_valid
-    assert concise_valid["answer_quality"] == "complete"
+    assert concise_valid["answer_quality"] == "concise"
 
     concise_minimum = semantic_grading.grade_semantic_answer(
         answer="quedarse en la mesa",

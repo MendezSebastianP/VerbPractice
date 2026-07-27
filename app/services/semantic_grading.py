@@ -267,6 +267,8 @@ _SEMANTIC_AXES: dict[str, dict[str, tuple[str, ...]]] = {
     "form of address": {
         "informal": (
             r"\binformal(?:ly)?\b",
+            r"\binformalmente\b",
+            r"\binformellement\b",
             r"\bfamiliar second person\b",
             r"\btu\b",
             r"\btutoy\w*\b",
@@ -277,6 +279,8 @@ _SEMANTIC_AXES: dict[str, dict[str, tuple[str, ...]]] = {
         ),
         "formal": (
             r"\bformal(?:ly)?\b",
+            r"\bformalmente\b",
+            r"\bformellement\b",
             r"\bvous\b",
             r"\bvouvoy\w*\b",
             r"\busted\b",

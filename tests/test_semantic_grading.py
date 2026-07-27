@@ -748,6 +748,12 @@ def test_timing_opposites_cannot_be_marked_correct(
             "Usar la forma formal en lugar de tú.",
         ),
         (
+            "Hablarse de tú pero formalmente.",
+            "Usar tú en lugar de la forma formal.",
+            "Dirigirse con tú en vez de la forma formal.",
+            "Usar la forma formal en lugar de tú.",
+        ),
+        (
             "Формальное обращение на вы.",
             "Обращаться на ты, а не на вы.",
             "Использовать ты вместо вежливого вы.",
@@ -874,6 +880,7 @@ def test_installed_models_never_accept_curated_multilingual_opposites():
             "Use formal vous rather than informal tu.",
             "Employer le vous formel plutôt que le tu informel.",
             "Usar la forma formal en lugar de tú.",
+            "Hablarse de tú pero formalmente.",
             "Обращаться на вы, а не на ты.",
         ],
     }

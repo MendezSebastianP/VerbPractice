@@ -75,6 +75,7 @@ _NEGATION_MARKERS = {
     "sin",
     "tampoco",
     "nadie",
+    "nada",
     "ningun",
     "ninguna",
     "nao",
@@ -104,7 +105,7 @@ _CORRECTIVE_CONTRAST_MARKERS = {
     "pero",
     "sino",
     "aunque",
-    "mas",
+    "porem",
     "sondern",
 }
 _NEGATION_SCOPE_FILLERS = {
@@ -149,6 +150,7 @@ _DIRECTIONAL_MARKERS = (
     "instead of",
     "as opposed to",
     "plutot que",
+    "plutot quavec",
     "au lieu de",
     "en lugar de",
     "en vez de",
@@ -197,7 +199,7 @@ _SEMANTIC_AXES: dict[str, dict[str, tuple[str, ...]]] = {
             r"\bkeep (?:on )?(?:talking|chatting)\b",
             r"\bcontinu\w* (?:a )?(?:parler|discuter)\b",
             r"\brest(?:e|er|ent|ons|ez|ait|aient|era\w*|ant|ee?s?) (?:ensemble )?(?:a )?table\b",
-            r"\bqued\w*\b",
+            r"\bqued\w* (?:hablando|conversando|charlando|junt\w*|en (?:la )?mesa|ahi|alli|mas tiempo|un rato)\b",
             r"\bpermane\w*\b",
             r"\b(?:seguir|sigue\w*|continua\w*) (?:hablando|conversando|charlando)\b",
             r"\bоста\w*\b",
@@ -212,12 +214,33 @@ _SEMANTIC_AXES: dict[str, dict[str, tuple[str, ...]]] = {
             r"\bpartir\b",
             r"\birse\b",
             r"\bse (?:va|van|fue|fueron)\b",
-            r"\bmarch\w*\b",
+            r"\b(?:marcharse|se march\w*)\b",
             r"\blevant\w*\b",
             r"\bуй\w*\b",
             r"\bуход\w*\b",
             r"\bпокин\w*\b",
             r"\bвста\w* из за стол\w*\b",
+        ),
+    },
+    "lingering duration": {
+        "lingering": (
+            r"\blinger\w*\b",
+            r"\b(?:remain\w*|stay\w*) (?:there )?(?:a little )?longer\b",
+            r"\bs attard\w*\b",
+            r"\brest\w* plus longtemps\b",
+            r"\b(?:qued\w*|demor\w*) (?:un rato mas|mas tiempo|mas de lo previsto)\b",
+            r"\btard\w* en irse\b",
+            r"\bзадерж\w*\b",
+            r"\bоста\w* подольше\b",
+        ),
+        "immediate departure": (
+            r"\bleav\w* immediately\b",
+            r"\bpart\w* immediatement\b",
+            r"\bquitt\w* immediatement\b",
+            r"\birse inmediatamente\b",
+            r"\bse (?:fue|va|fueron|van) inmediatamente\b",
+            r"\b(?:irse|se fue) (?:en seguida|al instante)\b",
+            r"\bсразу (?:уйти|уходит|ушел|ушла)\b",
         ),
     },
     "conversation versus silence": {
@@ -288,18 +311,142 @@ _SEMANTIC_AXES: dict[str, dict[str, tuple[str, ...]]] = {
             r"\bвежлив\w*\b",
         ),
     },
+    "meeting history": {
+        "meeting again": (
+            r"\b(?:meet|see) (?:one another|each other|a friend) again\b",
+            r"\b(?:meet|see)\w* again after\b",
+            r"\b(?:reunit|reconnect)\w*\b",
+            r"\b(?:se revoir|se retrouver|retrouver un ami)\b",
+            r"\b(?:volver a ver|volver a verse|volver a encontrarse)\b",
+            r"\b(?:reencontr|verse otra vez|ver de nuevo)\w*\b",
+            r"\bснова (?:встрет|увид)\w*\b",
+        ),
+        "meeting for the first time": (
+            r"\b(?:meet|meeting) for the first time\b",
+            r"\b(?:strangers?|unknown people) meet\b",
+            r"\b(?:faire connaissance|inconnus? .* premiere fois)\b",
+            r"\b(?:conocerse por primera vez|desconocid\w* .* primera vez)\b",
+            r"\b(?:впервые встреч|первая встреча незнаком)\w*\b",
+        ),
+        "finding an object": (
+            r"\bfind\w* (?:a |an |the )?(?:lost )?(?:object|item|thing)\b",
+            r"\bretrouver un objet\b",
+            r"\bencontr\w* un objeto\b",
+            r"\bнайти потерянн\w* вещ\w*\b",
+        ),
+        "farewell": (
+            r"\b(?:say|saying) goodbye\b",
+            r"\b(?:dire adieu|faire ses adieux)\b",
+            r"\bdespedir\w*\b",
+            r"\bпопрощ\w*\b",
+        ),
+    },
+    "movement intent": {
+        "leisurely wandering": (
+            r"\b(?:stroll|wander|meander)\w*\b",
+            r"\b(?:walk|move)\w* (?:around )?(?:slowly|leisurely)\b",
+            r"\b(?:flan|promen)\w*\b",
+            r"\bmarch\w* tranquillement\b",
+            r"\b(?:pase|vag)\w*\b",
+            r"\bdar una vuelta\b",
+            r"\b(?:camin|and)\w* (?:tranquilamente|sin prisa|sin rumbo)\b",
+            r"\b(?:неспеш|гуля|брод)\w*\b",
+        ),
+        "hurrying directly": (
+            r"\b(?:rush|race)\w*\b",
+            r"\b(?:run|running|sprint)\w*\b",
+            r"\b(?:quickly|rapidly|fast)\b",
+            r"\bdirectly to (?:an? )?(?:urgent )?(?:appointment|destination)\b",
+            r"\bse depech\w*\b",
+            r"\b(?:cour|sprinte)\w*\b",
+            r"(?<!sans )\brapidement\b",
+            r"\b(?:rapidement|directement) vers .*rendez vous\b",
+            r"\b(?:ir|correr)\w* (?:deprisa |rapido )?(?:y )?directamente\b",
+            r"\b(?:corr|trot)\w*\b",
+            r"(?<!sin )\b(?:deprisa|rapidamente|velozmente)\b",
+            r"\bcorrer hacia (?:una )?cita\b",
+            r"\bбыстр\w*\b",
+            r"(?<!без )\b(?:спеш|тороп)\w*\b",
+        ),
+        "being lost": (
+            r"\b(?:be|being|get|getting) lost\b",
+            r"\b(?:etre|se perdre|perdu)\b",
+            r"\b(?:estar|quedar)\w* perdid\w*\b",
+            r"\b(?:perderse|perdid)\w*\b",
+            r"\b(?:заблуд|потеря)\w*\b",
+        ),
+        "exercise": (
+            r"\b(?:physical )?exercise\b",
+            r"\bfaire de l exercice\b",
+            r"\bhacer ejercicio\b",
+            r"\b(?:физическ|нагруз)\w*\b",
+        ),
+        "stationary": (
+            r"\b(?:stay|remain|stand)\w* still\b",
+            r"\bstationary\b",
+            r"\b(?:rester|demeurer)\w* immobile\b",
+            r"\b(?:quedarse|permanecer)\w* (?:quieto|parado|sin moverse)\b",
+            r"\b(?:стоять|оставаться) неподвиж\w*\b",
+        ),
+    },
+    "item use": {
+        "using or wearing": (
+            r"\b(?:use|wear)\w* (?:it|them|something|an? item|an? object)\b",
+            r"\b(?:wear|wore|worn)\w* (?:the |a |an )?(?:coat|clothes|garment|item)\b",
+            r"\bfirst use\b",
+            r"\b(?:put|puts|putting) (?:it|them|something) (?:on|into service)\b",
+            r"\b(?:utilis|port)\w*(?: ou (?:utilis|port)\w*)? (?:quelque chose|un objet|le|la|les)\b",
+            r"\bmett\w* (?:quelque chose )?en service\b",
+            r"\b(?:usar|uso|usa|use|usado|usada|usando|utiliz\w*|llev\w*) (?:algo|lo|la|los|las|un objeto|una prenda)\b",
+            r"\bpon\w* (?:algo|lo|la|los|las) en servicio\b",
+            r"\bponer(?:se|selo|sela|selos|selas)?\b",
+            r"\b(?:использ|надев)\w* (?:вещ|ее|его|их)\w*\b",
+            r"\bввод\w* .* в действ\w*\b",
+        ),
+        "buying only": (
+            r"\b(?:buy|purchas)\w*\b",
+            r"\bacquir\w*\b",
+            r"\b(?:achet|acquer)\w*\b",
+            r"\b(?:compr|adquir)\w*\b",
+            r"\b(?:куп|приобрет)\w*\b",
+        ),
+        "using again": (
+            r"\b(?:reuse|rewear)\w*\b",
+            r"\b(?:use|wear|put) (?:it |them |something )?(?:on )?again\b",
+            r"\breutilis\w*\b",
+            r"\b(?:utilis|port)\w* .* (?:encore|de nouveau)\b",
+            r"\b(?:volver a |re)(?:usar|utiliz)\w*\b",
+            r"\b(?:usar|uso|usa|use|utiliz\w*|poner(?:se|selo|sela|selos|selas)?) (?:algo )?(?:otra vez|de nuevo)\b",
+            r"\bснова (?:использ|надев)\w*\b",
+        ),
+        "later ordinal use": (
+            r"\b(?:second|third|another) time\b",
+            r"\b(?:deuxieme|troisieme) fois\b",
+            r"\b(?:segunda|tercera) vez\b",
+            r"\b(?:втор|трет)\w* раз\b",
+        ),
+        "different action": (
+            r"\b(?:touch|wash|clean|store|smell|sniff|own|possess)\w*\b",
+            r"\b(?:have|having) it for the first time\b",
+            r"\b(?:touch|lav|rang|sent|possed)\w*\b",
+            r"\b(?:toc|lav|guard|ol|pose)\w*\b",
+            r"\bten\w*lo por primera vez\b",
+            r"\b(?:трог|мыть|хран|нюх|влад)\w*\b",
+        ),
+        "repairing": (
+            r"\b(?:repair|restore)\w*\b",
+            r"\b(?:repar|restaur)\w*\b",
+            r"\b(?:чин|восстанавл)\w*\b",
+        ),
+    },
     "start of day action": {
         "getting up": (
             r"\bget(?:ting)? up\b",
             r"\brise at (?:dawn|sunrise)\b",
-            r"\bwake up\b",
             r"\bleave (?:the )?bed\b",
             r"\bse lev\w*\b",
-            r"\bse reveill\w*\b",
             r"\blevant\w*\b",
-            r"\bdespert\w*\b",
             r"\bвста\w*\b",
-            r"\bпросып\w*\b",
         ),
         "going to bed or staying awake": (
             r"\bgo(?:ing)? to bed\b",
@@ -316,6 +463,137 @@ _SEMANTIC_AXES: dict[str, dict[str, tuple[str, ...]]] = {
             r"\bdorm\w* (?:jusque|tres )?tard\b",
             r"\bdorm\w* hasta tarde\b",
             r"\bспать допоздна\b",
+        ),
+        "remaining in bed": (
+            r"\b(?:stay|remain|continue)\w* in bed\b",
+            r"\brester au lit\b",
+            r"\b(?:seguir|quedarse|continuar)\w* en (?:la )?cama\b",
+            r"\bоста\w* в постел\w*\b",
+        ),
+    },
+    "time of day": {
+        "early or dawn": (
+            r"\b(?:very )?early\b",
+            r"\b(?:at |before )?(?:dawn|sunrise)\b",
+            r"\b(?:tres )?tot\b",
+            r"\ba laube\b",
+            r"\b(?:muy )?temprano\b",
+            r"\b(?:antes del |al )?amanecer\b",
+            r"\b(?:очень )?рано\b",
+            r"\bна рассвете\b",
+        ),
+        "late": (
+            r"\b(?:very )?late\b",
+            r"\b(?:tres )?tard\b",
+            r"\b(?:muy )?tarde\b",
+            r"\b(?:очень )?поздно\b",
+        ),
+    },
+    "night sleep state": {
+        "awake late": (
+            r"\bstay\w* (?:up|awake)\b",
+            r"\bawake (?:deep|late) into the night\b",
+            r"\bveill\w*\b",
+            r"\brester eveill\w*\b",
+            r"\b(?:qued|permanec|seguir|estar)\w* despiert\w*\b",
+            r"\b(?:no|sin) dormir\b",
+            r"\bне спать\b",
+            r"\bбодрств\w*\b",
+        ),
+        "sleeping or going to bed": (
+            r"(?<!not )(?<!no )\bsleep\w* (?:until |till )?(?:very )?late\b",
+            r"(?<!not )(?<!no )\bsleep\w* through (?:the )?(?:whole )?night\b",
+            r"\bgo(?:ing)? to bed (?:very )?early\b",
+            r"(?<!pas )(?<!no )(?<!sin )\bdorm\w* (?:jusque )?(?:tres )?tard\b",
+            r"(?<!pas )(?<!no )(?<!sin )\bdorm\w* toute la nuit\b",
+            r"\bse couch\w* tot\b",
+            r"(?<!no )(?<!sin )\bdorm\w* hasta (?:las )?\w+\b",
+            r"(?<!no )(?<!sin )\bdorm\w* (?:tranquilamente )?toda la noche\b",
+            r"\bacost\w* temprano\b",
+            r"(?<!не )\bспать допоздна\b",
+            r"\bпросп\w* всю ночь\b",
+            r"\bлож\w* спать рано\b",
+        ),
+    },
+    "food reaction cause": {
+        "excessive sweetness or richness": (
+            r"\b(?:too|overly|excessively) sweet\b",
+            r"\b(?:too|overly|excessively) rich\b",
+            r"\bexcess(?:ive)? (?:sweetness|sugar)\b",
+            r"\bexcess(?:ive)? richness\b",
+            r"\btoo much sugar\b",
+            r"\bcloy\w*\b",
+            r"\btrop sucr\w*\b",
+            r"\btrop riche\b",
+            r"\bexces de sucre\b",
+            r"\becoeur\w* (?:de|par) (?:le )?sucre\b",
+            r"\b(?:demasiado|mucho|exceso de) azucar\b",
+            r"\btan dulce\b",
+            r"\bdulzor excesivo\b",
+            r"\b(?:слишком|чрезмерно) слад\w*\b",
+            r"\b(?:слишком|чрезмерно) насыщенн\w*\b",
+            r"\bизбыт\w* сахар\w*\b",
+            r"\bпритор\w*\b",
+        ),
+        "salty or savory": (
+            r"\b(?:too|overly|excessively) salt\w*\b",
+            r"\btoo much salt\b",
+            r"\b(?:too|overly) savory\b",
+            r"\btrop sal\w*\b",
+            r"\bexces de sel\b",
+            r"\b(?:demasiado|mucho|exceso de) sal\b",
+            r"\b(?:слишком|чрезмерно) солен\w*\b",
+            r"\bизбыт\w* сол\w*\b",
+        ),
+        "spoiled or bitter": (
+            r"\b(?:spoiled|rotten|bitter)\b",
+            r"\b(?:avarie|pourri|amer)\w*\b",
+            r"\b(?:estropead|podrid|amarg)\w*\b",
+            r"\b(?:испорчен|тухл|горьк)\w*\b",
+        ),
+        "allergy": (
+            r"\ballerg\w*\b",
+            r"\ballergi\w*\b",
+            r"\balerg\w*\b",
+            r"\bаллерг\w*\b",
+        ),
+        "pleasant or delicious": (
+            r"\b(?:pleasant|delicious|enjoyable|appetizing|tasty)\w*\b",
+            r"\b(?:agreable|delicieux|appetissant|savoureux)\w*\b",
+            r"\b(?:agradable|delicioso|apetitoso|sabroso)\w*\b",
+            r"\b(?:приятн|вкусн|аппетитн)\w*\b",
+        ),
+    },
+    "practical help outcome": {
+        "solving or helping": (
+            r"\b(?:help|solve|rescue)\w*\b",
+            r"\bget\w* .* out of (?:a |the )?(?:bind|difficulty|problem)\b",
+            r"\b(?:aid|sort)\w* .* (?:affaire|difficulte|probleme)\b",
+            r"\b(?:rendre service|depann)\w*\b",
+            r"\b(?:ayud|resolv)\w*\b",
+            r"\bsac\w* .* (?:apuro|problema)\b",
+            r"\b(?:выруч|помог|реш)\w*\b",
+        ),
+        "worsening or harming": (
+            r"\b(?:worsen|aggravat|harm|hurt)\w*\b",
+            r"\b(?:empir|aggrav|nuis)\w*\b",
+            r"\b(?:empeor|agrav|perjudic|dan)\w*\b",
+            r"\b(?:ухудш|навред|вред)\w*\b",
+        ),
+    },
+    "availability of what is missed": {
+        "absent or far away": (
+            r"\b(?:absent|missing|away|no longer (?:here|present))\b",
+            r"\b(?:absent|loin|manqu)\w*\b",
+            r"\b(?:ausente|lejos|ya no (?:esta|estan))\b",
+            r"\b(?:отсутств|далеко|нет рядом)\w*\b",
+        ),
+        "present or nearby": (
+            r"\b(?:present|here|nearby|with me)\b",
+            r"\b(?:present|ici|proche|avec moi)\w*\b",
+            r"\b(?:presente|aqui|cerca|conmigo)\b",
+            r"(?<!нет )\bрядом\b",
+            r"\b(?:здесь|со мной)\b",
         ),
     },
     "relation to familiar surroundings": {
@@ -890,8 +1168,14 @@ def grade_semantic_answer(
     )
     answer_negations = _negation_markers(cleaned_answer)
     reference_negations = _negation_markers(matched_reference_text)
+    answer_negation_count = sum(
+        token in _NEGATION_MARKERS for token in _tokens(cleaned_answer)
+    )
+    reference_negation_count = sum(
+        token in _NEGATION_MARKERS for token in _tokens(matched_reference_text)
+    )
     corrective_contrast = _has_corrective_contrast(cleaned_answer)
-    negation_mismatch = bool(answer_negations) != bool(reference_negations)
+    negation_mismatch = answer_negation_count != reference_negation_count
 
     positive_axis_examples = list(references)
     for _, examples in concept_rows:
@@ -907,13 +1191,17 @@ def grade_semantic_answer(
             negative_rows,
         )
     )
+    if input_overflow:
+        safety_flags.append(
+            "the answer is too long to verify without semantic truncation"
+        )
     if negation_mismatch:
         safety_flags.append(
             "negation changes the polarity of the closest accepted explanation"
         )
-    if input_overflow:
+    if corrective_contrast and not exact_match:
         safety_flags.append(
-            "the answer is too long to verify without semantic truncation"
+            "corrective contrast joins meanings that require human review"
         )
     safety_flags = list(dict.fromkeys(safety_flags))
 
@@ -1031,6 +1319,10 @@ def grade_semantic_answer(
             covered_count = adjusted_covered_count
             concept_coverage = covered_count / len(concept_results)
 
+    # Small multilingual models routinely place antonyms and nearby traps
+    # close together.  NLI may confirm a positive sentence even when the
+    # learner also states a competing wrong sense, so it may never override
+    # either a triggered trap or an unsafe embedding margin.
     should_verify = (
         not short_circuit
         and model_available
@@ -1040,6 +1332,10 @@ def grade_semantic_answer(
         and covered_count == len(concept_results)
         and bool(negative_rows)
         and not safety_flags
+        and not triggered_negatives
+        and (margin is None or margin >= SAFE_NEGATIVE_MARGIN)
+        and expected_axis_count > 0
+        and len(confirmed_axes) == expected_axis_count
         and positive_score >= POSITIVE_CORRECT_THRESHOLD
     )
     if should_verify:
@@ -1217,14 +1513,18 @@ def grade_semantic_answer(
         )
         reasons.append(f"Confirmed: {', '.join(confirmed)}.")
         reasons.append(f"Missing or unclear: {', '.join(missing)}.")
-    elif triggered_negatives and not verification_passed:
+    elif triggered_negatives:
         verdict = "uncertain"
         method = MODEL_NAME
         reasons.append(
             "A known wrong meaning is competitive, but its lead is too small "
             "for a reliable rejection."
         )
-        reasons.append(f"Competitive hard negative: {', '.join(triggered_negatives)}.")
+        reasons.append(
+            "Competitive hard negative: "
+            + ", ".join(triggered_negatives)
+            + "."
+        )
         reasons.extend(f"Safety check: {finding}." for finding in safety_flags)
     elif safety_flags:
         verdict = "uncertain"
@@ -1287,11 +1587,7 @@ def grade_semantic_answer(
         reasons.append(
             "All concepts appear present, but similarity to the accepted explanations is borderline."
         )
-    elif (
-        margin is not None
-        and margin < SAFE_NEGATIVE_MARGIN
-        and not verification_passed
-    ):
+    elif margin is not None and margin < SAFE_NEGATIVE_MARGIN:
         verdict = "uncertain"
         method = MODEL_NAME
         reasons.append(

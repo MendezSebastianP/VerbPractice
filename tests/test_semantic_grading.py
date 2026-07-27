@@ -217,8 +217,8 @@ def test_normalized_exact_match_does_not_need_the_model(monkeypatch):
     ("challenge_id", "answer", "expected_coverage", "expected_evidence"),
     [
         (
-            "retrouvailles",
-            "se revoir",
+            "se_retrouver",
+            "ver de nuevo a un amigo",
             1.0,
             {
                 "Meeting one another again": "explicit",
@@ -226,12 +226,39 @@ def test_normalized_exact_match_does_not_need_the_model(monkeypatch):
             },
         ),
         (
-            "esprit_escalier",
-            "trouver la bonne reponse trop tard",
+            "tutoyer",
+            "hablar de tu",
             1.0,
             {
-                "Thinking of the fitting reply": "explicit",
-                "Only after the opportunity has passed": "explicit",
+                "Addressing another person": "context",
+                "Using informal singular tu": "explicit",
+            },
+        ),
+        (
+            "flaner",
+            "pasear",
+            1.0,
+            {
+                "Moving around leisurely": "explicit",
+                "Without a fixed or urgent destination": "context",
+            },
+        ),
+        (
+            "depanner",
+            "la saco del apuro",
+            1.0,
+            {
+                "Helping someone": "explicit",
+                "Solving an immediate practical difficulty": "context",
+            },
+        ),
+        (
+            "s_attarder",
+            "se quedo mas tiempo",
+            1.0,
+            {
+                "Remaining in place": "explicit",
+                "Longer or later than expected": "context",
             },
         ),
         (
@@ -254,11 +281,29 @@ def test_normalized_exact_match_does_not_need_the_model(monkeypatch):
         ),
         (
             "empalagar",
-            "demasiado dulce",
-            0.5,
+            "desagrado luego de comer mucho azucar",
+            1.0,
             {
                 "Excessive sweetness or richness": "explicit",
-                "Causing weariness or dislike": "optional_omitted",
+                "Resulting weariness, saturation, or dislike": "explicit",
+            },
+        ),
+        (
+            "trasnochar",
+            "quedarse despierto hasta muy tarde",
+            1.0,
+            {
+                "Remaining awake": "explicit",
+                "Until very late at night": "explicit",
+            },
+        ),
+        (
+            "anorar",
+            "las echa de menos",
+            1.0,
+            {
+                "Something valued is absent": "context",
+                "Feeling emotional longing": "explicit",
             },
         ),
     ],
@@ -295,19 +340,81 @@ def test_curated_minimum_gloss_is_correct_without_models(
 @pytest.mark.parametrize(
     ("challenge_id", "answer"),
     [
-        ("retrouvailles", "se revoir pour la premiere fois"),
-        ("retrouvailles", "se revoir puis se dire adieu"),
+        ("se_retrouver", "ver de nuevo a un amigo"),
+        ("tutoyer", "usar tu en vez de usted al hablarle"),
+        ("flaner", "andar despacio sin un destino"),
+        ("depanner", "ayudarla con una dificultad urgente"),
+        ("s_attarder", "quedarse ahi mas de lo esperado"),
+        ("madrugar", "salir de la cama muy temprano"),
+        ("estrenar", "ponerse algo nuevo por primera vez"),
+        ("empalagar", "desagrado luego de comer mucho azucar"),
+        ("trasnochar", "no dormir hasta las cuatro de la mañana"),
+        ("anorar", "sentir nostalgia por la familia que esta lejos"),
+    ],
+)
+def test_curated_spanish_learner_phrases_are_correct_without_models(
+    monkeypatch,
+    challenge_id,
+    answer,
+):
+    ranker = _patch_ranker(monkeypatch, available=False)
+
+    result = semantic_grading.grade_semantic_answer(
+        answer=answer,
+        **_challenge_rubric(challenge_id),
+    )
+
+    assert result["verdict"] == "correct"
+    assert result["answer_quality"] == "concise"
+    assert result["method"] == "curated_minimum_gloss"
+    assert result["exact_match"] is True
+    assert ranker.encode_calls == 0
+
+
+@pytest.mark.parametrize(
+    ("challenge_id", "answer"),
+    [
+        ("se_retrouver", "ver de nuevo a un amigo para despedirse"),
         (
-            "esprit_escalier",
-            "trouver la bonne reponse trop tard, donc immediatement",
+            "se_retrouver",
+            "ver de nuevo a un amigo significa encontrar un objeto perdido",
         ),
-        ("esprit_escalier", "trouver la bonne reponse dans un escalier"),
+        ("se_retrouver", "no ver de nuevo a un amigo"),
+        (
+            "se_retrouver",
+            "ver de nuevo a un amigo, pero es la primera vez que se conocen",
+        ),
+        ("tutoyer", "hablar de tu pero usando el vous formal"),
+        ("flaner", "pasear pero con prisa hacia una cita urgente"),
+        ("depanner", "la saco del apuro pero empeoro el problema"),
+        ("s_attarder", "se quedo mas tiempo significa irse inmediatamente"),
         ("madrugar", "levantarse muy temprano después de dormir hasta tarde"),
         ("madrugar", "levantarse muy temprano para acostarse"),
         ("estrenar", "usarlo por primera vez pero ya estaba usado"),
         ("estrenar", "usarlo por primera vez significa comprarlo"),
         ("empalagar", "demasiado dulce pero muy agradable"),
         ("empalagar", "demasiado dulce por una alergia"),
+        (
+            "empalagar",
+            "desagrado luego de comer mucho azúcar por una alergia",
+        ),
+        (
+            "empalagar",
+            "desagrado luego de comer mucho azúcar, pero estaba delicioso",
+        ),
+        (
+            "empalagar",
+            "no sentir desagrado luego de comer mucho azúcar",
+        ),
+        (
+            "empalagar",
+            "desagrado luego de comer mucho azúcar porque estaba amargo",
+        ),
+        (
+            "trasnochar",
+            "quedarse despierto hasta muy tarde significa dormir toda la noche",
+        ),
+        ("anorar", "los echa de menos pero no siente ningún apego"),
     ],
 )
 def test_minimum_gloss_requires_a_whole_answer_match(
@@ -377,6 +484,129 @@ def test_minimum_gloss_must_cover_at_least_one_concept(monkeypatch):
         )
 
 
+def test_unreviewed_paraphrase_cannot_inherit_minimum_gloss_evidence(
+    monkeypatch,
+):
+    reference = "excessive sweetness becomes unpleasant"
+    concise = "too sweet and unpleasant"
+    sweetness = "excessive sweetness"
+    dislike = "an unpleasant feeling"
+    negative = "pleasant sweetness that makes someone want more"
+    ranker = _patch_ranker(
+        monkeypatch,
+        {
+            reference: 0.85,
+            concise: 0.93,
+            sweetness: 0.81,
+            dislike: 0.80,
+            negative: 0.84,
+        },
+    )
+
+    result = semantic_grading.grade_semantic_answer(
+        answer="cloying from all that sugar",
+        accepted_answers=[reference],
+        minimum_glosses=[
+            (
+                concise,
+                [
+                    ("sweetness", "explicit"),
+                    ("dislike", "explicit"),
+                ],
+            ),
+        ],
+        required_concepts=[
+            ("sweetness", [sweetness]),
+            ("dislike", [dislike]),
+        ],
+        hard_negatives=[("pleasant", [negative])],
+    )
+
+    assert result["verdict"] != "correct"
+    assert result["exact_match"] is False
+    assert result["answer_quality"] is None
+    assert result["method"] != "curated_minimum_gloss"
+    assert result["positive_score"] == 0.85
+    assert ranker.encode_calls == 2
+
+
+def test_unrefuted_hard_negative_cannot_be_overridden_by_nli(monkeypatch):
+    reference = "using a new possession for the first time"
+    action = "putting the possession into use"
+    first_time = "doing the action for the first time"
+    negative = "buying a possession without using it"
+    _patch_ranker(
+        monkeypatch,
+        {
+            reference: 0.88,
+            action: 0.87,
+            first_time: 0.87,
+            negative: 0.875,
+        },
+    )
+    verifier = _patch_verifier(
+        monkeypatch,
+        {
+            reference: NliScores(0.82, 0.13, 0.05),
+            negative: NliScores(0.05, 0.15, 0.80),
+        },
+    )
+
+    result = semantic_grading.grade_semantic_answer(
+        answer="buying it for the first time",
+        accepted_answers=[reference],
+        required_concepts=[
+            ("using", [action]),
+            ("first time", [first_time]),
+        ],
+        hard_negatives=[("buying only", [negative])],
+    )
+
+    assert result["hard_negatives"][0]["triggered"] is True
+    assert result["verdict"] != "correct"
+    assert result["verification"]["checked"] is False
+    assert verifier.calls == 0
+
+
+def test_unsafe_embedding_margin_cannot_be_overridden_by_nli(monkeypatch):
+    reference = "using a new possession for the first time"
+    action = "putting the possession into use"
+    first_time = "doing the action for the first time"
+    negative = "acquiring a possession without using it"
+    _patch_ranker(
+        monkeypatch,
+        {
+            reference: 0.88,
+            action: 0.87,
+            first_time: 0.87,
+            negative: 0.866,
+        },
+    )
+    verifier = _patch_verifier(
+        monkeypatch,
+        {
+            reference: NliScores(0.82, 0.13, 0.05),
+            negative: NliScores(0.05, 0.15, 0.80),
+        },
+    )
+
+    result = semantic_grading.grade_semantic_answer(
+        answer="acquiring it for the first time",
+        accepted_answers=[reference],
+        required_concepts=[
+            ("using", [action]),
+            ("first time", [first_time]),
+        ],
+        hard_negatives=[("acquiring only", [negative])],
+    )
+
+    assert result["hard_negatives"][0]["triggered"] is False
+    assert result["margin"] == pytest.approx(0.014)
+    assert result["verdict"] != "correct"
+    assert result["verification"]["checked"] is False
+    assert verifier.calls == 0
+
+
 def test_empty_answer_is_incorrect_even_without_the_model(monkeypatch):
     ranker = _patch_ranker(monkeypatch, available=False)
 
@@ -412,8 +642,8 @@ def test_model_unavailable_returns_uncertain_not_lexical_decision(monkeypatch):
 
 
 def test_full_rubric_with_safe_negative_margin_is_correct(monkeypatch):
-    reference = "A bittersweet longing for a happy time in the past."
-    past = "longing for something in the past"
+    reference = "A bittersweet longing for a happy time that is absent."
+    past = "longing for something absent in the past"
     bittersweet = "both warm affection and sadness"
     negative = "optimism and excitement about the future"
     _patch_ranker(
@@ -434,7 +664,10 @@ def test_full_rubric_with_safe_negative_margin_is_correct(monkeypatch):
     )
 
     result = semantic_grading.grade_semantic_answer(
-        answer="You miss the past and feel warmth mixed with sadness.",
+        answer=(
+            "You miss an absent time from the past and feel warmth mixed "
+            "with sadness."
+        ),
         accepted_answers=[reference],
         required_concepts=[
             ("past longing", [past]),
@@ -563,7 +796,7 @@ def test_near_tied_hard_negative_abstains_instead_of_rejecting(monkeypatch):
     assert result["margin"] == pytest.approx(0.0068)
 
 
-def test_concise_paraphrase_can_pass_when_all_semantic_axes_are_confirmed(
+def test_competitive_hard_negative_still_abstains_when_axes_confirmed(
     monkeypatch,
 ):
     rubric = _patch_concise_sobremesa_case(monkeypatch)
@@ -573,9 +806,9 @@ def test_concise_paraphrase_can_pass_when_all_semantic_axes_are_confirmed(
         **rubric,
     )
 
-    assert result["verdict"] == "correct"
+    assert result["verdict"] == "uncertain"
     assert result["hard_negatives"][0]["triggered"] is True
-    assert result["verification"]["entailment_score"] == pytest.approx(0.19)
+    assert result["verification"]["checked"] is False
     assert len(result["verification"]["confirmed_axes"]) == 3
     assert any(
         "remaining versus leaving" in item
@@ -856,6 +1089,126 @@ def test_getting_up_cannot_be_equated_with_going_to_bed(monkeypatch):
     )
 
 
+@pytest.mark.parametrize(
+    ("answer", "reference", "concept", "negative", "axis"),
+    [
+        (
+            "run quickly without a destination",
+            "stroll leisurely without a destination",
+            "wander slowly without a fixed route",
+            "standing still",
+            "movement intent",
+        ),
+        (
+            "get up late",
+            "get up very early",
+            "rise at dawn",
+            "sleep all day",
+            "time of day",
+        ),
+        (
+            "wear it for the second time",
+            "wear something for the first time",
+            "use an item for the first time",
+            "leave the item unused",
+            "item use",
+        ),
+        (
+            "too sweet and delicious",
+            "too sweet and cloying",
+            "excessive sweetness becomes unpleasant",
+            "plain food",
+            "food reaction cause",
+        ),
+        (
+            "missing someone who is present",
+            "missing someone who is absent",
+            "longing for someone far away",
+            "forgetting someone",
+            "availability of what is missed",
+        ),
+        (
+            "help with the problem and worsen it",
+            "help solve a practical problem",
+            "helping someone out of a difficulty",
+            "ignoring the person",
+            "practical help outcome",
+        ),
+        (
+            "wake up early but remain in bed",
+            "get up very early",
+            "leave the bed at dawn",
+            "eat breakfast",
+            "start of day action",
+        ),
+    ],
+)
+def test_discriminating_axes_block_appended_or_substituted_opposites(
+    monkeypatch,
+    answer,
+    reference,
+    concept,
+    negative,
+    axis,
+):
+    _patch_ranker(
+        monkeypatch,
+        {
+            reference: 0.94,
+            concept: 0.91,
+            negative: 0.70,
+        },
+    )
+    _patch_verifier(monkeypatch)
+
+    result = semantic_grading.grade_semantic_answer(
+        answer=answer,
+        accepted_answers=[reference],
+        required_concepts=[("meaning", [concept])],
+        hard_negatives=[("wrong meaning", [negative])],
+    )
+
+    assert result["verdict"] != "correct"
+    assert any(
+        axis in flag for flag in result["verification"]["safety_flags"]
+    )
+
+
+def test_nli_cannot_accept_without_confirming_the_local_action_axis(
+    monkeypatch,
+):
+    reference = "wear something for the first time"
+    concept = "use an item for the first time"
+    negative = "buy an item without using it"
+    _patch_ranker(
+        monkeypatch,
+        {
+            reference: 0.90,
+            concept: 0.87,
+            negative: 0.75,
+        },
+    )
+    verifier = _patch_verifier(
+        monkeypatch,
+        {
+            reference: NliScores(0.82, 0.13, 0.05),
+            negative: NliScores(0.05, 0.15, 0.80),
+        },
+    )
+
+    result = semantic_grading.grade_semantic_answer(
+        answer="admire it for the first time",
+        accepted_answers=[reference],
+        required_concepts=[("using", [concept])],
+        hard_negatives=[("buying only", [negative])],
+    )
+
+    assert result["verdict"] != "correct"
+    assert result["verification"]["confirmed_axes"] == []
+    assert result["verification"]["checked"] is False
+    assert verifier.calls == 0
+
+
 def test_non_exact_similarity_abstains_when_nli_verifier_is_missing(monkeypatch):
     reference = "A feeling of being outside familiar surroundings."
     concept = "away from the usual environment"
@@ -906,7 +1259,7 @@ def test_payload_uses_server_owned_challenge_and_caps_answer():
     with pytest.raises(ValidationError):
         SemanticGradePayload(
             csrf_token="token",
-            challenge_id="retrouvailles",
+            challenge_id="se_retrouver",
             answer="x" * 601,
         )
 
@@ -917,14 +1270,19 @@ def test_payload_uses_server_owned_challenge_and_caps_answer():
             answer="answer",
         )
 
-    expected_ids = {
-        "retrouvailles",
-        "esprit_escalier",
+    expected_ids = (
+        "se_retrouver",
+        "tutoyer",
+        "flaner",
+        "depanner",
+        "s_attarder",
         "madrugar",
         "estrenar",
         "empalagar",
-    }
-    assert set(PLAYGROUND_CHALLENGES) == expected_ids
+        "trasnochar",
+        "anorar",
+    )
+    assert tuple(PLAYGROUND_CHALLENGES) == expected_ids
     for challenge_id in expected_ids:
         payload = SemanticGradePayload(
             csrf_token="token",
@@ -937,7 +1295,12 @@ def test_payload_uses_server_owned_challenge_and_caps_answer():
             "answer",
         }
 
-    for retired_id in ("depaysement", "sobremesa", "tutoyer"):
+    for retired_id in (
+        "depaysement",
+        "sobremesa",
+        "retrouvailles",
+        "esprit_escalier",
+    ):
         with pytest.raises(ValidationError):
             SemanticGradePayload(
                 csrf_token="token",
@@ -953,23 +1316,65 @@ def test_installed_models_never_accept_curated_multilingual_opposites():
         pytest.skip("Pinned local semantic models are not installed.")
 
     cases = {
-        "retrouvailles": [
+        "se_retrouver": [
             "Two strangers meeting and introducing themselves for the first time.",
             "Deux inconnus qui font connaissance pour la première fois.",
             "Dos desconocidos que se conocen por primera vez.",
             "Первая встреча незнакомых людей.",
-            "Se revoir pour la première fois.",
-            "Volver a verse para despedirse antes de separarse.",
             "Retrouver un objet perdu.",
+            "Ver de nuevo a un amigo para despedirse.",
+            "No ver de nuevo a un amigo.",
+            (
+                "Ver de nuevo a un amigo, pero es la primera vez "
+                "que se conocen."
+            ),
         ],
-        "esprit_escalier": [
-            "Giving the perfect reply immediately during the conversation.",
-            "Donner immédiatement la réplique parfaite pendant la conversation.",
-            "Dar inmediatamente la respuesta perfecta durante la conversación.",
-            "Сразу дать меткий ответ во время разговора.",
-            "Never thinking of anything to say.",
-            "Une pensée à propos d’un escalier.",
-            "Trouver la bonne réponse trop tard, c’est-à-dire immédiatement.",
+        "tutoyer": [
+            "Addressing someone with formal vous.",
+            "S’adresser à quelqu’un en utilisant le vous formel.",
+            "Tratar a alguien de usted formalmente.",
+            "Обращаться к человеку на вы.",
+            "Insultar a alguien o hablarle con grosería.",
+            "Hablar de tú significa tratar de usted.",
+            "Hablarle de usted.",
+            "Lui parler avec vous.",
+        ],
+        "flaner": [
+            "Hurrying directly to an urgent appointment.",
+            "Se dépêcher directement vers un rendez-vous urgent.",
+            "Ir deprisa y directamente a una cita urgente.",
+            "Estar perdido e intentar encontrar el camino.",
+            "Caminar rápido para hacer ejercicio.",
+            "Pasear sin rumbo significa correr hacia una cita.",
+            "No pasear sin rumbo.",
+            "No caminar tranquilamente sin destino.",
+            "No vagar sin destino.",
+            "Andar deprisa sin destino.",
+            "Correr sin destino.",
+            "Correr tranquilamente sin destino.",
+            "Pasear rápidamente sin rumbo.",
+            "Andar perdido sin destino.",
+            "Dar una vuelta corriendo.",
+            "Быстро гулять без цели.",
+            "Quedarse quieto sin rumbo.",
+        ],
+        "depanner": [
+            "Expressing sympathy without offering practical help.",
+            "Exprimer de la sympathie sans apporter d’aide concrète.",
+            "Mostrar simpatía sin ofrecer ayuda práctica.",
+            "Empeorar el problema práctico de la persona.",
+            "Reparar una máquina averiada en vez de ayudar a la viajera.",
+            "La sacó del apuro, pero empeoró el problema.",
+            "Ayudarla con una dificultad y perjudicarla.",
+            "La ayudó con el problema y lo agravó.",
+        ],
+        "s_attarder": [
+            "Arriving late after everyone else.",
+            "Arriver en retard après tout le monde.",
+            "Llegar tarde después de los demás.",
+            "Irse inmediatamente sin quedarse.",
+            "Ser obligado a quedarse contra la propia voluntad.",
+            "Se quedó más tiempo, es decir, se fue inmediatamente.",
         ],
         "madrugar": [
             "Going to bed early in the evening.",
@@ -979,6 +1384,13 @@ def test_installed_models_never_accept_curated_multilingual_opposites():
             "Quedarse despierto toda la noche hasta el amanecer.",
             "Dormir hasta tarde por la mañana.",
             "Levantarse muy temprano significa acostarse al amanecer.",
+            "Levantarse tarde.",
+            "Levantarse muy tarde.",
+            "Get up late.",
+            "Se lever très tard.",
+            "Встать очень поздно.",
+            "Despertarse temprano y seguir en cama.",
+            "Salir de la cama cuando ya era tarde.",
         ],
         "estrenar": [
             "Buying something new without using it.",
@@ -986,8 +1398,19 @@ def test_installed_models_never_accept_curated_multilingual_opposites():
             "Comprar algo nuevo sin usarlo.",
             "Купить новую вещь, не используя её.",
             "Volver a usar algo que ya se ha usado muchas veces.",
-            "Presentar una película al público por primera vez.",
             "Usarlo por primera vez, pero ya se había usado muchas veces.",
+            "Comprarlo por primera vez.",
+            "Ponérselo otra vez.",
+            "Adquirirlo por primera vez.",
+            "Ponérselo por segunda vez.",
+            "Wear it for the second time.",
+            "Le porter pour la deuxième fois.",
+            "Надеть во второй раз.",
+            "Tocarlo por primera vez.",
+            "Lavarlo por primera vez.",
+            "Guardarlo por primera vez.",
+            "Olerlo por primera vez.",
+            "Tenerlo por primera vez.",
         ],
         "empalagar": [
             "Being pleasantly sweet and enjoyable.",
@@ -997,6 +1420,41 @@ def test_installed_models_never_accept_curated_multilingual_opposites():
             "Tener una reacción alérgica a un ingrediente.",
             "Saber amargo porque la comida está estropeada.",
             "Demasiado dulce, pero agradable y quiero seguir comiendo.",
+            "Desagrado luego de comer mucho azúcar por una alergia.",
+            "No sentir desagrado luego de comer mucho azúcar.",
+            "Me dio asco de tan dulce, pero estaba delicioso.",
+            "Mucho azúcar me causa desagrado por una alergia.",
+            "Me dio asco porque estaba amargo.",
+            "Asco por demasiado sal.",
+            "Demasiado dulce y delicioso.",
+            "Demasiado dulce y agradable.",
+            "Demasiado dulce y apetitoso.",
+            "Too sweet and delicious.",
+            "Слишком сладкий и вкусный.",
+            "Demasiado dulce y nada desagradable.",
+        ],
+        "trasnochar": [
+            "Sleeping first and then getting up very early.",
+            "Dormir puis se lever très tôt.",
+            "Dormir y después levantarse muy temprano.",
+            "Acostarse temprano por la noche.",
+            "Dormir tranquilamente toda la noche.",
+            "Dormir hasta las cuatro.",
+            "No estar despierto hasta tarde.",
+            "No pasar la noche sin dormir.",
+            (
+                "Quedarse despierto hasta muy tarde significa dormir "
+                "toda la noche."
+            ),
+        ],
+        "anorar": [
+            "Remembering something neutrally without missing it.",
+            "Se souvenir de quelque chose sans ressentir de manque.",
+            "Recordar algo de manera neutral sin echarlo de menos.",
+            "Olvidarlo o no sentir ningún apego.",
+            "Tener ganas de algo nuevo que nunca se ha vivido.",
+            "Los echa de menos, pero no siente ningún apego.",
+            "Sentir nostalgia por algo presente.",
         ],
     }
     for challenge_id, answers in cases.items():
@@ -1030,11 +1488,60 @@ def test_installed_models_never_accept_curated_multilingual_opposites():
 
 
 @pytest.mark.parametrize(
+    ("challenge_id", "answer"),
+    [
+        ("se_retrouver", "ver otra vez a mi amigo"),
+        ("se_retrouver", "volver a encontrarme con un viejo amigo"),
+        ("se_retrouver", "encontrarse después de mucho tiempo"),
+        ("tutoyer", "tutear a alguien"),
+        ("tutoyer", "dirigirse a él usando tú"),
+        ("flaner", "pasear tranquilamente sin rumbo"),
+        ("flaner", "pasear sin prisa ni destino"),
+        ("flaner", "vagar tranquilamente sin destino"),
+        ("depanner", "resolverle el problema urgente"),
+        ("depanner", "ayudarla a salir de un problema"),
+        ("s_attarder", "quedarse más de la cuenta"),
+        ("s_attarder", "quedarse más tiempo antes de irse"),
+        ("madrugar", "despertarse al amanecer"),
+        ("madrugar", "levantarse antes del amanecer"),
+        ("estrenar", "darle su primer uso"),
+        ("estrenar", "vestirlo por primera vez"),
+        ("empalagar", "mucho azucar me causa desagrado"),
+        ("empalagar", "me dio asco de tan dulce"),
+        ("empalagar", "hartar por ser demasiado dulce"),
+        ("empalagar", "hartarse de tanto azúcar"),
+        ("trasnochar", "seguir sin dormir hasta las cuatro"),
+        ("trasnochar", "acostarse muy tarde"),
+        ("trasnochar", "permanecer despierto hasta las cinco"),
+        ("anorar", "extrañar mucho a su familia"),
+        ("anorar", "echar de menos a los amigos lejanos"),
+    ],
+)
+def test_reviewed_spanish_short_paraphrases_are_curated_exact_matches(
+    monkeypatch,
+    challenge_id,
+    answer,
+):
+    ranker = _patch_ranker(monkeypatch, available=False)
+
+    result = semantic_grading.grade_semantic_answer(
+        answer=answer,
+        **_challenge_rubric(challenge_id),
+    )
+
+    assert result["verdict"] == "correct", (challenge_id, answer, result)
+    assert result["answer_quality"] == "concise"
+    assert result["exact_match"] is True
+    assert result["method"] == "curated_minimum_gloss"
+    assert ranker.encode_calls == 0
+
+
+@pytest.mark.parametrize(
     ("language", "challenge_id", "valid_answer", "wrong_answer"),
     [
         (
             "German",
-            "retrouvailles",
+            "se_retrouver",
             (
                 "Wenn Menschen, die sich kennen, nach langer Trennung "
                 "wieder zusammenkommen."
@@ -1043,14 +1550,14 @@ def test_installed_models_never_accept_curated_multilingual_opposites():
         ),
         (
             "Italian",
-            "esprit_escalier",
+            "tutoyer",
             (
-                "Quando la risposta perfetta ti viene in mente solo dopo "
-                "che la conversazione è finita."
+                "Rivolgersi a qualcuno usando il tu informale invece "
+                "del vous formale."
             ),
             (
-                "Quando trovi subito la risposta perfetta durante "
-                "la conversazione."
+                "Rivolgersi a qualcuno usando il vous formale invece "
+                "del tu."
             ),
         ),
         (
@@ -1079,15 +1586,15 @@ def test_installed_models_never_accept_curated_multilingual_opposites():
         ),
         (
             "Japanese",
-            "esprit_escalier",
-            "会話が終わってから、言うべきだった気の利いた返事を思いつくこと。",
-            "会話中に、その場ですぐ気の利いた返事をすること。",
+            "s_attarder",
+            "帰るはずの時間を過ぎても、その場所に長く残ること。",
+            "遅れて到着すること。",
         ),
         (
             "Korean",
-            "empalagar",
-            "너무 달고 진해서 금방 질리고 더 먹고 싶지 않게 되는 것.",
-            "기분 좋게 달고 맛있어서 더 먹고 싶어지는 것.",
+            "anorar",
+            "곁에 없는 소중한 사람이나 시간을 그리워하는 것.",
+            "아무 감정 없이 중립적으로 기억하는 것.",
         ),
     ],
 )
@@ -1120,7 +1627,7 @@ def test_installed_models_process_unlisted_languages_conservatively(
         **_challenge_rubric(challenge_id),
     )
 
-    assert valid["verdict"] in {"correct", "uncertain"}, (
+    assert valid["verdict"] != "incorrect", (
         language,
         challenge_id,
         valid,
@@ -1185,7 +1692,7 @@ async def test_playground_endpoint_is_public_but_csrf_protected(monkeypatch):
         for item in response.required_concepts
     } == {
         "Excessive sweetness or richness": "explicit",
-        "Causing weariness or dislike": "optional_omitted",
+        "Resulting weariness, saturation, or dislike": "optional_omitted",
     }
     assert response.model_name == semantic_grading.MODEL_NAME
     route = next(
@@ -1237,9 +1744,9 @@ async def test_playground_rate_limit_is_enforced_through_asgi(monkeypatch):
             csrf_token = (await client.get("/token")).json()["csrf_token"]
             payload = {
                 "csrf_token": csrf_token,
-                "challenge_id": "retrouvailles",
+                "challenge_id": "se_retrouver",
                 "answer": PLAYGROUND_CHALLENGES[
-                    "retrouvailles"
+                    "se_retrouver"
                 ].accepted_answers[0],
             }
             responses = [

@@ -18,11 +18,16 @@ AnswerText = Annotated[
 class SemanticGradePayload(BaseModel):
     csrf_token: CsrfToken
     challenge_id: Literal[
-        "retrouvailles",
-        "esprit_escalier",
+        "se_retrouver",
+        "tutoyer",
+        "flaner",
+        "depanner",
+        "s_attarder",
         "madrugar",
         "estrenar",
         "empalagar",
+        "trasnochar",
+        "anorar",
     ]
     answer: AnswerText = ""
 

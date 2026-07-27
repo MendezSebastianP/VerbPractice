@@ -34,74 +34,182 @@
 
   const challenges: MeaningChallenge[] = [
     {
-      id: 'retrouvailles',
-      term: 'retrouvailles',
+      id: 'se_retrouver',
+      term: 'se retrouver',
       language: 'French',
       languageCode: 'FR',
-      context: 'Après quinze ans sans se voir, leurs retrouvailles sur le quai furent pleines de rires et de larmes.',
-      prompt: 'Explain what “retrouvailles” refers to here.',
-      note: 'People who already know one another meet again after time apart.',
-      reference: 'the meeting again of people who have been apart, often with strong emotion',
+      context: 'Après quinze ans sans se voir, Ana et Malik se sont retrouvés sur le quai, entre rires et larmes.',
+      prompt: 'Explain what “se sont retrouvés” means here.',
+      note: 'Two people who already know each other meet again after time apart.',
+      reference: 'to meet or see one another again after having been apart',
       requiredConcepts: [
         { label: 'Meeting one another again' },
         { label: 'After time apart' },
       ],
       hardNegatives: [
-        { label: 'First introduction' },
-        { label: 'Farewell' },
+        { label: 'Meeting for the first time' },
         { label: 'Finding a lost object' },
+        { label: 'Farewell' },
       ],
       presets: [
         {
           label: 'Valid paraphrase',
           tone: 'valid',
-          answer: 'Es volver a verse después de haber pasado mucho tiempo separados.',
+          answer: 'Volvieron a verse después de muchos años separados.',
         },
         {
           label: 'Concise meaning',
           tone: 'valid',
-          answer: 'Se revoir.',
+          answer: 'Ver de nuevo a un amigo.',
         },
         {
           label: 'Related but wrong',
           tone: 'trap',
-          answer: 'Deux inconnus qui font connaissance pour la première fois.',
+          answer: 'Deux inconnus font connaissance pour la première fois.',
         },
       ],
     },
     {
-      id: 'esprit_escalier',
-      term: 'l’esprit d’escalier',
+      id: 'tutoyer',
+      term: 'tutoyer',
       language: 'French',
       languageCode: 'FR',
-      context: 'La réunion était finie depuis dix minutes quand Nora trouva enfin la réponse parfaite : encore un cas d’esprit d’escalier.',
-      prompt: 'Explain the experience described by “l’esprit d’escalier”.',
-      note: 'The fitting reply arrives only after the moment to say it has passed.',
-      reference: 'the experience of thinking of the perfect reply only after the conversation has ended',
+      context: 'Vous pouvez me tutoyer, nous travaillons ensemble depuis longtemps.',
+      prompt: 'Explain the social action expressed by “tutoyer”.',
+      note: 'It changes the form of address from formal “vous” to informal singular “tu”.',
+      reference: 'to address someone using informal singular “tu” rather than formal “vous”',
       requiredConcepts: [
-        { label: 'Thinking of the fitting reply' },
-        { label: 'Only after the opportunity has passed' },
+        { label: 'Addressing another person' },
+        { label: 'Using informal singular tu' },
       ],
       hardNegatives: [
-        { label: 'Immediate wit' },
-        { label: 'Never finding a reply' },
-        { label: 'Literal staircase' },
+        { label: 'Using formal vous' },
+        { label: 'Insulting or being rude' },
+        { label: 'Simply having a casual conversation' },
       ],
       presets: [
         {
           label: 'Valid paraphrase',
           tone: 'valid',
-          answer: 'La respuesta perfecta se te ocurre cuando la conversación ya ha terminado.',
+          answer: 'Dirigirse a alguien usando el “tu” francés en vez de “vous”.',
         },
         {
           label: 'Concise meaning',
           tone: 'valid',
-          answer: 'Trouver la bonne réponse trop tard.',
+          answer: 'Hablarle de tú.',
         },
         {
           label: 'Related but wrong',
           tone: 'trap',
-          answer: 'Donner immédiatement la réplique parfaite pendant la conversation.',
+          answer: 'S’adresser à quelqu’un en utilisant le vous formel.',
+        },
+      ],
+    },
+    {
+      id: 'flaner',
+      term: 'flâner',
+      language: 'French',
+      languageCode: 'FR',
+      context: 'Sans rendez-vous ni destination précise, Malik flânait le long des quais en regardant les vitrines.',
+      prompt: 'Explain what “flânait” means here.',
+      note: 'He moves around leisurely, without an urgent destination.',
+      reference: 'to stroll or wander at leisure without a particular destination',
+      requiredConcepts: [
+        { label: 'Moving around leisurely' },
+        { label: 'Without a fixed or urgent destination' },
+      ],
+      hardNegatives: [
+        { label: 'Hurrying directly somewhere' },
+        { label: 'Being involuntarily lost' },
+        { label: 'Walking briskly for exercise' },
+      ],
+      presets: [
+        {
+          label: 'Valid paraphrase',
+          tone: 'valid',
+          answer: 'Paseaba tranquilamente, sin rumbo concreto ni prisa.',
+        },
+        {
+          label: 'Concise meaning',
+          tone: 'valid',
+          answer: 'Pasear sin rumbo.',
+        },
+        {
+          label: 'Related but wrong',
+          tone: 'trap',
+          answer: 'Se dépêcher directement vers un rendez-vous urgent.',
+        },
+      ],
+    },
+    {
+      id: 'depanner',
+      term: 'dépanner',
+      language: 'French',
+      languageCode: 'FR',
+      context: 'Quand le train de Nora a été annulé, Karim l’a dépannée en la conduisant à l’aéroport.',
+      prompt: 'Explain what “l’a dépannée” means here.',
+      note: 'Karim provides a practical solution to Nora’s immediate difficulty.',
+      reference: 'to help someone out of a temporary practical difficulty',
+      requiredConcepts: [
+        { label: 'Helping someone' },
+        { label: 'Solving an immediate practical difficulty' },
+      ],
+      hardNegatives: [
+        { label: 'Only expressing sympathy' },
+        { label: 'Making the difficulty worse' },
+        { label: 'Repairing a broken machine' },
+      ],
+      presets: [
+        {
+          label: 'Valid paraphrase',
+          tone: 'valid',
+          answer: 'La ayudó a salir del apuro llevándola en coche.',
+        },
+        {
+          label: 'Concise meaning',
+          tone: 'valid',
+          answer: 'La sacó del apuro.',
+        },
+        {
+          label: 'Related but wrong',
+          tone: 'trap',
+          answer: 'Exprimer de la sympathie sans apporter d’aide concrète.',
+        },
+      ],
+    },
+    {
+      id: 's_attarder',
+      term: 's’attarder',
+      language: 'French',
+      languageCode: 'FR',
+      context: 'Le café allait fermer et les autres étaient partis, mais Léa s’est attardée pour terminer la conversation.',
+      prompt: 'Explain what “s’est attardée” means here.',
+      note: 'She remains longer instead of leaving when normally expected.',
+      reference: 'to remain somewhere longer or later than expected',
+      requiredConcepts: [
+        { label: 'Remaining in place' },
+        { label: 'Longer or later than expected' },
+      ],
+      hardNegatives: [
+        { label: 'Arriving late' },
+        { label: 'Leaving immediately' },
+        { label: 'Being forcibly prevented from leaving' },
+      ],
+      presets: [
+        {
+          label: 'Valid paraphrase',
+          tone: 'valid',
+          answer: 'Se quedó más tiempo de lo previsto.',
+        },
+        {
+          label: 'Concise meaning',
+          tone: 'valid',
+          answer: 'Se quedó un rato más.',
+        },
+        {
+          label: 'Related but wrong',
+          tone: 'trap',
+          answer: 'Arriver en retard après tout le monde.',
         },
       ],
     },
@@ -110,9 +218,9 @@
       term: 'madrugar',
       language: 'Spanish',
       languageCode: 'ES',
-      context: 'Para coger el primer tren, Inés tuvo que madrugar: salió de casa cuando todavía estaba oscuro.',
-      prompt: 'Explain what “madrugar” means here.',
-      note: 'It means getting out of bed and starting the day unusually early.',
+      context: 'Para tomar el primer tren, Inés madrugó y salió de casa cuando todavía estaba oscuro.',
+      prompt: 'Explain what “madrugó” means here.',
+      note: 'She gets out of bed and starts the day unusually early.',
       reference: 'to get up at dawn or very early in the morning',
       requiredConcepts: [
         { label: 'Getting out of bed' },
@@ -120,19 +228,19 @@
       ],
       hardNegatives: [
         { label: 'Going to bed early' },
-        { label: 'Staying awake until dawn' },
+        { label: 'Remaining awake all night' },
         { label: 'Sleeping late' },
       ],
       presets: [
         {
           label: 'Valid paraphrase',
           tone: 'valid',
-          answer: 'Levantarse mucho antes de lo normal, cuando todavía está amaneciendo.',
+          answer: 'Se levantó al amanecer o muy temprano.',
         },
         {
           label: 'Concise meaning',
           tone: 'valid',
-          answer: 'Levantarse muy temprano.',
+          answer: 'Levantarse al amanecer.',
         },
         {
           label: 'Related but wrong',
@@ -147,24 +255,23 @@
       language: 'Spanish',
       languageCode: 'ES',
       context: 'Clara llevaba semanas guardando el abrigo nuevo y hoy, con el frío, por fin lo estrenó.',
-      prompt: 'Explain what “estrenó” means here.',
-      note: 'The coat moves from being merely new to being worn for the first time.',
+      prompt: 'Explain what “lo estrenó” means here.',
+      note: 'The coat is worn for the first time, not merely bought or owned.',
       reference: 'to use or wear something for the first time',
       requiredConcepts: [
         { label: 'Using or wearing something' },
         { label: 'For the first time' },
       ],
       hardNegatives: [
-        { label: 'Buying something' },
+        { label: 'Buying without using' },
         { label: 'Using it again' },
-        { label: 'Repairing it' },
-        { label: 'Premiering a performance' },
+        { label: 'Repairing an old item' },
       ],
       presets: [
         {
           label: 'Valid paraphrase',
           tone: 'valid',
-          answer: 'Ponerse de verdad el abrigo por primera vez.',
+          answer: 'Se puso el abrigo nuevo por primera vez.',
         },
         {
           label: 'Concise meaning',
@@ -174,7 +281,7 @@
         {
           label: 'Related but wrong',
           tone: 'trap',
-          answer: 'Volver a usar algo que ya se ha usado muchas veces.',
+          answer: 'Volver a usar algo que ya se usó muchas veces.',
         },
       ],
     },
@@ -185,32 +292,104 @@
       languageCode: 'ES',
       context: 'El batido parecía rico, pero era tan dulce y espeso que después de dos sorbos me empalagó.',
       prompt: 'Explain what “me empalagó” means here.',
-      note: 'Excessive sweetness turns enjoyment into weariness or aversion.',
-      reference: 'for something sweet or rich to become cloying and cause weariness or dislike',
+      note: 'Too much sweetness or richness causes saturation, weariness, or dislike.',
+      reference: 'to become unpleasant or cloying because of excessive sweetness or richness',
       requiredConcepts: [
         { label: 'Excessive sweetness or richness' },
-        { label: 'Causing weariness or dislike' },
+        { label: 'Resulting weariness, saturation, or dislike' },
       ],
       hardNegatives: [
         { label: 'Pleasant sweetness' },
         { label: 'Spoiled or bitter food' },
-        { label: 'Food allergy' },
+        { label: 'An allergic reaction' },
       ],
       presets: [
         {
           label: 'Valid paraphrase',
           tone: 'valid',
-          answer: 'Ser tan dulce que acaba cansando y quita las ganas de seguir tomándolo.',
+          answer: 'Me causó desagrado o hartazgo por tener demasiado azúcar.',
         },
         {
           label: 'Concise meaning',
           tone: 'valid',
-          answer: 'Demasiado dulce.',
+          answer: 'Desagrado luego de comer mucho azúcar.',
         },
         {
           label: 'Related but wrong',
           tone: 'trap',
-          answer: 'Ser agradablemente dulce y apetecible.',
+          answer: 'Ser agradablemente dulce y dar ganas de tomar más.',
+        },
+      ],
+    },
+    {
+      id: 'trasnochar',
+      term: 'trasnochar',
+      language: 'Spanish',
+      languageCode: 'ES',
+      context: 'Lucía trasnochó terminando el informe y no apagó la luz hasta las cuatro de la mañana.',
+      prompt: 'Explain what “trasnochó” means here.',
+      note: 'She remains awake far later into the night than normal.',
+      reference: 'to stay awake until very late at night instead of sleeping',
+      requiredConcepts: [
+        { label: 'Remaining awake' },
+        { label: 'Until very late at night' },
+      ],
+      hardNegatives: [
+        { label: 'Getting up early after sleeping' },
+        { label: 'Going to bed early' },
+        { label: 'Sleeping through the night' },
+      ],
+      presets: [
+        {
+          label: 'Valid paraphrase',
+          tone: 'valid',
+          answer: 'Se quedó despierta trabajando hasta muy entrada la noche.',
+        },
+        {
+          label: 'Concise meaning',
+          tone: 'valid',
+          answer: 'Quedarse despierto hasta muy tarde.',
+        },
+        {
+          label: 'Related but wrong',
+          tone: 'trap',
+          answer: 'Acostarse temprano por la noche.',
+        },
+      ],
+    },
+    {
+      id: 'anorar',
+      term: 'añorar',
+      language: 'Spanish',
+      languageCode: 'ES',
+      context: 'Desde que se mudó al extranjero, Lucía añora las comidas de los domingos con su familia.',
+      prompt: 'Explain what “añora” means here.',
+      note: 'She painfully misses a valued experience that is now absent.',
+      reference: 'to miss or long for someone or something valued that is absent',
+      requiredConcepts: [
+        { label: 'Something valued is absent' },
+        { label: 'Feeling emotional longing' },
+      ],
+      hardNegatives: [
+        { label: 'Remembering neutrally' },
+        { label: 'Forgetting or feeling no attachment' },
+        { label: 'Anticipating something never experienced' },
+      ],
+      presets: [
+        {
+          label: 'Valid paraphrase',
+          tone: 'valid',
+          answer: 'Echa de menos y desea volver a vivir las comidas familiares de los domingos.',
+        },
+        {
+          label: 'Concise meaning',
+          tone: 'valid',
+          answer: 'Las echa de menos.',
+        },
+        {
+          label: 'Related but wrong',
+          tone: 'trap',
+          answer: 'Recordar algo de manera neutral sin echarlo de menos.',
         },
       ],
     },
@@ -518,6 +697,8 @@
         </div>
         <textarea
           id="semantic-answer"
+          name="semantic-answer"
+          autocomplete="off"
           bind:value={answer}
           on:input={handleAnswerInput}
           on:keydown={handleAnswerKeydown}
@@ -2006,7 +2187,22 @@
 
   @media (max-width: 1050px) {
     .challenge-strip {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: none;
+      grid-auto-columns: minmax(240px, 31vw);
+      grid-auto-flow: column;
+      gap: 0.55rem;
+      overflow-x: auto;
+      padding: 1px 1px 0.7rem;
+      background: transparent;
+      overscroll-behavior-inline: contain;
+      scroll-snap-type: inline proximity;
+      scrollbar-color: var(--lab-cobalt) var(--lab-paper-deep);
+    }
+
+    .challenge-strip button {
+      min-height: 122px;
+      border: 1px solid var(--lab-line);
+      scroll-snap-align: start;
     }
   }
 
@@ -2041,22 +2237,11 @@
     }
 
     .challenge-strip {
-      grid-template-columns: none;
       grid-auto-columns: minmax(250px, 82vw);
-      grid-auto-flow: column;
-      gap: 0.55rem;
-      overflow-x: auto;
-      padding: 1px 1px 0.7rem;
-      background: transparent;
-      overscroll-behavior-inline: contain;
-      scroll-snap-type: inline proximity;
-      scrollbar-color: var(--lab-cobalt) var(--lab-paper-deep);
     }
 
     .challenge-strip button {
       min-height: 112px;
-      border: 1px solid var(--lab-line);
-      scroll-snap-align: start;
     }
 
     .rubric-columns,

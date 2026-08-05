@@ -184,7 +184,7 @@
               hasNavigation={Boolean(boot?.authenticated)}
             />
           {:else if $route === '/playground2'}
-            <!-- Independent Fable design bench. -->
+            <!-- Independent English verb-table design bench. -->
             <Playground2Page />
           {:else if !boot?.authenticated && $route === '/register'}
             <AuthPage mode="register" csrfToken={boot?.csrf_token || ''} on:authenticated={handleAuthenticated} />

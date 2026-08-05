@@ -205,6 +205,7 @@ async def find_ranked_sense(
     word: Word,
     target_language_id: int,
     context: str | None,
+    require_translation: bool = True,
 ) -> RankedSense | None:
     result = await db.execute(
         select(WordSense)
@@ -224,10 +225,12 @@ async def find_ranked_sense(
         )
         for sense in all_senses
     }
-    translated_senses = [
-        sense for sense in all_senses if translations_by_sense[sense.id]
+    trusted_senses = [
+        sense
+        for sense in all_senses
+        if sense.is_trusted
+        and (not require_translation or translations_by_sense[sense.id])
     ]
-    trusted_senses = [sense for sense in translated_senses if sense.is_trusted]
     cleaned_context = (context or "").strip()
     senses = trusted_senses
     if not senses:
@@ -272,6 +275,7 @@ async def select_dictionary_sense(
     word: Word,
     target_language_id: int,
     sense_id: int,
+    require_translation: bool = True,
 ) -> RankedSense | None:
     """Return a user-selected sense, provided it belongs to this word/pair."""
 
@@ -296,7 +300,8 @@ async def select_dictionary_sense(
     eligible = [
         sense
         for sense in all_senses
-        if sense.is_trusted and translations_by_sense[sense.id]
+        if sense.is_trusted
+        and (not require_translation or translations_by_sense[sense.id])
     ]
     selected = next((sense for sense in eligible if sense.id == sense_id), None)
     if selected is None:

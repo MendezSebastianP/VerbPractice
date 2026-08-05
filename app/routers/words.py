@@ -21,6 +21,7 @@ from app.db.models import (
     Word,
     WordLexicalEntry,
     WordNativeTranslation,
+    WordSense,
     WordTag,
 )
 from app.db.session import get_db
@@ -42,13 +43,20 @@ from app.services.ocr_service import (
     extract_text,
 )
 from app.services.word_ai_service import (
+    DefinitionPresentation,
     WordAIError,
     expand_word,
+    present_definitions,
     translate_selected_sense,
     translate_word,
 )
 
 router = APIRouter(prefix="/api/words", tags=["words"])
+
+
+def _is_monolingual_pair(language_pair: str) -> bool:
+    source, separator, target = language_pair.lower().partition("_")
+    return bool(separator and source and source == target)
 
 
 def _serialize_lexical(entry) -> dict:
@@ -72,10 +80,21 @@ def _serialize_native(entry, lang_code: str) -> dict:
     }
 
 
-def _serialize_translated_result(result, mother_code: str) -> dict:
+def _serialize_translated_result(
+    result,
+    mother_code: str,
+    definition: DefinitionPresentation,
+    *,
+    monolingual: bool = False,
+) -> dict:
     assert result.word is not None and result.lexical is not None
     return {
         "lexical": _serialize_lexical(result.lexical),
+        "definition_language_code": definition.language_code,
+        "display_definition": {
+            "text": definition.text,
+            "language_code": definition.language_code,
+        },
         "natives": [
             _serialize_native(native, mother_code)
             for native in (result.natives or [])
@@ -88,7 +107,9 @@ def _serialize_translated_result(result, mother_code: str) -> dict:
             {
                 "id": candidate.id,
                 "sense_key": candidate.sense_key,
-                "definition": candidate.definition,
+                "definition": definition.candidate_definitions.get(
+                    candidate.id, candidate.definition
+                ),
                 "part_of_speech": candidate.part_of_speech,
             }
             for candidate in (result.sense_candidates or [])
@@ -99,6 +120,8 @@ def _serialize_translated_result(result, mother_code: str) -> dict:
             "margin": result.ranking_margin,
         },
         "reportable": result.reportable,
+        "lookup_mode": "definition" if monolingual else "translation",
+        "practice_eligible": not monolingual,
     }
 
 
@@ -165,11 +188,11 @@ async def add_word(
             learning = await _lang_by_code(db, payload.learning_lang_code)
         if payload.mother_lang_code:
             mother = await _lang_by_code(db, payload.mother_lang_code)
-    if learning.id == mother.id:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Source and target languages must differ",
-        )
+    monolingual = learning.id == mother.id
+    # "You get" is the complete output language. Selecting the same language
+    # twice therefore requests a monolingual definition; there is no separate
+    # definition-language mode to keep in sync.
+    definition_language = mother
 
     try:
         result = await translate_word(
@@ -180,6 +203,17 @@ async def add_word(
             context=payload.context,
             question=payload.question,
             user_id=auth.user.id,
+        )
+        definition = (
+            await present_definitions(
+                db,
+                result=result,
+                learning_lang=learning,
+                definition_language=definition_language,
+                user_id=auth.user.id,
+            )
+            if result.status != "not_found"
+            else None
         )
     except WordAIError as exc:
         raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail=str(exc)) from exc
@@ -195,7 +229,10 @@ async def add_word(
         }
 
     assert result.word is not None and result.lexical is not None and result.natives is not None
-    serialized_result = _serialize_translated_result(result, mother.code)
+    assert definition is not None
+    serialized_result = _serialize_translated_result(
+        result, mother.code, definition, monolingual=monolingual
+    )
 
     language_pair = f"{learning.code.lower()}_{mother.code.lower()}"
     cleaned_context = (payload.context or "").strip() or None
@@ -244,7 +281,7 @@ async def add_word(
     await db.flush()
 
     force_unlocked = False
-    if preference.force_unlock_added_words:
+    if preference.force_unlock_added_words and not monolingual:
         existing_progress = await db.execute(
             select(UserProgress).where(
                 UserProgress.user_id == auth.user.id,
@@ -281,7 +318,7 @@ async def add_word(
         **serialized_result,
         "general_note": result.general_note,
         "suggested_tags": result.suggested_tags or [],
-        "priority_queue_id": added.id,
+        "priority_queue_id": None if monolingual else added.id,
         "lookup_id": private_lookup.id,
         "force_unlocked": force_unlocked,
     }
@@ -329,13 +366,31 @@ async def select_word_sense(
             question=private_lookup.question,
             user_id=auth.user.id,
         )
+        stored_definition_code = str(
+            (private_lookup.result_data or {}).get("definition_language_code") or ""
+        ).upper()
+        definition_language = (
+            mother if stored_definition_code == mother.code.upper() else learning
+        )
+        definition = await present_definitions(
+            db,
+            result=result,
+            learning_lang=learning,
+            definition_language=definition_language,
+            user_id=auth.user.id,
+        )
     except WordAIError as exc:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=str(exc),
         ) from exc
 
-    serialized_result = _serialize_translated_result(result, mother.code)
+    serialized_result = _serialize_translated_result(
+        result,
+        mother.code,
+        definition,
+        monolingual=learning.id == mother.id,
+    )
     private_lookup.selected_sense_id = result.selected_sense_id
     private_lookup.answer = result.question_answer
     private_lookup.result_data = serialized_result
@@ -452,6 +507,19 @@ async def word_history(
     lex_by_word: dict[int, WordLexicalEntry] = {
         l.word_id: l for l in lex_lookup.scalars().all()
     }
+    sense_lookup = await db.execute(
+        select(WordSense)
+        .where(
+            WordSense.word_id.in_(word_ids),
+            WordSense.is_trusted.is_(True),
+        )
+        .order_by(WordSense.is_primary.desc(), WordSense.id.asc())
+    )
+    senses_by_id: dict[int, WordSense] = {}
+    primary_sense_by_word: dict[int, WordSense] = {}
+    for sense in sense_lookup.scalars().all():
+        senses_by_id[sense.id] = sense
+        primary_sense_by_word.setdefault(sense.word_id, sense)
 
     private_lookup_rows = await db.execute(
         select(UserWordLookup)
@@ -474,8 +542,12 @@ async def word_history(
         .order_by(WordNativeTranslation.priority.asc(), WordNativeTranslation.id.asc())
     )
     natives_by_pair: dict[tuple[int, int], list[WordNativeTranslation]] = {}
+    native_texts_by_word: dict[int, set[str]] = {}
     for n in native_lookup.scalars().all():
         natives_by_pair.setdefault((n.word_id, n.native_language_id), []).append(n)
+        native_texts_by_word.setdefault(n.word_id, set()).add(
+            n.translation.strip().casefold()
+        )
 
     tag_lookup = await db.execute(
         select(WordTag.word_id, Tag.slug)
@@ -501,21 +573,93 @@ async def word_history(
             if mother_lang
             else None
         )
-        private_data = private_lookup.result_data if private_lookup else {}
-        lex = lex_by_word.get(word.id)
-        serialized_lexical = private_data.get("lexical") if private_data else None
-        if serialized_lexical is None and lex is not None:
-            serialized_lexical = _serialize_lexical(lex)
-        if serialized_lexical is None:
-            continue
         natives = (
             natives_by_pair.get((word.id, mother_lang.id), []) if mother_lang else []
         )
+        private_data = private_lookup.result_data if private_lookup else {}
+        lex = lex_by_word.get(word.id)
+        selected_sense_id = (
+            private_lookup.selected_sense_id
+            if private_lookup is not None
+            else added.selected_sense_id
+        )
+        trusted_sense = (
+            senses_by_id.get(selected_sense_id)
+            if selected_sense_id is not None
+            else None
+        ) or primary_sense_by_word.get(word.id)
+        serialized_lexical = private_data.get("lexical") if private_data else None
+        lex_is_manual_translation = (
+            lex is not None
+            and lex.source == "manual"
+            and lex.definition.strip().casefold()
+            in native_texts_by_word.get(word.id, set())
+        )
+        if (
+            serialized_lexical is None
+            and lex is not None
+            and not lex_is_manual_translation
+        ):
+            serialized_lexical = _serialize_lexical(lex)
+        if serialized_lexical is None:
+            if trusted_sense is not None:
+                serialized_lexical = {
+                    "id": None,
+                    "word_id": word.id,
+                    "definition": trusted_sense.definition,
+                    "synonyms": trusted_sense.synonyms or [],
+                    "examples": trusted_sense.examples or [],
+                    "extended_content": None,
+                }
+        if serialized_lexical is None:
+            serialized_lexical = {
+                "id": None,
+                "word_id": word.id,
+                "definition": "",
+                "synonyms": [],
+                "examples": [],
+                "extended_content": None,
+            }
         serialized_natives = private_data.get("natives") if private_data else None
         if serialized_natives is None:
             serialized_natives = [
                 _serialize_native(n, mother_code.upper()) for n in natives
             ]
+        display_definition = (
+            private_data.get("display_definition") if private_data else None
+        )
+        definition_language_code = str(
+            (private_data.get("definition_language_code") if private_data else "")
+            or learning_code
+        ).upper()
+        monolingual = _is_monolingual_pair(added.language_pair)
+        if not isinstance(display_definition, dict):
+            legacy_definition = str(
+                serialized_lexical.get("definition") or ""
+            ).strip()
+            # Old manual additions copied the mother-tongue translation into
+            # lexical.definition. Do not relabel that snapshot as a definition
+            # in the word's language.
+            is_legacy_pseudo_definition = any(
+                legacy_definition.casefold()
+                == str(native.get("translation") or "").strip().casefold()
+                for native in serialized_natives
+                if isinstance(native, dict)
+            ) or legacy_definition.casefold() in native_texts_by_word.get(
+                word.id, set()
+            )
+            if is_legacy_pseudo_definition:
+                legacy_definition = (
+                    trusted_sense.definition if trusted_sense is not None else ""
+                )
+                serialized_lexical = {
+                    **serialized_lexical,
+                    "definition": legacy_definition,
+                }
+            display_definition = {
+                "text": legacy_definition,
+                "language_code": definition_language_code,
+            }
         entries.append(
             {
                 "added_id": added.id,
@@ -526,6 +670,19 @@ async def word_history(
                 "mother_tongue_code": mother_code.upper(),
                 "added_at": added.added_at.isoformat() if added.added_at else None,
                 "lexical": serialized_lexical,
+                "definition_language_code": definition_language_code,
+                "display_definition": display_definition,
+                "lookup_mode": (
+                    private_data.get("lookup_mode")
+                    if private_data
+                    else None
+                )
+                or ("definition" if monolingual else "translation"),
+                "practice_eligible": (
+                    bool(private_data.get("practice_eligible"))
+                    if private_data and "practice_eligible" in private_data
+                    else not monolingual
+                ),
                 "natives": serialized_natives,
                 "context": private_lookup.context if private_lookup else None,
                 "question": private_lookup.question if private_lookup else None,
@@ -540,7 +697,10 @@ async def word_history(
 
 
 async def _resolve_language_pair(
-    db: AsyncSession, language_pair: str
+    db: AsyncSession,
+    language_pair: str,
+    *,
+    allow_same: bool = False,
 ) -> tuple[Language, Language]:
     learning_code, _, mother_code = language_pair.lower().partition("_")
     if not learning_code or not mother_code:
@@ -559,7 +719,7 @@ async def _resolve_language_pair(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Unknown language in pair: {language_pair}",
         )
-    if learning.id == mother.id:
+    if learning.id == mother.id and not allow_same:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Learning and mother tongue must differ",
@@ -573,7 +733,9 @@ async def list_user_words(
     auth: AuthContext = Depends(require_auth_context),
     db: AsyncSession = Depends(get_db),
 ):
-    learning, mother = await _resolve_language_pair(db, language_pair)
+    learning, mother = await _resolve_language_pair(
+        db, language_pair, allow_same=True
+    )
     pair_key = f"{learning.code.lower()}_{mother.code.lower()}"
 
     added_rows = await db.execute(
@@ -618,7 +780,34 @@ async def list_user_words(
     for n in native_lookup.scalars().all():
         natives_by_word.setdefault(n.word_id, []).append(n)
 
+    lexical_lookup = await db.execute(
+        select(WordLexicalEntry).where(WordLexicalEntry.word_id.in_(word_ids))
+    )
+    lexical_by_word = {
+        entry.word_id: entry for entry in lexical_lookup.scalars().all()
+    }
+    private_rows = await db.execute(
+        select(UserWordLookup)
+        .where(
+            UserWordLookup.user_id == auth.user.id,
+            UserWordLookup.word_id.in_(word_ids),
+            UserWordLookup.source_language_id == learning.id,
+            UserWordLookup.target_language_id == mother.id,
+        )
+        .order_by(UserWordLookup.id.desc())
+    )
+    definitions_by_word: dict[int, str] = {}
+    for lookup in private_rows.scalars().all():
+        if lookup.word_id in definitions_by_word:
+            continue
+        display = (lookup.result_data or {}).get("display_definition")
+        if isinstance(display, dict):
+            text = str(display.get("text") or "").strip()
+            if text:
+                definitions_by_word[lookup.word_id] = text
+
     added_by_word = {a.word_id: a for a in added_list}
+    monolingual = learning.id == mother.id
 
     entries = []
     for word_id in word_ids:
@@ -628,11 +817,17 @@ async def list_user_words(
         added = added_by_word.get(word_id)
         progress = progress_by_word.get(word_id)
         natives = natives_by_word.get(word_id, [])
+        lexical = lexical_by_word.get(word_id)
         entries.append(
             {
                 "word_id": word.id,
                 "text": word.text,
                 "translation": natives[0].translation if natives else None,
+                "definition": (
+                    definitions_by_word.get(word.id)
+                    or (lexical.definition if lexical is not None else None)
+                ),
+                "lookup_mode": "definition" if monolingual else "translation",
                 "in_progress": progress is not None,
                 "unlocked": bool(progress.unlocked) if progress else False,
                 "probability": float(progress.probability) if progress else None,
@@ -653,7 +848,9 @@ async def delete_user_word(
 ):
     validate_csrf(request, payload.csrf_token)
     pair_key = payload.language_pair.lower()
-    learning, mother = await _resolve_language_pair(db, pair_key)
+    learning, mother = await _resolve_language_pair(
+        db, pair_key, allow_same=True
+    )
 
     await db.execute(
         delete(UserAddedWord).where(
@@ -708,21 +905,6 @@ async def add_word_offline(
     if word is None:
         word = Word(text=learning_text, language_id=learning.id)
         db.add(word)
-        await db.flush()
-
-    lex_lookup = await db.execute(
-        select(WordLexicalEntry).where(WordLexicalEntry.word_id == word.id)
-    )
-    lex = lex_lookup.scalar_one_or_none()
-    if lex is None:
-        lex = WordLexicalEntry(
-            word_id=word.id,
-            definition=native_text,
-            synonyms=[],
-            examples=[],
-            source="manual",
-        )
-        db.add(lex)
         await db.flush()
 
     native_lookup = await db.execute(
@@ -812,6 +994,8 @@ async def priority_queue(
     )
     pending = []
     for added, word in rows.all():
+        if _is_monolingual_pair(added.language_pair):
+            continue
         progress_lookup = await db.execute(
             select(UserProgress.id).where(
                 UserProgress.user_id == auth.user.id,

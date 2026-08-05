@@ -55,7 +55,12 @@ ITEM_TYPE_BY_MODE: dict[TrainingMode, ProgressItemType] = {
     TrainingMode.CONJUGATION: ProgressItemType.CONJUGATION,
 }
 
-FIRST_CORRECT_MULTIPLIER = 0.2
+FIRST_CORRECT_MULTIPLIER = 0.1
+
+
+def _is_monolingual_pair(language_pair: str) -> bool:
+    source, separator, target = language_pair.lower().partition("_")
+    return bool(separator and source and source == target)
 
 
 @dataclass(slots=True)
@@ -189,7 +194,10 @@ async def ensure_initial_translation_unlocks(
 
     # Always drain user-added priority words for word_translation, even if
     # progress rows already exist (so a freshly added word appears next session).
-    if mode == TrainingMode.WORD_TRANSLATION:
+    if (
+        mode == TrainingMode.WORD_TRANSLATION
+        and not _is_monolingual_pair(language_pair)
+    ):
         priority_rows = await db.execute(
             select(UserAddedWord)
             .where(
@@ -298,7 +306,10 @@ async def _resolve_set_item_ids(
     tag_ids = list(ws.filter_tag_ids or [])
     if not tag_ids:
         return set()
-    if mode == TrainingMode.WORD_TRANSLATION:
+    if (
+        mode == TrainingMode.WORD_TRANSLATION
+        and not _is_monolingual_pair(language_pair)
+    ):
         item_id_column = WordTag.word_id
         tag_id_column = WordTag.tag_id
     elif mode == TrainingMode.VERB_TRANSLATION:

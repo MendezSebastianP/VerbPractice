@@ -12,12 +12,19 @@
   export let targetCode = '';
   export let sourceLabel = 'Prompt language';
   export let targetLabel = 'Answer language';
+  export let disabled = false;
+  export let allowSameLanguage = false;
 
   const LANG_SHORTCUT: Record<string, string> = { EN: 'E', ES: 'S', RU: 'R', FR: 'F' };
 
   let sourceOpen = false;
   let targetOpen = false;
   let swapButtonEl: HTMLButtonElement | null = null;
+
+  $: if (disabled) {
+    sourceOpen = false;
+    targetOpen = false;
+  }
 
   function languageByCode(code: string): LanguageEntry | undefined {
     return languages.find((l) => l.code === code.toUpperCase());
@@ -50,6 +57,7 @@
       <button
         class="lang-button"
         type="button"
+        {disabled}
         aria-expanded={sourceOpen}
         on:click={() => { sourceOpen = !sourceOpen; targetOpen = false; }}
       >
@@ -66,7 +74,7 @@
               class="lang-option"
               type="button"
               on:click={() => { sourceCode = lang.code; sourceOpen = false; }}
-              disabled={lang.code === targetCode}
+              disabled={disabled || (!allowSameLanguage && lang.code === targetCode)}
             >
               <span>{lang.name}</span>
               <span class="kbd-chip">{LANG_SHORTCUT[lang.code] ?? ''}</span>
@@ -82,6 +90,7 @@
       bind:this={swapButtonEl}
       class="swap-round-button"
       type="button"
+      {disabled}
       aria-label="Swap direction"
       title="Swap"
       on:click={() => { swap(); popEl(swapButtonEl); }}
@@ -97,6 +106,7 @@
       <button
         class="lang-button"
         type="button"
+        {disabled}
         aria-expanded={targetOpen}
         on:click={() => { targetOpen = !targetOpen; sourceOpen = false; }}
       >
@@ -113,7 +123,7 @@
               class="lang-option"
               type="button"
               on:click={() => { targetCode = lang.code; targetOpen = false; }}
-              disabled={lang.code === sourceCode}
+              disabled={disabled || (!allowSameLanguage && lang.code === sourceCode)}
             >
               <span>{lang.name}</span>
               <span class="kbd-chip">⇧{LANG_SHORTCUT[lang.code] ?? ''}</span>
@@ -162,9 +172,15 @@
     transition: border-color 0.25s, box-shadow 0.25s;
   }
 
-  .lang-button:hover {
+  .lang-button:hover:not(:disabled) {
     border-color: color-mix(in srgb, var(--accent) 55%, transparent);
     box-shadow: 0 4px 14px -6px color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+
+  .lang-button:disabled,
+  .swap-round-button:disabled {
+    opacity: 0.55;
+    cursor: default;
   }
 
   .lang-name {
@@ -244,7 +260,7 @@
     transition: background 0.3s, color 0.3s, transform 0.4s;
   }
 
-  .swap-round-button:hover {
+  .swap-round-button:hover:not(:disabled) {
     background: var(--accent);
     color: white;
     transform: rotate(180deg);

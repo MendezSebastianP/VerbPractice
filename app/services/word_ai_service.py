@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass
 
 from openai import AsyncOpenAI
@@ -38,8 +39,12 @@ from app.services.offline_dictionary_service import (
     select_dictionary_sense,
 )
 
-WORD_AI_MODEL = "gpt-4o"
-WORD_AI_SOURCE = "openai_gpt4o"
+WORD_AI_MODEL = "gpt-5.6-luna"
+# Derived so the provenance tag follows the model instead of drifting from it.
+# "gpt-5.6-luna" -> "openai_gpt56luna"; rows written before the switch keep the
+# older "openai_gpt4o" tag, which is how you tell the two vintages apart.
+# When changing the model, add its rates to MODEL_TOKEN_PRICING_USD in ai_usage.py.
+WORD_AI_SOURCE = f"openai_{WORD_AI_MODEL.replace('-', '').replace('.', '')}"
 
 
 class WordAIError(RuntimeError):
@@ -97,13 +102,87 @@ class TranslatedWord:
     cefr_level: str | None = None
 
 
+@dataclass(slots=True)
+class DefinitionPresentation:
+    text: str
+    language_code: str
+    candidate_definitions: dict[int, str]
+
+
 def _system_prompt(learning_lang: Language, mother_tongue: Language) -> str:
     target = language_display_name(learning_lang.code)
     native = language_display_name(mother_tongue.code)
+    monolingual = (
+        learning_lang.code.upper() == mother_tongue.code.upper()
+    )
     tag_list = tag_prompt_list(WORD_ITEM)
+    role = (
+        f"You are a careful monolingual {target} lexicographer."
+        if monolingual
+        else (
+            f"You are a careful bilingual lexicographer. The user's target language is "
+            f"{target} and their mother tongue is {native}."
+        )
+    )
+    detection_note = (
+        f'The entry must actually be {target}. If it is clearly another language, return '
+        'status="not_found"; do not translate it into the selected language.'
+        if monolingual
+        else (
+            "The user may have typed in their mother tongue intending a translation request "
+            "— report what you detect, do not silently assume target language."
+        )
+    )
+    synonym_gloss = (
+        f"gloss is a short {target} distinction from the headword and is REQUIRED"
+        if monolingual
+        else f"gloss is its short {native} translation and is REQUIRED"
+    )
+    native_translations = (
+        "  - native_translations (array): always return an empty array. This is a "
+        "same-language definition lookup, not a translation request.\n"
+        if monolingual
+        else (
+            f"  - native_translations (array): 1 to 3 entries, each {{translation, note}}. "
+            f"translation is a SINGLE bare {native} lemma. Each one is matched verbatim "
+            "against what the learner types, so it must stand on its own: no slashes, "
+            "semicolons, commas, pipes, parentheses or alternatives inside one field. "
+            f'If two {native} words both fit, emit them as two entries — never "a / b". '
+            "note is an optional short caveat (figurative vs. literal sense, register, "
+            f"regional) and MUST BE WRITTEN IN {native.upper()}. The learner reads the "
+            f"note to tell the senses apart and does not read {target}, so a note in "
+            f"{target} is worthless to them: write it in {native} even though the "
+            f"headword is {target} and you are reasoning in {target}. Quote {target} "
+            "words inside « » when you need to refer to them. "
+            "If there is only one good translation, return one. "
+            "Multiple entries should reflect genuinely distinct senses.\n"
+        )
+    )
+    general_note_rule = (
+        f"  - general_note (str): optional top-level note (gender, irregular plural, "
+        f"etc.) in {target}. Empty if none.\n"
+        if monolingual
+        else (
+            f"  - general_note (str): optional top-level note (gender, irregular plural, "
+            f"false friend with a similar word in the mother tongue, etc.), WRITTEN IN "
+            f"{native.upper()} — never in {target}, for the same reason as note above. "
+            "Empty if none.\n"
+        )
+    )
+    language_rules = (
+        f"LANGUAGE RULES (strict): every field is in {target}.\n"
+        if monolingual
+        else (
+            f"LANGUAGE RULES (strict): definition, synonyms[].text and examples are in "
+            f"{target}. synonyms[].gloss, native_translations[].translation, "
+            f"native_translations[].note, general_note and question_answer are in {native}. "
+            f"Write the {native}-side fields in {native} even when the headword, the "
+            f"context and your own reasoning are in {target}. Never emit a {native}-side "
+            f"field in {target}.\n"
+        )
+    )
     return (
-        f"You are a careful bilingual lexicographer. The user's target language is {target} "
-        f"and their mother tongue is {native}.\n"
+        f"{role}\n"
         "\n"
         "When given a word or short phrase, return ONE strict JSON object describing what you "
         "found. The 'status' field controls the rest of the payload:\n"
@@ -120,31 +199,31 @@ def _system_prompt(learning_lang: Language, mother_tongue: Language) -> str:
         f'  - status (str): one of "exact" | "corrected" | "ambiguous"\n'
         "  - original_input (str): the raw text the user typed. Required for corrected.\n"
         f'  - detected_input_language (str): ISO code in upper case of the language the input '
-        f'appears to be in (e.g. "{learning_lang.code}", "{mother_tongue.code}"). The user may '
-        "have typed in their mother tongue intending a translation request — report what you "
-        "detect, do not silently assume target language.\n"
+        f'appears to be in (e.g. "{learning_lang.code}", "{mother_tongue.code}"). '
+        f"{detection_note}\n"
         f"  - canonical_text (str): the canonical {target} form: lowercase, no surrounding "
         "articles or punctuation, with diacritics restored. If the entry is a verb, this MUST "
         "be its infinitive, even when the user supplied a conjugated form.\n"
+        "    Tie-break: if the surface form belongs to more than one lemma (a form shared by "
+        "two different verbs, a noun plural identical to a verb form, and so on), set "
+        'status="ambiguous", set canonical_text to whichever lemma is more frequent in '
+        "modern usage, and cover the other lemma(s) in native_translations. Apply this "
+        "deterministically — the same input must always produce the same canonical_text.\n"
         "  - part_of_speech (str): exactly one of verb, noun, adjective, adverb, preposition, "
         "conjunction, interjection, pronoun, determiner, numeral, phrase, or other.\n"
         "  - cefr_level (str): estimated learner level for this canonical headword, exactly one "
         'of "A1", "A2", "B1", "B2", "C1", or "C2".\n'
         f"  - definition (str): 1-2 sentences entirely in {target}, learner-friendly.\n"
         "  - synonyms (array): 0 to 5 entries, each {text, gloss}. text is a real "
-        f"{target} synonym a native speaker would actually use; gloss is its short {native} "
-        "translation and is REQUIRED — never leave it empty. **Return ONLY synonyms that "
+        f"{target} synonym a native speaker would actually use; {synonym_gloss} — never leave "
+        "it empty. **Return ONLY synonyms that "
         "genuinely exist.** If there is one good synonym, return one. If there are none, "
         "return an empty array. Do NOT invent or pad.\n"
         f"  - examples (array of str): 1 to 3 natural {target} sentences. Do NOT pad to three. "
         "If the user's context contained grammatical errors, silently use the correct form in "
         "your examples — do not mirror their mistakes.\n"
-        f"  - native_translations (array): 1 to 3 entries, each {{translation, note}}. "
-        f"translation is in {native}; note is an optional short {native} caveat (figurative "
-        "vs. literal sense, register, regional). If there is only one good translation, "
-        "return one. Multiple entries should reflect genuinely distinct senses.\n"
-        f"  - general_note (str): optional top-level note in {native} (gender, irregular "
-        "plural, false friend with a similar word in the mother tongue, etc.). Empty if none.\n"
+        f"{native_translations}"
+        f"{general_note_rule}"
         f"  - suggested_tags (array of str): 0 to 5 tags from this controlled list ONLY: "
         f"[{tag_list}]. Prefer one thematic tag plus one grammatical tag when obvious. "
         "For verbs, include verb and either verb_action or verb_state and, if useful, one "
@@ -158,6 +237,8 @@ def _system_prompt(learning_lang: Language, mother_tongue: Language) -> str:
         '  - status: "not_found"\n'
         f"  - suggestions (array of str): 0 to 3 plausible {target} words the user may have "
         "meant. Empty array if no good guesses. Words only, no explanation.\n"
+        "\n"
+        f"{language_rules}"
         "\n"
         "Always emit valid JSON. No prose outside the JSON object."
     )
@@ -173,10 +254,18 @@ def _native_only_prompt(learning_lang: Language, mother_tongue: Language) -> str
         "\n"
         "Return strict JSON:\n"
         f"  - native_translations (array): 1 to 3 entries, each {{translation, note}}. "
-        f"translation is in {native}; note is a short {native} caveat (figurative vs. literal, "
-        "register, regional). Return only genuinely distinct senses; do not pad.\n"
+        f"translation is a SINGLE bare {native} lemma. Each one is matched verbatim against "
+        "what the learner types, so it must stand on its own: no slashes, semicolons, commas, "
+        f"pipes, parentheses or alternatives inside one field. If two {native} words both fit, "
+        f'emit them as two entries — never "a / b". note is a short caveat (figurative vs. '
+        f"literal, register, regional) and MUST BE WRITTEN IN {native.upper()} — the learner "
+        f"does not read {target}, so write the note in {native} even though the headword is "
+        f"{target}. Return only genuinely distinct senses; do not pad.\n"
         f"  - general_note (str): optional top-level {native} note (gender, false friend, "
         "etc.). Empty if none.\n"
+        "\n"
+        f"LANGUAGE RULES (strict): both translation and note are in {native}, and so is "
+        f"general_note. Write them in {native} even though the headword is in {target}.\n"
         "\n"
         "No prose outside the JSON object."
     )
@@ -264,6 +353,116 @@ async def _call_openai_text(
     return response.choices[0].message.content or ""
 
 
+async def present_definitions(
+    db: AsyncSession,
+    *,
+    result: TranslatedWord,
+    learning_lang: Language,
+    definition_language: Language,
+    user_id: int | None = None,
+) -> DefinitionPresentation:
+    """Build per-lookup definitions without changing the shared lexical cache."""
+
+    if result.word is None or result.lexical is None:
+        raise WordAIError("A definition is not available for this lookup")
+
+    canonical_definition = result.lexical.definition.strip()
+    if not canonical_definition:
+        raise WordAIError("The dictionary entry has no definition")
+
+    candidates = result.sense_candidates or []
+    if definition_language.code.upper() == learning_lang.code.upper():
+        return DefinitionPresentation(
+            text=canonical_definition,
+            language_code=learning_lang.code.upper(),
+            candidate_definitions={
+                candidate.id: candidate.definition for candidate in candidates
+            },
+        )
+
+    if not settings.openai_api_key:
+        raise WordAIError(
+            "OPENAI_API_KEY is not configured; a definition in the translation "
+            "language cannot be generated."
+        )
+
+    source_name = language_display_name(learning_lang.code)
+    output_name = language_display_name(definition_language.code)
+    definitions = {"primary": canonical_definition}
+    definitions.update(
+        {
+            f"sense:{candidate.id}": candidate.definition
+            for candidate in candidates
+        }
+    )
+    system = (
+        f"You are a careful lexicographer. Rewrite every supplied {source_name} "
+        f"dictionary definition entirely in {output_name}. Preserve the exact sense, "
+        "part of speech, register, and learner-friendly level. Write 1-2 concise "
+        "sentences; do not add labels, commentary, or the source text. Return one "
+        "strict JSON object with a 'definitions' object containing exactly the same "
+        "keys as the input."
+    )
+    payload = await _call_openai_json(
+        AsyncOpenAI(api_key=settings.openai_api_key),
+        system,
+        json.dumps(
+            {
+                "word": result.word.text,
+                "source_language": learning_lang.code.upper(),
+                "definition_language": definition_language.code.upper(),
+                "definitions": definitions,
+            },
+            ensure_ascii=False,
+        ),
+        db=db,
+        user_id=user_id,
+        feature="word_definition_language",
+        request_label=(
+            f"{result.word.text} definition "
+            f"{learning_lang.code}->{definition_language.code}"
+        ),
+        extra_data={
+            "word_id": result.word.id,
+            "selected_sense_id": result.selected_sense_id,
+            "learning_language_code": learning_lang.code.upper(),
+            "definition_language": "target",
+            "definition_language_code": definition_language.code.upper(),
+            "definition_count": len(definitions),
+        },
+    )
+    translated_raw = payload.get("definitions")
+    if not isinstance(translated_raw, dict):
+        raise WordAIError("AI definition response is missing definitions")
+
+    translated_primary = str(translated_raw.get("primary") or "").strip()
+    if not translated_primary:
+        raise WordAIError("AI definition response is missing the primary definition")
+
+    translated_candidates: dict[int, str] = {}
+    for candidate in candidates:
+        translated = str(
+            translated_raw.get(f"sense:{candidate.id}") or ""
+        ).strip()
+        if (
+            not translated
+            and candidate.id == result.selected_sense_id
+            and candidate.definition.strip() == canonical_definition
+        ):
+            translated = translated_primary
+        if not translated:
+            raise WordAIError(
+                "AI definition response is missing a meaning option"
+            )
+        translated_candidates[candidate.id] = translated
+
+    return DefinitionPresentation(
+        text=translated_primary,
+        language_code=definition_language.code.upper(),
+        candidate_definitions=translated_candidates,
+    )
+
+
 def _user_message(
     input_text: str, context: str | None, question: str | None = None
 ) -> str:
@@ -278,21 +477,121 @@ def _user_message(
     )
 
 
-def _normalise_native_entries(raw: object) -> list[dict]:
+_ALTERNATIVE_SEPARATORS = re.compile(r"\s*[/;,|]\s*")
+
+# Splitting can turn 3 packed entries into more; keep the stored set bounded.
+_MAX_NATIVE_ENTRIES = 5
+
+# Cited headwords are legitimately in the target language; judge the prose around them.
+_CITATION = re.compile(r"«[^»]*»|\"[^\"]*\"|'[^']*'|“[^”]*”|‹[^›]*›")
+_WORD = re.compile(r"[^\W\d_]+", re.UNICODE)
+_CYRILLIC = re.compile(r"[Ѐ-ӿ]")
+
+# Function words that occur in exactly one of the supported languages. Deliberately
+# excludes forms shared across them (la, en, de, un, que, ...).
+_MARKERS: dict[str, frozenset[str]] = {
+    "FR": frozenset(
+        "le les du des est dans avec pour aussi peut cette être plus qui sur comme "
+        "très mais ses aux cet elle nous vous ils sens une ou dont ainsi soit "
+        "signifie quand emploie employé utilise utilisé autre selon je il ne pas "
+        "sont été avoir faire sa leur tout deux verbe forme nom masculin féminin "
+        "sans quelque chose prendre dire fait même chez alors donc cela lui "
+        "notamment souvent toujours jamais beaucoup langue mot mots courant "
+        "soutenu littéraire familier registre désigne".split()
+    ),
+    "ES": frozenset(
+        "el los las del es con para también tambien puede sentido esta este ser más "
+        "mas sobre cuando muy pero sus se lo una significa español espanol como "
+        "usa suele otro según segun verbo forma masculino femenino hecho decir algo "
+        "alguien siempre nunca mucho lengua palabra frase corriente literario "
+        "familiar registro designa indica refiere tomar hacer aunque entonces así "
+        "asi mismo ambos dos habitual coloquial culto".split()
+    ),
+    "EN": frozenset(
+        "the of is to in and for with as it that this when used means both either "
+        "can also its an but verb noun form word meaning sense usually often "
+        "only more such from which where while they has are was be not one two use "
+        "uses refers literary".split()
+    ),
+    "RU": frozenset(),  # detected by script instead
+}
+# Minimum marker hits before we trust the verdict enough to discard text.
+_MARKER_FLOOR = 2
+
+
+def _note_language_ok(text: str | None, expected: str) -> bool:
+    """Does `text` read as `expected`? Fails open when there is no clear signal.
+
+    Models sometimes write the mother-tongue fields in the target language
+    ("Sens principal : prendre quelque chose sans permission." for an ES speaker).
+    Those notes are shown to the learner and stored, so drop them rather than keep
+    a note the learner cannot read.
+    """
+    if not text:
+        return True
+    expected = expected.upper()
+    prose = _CITATION.sub(" ", text)
+    letters = _WORD.findall(prose)
+    if not letters:
+        return True
+    cyrillic = len(_CYRILLIC.findall(prose))
+    latin = sum(len(w) for w in letters) - cyrillic
+    if expected == "RU":
+        # Russian prose that carries essentially no Cyrillic is not Russian.
+        return cyrillic >= latin
+    if cyrillic > latin:
+        return False
+    if expected not in _MARKERS:
+        return True
+    tokens = [w.lower() for w in letters]
+    scores = {
+        lang: sum(1 for t in tokens if t in markers)
+        for lang, markers in _MARKERS.items()
+        if markers
+    }
+    best = max(scores, key=lambda lang: scores[lang])
+    if scores[best] < _MARKER_FLOOR:
+        return True  # too little signal to justify discarding
+    return scores[best] <= scores.get(expected, 0)
+
+
+def _split_translation_alternatives(text: str) -> list[str]:
+    """Split a translation field that packs several lemmas into one string.
+
+    Models occasionally answer "dejar / abandonar" or "estar de pie; estar parado".
+    Answers are graded by exact string match (see grade_translation), so a packed
+    field makes the obvious one-word answer wrong. Split it back apart.
+    """
+    parts = (part.strip(" \t-–—") for part in _ALTERNATIVE_SEPARATORS.split(text))
+    return [part for part in parts if part]
+
+
+def _normalise_native_entries(raw: object, native_code: str | None = None) -> list[dict]:
     if not isinstance(raw, list):
         return []
     cleaned: list[dict] = []
+    seen: set[str] = set()
+
+    def add(translation: str, note: str | None) -> None:
+        if native_code and not _note_language_ok(note, native_code):
+            note = None
+        for alternative in _split_translation_alternatives(translation):
+            key = alternative.casefold()
+            if key in seen or len(cleaned) >= _MAX_NATIVE_ENTRIES:
+                continue
+            seen.add(key)
+            cleaned.append({"translation": alternative, "note": note})
+
     for item in raw[:3]:
         if isinstance(item, dict):
             translation = str(item.get("translation") or "").strip()
             if not translation:
                 continue
-            note = str(item.get("note") or "").strip() or None
-            cleaned.append({"translation": translation, "note": note})
+            add(translation, str(item.get("note") or "").strip() or None)
         elif isinstance(item, str):
             text = item.strip()
             if text:
-                cleaned.append({"translation": text, "note": None})
+                add(text, None)
     return cleaned
 
 
@@ -559,6 +858,23 @@ async def _sync_primary_sense(
     return sense
 
 
+async def _is_legacy_manual_pseudo_definition(
+    db: AsyncSession, lexical: WordLexicalEntry
+) -> bool:
+    if lexical.source != "manual":
+        return False
+    rows = await db.execute(
+        select(WordNativeTranslation.translation).where(
+            WordNativeTranslation.word_id == lexical.word_id
+        )
+    )
+    definition = lexical.definition.strip().casefold()
+    return bool(definition) and any(
+        definition == str(translation or "").strip().casefold()
+        for (translation,) in rows.all()
+    )
+
+
 async def translate_word(
     db: AsyncSession,
     *,
@@ -576,9 +892,13 @@ async def translate_word(
     cleaned_context = (context or "").strip() or None
     cleaned_question = (question or "").strip() or None
     allow_global_write = cleaned_context is None and cleaned_question is None
+    monolingual = (
+        learning_lang.code.upper() == mother_tongue.code.upper()
+    )
 
     word_row = None
     lexical = None
+    repairable_manual_lexical: WordLexicalEntry | None = None
     if not force:
         word_lookup = await db.execute(
             select(Word).where(
@@ -592,6 +912,14 @@ async def translate_word(
                 select(WordLexicalEntry).where(WordLexicalEntry.word_id == word_row.id)
             )
             lexical = lex_lookup.scalar_one_or_none()
+            if lexical is not None and await _is_legacy_manual_pseudo_definition(
+                db, lexical
+            ):
+                # Older manual additions stored the mother-tongue translation
+                # as though it were a source-language definition. Never serve
+                # that pseudo-definition; refresh it on the next plain AI lookup.
+                repairable_manual_lexical = lexical
+                lexical = None
 
     # Trusted offline senses are always checked before the legacy/global AI
     # cache. Only context participates in ranking; user_question never does.
@@ -601,6 +929,7 @@ async def translate_word(
             word=word_row,
             target_language_id=mother_tongue.id,
             context=cleaned_context,
+            require_translation=not monolingual,
         )
         if ranked is not None:
             question_answer = None
@@ -636,16 +965,17 @@ async def translate_word(
                 await _attach_word_tags(
                     db, word_id=word_row.id, tag_slugs=tag_slugs
                 )
-                await _sync_global_learning_inventory(
-                    db,
-                    word=word_row,
-                    target_language_id=mother_tongue.id,
-                    natives=translated.natives or [],
-                    part_of_speech=translated.part_of_speech,
-                    cefr_level=translated.cefr_level,
-                    tag_slugs=tag_slugs,
-                    source=ranked.sense.source,
-                )
+                if not monolingual:
+                    await _sync_global_learning_inventory(
+                        db,
+                        word=word_row,
+                        target_language_id=mother_tongue.id,
+                        natives=translated.natives or [],
+                        part_of_speech=translated.part_of_speech,
+                        cefr_level=translated.cefr_level,
+                        tag_slugs=tag_slugs,
+                        source=ranked.sense.source,
+                    )
             return translated
 
         # Compatibility path for databases created without running the
@@ -654,7 +984,7 @@ async def translate_word(
             existing_natives = await _load_natives(
                 db, word_row.id, mother_tongue.id
             )
-            if existing_natives:
+            if monolingual or existing_natives:
                 question_answer = None
                 if cleaned_question:
                     if not settings.openai_api_key:
@@ -686,16 +1016,17 @@ async def translate_word(
                     await _attach_word_tags(
                         db, word_id=word_row.id, tag_slugs=classified_tags
                     )
-                    await _sync_global_learning_inventory(
-                        db,
-                        word=word_row,
-                        target_language_id=mother_tongue.id,
-                        natives=existing_natives,
-                        part_of_speech=part_of_speech,
-                        cefr_level=cefr_level,
-                        tag_slugs=classified_tags,
-                        source=lexical.source,
-                    )
+                    if not monolingual:
+                        await _sync_global_learning_inventory(
+                            db,
+                            word=word_row,
+                            target_language_id=mother_tongue.id,
+                            natives=existing_natives,
+                            part_of_speech=part_of_speech,
+                            cefr_level=cefr_level,
+                            tag_slugs=classified_tags,
+                            source=lexical.source,
+                        )
                 return TranslatedWord(
                     status="exact",
                     word=word_row,
@@ -753,7 +1084,11 @@ async def translate_word(
         synonyms = payload.get("synonyms") or []
         examples = payload.get("examples") or []
         general_note = str(payload.get("general_note") or "").strip() or None
-        natives_raw = _normalise_native_entries(payload.get("native_translations"))
+        if not _note_language_ok(general_note, mother_tongue.code):
+            general_note = None
+        natives_raw = _normalise_native_entries(
+            payload.get("native_translations"), mother_tongue.code
+        )
         detected_lang = str(payload.get("detected_input_language") or "").strip().upper() or None
         original_input = str(payload.get("original_input") or "").strip() or None
         suggested_tags = _normalise_tags(payload.get("suggested_tags"))
@@ -765,8 +1100,13 @@ async def translate_word(
             else None
         )
 
-        if not definition or not natives_raw:
-            raise WordAIError("AI response missing required fields (definition, native_translations)")
+        if not definition or (not monolingual and not natives_raw):
+            required = (
+                "definition"
+                if monolingual
+                else "definition, native_translations"
+            )
+            raise WordAIError(f"AI response missing required fields ({required})")
 
         # Canonical text is authoritative. A cached conjugated/spelling variant
         # must never receive the canonical headword's definition or verb row.
@@ -784,6 +1124,11 @@ async def translate_word(
                     select(WordLexicalEntry).where(WordLexicalEntry.word_id == word_row.id)
                 )
                 lexical = lex_lookup.scalar_one_or_none()
+                if lexical is not None and await _is_legacy_manual_pseudo_definition(
+                    db, lexical
+                ):
+                    repairable_manual_lexical = lexical
+                    lexical = None
             else:
                 word_row = Word(text=canonical, language_id=learning_lang.id)
                 db.add(word_row)
@@ -807,16 +1152,20 @@ async def translate_word(
                     synonyms=synonyms if isinstance(synonyms, list) else [],
                     examples=examples if isinstance(examples, list) else [],
                 ),
-                natives=[
-                    NativeContent(
-                        id=None,
-                        word_id=word_row.id,
-                        native_language_id=mother_tongue.id,
-                        translation=entry["translation"],
-                        note=entry.get("note"),
-                    )
-                    for entry in natives_raw
-                ],
+                natives=(
+                    []
+                    if monolingual
+                    else [
+                        NativeContent(
+                            id=None,
+                            word_id=word_row.id,
+                            native_language_id=mother_tongue.id,
+                            translation=entry["translation"],
+                            note=entry.get("note"),
+                        )
+                        for entry in natives_raw
+                    ]
+                ),
                 general_note=general_note,
                 suggested_tags=suggested_tags,
                 detected_input_language=detected_lang,
@@ -836,14 +1185,24 @@ async def translate_word(
         )
         fresh_lexical = False
         if lexical is None:
-            lexical = WordLexicalEntry(
-                word_id=word_row.id,
-                definition=definition,
-                synonyms=synonyms if isinstance(synonyms, list) else [],
-                examples=examples if isinstance(examples, list) else [],
-                source=WORD_AI_SOURCE,
-            )
-            db.add(lexical)
+            if (
+                repairable_manual_lexical is not None
+                and repairable_manual_lexical.word_id == word_row.id
+            ):
+                lexical = repairable_manual_lexical
+                lexical.definition = definition
+                lexical.synonyms = synonyms if isinstance(synonyms, list) else []
+                lexical.examples = examples if isinstance(examples, list) else []
+                lexical.source = WORD_AI_SOURCE
+            else:
+                lexical = WordLexicalEntry(
+                    word_id=word_row.id,
+                    definition=definition,
+                    synonyms=synonyms if isinstance(synonyms, list) else [],
+                    examples=examples if isinstance(examples, list) else [],
+                    source=WORD_AI_SOURCE,
+                )
+                db.add(lexical)
             fresh_lexical = True
         else:
             lexical.definition = definition
@@ -851,8 +1210,13 @@ async def translate_word(
             lexical.examples = examples if isinstance(examples, list) else []
             lexical.source = WORD_AI_SOURCE
 
+        # A same-language lookup stores lexical knowledge only. Identity
+        # translations would leak into the translation trainer as copy drills.
+        if monolingual:
+            natives = []
+            fresh_natives = False
         # Replace native translations for this (word, mother_tongue) when fresh/forced.
-        if force or not await _has_natives(db, word_row.id, mother_tongue.id):
+        elif force or not await _has_natives(db, word_row.id, mother_tongue.id):
             if force:
                 await db.execute(
                     delete(WordNativeTranslation).where(
@@ -880,16 +1244,17 @@ async def translate_word(
             natives=natives,
             part_of_speech=part_of_speech,
         )
-        await _sync_global_learning_inventory(
-            db,
-            word=word_row,
-            target_language_id=mother_tongue.id,
-            natives=natives,
-            part_of_speech=part_of_speech,
-            cefr_level=cefr_level,
-            tag_slugs=suggested_tags,
-            source=WORD_AI_SOURCE,
-        )
+        if not monolingual:
+            await _sync_global_learning_inventory(
+                db,
+                word=word_row,
+                target_language_id=mother_tongue.id,
+                natives=natives,
+                part_of_speech=part_of_speech,
+                cefr_level=cefr_level,
+                tag_slugs=suggested_tags,
+                source=WORD_AI_SOURCE,
+            )
         return TranslatedWord(
             status=status,
             word=word_row,
@@ -908,6 +1273,11 @@ async def translate_word(
             part_of_speech=part_of_speech,
             cefr_level=word_row.cefr_level,
         )
+
+    # Monolingual cache hits return above, and contextual/forced lookups take
+    # the full-definition branch. They must never reach native-only generation.
+    if monolingual:
+        raise WordAIError("Unable to resolve the definition for this lookup")
 
     # A lexical entry exists but this target language is missing. Generate the
     # translation, storing it globally only for a plain lookup.
@@ -930,8 +1300,12 @@ async def translate_word(
             "shared_cache_write": allow_global_write,
         },
     )
-    natives_raw = _normalise_native_entries(native_payload.get("native_translations"))
+    natives_raw = _normalise_native_entries(
+        native_payload.get("native_translations"), mother_tongue.code
+    )
     general_note = str(native_payload.get("general_note") or "").strip() or None
+    if not _note_language_ok(general_note, mother_tongue.code):
+        general_note = None
     if not natives_raw:
         raise WordAIError("AI native translations missing")
     question_answer = None
@@ -1038,6 +1412,9 @@ async def translate_selected_sense(
         word=word,
         target_language_id=mother_tongue.id,
         sense_id=sense_id,
+        require_translation=(
+            learning_lang.code.upper() != mother_tongue.code.upper()
+        ),
     )
     if ranked is None:
         raise WordAIError(

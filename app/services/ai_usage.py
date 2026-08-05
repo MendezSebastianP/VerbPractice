@@ -9,10 +9,13 @@ from app.db.models import AIUsageLog, User
 
 
 # Prices are stored with each row so historical reports stay stable if rates change.
-# gpt-4o and gpt-4o-mini rates match the OpenAI API pricing page for text tokens.
+# Rates match the OpenAI API pricing page for text tokens. gpt-5.6-luna uses the
+# short-context tier; these are list rates, so cache hits make the real bill lower.
+# Unknown models fall back to (0.0, 0.0), so add a model here when you switch to it.
 MODEL_TOKEN_PRICING_USD: dict[str, tuple[float, float]] = {
     "gpt-4o": (2.50, 10.00),
     "gpt-4o-mini": (0.15, 0.60),
+    "gpt-5.6-luna": (0.20, 1.20),
 }
 TRANSLATION_FEATURES = {"word_translate", "word_native_translate"}
 

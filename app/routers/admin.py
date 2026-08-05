@@ -386,6 +386,9 @@ async def user_inspect(
     ).all()
     priority_view = []
     for added, word in queue_rows:
+        source_code, separator, target_code = added.language_pair.partition("_")
+        if separator and source_code == target_code:
+            continue
         already = await db.execute(
             select(UserProgress.id).where(
                 UserProgress.user_id == user_id,

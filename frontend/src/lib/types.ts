@@ -628,6 +628,10 @@ export interface NativeTranslation {
 }
 
 export type AddWordStatus = 'exact' | 'corrected' | 'ambiguous' | 'not_found';
+export interface DisplayDefinition {
+  text: string;
+  language_code: string;
+}
 
 export interface AddedWordResult {
   status: AddWordStatus;
@@ -638,6 +642,10 @@ export interface AddedWordResult {
   learning_language_code: string;
   mother_tongue_code: string;
   lexical: LexicalEntry;
+  definition_language_code: string;
+  display_definition: DisplayDefinition;
+  lookup_mode: 'definition' | 'translation';
+  practice_eligible: boolean;
   natives: NativeTranslation[];
   general_note: string | null;
   question_answer: string | null;
@@ -665,6 +673,8 @@ export interface AddedWordResult {
 export type SenseSelectionResult = Pick<
   AddedWordResult,
   | 'lexical'
+  | 'definition_language_code'
+  | 'display_definition'
   | 'natives'
   | 'question_answer'
   | 'part_of_speech'
@@ -708,6 +718,8 @@ export interface UserWordEntry {
   word_id: number;
   text: string;
   translation: string | null;
+  definition: string | null;
+  lookup_mode: 'definition' | 'translation';
   in_progress: boolean;
   unlocked: boolean;
   probability: number | null;
@@ -723,6 +735,10 @@ export interface WordHistoryEntry {
   mother_tongue_code: string;
   added_at: string | null;
   lexical: LexicalEntry;
+  definition_language_code: string;
+  display_definition: DisplayDefinition;
+  lookup_mode: 'definition' | 'translation';
+  practice_eligible: boolean;
   natives: NativeTranslation[];
   context: string | null;
   question: string | null;

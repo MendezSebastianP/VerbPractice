@@ -235,8 +235,8 @@ async def test_word_first_correct_gets_fast_mastery_bonus(seeded_training_contex
     ).scalar_one()
 
     assert result["finished"] is True
-    assert progress.probability == pytest.approx(200.0)
-    assert item.multiplier_applied == pytest.approx(0.2)
+    assert progress.probability == pytest.approx(100.0)
+    assert item.multiplier_applied == pytest.approx(0.1)
     assert item.meta["score_applied"] is True
     assert item.meta["first_correct_bonus"] is True
 

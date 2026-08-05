@@ -58,6 +58,7 @@
   let quickShotComposing = false;
   let autoAdvanceTimer: ReturnType<typeof setTimeout> | null = null;
   let autoAdvancing = false;
+  let emptyEnterGuardUntil = 0;
   let quickShotGuardTimer: ReturnType<typeof setTimeout> | null = null;
   let quickShotAcceptedTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -271,6 +272,7 @@
   // A flawless tense shows its review for a beat and moves on by itself; a tense
   // with any miss stays put so the user can read the corrections before Enter.
   const AUTO_ADVANCE_MS = 1000;
+  const EMPTY_ENTER_GUARD_MS = 1000;
 
   function clearAutoAdvance(): void {
     if (autoAdvanceTimer) {
@@ -300,6 +302,10 @@
     quickShotExplanationOpen = false;
     quickShotAdvanceInFlight = false;
     quickShotComposing = false;
+  }
+
+  function armEmptyEnterGuard(): void {
+    emptyEnterGuardUntil = Date.now() + EMPTY_ENTER_GUARD_MS;
   }
 
   function syncFullscreen(): void {
@@ -409,6 +415,7 @@
       syncControlsFromState(state, true);
       applySavedSetup(settingsResult?.trainer_setups?.conjugation);
       answers = {};
+      emptyEnterGuardUntil = 0;
       resetQuestionProgress(state);
       if (state.feedback && state.result) {
         notify(state.feedback, state.result.accuracy === 100 ? 'success' : 'info');
@@ -702,6 +709,7 @@
       showSetupAfterFinish = false;
       syncControlsFromState(state);
       answers = {};
+      emptyEnterGuardUntil = 0;
       resetQuestionProgress(state);
       void api.patchSettings({
         csrf_token: csrfToken,
@@ -754,7 +762,7 @@
     void loadStudyPool();
   }
 
-  async function submit(): Promise<void> {
+  async function submit(protectNextEmptyAnswer = false): Promise<void> {
     if (!state || state.setup) {
       return;
     }
@@ -766,6 +774,11 @@
       showSetupAfterFinish = false;
       answers = {};
       resetQuestionProgress(state);
+      if (protectNextEmptyAnswer && state?.session && state?.question) {
+        armEmptyEnterGuard();
+      } else {
+        emptyEnterGuardUntil = 0;
+      }
       if (state.feedback) {
         notify(state.feedback, state.result?.accuracy === 100 ? 'success' : 'info');
       }
@@ -842,9 +855,15 @@
     if (!tenseReview || !state?.question || loading) {
       return;
     }
+    const protectNextEmptyAnswer = tenseReview.accuracy === 100;
     // Enter during the auto-advance window should skip the wait, not double-advance.
     clearAutoAdvance();
     if (activeTenseIndex < state.question.selected_tenses.length - 1) {
+      if (protectNextEmptyAnswer) {
+        armEmptyEnterGuard();
+      } else {
+        emptyEnterGuardUntil = 0;
+      }
       activeTenseIndex += 1;
       activeCellKey = '';
       quickShotExplanationOpen = false;
@@ -852,7 +871,7 @@
       await focusPrimaryControl();
       return;
     }
-    await submit();
+    await submit(protectNextEmptyAnswer);
   }
 
   function handleCellKeydown(event: KeyboardEvent): void {
@@ -874,6 +893,12 @@
     event.preventDefault();
     event.stopPropagation();
     if (quickShotGuarding || quickShotAdvanceInFlight) {
+      return;
+    }
+    // A flawless tense advances after one second. If the learner presses Enter
+    // from muscle memory just after that transition, do not submit or skip the
+    // new tense's still-empty first field.
+    if (!current.value.trim() && Date.now() < emptyEnterGuardUntil) {
       return;
     }
     quickShotExplanationOpen = false;
@@ -930,6 +955,7 @@
       releaseCelebrations();
       finishSessionWarning = false;
       answers = {};
+      emptyEnterGuardUntil = 0;
       resetQuestionProgress(state);
       syncControlsFromState(state);
       if (state.feedback) {
@@ -1524,7 +1550,7 @@
 
             <div class="trainer-actions g1-actions">
               {#if tenseReview}
-                <button bind:this={nextTenseButton} class="primary-button g1-shortcut-action" class:auto-adv-pending={autoAdvancing} type="button" on:click={continueAfterTense} disabled={loading}>
+                <button bind:this={nextTenseButton} class="primary-button g1-shortcut-action" class:auto-adv-pending={autoAdvancing} type="button" on:click={() => void continueAfterTense()} disabled={loading}>
                   {activeTenseIndex < state.question.selected_tenses.length - 1 ? `Next: ${state.question.selected_tenses[activeTenseIndex + 1]}` : 'Finish verb'} <span class="kbd-chip">Enter</span>
                 </button>
               {:else}

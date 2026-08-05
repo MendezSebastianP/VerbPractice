@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount, onDestroy, tick } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { api, ApiError } from '../api';
   import DirectionPicker from '../components/DirectionPicker.svelte';
@@ -25,6 +25,7 @@
   let translateRelayRef: PlaySaffronRelay | null = null;
   let translateClearRef: PlayClear | null = null;
   let translateGridRef: PlayGrid | null = null;
+  let wordInput: HTMLInputElement | null = null;
 
   let loading = true;
   let error = '';
@@ -34,9 +35,10 @@
   let contextHint = '';
   let questionHint = '';
   let adding = false;
+  let entryBusy = false;
 
-  // Source → target language pair (any combination). Source = the language you
-  // type the word in; target = the language you want the translation in.
+  // Source → output language pair (any combination). Equal codes request a
+  // monolingual definition; different codes also produce a translation.
   let sourceCode = '';
   let targetCode = '';
   let directionRef: DirectionPicker | null = null;
@@ -139,15 +141,19 @@
     void loadManage();
   }
 
+  $: sameLanguageLookup = Boolean(sourceCode && sourceCode === targetCode);
   $: exampleLine =
     sourceCode && targetCode && EXAMPLE_WORD[sourceCode] && EXAMPLE_WORD[targetCode]
-      ? `Type “${EXAMPLE_WORD[sourceCode]}” and you’ll get “${EXAMPLE_WORD[targetCode]}”.`
+      ? sameLanguageLookup
+        ? `Type “${EXAMPLE_WORD[sourceCode]}” and get its definition in ${languageName(targetCode)}.`
+        : `Type “${EXAMPLE_WORD[sourceCode]}” and get “${EXAMPLE_WORD[targetCode]}” with a ${languageName(targetCode)} definition.`
       : '';
   $: detectedMismatch =
     !!result &&
     !!result.detected_input_language &&
     result.detected_input_language.toUpperCase() !== result.learning_language_code.toUpperCase() &&
     result.detected_input_language.toUpperCase() !== result.mother_tongue_code.toUpperCase();
+  $: entryBusy = adding || photoSubmitting || expanding || selectingSenseId !== null;
 
   function isFoundResult(payload: AddWordResponse): payload is AddedWordResult {
     return payload.status !== 'not_found';
@@ -245,7 +251,7 @@
   // Route Enter/submit through the themed control so its fire visuals play;
   // the control dispatches `fire` back into addWord().
   function fireTranslate(): void {
-    if (adding || !inputText.trim()) {
+    if (entryTransitionBusy() || !inputText.trim()) {
       return;
     }
     if (theme === 'arcade') {
@@ -259,15 +265,11 @@
 
   async function addWord(textOverride?: string): Promise<void> {
     const text = (textOverride ?? inputText).trim();
-    if (!text) {
+    if (!text || entryTransitionBusy()) {
       return;
     }
     if (!sourceCode || !targetCode) {
       notify('Pick both languages.', 'error');
-      return;
-    }
-    if (sourceCode === targetCode) {
-      notify('Source and target languages must differ.', 'error');
       return;
     }
     adding = true;
@@ -314,9 +316,13 @@
     if (!result) {
       return;
     }
+    const activeResult = result;
     expanding = true;
     try {
-      const { extended_content } = await api.expandWord(result.word_id, csrfToken);
+      const { extended_content } = await api.expandWord(activeResult.word_id, csrfToken);
+      if (result?.lookup_id !== activeResult.lookup_id) {
+        return;
+      }
       result = { ...result, lexical: { ...result.lexical, extended_content } };
       notify('Added more info.', 'success');
     } catch (err) {
@@ -330,9 +336,13 @@
     if (!result || result.selected_sense_id === senseId || selectingSenseId !== null) {
       return;
     }
+    const activeResult = result;
     selectingSenseId = senseId;
     try {
-      const update = await api.selectWordSense(result.lookup_id, senseId, csrfToken);
+      const update = await api.selectWordSense(activeResult.lookup_id, senseId, csrfToken);
+      if (result?.lookup_id !== activeResult.lookup_id) {
+        return;
+      }
       result = { ...result, ...update };
       const hist = await api.wordHistory(20);
       history = hist.entries;
@@ -371,6 +381,29 @@
     inputText = '';
     contextHint = '';
     questionHint = '';
+  }
+
+  function entryTransitionBusy(): boolean {
+    return entryBusy;
+  }
+
+  async function startWordSearch(): Promise<void> {
+    if (entryTransitionBusy()) {
+      return;
+    }
+    resetForAnother();
+    resetPhoto();
+    photoCards = [];
+    nextCardId = 1;
+    await tick();
+    wordInput?.focus();
+  }
+
+  function startPhotoCapture(): void {
+    if (entryTransitionBusy()) {
+      return;
+    }
+    cameraInput?.click();
   }
 
   function reportResult(): void {
@@ -483,7 +516,7 @@
   }
 
   function handleKeydown(event: KeyboardEvent): void {
-    if (loading || adding) {
+    if (loading || entryTransitionBusy()) {
       return;
     }
 
@@ -506,15 +539,14 @@
       return;
     }
 
-    // E/S/R/F set the source language; add Shift for the target (auto-swap on clash).
+    // E/S/R/F set the source language; add Shift for the output language.
+    // Add Word intentionally permits the same language on both sides.
     const code = LANG_KEY[event.key.toLowerCase()];
     if (code) {
       event.preventDefault();
       if (event.shiftKey) {
-        if (code === sourceCode) sourceCode = targetCode;
         targetCode = code;
       } else {
-        if (code === targetCode) targetCode = sourceCode;
         sourceCode = code;
       }
     }
@@ -530,6 +562,18 @@
       notify('Pick the text language first.', 'error');
       return;
     }
+    const replacingPhoto = photoPhase !== 'idle';
+    result = null;
+    notFound = null;
+    reportTarget = null;
+    reportReason = '';
+    inputText = '';
+    if (replacingPhoto) {
+      contextHint = '';
+      questionHint = '';
+    }
+    photoCards = [];
+    nextCardId = 1;
     pickedFile = file;
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     if (croppedUrl) URL.revokeObjectURL(croppedUrl);
@@ -730,6 +774,34 @@
     return group.map((index) => tokens[index]?.word ?? '').filter(Boolean).join(' ');
   }
 
+  function photoContextFor(group: number[], userContext: string): string {
+    const start = Math.max(0, group[0] - CONTEXT_WINDOW_WORDS);
+    const end = Math.min(tokens.length - 1, group[group.length - 1] + CONTEXT_WINDOW_WORDS);
+    const nearbyText = tokens
+      .slice(start, end + 1)
+      .map((token) => token.raw)
+      .join(' ')
+      .trim();
+    const personalContext = userContext.trim();
+
+    if (!personalContext) {
+      return nearbyText.slice(0, CONTEXT_MAX_CHARS);
+    }
+    if (!nearbyText) {
+      return personalContext.slice(0, CONTEXT_MAX_CHARS);
+    }
+
+    // Keep the learner's note intact and use the remaining budget for the
+    // nearby OCR text. The API accepts one context field capped at 512 chars.
+    const separator = '\nYour context: ';
+    const personalSlice = personalContext.slice(0, CONTEXT_MAX_CHARS);
+    const nearbyBudget = CONTEXT_MAX_CHARS - separator.length - personalSlice.length;
+    if (nearbyBudget <= 0) {
+      return personalSlice;
+    }
+    return `${nearbyText.slice(0, nearbyBudget)}${separator}${personalSlice}`;
+  }
+
   $: selectedGroups = groupSelection(selectedTokens);
   $: selectionPreviews = selectedGroups.map((indices): SelectionPreview => {
     const key = selectionKey(indices);
@@ -754,32 +826,28 @@
       notify('Each selected word needs text.', 'error');
       return;
     }
-    if (!sourceCode || !targetCode || sourceCode === targetCode) {
-      notify('Text and translation languages must differ.', 'error');
+    if (!sourceCode || !targetCode) {
+      notify('Pick both languages.', 'error');
       return;
     }
 
-    // Only the words around the selection ride along as context — up to
-    // CONTEXT_WINDOW_WORDS on each side — so the AI disambiguates from the
-    // nearby text without receiving the whole capture.
+    const batchSourceCode = sourceCode;
+    const batchTargetCode = targetCode;
+    const batchQuestion = questionHint.trim();
+    const userPhotoContext = contextHint.trim();
+    // Only the words around the selection ride along as automatic context.
+    // A learner-written note is appended within the same API character budget.
     const lookups = selectionPreviews.map((preview) => {
       const group = preview.indices;
-      const start = Math.max(0, group[0] - CONTEXT_WINDOW_WORDS);
-      const end = Math.min(tokens.length - 1, group[group.length - 1] + CONTEXT_WINDOW_WORDS);
       return {
-        // The editable preview is the exact translation input. Surrounding OCR
-        // text is included separately and silently as disambiguating context.
         word: preview.value.trim(),
-        context: tokens
-          .slice(start, end + 1)
-          .map((t) => t.raw)
-          .join(' ')
-          .slice(0, CONTEXT_MAX_CHARS),
+        context: photoContextFor(group, userPhotoContext),
       };
     }).filter((l) => l.word.length > 0);
     photoSubmitting = true;
     selectedTokens = new Set();
     selectionDrafts = {};
+    let addedThisBatch = 0;
 
     for (const { word, context } of lookups) {
       const id = nextCardId++;
@@ -792,10 +860,10 @@
         const response = await api.addWord({
           input_text: word,
           context,
-          question: questionHint.trim() || undefined,
+          question: batchQuestion || undefined,
           context_source: 'photo',
-          learning_lang_code: sourceCode,
-          mother_lang_code: targetCode,
+          learning_lang_code: batchSourceCode,
+          mother_lang_code: batchTargetCode,
           csrf_token: csrfToken,
         });
         if (!isFoundResult(response)) {
@@ -807,6 +875,7 @@
           });
         } else {
           patchCard(id, { state: 'done', result: response });
+          addedThisBatch += 1;
         }
       } catch (err) {
         patchCard(id, {
@@ -817,9 +886,8 @@
     }
 
     photoSubmitting = false;
-    const added = photoCards.filter((c) => c.state === 'done').length;
-    if (added > 0) {
-      notify(`${added} ${added === 1 ? 'entry' : 'entries'} defined and added to your pool.`, 'success');
+    if (addedThisBatch > 0) {
+      notify(`${addedThisBatch} ${addedThisBatch === 1 ? 'entry' : 'entries'} defined and added to your pool.`, 'success');
       questionHint = '';
       try {
         const hist = await api.wordHistory(20);
@@ -914,9 +982,8 @@
             words available for practice right away.
           </p>
           <p>
-            You can translate <strong>any combination</strong> of your languages. Use the <strong>⇄</strong>
-            button to flip the direction. You may type in either language; if the AI detects you typed in the
-            target language it offers to switch.
+            You can use <strong>any combination</strong> of your languages, including the same one twice for
+            a definition-only lookup. Use the <strong>⇄</strong> button to flip a bilingual direction.
           </p>
           <div class="keyboard-shortcut-help">
             <p>Keyboard shortcuts:</p>
@@ -929,6 +996,11 @@
           <p>
             <strong>Optional context</strong> sharpens ambiguous words. Use the drawers below to review history,
             manage saved words, or add a pair manually without the AI.
+          </p>
+          <p>
+            <strong>You get</strong> also controls the definition language. Choose the same language for
+            <strong>You type</strong> and <strong>You get</strong> for a monolingual definition—an immersion
+            exercise recommended for advanced learners.
           </p>
           <p>
             <strong>Take a photo</strong> reads printed text on your own server (nothing leaves it), then places
@@ -948,6 +1020,8 @@
             {languages}
             sourceLabel="You type"
             targetLabel="You get"
+            disabled={entryBusy}
+            allowSameLanguage
           />
           {#if exampleLine}
             <p class="example-line">{exampleLine}</p>
@@ -958,6 +1032,7 @@
           <div class="question-stage" style="margin-top: 1.25rem;">
             <p class="eyebrow">Word or compound word</p>
             <input
+              bind:this={wordInput}
               class="answer-input"
               bind:value={inputText}
               type="text"
@@ -969,14 +1044,14 @@
 
           <!-- Photo row (Experiment 05, option A): camera opens on the first tap -->
           <div class="photo-row">
-            <button class="photo-main-btn" type="button" on:click={() => cameraInput?.click()}>
+            <button class="photo-main-btn" type="button" disabled={entryBusy} on:click={startPhotoCapture}>
               <svg class="photo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
                 <circle cx="12" cy="13" r="4" />
               </svg>
               Take a photo
             </button>
-            <button class="photo-side-btn" type="button" title="Choose from library" aria-label="Choose from library" on:click={() => libraryInput?.click()}>
+            <button class="photo-side-btn" type="button" disabled={entryBusy} title="Choose from library" aria-label="Choose from library" on:click={() => libraryInput?.click()}>
               <svg class="photo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <rect x="3" y="3" width="18" height="18" rx="2" />
                 <circle cx="8.5" cy="8.5" r="1.5" />
@@ -1013,43 +1088,47 @@
             {#if theme === 'arcade'}
               <PlayGrid
                 bind:this={translateGridRef}
-                label="TRANSLATE"
+                label={sameLanguageLookup ? 'DEFINE' : 'TRANSLATE'}
                 rows={3}
                 cell={18}
                 gap={5}
                 fontSize={11}
                 resetAfterFire
-                disabled={adding || !inputText.trim() || !sourceCode || !targetCode || sourceCode === targetCode}
+                disabled={entryBusy || !inputText.trim() || !sourceCode || !targetCode}
                 on:fire={() => void addWord()}
               />
             {:else if theme === 'light'}
               <PlayClear
                 bind:this={translateClearRef}
-                label="TRANSLATE"
+                label={sameLanguageLookup ? 'DEFINE' : 'TRANSLATE'}
                 rows={3}
                 cell={18}
                 gap={5}
                 fontSize={11}
                 resetAfterFire
-                disabled={adding || !inputText.trim() || !sourceCode || !targetCode || sourceCode === targetCode}
+                disabled={entryBusy || !inputText.trim() || !sourceCode || !targetCode}
                 on:fire={() => void addWord()}
               />
             {:else}
               <PlaySaffronRelay
                 bind:this={translateRelayRef}
-                label="⌕ TRANSLATE"
+                label={sameLanguageLookup ? '⌕ DEFINE' : '⌕ TRANSLATE'}
                 icon={false}
                 width={225}
                 height={64}
                 fontSize={11}
                 resetAfterFire
-                disabled={adding || !inputText.trim() || !sourceCode || !targetCode || sourceCode === targetCode}
+                disabled={entryBusy || !inputText.trim() || !sourceCode || !targetCode}
                 on:fire={() => void addWord()}
               />
             {/if}
           </div>
           <p class="translate-note" class:translating={adding}>
-            {adding ? 'Translating…' : 'AI looks it up, translates, and queues it for practice'}
+            {adding
+              ? sameLanguageLookup ? 'Defining…' : 'Translating…'
+              : sameLanguageLookup
+                ? `AI defines it in ${languageName(targetCode)} and saves it to My Words`
+                : `AI translates it, writes a ${languageName(targetCode)} definition, and queues it for practice`}
           </p>
         {/if}
       </form>
@@ -1163,8 +1242,15 @@
               </svg>
               Crop & rescan
             </button>
-            <button class="photo-tool-button" type="button" disabled={photoSubmitting} on:click={resetPhoto}>
-              Done
+            <button class="photo-tool-button" type="button" disabled={photoSubmitting} on:click={startPhotoCapture}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                <circle cx="12" cy="13" r="4" />
+              </svg>
+              New photo
+            </button>
+            <button class="photo-tool-button photo-tool-search" type="button" disabled={photoSubmitting} on:click={() => void startWordSearch()}>
+              Search a word
             </button>
           </div>
 
@@ -1199,9 +1285,25 @@
                   </label>
                 {/each}
               </div>
-              <p class="selection-preview-note">This exact text will be translated. Nearby text is used separately as context and is not shown here.</p>
+              <p class="selection-preview-note">
+                This exact text will be {sameLanguageLookup ? 'defined' : 'translated'}.
+                Nearby text is used separately as context and is not shown here.
+              </p>
             </div>
           {/if}
+
+          <div style="margin-top: 0.75rem;">
+            <p class="eyebrow">Optional context</p>
+            <input
+              class="answer-input"
+              bind:value={contextHint}
+              type="text"
+              maxlength={CONTEXT_MAX_CHARS}
+              placeholder="e.g. a legal term, or the name of the object in the photo"
+              disabled={photoSubmitting}
+            />
+            <p class="photo-context-note">Your note is combined with the nearby photographed text.</p>
+          </div>
 
           <div style="margin-top: 0.75rem;">
             <p class="eyebrow">Optional question about the selected word</p>
@@ -1226,7 +1328,9 @@
               disabled={selectedTokens.size === 0 || selectionPreviewInvalid || photoSubmitting}
               on:click={() => void submitSelected()}
             >
-              {photoSubmitting ? 'Translating…' : 'Translate & add'}
+              {photoSubmitting
+                ? sameLanguageLookup ? 'Defining…' : 'Translating…'
+                : sameLanguageLookup ? 'Define & add' : 'Translate & add'}
             </button>
           </div>
         </div>
@@ -1234,7 +1338,11 @@
     </article>
 
     {#each photoCards as card (card.id)}
-      <article class="glass-panel word-card" in:fly={{ y: 20, duration: 200 }}>
+      <article
+        class="glass-panel word-card"
+        aria-live="polite"
+        in:fly={{ y: 20, duration: 200 }}
+      >
         {#if card.state === 'loading'}
           <div class="word-card-head">
             <h3>{card.word}</h3>
@@ -1255,7 +1363,9 @@
           <div class="word-card-head">
             <div>
               <p class="eyebrow">
-                {languageName(card.result.learning_language_code)} → {languageName(card.result.mother_tongue_code)}
+                {card.result.lookup_mode === 'definition'
+                  ? `${languageName(card.result.definition_language_code)} definition`
+                  : `${languageName(card.result.learning_language_code)} → ${languageName(card.result.mother_tongue_code)}`}
               </p>
               <h3>{card.result.text}</h3>
             </div>
@@ -1288,7 +1398,9 @@
 
             {#if card.result.sense_candidates.length > 1}
               <div>
-                <p class="eyebrow">Meaning suggested from the photo context</p>
+                <p class="eyebrow">
+                  Meaning suggested from the photo context · {languageName(card.result.definition_language_code)}
+                </p>
                 <div class="list-stack">
                   {#each card.result.sense_candidates as candidate}
                     <button
@@ -1297,10 +1409,20 @@
                       disabled={card.selectingSenseId != null || candidate.id === card.result.selected_sense_id}
                       on:click={() => void chooseCardSense(card, candidate.id)}
                     >
-                      {candidate.part_of_speech ? `${candidate.part_of_speech}: ` : ''}{candidate.definition}
-                      {candidate.id === card.selectingSenseId
-                        ? ' — updating…'
-                        : candidate.id === card.result.selected_sense_id ? ' — selected' : ''}
+                      {#if candidate.part_of_speech}
+                        <span>{candidate.part_of_speech}: </span>
+                      {/if}
+                      <span
+                        lang={card.result.definition_language_code.toLowerCase()}
+                        dir="auto"
+                      >
+                        {candidate.definition}
+                      </span>
+                      <span>
+                        {candidate.id === card.selectingSenseId
+                          ? ' — updating…'
+                          : candidate.id === card.result.selected_sense_id ? ' — selected' : ''}
+                      </span>
                     </button>
                   {/each}
                 </div>
@@ -1315,8 +1437,16 @@
             {/if}
 
             <div>
-              <p class="eyebrow">Definition</p>
-              <p class="card-detail">{card.result.lexical.definition}</p>
+              <p class="eyebrow">
+                Definition · {languageName(card.result.definition_language_code)}
+              </p>
+              <p
+                class="card-detail"
+                lang={card.result.definition_language_code.toLowerCase()}
+                dir="auto"
+              >
+                {card.result.display_definition.text}
+              </p>
             </div>
 
             {#if card.result.natives.length > 1}
@@ -1371,8 +1501,29 @@
       </article>
     {/each}
 
+    {#if photoPhase === 'review' && photoCards.length > 0 && !photoSubmitting}
+      <article class="glass-panel next-entry-card" in:fade={{ duration: 150 }}>
+        <div>
+          <p class="eyebrow">Keep adding</p>
+          <strong>Use this photo again, search normally, or take a fresh photo.</strong>
+        </div>
+        <div class="next-entry-actions">
+          <button class="secondary-button" type="button" disabled={entryBusy} on:click={() => void startWordSearch()}>
+            Search a word
+          </button>
+          <button class="ghost-button" type="button" disabled={entryBusy} on:click={startPhotoCapture}>
+            Take another photo
+          </button>
+        </div>
+      </article>
+    {/if}
+
     {#if notFound}
-      <article class="glass-panel" in:fly={{ y: 20, duration: 200 }}>
+      <article
+        class="glass-panel"
+        aria-live="polite"
+        in:fly={{ y: 20, duration: 200 }}
+      >
         <div class="section-head">
           <div>
             <p class="eyebrow">Not found</p>
@@ -1397,7 +1548,8 @@
         {/if}
 
         <div class="trainer-actions" style="margin-top: 1rem;">
-          <button class="ghost-button" type="button" on:click={resetForAnother}>Start over</button>
+          <button class="ghost-button" type="button" on:click={() => void startWordSearch()}>Search another word</button>
+          <button class="ghost-button" type="button" on:click={startPhotoCapture}>Take a photo</button>
         </div>
       </article>
     {/if}
@@ -1407,7 +1559,9 @@
         <div class="section-head">
           <div>
             <p class="eyebrow">
-              {result.learning_language_code} → {result.mother_tongue_code}
+              {result.lookup_mode === 'definition'
+                ? `${languageName(result.definition_language_code)} definition`
+                : `${result.learning_language_code} → ${result.mother_tongue_code}`}
               {#if result.status === 'corrected'}· corrected{/if}
               {#if result.status === 'ambiguous'}· multiple senses{/if}
             </p>
@@ -1415,6 +1569,8 @@
           </div>
           {#if result.force_unlocked}
             <span class="pill-chip reward-pill">unlocked now</span>
+          {:else if !result.practice_eligible}
+            <span class="pill-chip">saved definition</span>
           {:else}
             <span class="pill-chip">queued</span>
           {/if}
@@ -1430,7 +1586,7 @@
           <div class="feedback-banner info-banner" style="margin-top: 0.5rem;">
             That looked like <strong>{languageName(result.detected_input_language ?? '')}</strong>. Want to switch the
             target language and try again?
-            <button class="ghost-button" type="button" on:click={swapDetected} style="margin-left: 0.5rem;">
+            <button class="ghost-button" type="button" disabled={entryBusy} on:click={swapDetected} style="margin-left: 0.5rem;">
               Switch target → {languageName(result.detected_input_language ?? '')}
             </button>
           </div>
@@ -1449,7 +1605,9 @@
 
           {#if result.sense_candidates.length > 1}
             <div>
-              <p class="eyebrow">Meaning suggested from your context</p>
+              <p class="eyebrow">
+                Meaning suggested from your context · {languageName(result.definition_language_code)}
+              </p>
               <p style="margin: 0 0 0.5rem; opacity: 0.75;">
                 Check the selected meaning; choose another with one click if needed.
               </p>
@@ -1461,10 +1619,20 @@
                     disabled={selectingSenseId !== null || candidate.id === result.selected_sense_id}
                     on:click={() => void chooseResultSense(candidate.id)}
                   >
-                    {candidate.part_of_speech ? `${candidate.part_of_speech}: ` : ''}{candidate.definition}
-                    {candidate.id === selectingSenseId
-                      ? ' — updating…'
-                      : candidate.id === result.selected_sense_id ? ' — selected' : ''}
+                    {#if candidate.part_of_speech}
+                      <span>{candidate.part_of_speech}: </span>
+                    {/if}
+                    <span
+                      lang={result.definition_language_code.toLowerCase()}
+                      dir="auto"
+                    >
+                      {candidate.definition}
+                    </span>
+                    <span>
+                      {candidate.id === selectingSenseId
+                        ? ' — updating…'
+                        : candidate.id === result.selected_sense_id ? ' — selected' : ''}
+                    </span>
                   </button>
                 {/each}
               </div>
@@ -1479,8 +1647,15 @@
           {/if}
 
           <div>
-            <p class="eyebrow">Definition</p>
-            <p>{result.lexical.definition}</p>
+            <p class="eyebrow">
+              Definition · {languageName(result.definition_language_code)}
+            </p>
+            <p
+              lang={result.definition_language_code.toLowerCase()}
+              dir="auto"
+            >
+              {result.display_definition.text}
+            </p>
           </div>
 
           {#if result.natives.length > 1}
@@ -1554,7 +1729,9 @@
 
           {#if result.lexical.extended_content}
             <div>
-              <p class="eyebrow">More info</p>
+              <p class="eyebrow">
+                More info · {languageName(result.learning_language_code)}
+              </p>
               <div class="more-info-content">
                 {@html renderMoreInfoMarkdown(result.lexical.extended_content)}
               </div>
@@ -1581,9 +1758,10 @@
               Report
             </button>
           {/if}
-          <button class="ghost-button" type="button" on:click={resetForAnother}>
-            Add another
+          <button class="ghost-button" type="button" disabled={entryBusy} on:click={() => void startWordSearch()}>
+            Search another word
           </button>
+          <button class="ghost-button" type="button" disabled={entryBusy} on:click={startPhotoCapture}>Take a photo</button>
         </div>
 
         {#if reportTarget}
@@ -1648,7 +1826,20 @@
               </button>
               {#if expandedHistoryId === entry.added_id}
                 <div class="history-body">
-                  <p class="history-def">{entry.lexical.definition}</p>
+                  {#if entry.display_definition.text}
+                    <div>
+                      <p class="eyebrow">
+                        Definition · {languageName(entry.definition_language_code)}
+                      </p>
+                      <p
+                        class="history-def"
+                        lang={entry.definition_language_code.toLowerCase()}
+                        dir="auto"
+                      >
+                        {entry.display_definition.text}
+                      </p>
+                    </div>
+                  {/if}
                   {#if entry.context}
                     <div>
                       <p class="eyebrow">Your context</p>
@@ -1741,18 +1932,18 @@
         <div style="margin-top: 0.75rem;">
           <div class="lang-pair-row">
             <div>
-              <p class="eyebrow">Learning</p>
+              <p class="eyebrow">You type</p>
               <select class="answer-input" bind:value={manageLearning}>
                 {#each languages as lang}
-                  <option value={lang.code} disabled={lang.code === manageMother}>{lang.name}</option>
+                  <option value={lang.code}>{lang.name}</option>
                 {/each}
               </select>
             </div>
             <div>
-              <p class="eyebrow">Mother</p>
+              <p class="eyebrow">You get</p>
               <select class="answer-input" bind:value={manageMother}>
                 {#each languages as lang}
-                  <option value={lang.code} disabled={lang.code === manageLearning}>{lang.name}</option>
+                  <option value={lang.code}>{lang.name}</option>
                 {/each}
               </select>
             </div>
@@ -1767,11 +1958,15 @@
               {#each manageEntries as entry (entry.word_id)}
                 <div class="word-row">
                   <div class="word-cell word-cell-source">{entry.text}</div>
-                  <div class="word-cell word-cell-arrow" aria-hidden="true">→</div>
-                  <div class="word-cell word-cell-target">{entry.translation ?? '—'}</div>
+                  <div class="word-cell word-cell-arrow" aria-hidden="true">{entry.lookup_mode === 'definition' ? '≔' : '→'}</div>
+                  <div class="word-cell word-cell-target">
+                    {entry.lookup_mode === 'definition' ? entry.definition ?? 'Definition saved' : entry.translation ?? '—'}
+                  </div>
                   <div class="word-cell word-cell-meta">
                     {#if entry.in_progress}
                       <span class="mini-tag" title={entry.unlocked ? 'In active rotation' : 'Locked'}>{entry.unlocked ? 'active' : 'locked'}</span>
+                    {:else if entry.lookup_mode === 'definition'}
+                      <span class="mini-tag muted-tag" title="Saved definition">saved</span>
                     {:else}
                       <span class="mini-tag muted-tag" title="Queued for unlock">queued</span>
                     {/if}
@@ -1937,13 +2132,19 @@
     transition: color 0.2s, border-color 0.2s;
   }
 
+  .photo-main-btn:disabled,
+  .photo-side-btn:disabled {
+    opacity: 0.55;
+    cursor: default;
+  }
+
   @media (hover: hover) {
-    .photo-main-btn:hover {
+    .photo-main-btn:not(:disabled):hover {
       border-color: var(--accent);
       box-shadow: 0 4px 14px -6px color-mix(in srgb, var(--accent) 45%, transparent);
     }
 
-    .photo-side-btn:hover {
+    .photo-side-btn:not(:disabled):hover {
       color: var(--text);
       border-color: color-mix(in srgb, var(--accent) 45%, transparent);
     }
@@ -2332,6 +2533,13 @@
     line-height: 1.35;
   }
 
+  .photo-context-note {
+    margin: 0.32rem 0 0;
+    color: var(--muted);
+    font-size: 0.72rem;
+    line-height: 1.35;
+  }
+
   .photo-commit-bar {
     position: sticky;
     z-index: 6;
@@ -2423,6 +2631,38 @@
     margin-top: 1.25rem;
     align-items: center;
     justify-content: center;
+  }
+
+  .next-entry-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border-color: color-mix(in srgb, var(--accent) 28%, var(--line));
+  }
+
+  .next-entry-card .eyebrow {
+    margin: 0 0 0.2rem;
+  }
+
+  .next-entry-card strong {
+    color: var(--text);
+    font-size: 0.92rem;
+  }
+
+  .next-entry-actions {
+    display: flex;
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  @media (max-width: 620px) {
+    .next-entry-card,
+    .next-entry-actions {
+      align-items: stretch;
+      flex-direction: column;
+    }
   }
 
   /* --- photo definition cards --- */

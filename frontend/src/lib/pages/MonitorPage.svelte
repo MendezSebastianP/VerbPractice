@@ -319,10 +319,10 @@
             <div class="section-head"><div><p class="eyebrow">Accounts</p><h2>User state</h2></div></div>
             <div class="table-scroll">
               <table class="data-table">
-                <thead><tr><th>User</th><th>Level</th><th>XP</th><th>Streak</th><th>Theme</th></tr></thead>
+                <thead><tr><th>User</th><th>Level</th><th>Streak</th><th>Theme</th></tr></thead>
                 <tbody>
                   {#each data.users as user}
-                    <tr><td>{user.username}</td><td>{user.level}</td><td>{user.xp}</td><td>{user.streak_days}</td><td>{user.theme}</td></tr>
+                    <tr><td>{user.username}</td><td>{user.level}</td><td>{user.streak_days}</td><td>{user.theme}</td></tr>
                   {/each}
                 </tbody>
               </table>

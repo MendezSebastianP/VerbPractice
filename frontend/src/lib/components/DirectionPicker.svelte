@@ -5,6 +5,7 @@
   // Keyboard handling stays in the host page — this component only draws and
   // exposes popSwap()/closeMenus() for shortcut feedback.
   import { popEl } from '../fx';
+  import { signalTour } from '../onboardingStore';
   import type { LanguageEntry } from '../types';
 
   export let languages: LanguageEntry[] = [];
@@ -30,10 +31,18 @@
     return languages.find((l) => l.code === code.toUpperCase());
   }
 
+  // Counts swaps so the onboarding tour can ask for two — one to see the flip,
+  // one to put the learner's own pair back the way they set it.
+  let swapCount = 0;
+
   function swap(): void {
     const t = sourceCode;
     sourceCode = targetCode;
     targetCode = t;
+    swapCount += 1;
+    if (swapCount % 2 === 0) {
+      signalTour('direction-swapped-twice');
+    }
   }
 
   export function popSwap(): void {
@@ -91,6 +100,7 @@
       class="swap-round-button"
       type="button"
       {disabled}
+      data-tour="direction-swap"
       aria-label="Swap direction"
       title="Swap"
       on:click={() => { swap(); popEl(swapButtonEl); }}

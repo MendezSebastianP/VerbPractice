@@ -39,6 +39,15 @@ from app.services.gamification import (
     update_streak,
 )
 from app.services.normalization import normalize_for_comparison
+from app.services.onboarding import (
+    FEATURE_BY_TRAINING_MODE,
+    mark_feature_complete as mark_onboarding_feature,
+)
+from app.services.tutorial import (
+    ensure_tutorial_words,
+    tutorial_word_ids,
+    unlock_tutorial_items,
+)
 from app.services.training_engine import (
     GradeResult,
     WeightedItem,
@@ -372,8 +381,32 @@ async def start_translation_session(
     direction: str,
     length: int,
     set_id: int | None = None,
+    tutorial: bool = False,
 ) -> TrainingSession:
     language_pair = direction
+
+    # The scripted first run tells the learner what to type, so its queue is the
+    # curated list in a fixed order — the scheduler's weighting would break the
+    # script. Everything downstream (grading, XP, progress) stays normal.
+    if tutorial and mode == TrainingMode.WORD_TRANSLATION:
+        await ensure_tutorial_words(db)
+        tutorial_ids = await tutorial_word_ids(db, direction=language_pair)
+        if tutorial_ids:
+            await unlock_tutorial_items(
+                db, user_id=user_id, language_pair=language_pair, item_ids=tutorial_ids
+            )
+            return await _build_translation_session(
+                db,
+                user_id=user_id,
+                mode=mode,
+                direction=direction,
+                item_ids=tutorial_ids,
+                length=len(tutorial_ids),
+                tutorial=True,
+            )
+        # No curated set for this pair: fall through to a normal round rather
+        # than blocking the learner on a data gap.
+
     scoped_item_ids: set[int] | None = None
     if set_id is not None:
         scoped_item_ids = await _resolve_set_item_ids(db, set_id, mode)
@@ -412,10 +445,30 @@ async def start_translation_session(
             raise ValueError("This set has no items available for that language pair.")
         raise ValueError("No unlocked translations are available for that language pair.")
 
+    return await _build_translation_session(
+        db,
+        user_id=user_id,
+        mode=mode,
+        direction=direction,
+        item_ids=item_ids,
+        length=length,
+    )
+
+
+async def _build_translation_session(
+    db: AsyncSession,
+    *,
+    user_id: int,
+    mode: TrainingMode,
+    direction: str,
+    item_ids: list[int],
+    length: int,
+    tutorial: bool = False,
+) -> TrainingSession:
     session = TrainingSession(
         user_id=user_id,
         mode=mode,
-        language_pair=language_pair,
+        language_pair=direction,
         config={
             "queue": item_ids,
             "index": 0,
@@ -425,6 +478,8 @@ async def start_translation_session(
             "combo": 0,
             "best_combo": 0,
             "scored_word_items": [],
+            # Read back by the SPA so the scripted overlay knows to run.
+            "tutorial": tutorial,
         },
     )
     db.add(session)
@@ -952,6 +1007,11 @@ async def submit_translation_answer(
     if finished:
         session.completed_at = datetime.now(timezone.utc)
         session.score = await _count_session_accuracy(db, session.id)
+        await mark_onboarding_feature(
+            db,
+            user_id=session.user_id,
+            feature=FEATURE_BY_TRAINING_MODE.get(session.mode, ""),
+        )
         reward = merge_reward_summaries(
             reward,
             await grant_xp(
@@ -1856,6 +1916,11 @@ async def submit_conjugation_answers(
     if finished:
         session.completed_at = datetime.now(timezone.utc)
         session.score = await _count_session_accuracy(db, session.id)
+        await mark_onboarding_feature(
+            db,
+            user_id=session.user_id,
+            feature=FEATURE_BY_TRAINING_MODE.get(session.mode, ""),
+        )
         reward = merge_reward_summaries(
             reward,
             await grant_xp(

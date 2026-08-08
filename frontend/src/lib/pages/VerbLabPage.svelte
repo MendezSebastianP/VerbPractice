@@ -2,6 +2,8 @@
   import { href } from '../router';
   import ConjugationPage from './ConjugationPage.svelte';
   import TranslationPage from './TranslationPage.svelte';
+  import { onboarding } from '../onboardingStore';
+  import { featureById, isUnlocked } from '../components/onboarding/onboarding';
   import type { ThemeName } from '../types';
 
   export let routePath = '/training/verbs';
@@ -9,6 +11,8 @@
   export let soundEnabled = false;
   export let theme: ThemeName = 'light';
   export let notify: (message: string, tone?: 'info' | 'success' | 'error') => void;
+  // Lets the shell hide the onboarding checklist while either verb drill runs.
+  export let onSessionActiveChange: (active: boolean) => void = () => {};
 
   type VerbView = 'translation' | 'conjugation';
 
@@ -23,6 +27,7 @@
   // Hide the lab chrome while either drill is mid-session so the game sits at
   // the top of the viewport (matching the Words route) and centers correctly.
   $: drillSessionActive = tableSessionActive || translateSessionActive;
+  $: onSessionActiveChange(drillSessionActive);
 
   $: if (routePath !== lastRoutePath) {
     lastRoutePath = routePath;
@@ -33,7 +38,15 @@
       : 'translation';
   }
 
+  // Tables is the last link in the onboarding chain and gates inside this page
+  // rather than by route, because both drills share /training/verbs.
+  $: tablesLocked = !isUnlocked($onboarding, 'verb-tables');
+
   function openView(nextView: VerbView): void {
+    if (nextView === 'conjugation' && tablesLocked) {
+      notify(`Fill tables unlocks after ${featureById('verb-tables').requires}.`, 'info');
+      return;
+    }
     view = nextView;
     tableSessionActive = false;
     translateSessionActive = false;
@@ -65,7 +78,7 @@
       <p class="section-copy">Four languages, one route. Switch drills here without losing either session.</p>
     </div>
 
-    <div class="verb-mode-switch" role="tablist" aria-label="Verb workspace mode">
+    <div class="verb-mode-switch" role="tablist" aria-label="Verb workspace mode" data-tour="verb-switch">
       <button
         class:verb-mode-on={view === 'translation'}
         class="verb-mode-button"
@@ -87,11 +100,14 @@
 
       <button
         class:verb-mode-on={view === 'conjugation'}
+        class:verb-mode-locked={tablesLocked}
         class="verb-mode-button"
         type="button"
         role="tab"
         aria-selected={view === 'conjugation'}
+        aria-disabled={tablesLocked ? 'true' : undefined}
         aria-label="Conjugation tables"
+        title={tablesLocked ? `Unlocks after ${featureById('verb-tables').requires}` : undefined}
         on:click={() => openView('conjugation')}
       >
         <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -99,7 +115,7 @@
           <path d="M4.5 10h15M10 5.5v13M15 10v8.5" fill="none" stroke="currentColor" stroke-width="1.8"></path>
         </svg>
         <span>Fill tables</span>
-        <small>Tense by tense</small>
+        <small>{tablesLocked ? 'Locked' : 'Tense by tense'}</small>
         <kbd class="verb-mode-key">Alt+B</kbd>
       </button>
     </div>

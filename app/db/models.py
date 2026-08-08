@@ -128,6 +128,9 @@ class UserPreference(Base):
     # Last-used setup per trainer (keyed by practice mode, e.g. "conjugation" →
     # {language, level, selected_tenses, ...}) so a session starts pre-configured.
     trainer_setups: Mapped[dict] = mapped_column(JSON, default=dict)
+    # First-run progress: {"completed": [...], "seenTours": [...], "skipped": bool}.
+    # Drives which drills are unlocked and which guided tours have run.
+    onboarding: Mapped[dict] = mapped_column(JSON, default=dict)
 
     user: Mapped[User] = relationship("User", back_populates="preferences")
 

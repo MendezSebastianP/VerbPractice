@@ -59,6 +59,7 @@ from app.services.admin_content import (
     update_verb_row,
     update_word_row,
 )
+from app.services import onboarding as onboarding_service
 from app.services.ai_usage import ai_usage_report
 from app.services.chat_service import stream_chat_response
 from app.services.conjugation_engine import accepted_conjugation_forms
@@ -123,11 +124,14 @@ async def _ensure_profile(db: AsyncSession, user: User | None) -> UserProfile | 
     return profile
 
 
-async def _ensure_app_preferences(db: AsyncSession, user: User | None) -> tuple[bool, bool]:
+async def _ensure_app_preferences(
+    db: AsyncSession, user: User | None
+) -> tuple[bool, bool, dict[str, Any]]:
     if user is None:
-        return False, True
+        return False, True, onboarding_service.empty_state()
     preference = await ensure_user_preference(db, user.id)
-    return preference.sound_enabled, preference.show_shortcuts
+    state = await onboarding_service.load_state(db, user_id=user.id, preference=preference)
+    return preference.sound_enabled, preference.show_shortcuts, state
 
 
 def _profile_payload(profile: UserProfile | None) -> dict[str, Any] | None:
@@ -170,6 +174,7 @@ def _bootstrap_payload(
     *,
     sound_enabled: bool | None = None,
     show_shortcuts: bool = True,
+    onboarding: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     theme = profile.theme_preference if profile else settings.default_theme
     return {
@@ -179,6 +184,7 @@ def _bootstrap_payload(
         "theme": theme,
         "user": _user_payload(user, profile),
         "preferences": _preferences_payload(sound_enabled, show_shortcuts),
+        "onboarding": onboarding or onboarding_service.empty_state(),
         "entry_path": "/app/dashboard" if user else "/app/login",
     }
 
@@ -347,6 +353,8 @@ async def _translation_state(
             "combo": int(config.get("combo", 0)),
             "best_combo": int(config.get("best_combo", 0)),
             "checked_tenses": list(config.get("checked_conjugation_tenses", [])),
+            # Tells the SPA to run the scripted overlay over this round.
+            "tutorial": bool(config.get("tutorial", False)),
         },
         "question": {
             "item_id": question.item_id,
@@ -605,7 +613,7 @@ async def bootstrap(
 ):
     await ensure_gamification_catalog(db)
     profile = await _ensure_profile(db, user)
-    sound_enabled, show_shortcuts = await _ensure_app_preferences(db, user)
+    sound_enabled, show_shortcuts, onboarding_state = await _ensure_app_preferences(db, user)
     await db.commit()
     return JSONResponse(
         _bootstrap_payload(
@@ -614,6 +622,7 @@ async def bootstrap(
             profile,
             sound_enabled=sound_enabled,
             show_shortcuts=show_shortcuts,
+            onboarding=onboarding_state,
         )
     )
 
@@ -635,7 +644,7 @@ async def login(
     request.session[SESSION_USER_KEY] = user.id
     await ensure_gamification_catalog(db)
     profile = await _ensure_profile(db, user)
-    sound_enabled, show_shortcuts = await _ensure_app_preferences(db, user)
+    sound_enabled, show_shortcuts, onboarding_state = await _ensure_app_preferences(db, user)
     await db.commit()
     return JSONResponse(
         _bootstrap_payload(
@@ -644,6 +653,7 @@ async def login(
             profile,
             sound_enabled=sound_enabled,
             show_shortcuts=show_shortcuts,
+            onboarding=onboarding_state,
         )
     )
 
@@ -677,7 +687,14 @@ async def register(
 
     request.session[SESSION_USER_KEY] = user.id
     return JSONResponse(
-        _bootstrap_payload(request, user, profile, sound_enabled=False, show_shortcuts=True)
+        _bootstrap_payload(
+            request,
+            user,
+            profile,
+            sound_enabled=False,
+            show_shortcuts=True,
+            onboarding=onboarding_service.empty_state(),
+        )
     )
 
 
@@ -800,8 +817,11 @@ async def words_start(
     auth=Depends(require_auth_context),
 ):
     validate_csrf(request, payload.csrf_token)
+    # A tutorial round brings its own curated words, so the inventory check that
+    # guards normal rounds would reject pairs the tutorial can serve perfectly.
+    tutorial = bool(payload.tutorial)
     try:
-        if not await eligible_translation_item_ids(
+        if not tutorial and not await eligible_translation_item_ids(
             db,
             mode=TrainingMode.WORD_TRANSLATION,
             direction=payload.direction,
@@ -815,6 +835,7 @@ async def words_start(
             direction=payload.direction,
             length=max(1, min(payload.length, 50)),
             set_id=payload.set_id,
+            tutorial=tutorial,
         )
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(exc)) from exc

@@ -15,6 +15,12 @@ export interface UserState {
   profile: UserProfileState;
 }
 
+export interface OnboardingPayload {
+  completed: string[];
+  seenTours: string[];
+  skipped: boolean;
+}
+
 export interface BootPayload {
   app_name: string;
   authenticated: boolean;
@@ -25,6 +31,7 @@ export interface BootPayload {
     sound_enabled: boolean;
     show_shortcuts: boolean;
   };
+  onboarding: OnboardingPayload;
   entry_path: string;
 }
 
@@ -206,6 +213,8 @@ export interface TranslationState {
     progress_total: number;
     combo: number;
     best_combo: number;
+    /** Scripted first round: the SPA runs its tutorial overlay over it. */
+    tutorial?: boolean;
   };
   question?: {
     item_id: number;

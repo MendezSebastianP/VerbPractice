@@ -14,10 +14,10 @@ import type {
   CommunityPayload,
   ConjugationState,
   ConjugationTenseReview,
-  DashboardPayload,
   LanguageEntry,
   MonitorPayload,
   OcrResponse,
+  OnboardingPayload,
   PriorityQueueEntry,
   SemanticGradePayload,
   SemanticGradeResponse,
@@ -87,7 +87,6 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ sound_enabled, csrf_token }),
     }),
-  dashboard: () => request<DashboardPayload>('/api/dashboard'),
   wordsState: () => request<TranslationState>('/api/training/words'),
   verbsState: () => request<TranslationState>('/api/training/verbs'),
   studyPool: (params: { mode: 'words' | 'verbs' | 'conjugation'; direction?: string; language?: string; tenses?: string[] }) => {
@@ -97,7 +96,7 @@ export const api = {
     if (params.tenses?.length) query.set('tenses', params.tenses.join(','));
     return request<StudyPoolResponse>(`/api/training/study-pool?${query.toString()}`, { cache: 'no-store' });
   },
-  startWords: (payload: { length: number; direction: string; set_id?: number; csrf_token: string }) =>
+  startWords: (payload: { length: number; direction: string; set_id?: number; tutorial?: boolean; csrf_token: string }) =>
     request<TranslationState>('/api/training/words/start', { method: 'POST', body: JSON.stringify(payload) }),
   startVerbs: (payload: { length: number; direction: string; set_id?: number; csrf_token: string }) =>
     request<TranslationState>('/api/training/verbs/start', { method: 'POST', body: JSON.stringify(payload) }),
@@ -147,6 +146,19 @@ export const api = {
   getSettings: () => request<UserSettings>('/api/settings'),
   patchSettings: (payload: Partial<UserSettingsPatch> & { csrf_token: string }) =>
     request<UserSettings>('/api/settings', { method: 'PATCH', body: JSON.stringify(payload) }),
+  patchOnboarding: (
+    payload: {
+      completed?: string[];
+      seen_tours?: string[];
+      skipped?: boolean;
+      reset?: boolean;
+    } & { csrf_token: string },
+  ) =>
+    request<OnboardingPayload>('/api/onboarding', { method: 'PATCH', body: JSON.stringify(payload) }),
+  tutorialScript: (direction: string) =>
+    request<{ direction: string; items: Array<{ prompt: string; answer: string }> }>(
+      `/api/tutorial/translation?direction=${encodeURIComponent(direction)}`,
+    ),
   listLanguages: () => request<{ languages: LanguageEntry[] }>('/api/languages'),
   addWord: (payload: {
     input_text: string;

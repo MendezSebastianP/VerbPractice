@@ -35,6 +35,7 @@ from app.schemas.spa import (
     SelectWordSensePayload,
 )
 from app.services.gamification import ensure_user_preference
+from app.services.onboarding import mark_feature_complete as mark_onboarding_feature
 from app.services.ocr_service import (
     MAX_UPLOAD_BYTES,
     OCR_LANG_BY_CODE,
@@ -255,6 +256,8 @@ async def add_word(
             selected_sense_id=result.selected_sense_id,
         )
         db.add(added)
+        await db.flush()
+        await mark_onboarding_feature(db, user_id=auth.user.id, feature="add-word")
     else:
         added.context_hint = cleaned_context
         added.selected_sense_id = result.selected_sense_id
@@ -944,6 +947,7 @@ async def add_word_offline(
         )
         db.add(added)
         await db.flush()
+        await mark_onboarding_feature(db, user_id=auth.user.id, feature="add-word")
 
     preference = await ensure_user_preference(db, auth.user.id)
     force_unlocked = False

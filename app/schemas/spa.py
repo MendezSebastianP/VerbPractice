@@ -33,6 +33,8 @@ class TranslationStartPayload(CsrfPayload):
     length: int = 10
     direction: str = Field(pattern=r"^[a-z]{2}_[a-z]{2}$")
     set_id: int | None = None
+    # Requests the curated, fixed-order first-run round.
+    tutorial: bool = False
 
     @model_validator(mode="after")
     def validate_direction(self):
@@ -83,6 +85,15 @@ class CircleFriendPayload(CsrfPayload):
 class TrainerSetupPayload(BaseModel):
     mode: str = Field(min_length=1, max_length=32)
     setup: dict = Field(default_factory=dict)
+
+
+class OnboardingPatchPayload(CsrfPayload):
+    """Partial update of first-run progress. Lists are merged, never replaced."""
+
+    completed: list[str] | None = Field(default=None, max_length=16)
+    seen_tours: list[str] | None = Field(default=None, max_length=16)
+    skipped: bool | None = None
+    reset: bool | None = None
 
 
 class SettingsPatchPayload(CsrfPayload):

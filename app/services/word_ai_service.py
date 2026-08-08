@@ -33,6 +33,7 @@ from app.db.models import (
     WordTranslation,
 )
 from app.services.ai_usage import record_ai_usage
+from app.data.tutorial_content import tutorial_definition, tutorial_notes
 from app.services.offline_dictionary_service import (
     RankedSense,
     find_ranked_sense,
@@ -380,6 +381,20 @@ async def present_definitions(
             },
         )
 
+    # The scripted tutorial ships its definitions in every supported language,
+    # so the one lookup a first-run learner makes never reaches the model.
+    preset = tutorial_definition(
+        result.word.text, learning_lang.code, definition_language.code
+    )
+    if preset:
+        return DefinitionPresentation(
+            text=preset,
+            language_code=definition_language.code.upper(),
+            candidate_definitions={
+                candidate.id: candidate.definition for candidate in candidates
+            },
+        )
+
     if not settings.openai_api_key:
         raise WordAIError(
             "OPENAI_API_KEY is not configured; a definition in the translation "
@@ -680,9 +695,25 @@ def _translated_from_ranked(
     word: Word,
     ranked: RankedSense,
     target_language_id: int,
+    target_language_code: str | None = None,
+    source_language_code: str | None = None,
     question_answer: str | None = None,
 ) -> TranslatedWord:
     sense = ranked.sense
+    alternatives = list(ranked.alternatives or [])
+    general_note: str | None = None
+    suggested_tags: list[str] | None = None
+    translation_note: str | None = None
+
+    # Curated tutorial words are presented the way a real lookup is: one clear
+    # meaning with its note and tags, not a wall of imported dictionary senses.
+    # The learner's first ever lookup should not open with eight options.
+    if source_language_code and target_language_code:
+        extras = tutorial_notes(word.text, source_language_code, target_language_code)
+        if extras is not None:
+            translation_note, general_note, suggested_tags = extras
+            alternatives = []
+
     return TranslatedWord(
         status="exact",
         word=word,
@@ -699,14 +730,15 @@ def _translated_from_ranked(
                 word_id=word.id,
                 native_language_id=target_language_id,
                 translation=item.translation,
-                note=item.note,
+                note=item.note or (translation_note if position == 0 else None),
             )
-            for item in ranked.translations
+            for position, item in enumerate(ranked.translations)
         ],
+        general_note=general_note,
+        suggested_tags=suggested_tags,
         selected_sense_id=sense.id,
         sense_candidates=[
-            _sense_candidate(candidate)
-            for candidate in [sense, *(ranked.alternatives or [])]
+            _sense_candidate(candidate) for candidate in [sense, *alternatives]
         ],
         ranking_method=ranked.method,
         ranking_score=ranked.score,
@@ -954,6 +986,8 @@ async def translate_word(
                 word=word_row,
                 ranked=ranked,
                 target_language_id=mother_tongue.id,
+                target_language_code=mother_tongue.code,
+                source_language_code=learning_lang.code,
                 question_answer=question_answer,
             )
             if allow_global_write:

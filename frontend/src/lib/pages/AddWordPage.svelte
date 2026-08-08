@@ -2,6 +2,7 @@
   import { onMount, onDestroy, tick } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { api, ApiError } from '../api';
+  import { completeFeature, onboarding, signalTour } from '../onboardingStore';
   import DirectionPicker from '../components/DirectionPicker.svelte';
   import HelpTip from '../components/HelpTip.svelte';
   import PlayClear from '../components/PlayClear.svelte';
@@ -47,6 +48,22 @@
   const LANG_KEY: Record<string, string> = { e: 'EN', s: 'ES', r: 'RU', f: 'FR' };
   // One concept ("house") per language powers a clear, pair-specific example line.
   const EXAMPLE_WORD: Record<string, string> = { EN: 'house', ES: 'casa', FR: 'maison', RU: 'дом' };
+
+  // Scripted first visit: drop the example word for the chosen language into
+  // the field so the learner can run a real lookup without having to think of
+  // one. These words are the curated tutorial set, so the translation is
+  // already in the inventory and the result is the same every time.
+  $: tutorialAddWord =
+    !$onboarding.skipped
+    && !$onboarding.completed.includes('add-word')
+    && !$onboarding.seenTours.includes('add-word');
+  $: if (tutorialAddWord && sourceCode && !inputText && EXAMPLE_WORD[sourceCode]) {
+    inputText = EXAMPLE_WORD[sourceCode];
+  }
+  // Held read-only until the guided lookup has run: the tutorial promises a
+  // known result, and an edited word would not resolve from the inventory —
+  // it would hit the model and come back looking like something else.
+  $: tutorialWordLocked = tutorialAddWord && !result && Boolean(EXAMPLE_WORD[sourceCode]);
 
   let result: AddedWordResult | null = null;
   let notFound: AddedWordNotFound | null = null;
@@ -287,6 +304,11 @@
       });
       if (isFoundResult(response)) {
         result = response;
+        // Releases the tutorial's "run the lookup" gate.
+        signalTour('add-word-result');
+        // The server records this too, but without the local nudge the
+        // checklist row stays unticked until the next reload.
+        completeFeature('add-word');
         inputText = '';
         contextHint = '';
         questionHint = '';
@@ -1012,7 +1034,7 @@
       </div>
 
       <form class="answer-form" on:submit|preventDefault={fireTranslate} style="margin-top: 0.5rem;">
-        <div class="toggle-group">
+        <div class="toggle-group" data-tour="add-picker">
           <DirectionPicker
             bind:this={directionRef}
             bind:sourceCode
@@ -1029,7 +1051,7 @@
         </div>
 
         {#if photoPhase === 'idle'}
-          <div class="question-stage" style="margin-top: 1.25rem;">
+          <div class="question-stage" style="margin-top: 1.25rem;" data-tour="add-input">
             <p class="eyebrow">Word or compound word</p>
             <input
               bind:this={wordInput}
@@ -1038,12 +1060,16 @@
               type="text"
               placeholder="e.g. ephemeral"
               disabled={adding}
+              readonly={tutorialWordLocked}
+              title={tutorialWordLocked
+                ? 'The guided lookup uses this word so the result is the same every time — you can type your own once it is done'
+                : undefined}
               style="font-size: 1.1rem;"
             />
           </div>
 
           <!-- Photo row (Experiment 05, option A): camera opens on the first tap -->
-          <div class="photo-row">
+          <div class="photo-row" data-tour="add-photo">
             <button class="photo-main-btn" type="button" disabled={entryBusy} on:click={startPhotoCapture}>
               <svg class="photo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
@@ -1084,7 +1110,7 @@
             />
           </div>
 
-          <div class="translate-play" style="margin-top: 1.25rem;">
+          <div class="translate-play" style="margin-top: 1.25rem;" data-tour="add-translate">
             {#if theme === 'arcade'}
               <PlayGrid
                 bind:this={translateGridRef}
@@ -1555,7 +1581,7 @@
     {/if}
 
     {#if result}
-      <article class="glass-panel" in:fly={{ y: 20, duration: 200 }}>
+      <article class="glass-panel" data-tour="add-result" in:fly={{ y: 20, duration: 200 }}>
         <div class="section-head">
           <div>
             <p class="eyebrow">
@@ -1614,24 +1640,26 @@
               <div class="list-stack">
                 {#each result.sense_candidates as candidate}
                   <button
-                    class="ghost-button"
+                    class="sense-option"
+                    class:sense-chosen={candidate.id === result.selected_sense_id}
                     type="button"
                     disabled={selectingSenseId !== null || candidate.id === result.selected_sense_id}
                     on:click={() => void chooseResultSense(candidate.id)}
                   >
                     {#if candidate.part_of_speech}
-                      <span>{candidate.part_of_speech}: </span>
+                      <span class="sense-pos">{candidate.part_of_speech}</span>
                     {/if}
                     <span
+                      class="sense-text"
                       lang={result.definition_language_code.toLowerCase()}
                       dir="auto"
                     >
                       {candidate.definition}
                     </span>
-                    <span>
+                    <span class="sense-flag">
                       {candidate.id === selectingSenseId
-                        ? ' — updating…'
-                        : candidate.id === result.selected_sense_id ? ' — selected' : ''}
+                        ? 'updating…'
+                        : candidate.id === result.selected_sense_id ? 'selected' : ''}
                     </span>
                   </button>
                 {/each}
@@ -2047,6 +2075,67 @@
 {/if}
 
 <style>
+  /* Sense picker. The old markup used a pill button with centred text and bare
+     spans, so a part of speech and a definition ran together as
+     "noun:un bâtiment où quelqu'un habite— selected". */
+  .sense-option {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: baseline;
+    gap: 0.55rem;
+    width: 100%;
+    padding: 0.6rem 0.85rem;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--surface-strong) 70%, transparent);
+    color: var(--text);
+    font: inherit;
+    font-size: 0.85rem;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .sense-option:hover:not(:disabled) {
+    border-color: var(--line-strong);
+    background: color-mix(in srgb, var(--surface-strong) 92%, transparent);
+  }
+
+  .sense-option:disabled {
+    cursor: default;
+  }
+
+  .sense-chosen {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  .sense-pos {
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .sense-text {
+    min-width: 0;
+    line-height: 1.45;
+  }
+
+  .sense-flag {
+    font-size: 0.66rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--accent-strong, var(--accent));
+    white-space: nowrap;
+  }
+
+  .sense-flag:empty {
+    display: none;
+  }
+
   /* Synonyms as a two-column table: target language | source language. */
   .syn-table {
     width: 100%;

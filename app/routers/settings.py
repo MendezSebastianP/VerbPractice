@@ -1,15 +1,20 @@
 from __future__ import annotations
 
+import re
+
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.csrf import validate_csrf
 from app.core.security import AuthContext, require_auth_context
-from app.db.models import Language, UserPreference
+from app.db.models import Language, TrainingMode, UserPreference
 from app.db.session import get_db
-from app.schemas.spa import SettingsPatchPayload
+from app.schemas.spa import OnboardingPatchPayload, SettingsPatchPayload
+from app.services import onboarding as onboarding_service
 from app.services.gamification import ensure_user_preference
+from app.services.training_service import close_active_sessions
+from app.services.tutorial import ensure_tutorial_words, tutorial_script
 
 router = APIRouter(prefix="/api", tags=["settings"])
 
@@ -29,6 +34,7 @@ def _serialize_preference(pref: UserPreference, languages: dict[int, Language]) 
         "last_practice_pair": pref.last_practice_pair,
         "last_practice_mode": pref.last_practice_mode,
         "trainer_setups": pref.trainer_setups or {},
+        "onboarding": onboarding_service.normalize(pref.onboarding),
     }
 
 
@@ -119,6 +125,67 @@ async def patch_settings(
     await db.refresh(preference)
     languages = await _all_languages_map(db)
     return _serialize_preference(preference, languages)
+
+
+@router.patch("/onboarding")
+async def patch_onboarding(
+    request: Request,
+    payload: OnboardingPatchPayload,
+    auth: AuthContext = Depends(require_auth_context),
+    db: AsyncSession = Depends(get_db),
+):
+    """Persist first-run progress.
+
+    Kept off /settings because the client writes here on every tour step and
+    drill completion, and the merge semantics differ — lists union rather than
+    overwrite, so two tabs cannot undo each other's progress.
+    """
+    validate_csrf(request, payload.csrf_token)
+    preference = await ensure_user_preference(db, auth.user.id)
+
+    patch: dict = {}
+    if payload.completed is not None:
+        patch["completed"] = payload.completed
+    if payload.seen_tours is not None:
+        patch["seenTours"] = payload.seen_tours
+    if payload.skipped is not None:
+        patch["skipped"] = payload.skipped
+    if payload.reset is not None:
+        patch["reset"] = payload.reset
+
+    if payload.reset:
+        # Restarting drops the learner back on Words, which shows a live session
+        # if one is open — and the setup tour's anchors only exist on the menu.
+        # Close whatever is running so they land where the tutorial expects.
+        for mode in TrainingMode:
+            await close_active_sessions(db, user_id=auth.user.id, mode=mode)
+
+    state = await onboarding_service.save_state(db, preference=preference, patch=patch)
+    await db.commit()
+    return state
+
+
+@router.get("/tutorial/translation")
+async def get_tutorial_script(
+    direction: str,
+    auth: AuthContext = Depends(require_auth_context),
+    db: AsyncSession = Depends(get_db),
+):
+    """Prompt/answer pairs for the scripted first round.
+
+    The client needs the expected answers up front — it has to say "write día"
+    before the learner types anything — and grading stays server-side regardless.
+    """
+    if not re.fullmatch(r"[a-z]{2}_[a-z]{2}", direction or ""):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid direction"
+        )
+    # Idempotent, and the only guarantee that the Add Word step resolves from
+    # the inventory rather than the model for an account that reached it by an
+    # unusual route.
+    await ensure_tutorial_words(db)
+    await db.commit()
+    return await tutorial_script(db, direction=direction)
 
 
 @router.get("/languages")

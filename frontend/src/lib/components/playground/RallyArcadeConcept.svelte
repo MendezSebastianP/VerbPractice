@@ -187,7 +187,7 @@
             <span><small>Accuracy</small><strong>84%</strong></span>
             <span><small>Words returned</small><strong>146</strong></span>
             <span><small>Pressure list</small><strong>09</strong></span>
-            <p>Next milestone <b>250 XP</b><i><span style="width: 68%"></span></i></p>
+            <p>Next milestone <b>250 words</b><i><span style="width: 68%"></span></i></p>
           </div>
         </section>
       {:else if screen === 'setup'}
@@ -278,7 +278,7 @@
           <div class="clear-stats">
             <span><small>Accuracy</small><strong>88%</strong></span>
             <span><small>Best rally</small><strong>×{rally}</strong></span>
-            <span><small>Match XP</small><strong>+{score}</strong></span>
+            <span><small>Match score</small><strong>+{score}</strong></span>
           </div>
           <div class="clear-actions">
             <button class="rally-primary" type="button" on:click={() => go('run')}>Play the return leg</button>

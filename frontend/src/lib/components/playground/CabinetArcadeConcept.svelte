@@ -310,7 +310,7 @@
               </div>
               <div class="run-actions">
                 <button type="button" on:click={hint}><kbd>F2</kbd><span><strong>Proof note</strong><small>Show a clue</small></span></button>
-                <button type="button" on:click={reveal}><kbd>Alt ↵</kbd><span><strong>File answer</strong><small>Reveal without XP</small></span></button>
+                <button type="button" on:click={reveal}><kbd>Alt ↵</kbd><span><strong>File answer</strong><small>Reveal without scoring</small></span></button>
                 <button type="button" on:click={() => go('setup')}><kbd>Esc</kbd><span><strong>Stop motor</strong><small>End this run</small></span></button>
               </div>
             </aside>
@@ -329,7 +329,7 @@
                 <div><dt>Accuracy</dt><dd>88%</dd></div>
                 <div><dt>Best combo</dt><dd>×{combo}</dd></div>
                 <div><dt>Cards printed</dt><dd>{deck.length}</dd></div>
-                <div><dt>XP filed</dt><dd>+{score}</dd></div>
+                <div><dt>Score filed</dt><dd>+{score}</dd></div>
               </dl>
               <div class="review-note"><span>Return tray</span><strong>never · nunca</strong><small>Review once tomorrow.</small></div>
               <div class="ticket-barcode" aria-hidden="true"></div>

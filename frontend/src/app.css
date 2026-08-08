@@ -503,6 +503,20 @@ html[data-theme='arcade'] {
     flex-shrink: 0;
   }
 
+  /* Onboarding-locked drills. They stay focusable and explain themselves on
+     click rather than going silent, so the lock never reads as a dead link. */
+  .locked-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    opacity: 0.42;
+    cursor: not-allowed;
+  }
+
+  .locked-link .nav-lock {
+    flex: none;
+  }
+
   .active-link,
   .option-on,
   .icon-button-on {
@@ -524,6 +538,13 @@ html[data-theme='arcade'] {
       background: var(--accent-soft);
       border-color: var(--line);
       transform: translateY(-1px);
+    }
+
+    .locked-link:hover {
+      opacity: 0.62;
+      background: transparent;
+      border-color: transparent;
+      transform: none;
     }
   }
 
@@ -588,18 +609,6 @@ html[data-theme='arcade'] {
     background: var(--accent-soft);
   }
 
-  .xp-chip {
-    @apply text-sm font-bold;
-    font-family: var(--mono);
-    color: var(--xp);
-    animation: xp-tick 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-
-  html[data-theme='arcade'] .xp-chip {
-    font-size: 1.05rem;
-    text-shadow: 0 0 10px color-mix(in srgb, var(--xp) 55%, transparent);
-  }
-
   /* T1-A: VT323 optical compensation — mono UI chrome never lands under
      ~12px optical in arcade (1.05rem declared ≈ 12px drawn). */
   html[data-theme='arcade'] .stat-card span,
@@ -617,12 +626,6 @@ html[data-theme='arcade'] {
   html[data-theme='arcade'] .streak-flame,
   html[data-theme='arcade'] .brand-word {
     font-size: 1.05rem;
-  }
-
-  @keyframes xp-tick {
-    0% { transform: scale(1); }
-    35% { transform: scale(1.22); }
-    100% { transform: scale(1); }
   }
 
   .theme-switcher {
@@ -863,7 +866,6 @@ html[data-theme='arcade'] {
   }
 
   .mode-card:hover,
-  .resume-card:hover,
   .story-item:hover {
     transform: translateY(-2px);
   }
@@ -885,8 +887,7 @@ html[data-theme='arcade'] {
   }
 
   .list-row,
-  .story-item,
-  .resume-card {
+  .story-item {
     @apply flex items-center justify-between gap-4 rounded-[14px] border px-4 py-4 text-left;
     background: color-mix(in srgb, var(--surface-strong) 78%, transparent);
     border-color: var(--line);
@@ -904,15 +905,6 @@ html[data-theme='arcade'] {
   .row-metrics {
     @apply flex flex-col items-end gap-1 text-right text-sm;
     color: var(--muted);
-  }
-
-  .resume-strip {
-    @apply flex flex-col gap-3;
-  }
-
-  .resume-grid {
-    @apply grid gap-3;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   }
 
   .message-card,
@@ -1040,6 +1032,13 @@ html[data-theme='arcade'] {
 
   .verb-mode-button svg {
     grid-row: 1 / 3;
+  }
+
+  /* Last link in the onboarding chain: gated inside the page because both verb
+     drills share /training/verbs. Stays clickable so it can say why. */
+  .verb-mode-locked {
+    opacity: 0.45;
+    cursor: not-allowed;
   }
 
   .verb-mode-button span {
@@ -1607,12 +1606,12 @@ html[data-theme='light'] :is(.secondary-button, .ghost-button):hover {
   box-shadow: inset 0 -3px 0 color-mix(in srgb, var(--accent-2) 55%, transparent);
 }
 
-html[data-theme='light'] :is(.stat-card, .list-row, .story-item, .resume-card, .message-card, .bubble, .table-scroll, .chat-log, .admin-check) {
+html[data-theme='light'] :is(.stat-card, .list-row, .story-item, .message-card, .bubble, .table-scroll, .chat-log, .admin-check) {
   border-color: color-mix(in srgb, var(--accent) 22%, transparent);
   background: color-mix(in srgb, var(--matcha-panel) 79%, transparent);
 }
 
-html[data-theme='light'] :is(.stat-card, .list-row, .story-item, .resume-card) {
+html[data-theme='light'] :is(.stat-card, .list-row, .story-item) {
   border-radius: 9px;
 }
 
@@ -1792,16 +1791,16 @@ html[data-theme='dark'] :is(.secondary-button, .ghost-button, .home-button):hove
   box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--accent-2) 58%, transparent);
 }
 
-html[data-theme='dark'] :is(.stat-card, .list-row, .story-item, .resume-card, .message-card, .bubble, .table-scroll, .chat-log, .admin-check) {
+html[data-theme='dark'] :is(.stat-card, .list-row, .story-item, .message-card, .bubble, .table-scroll, .chat-log, .admin-check) {
   border-color: color-mix(in srgb, var(--ink-ivory) 11%, transparent);
   background: color-mix(in srgb, var(--ink-panel) 82%, transparent);
 }
 
-html[data-theme='dark'] :is(.stat-card, .list-row, .story-item, .resume-card, .message-card, .bubble, .admin-check) {
+html[data-theme='dark'] :is(.stat-card, .list-row, .story-item, .message-card, .bubble, .admin-check) {
   border-radius: 0 12px 0 12px;
 }
 
-html[data-theme='dark'] :is(.mode-card, .resume-card, .story-item, .list-row):hover {
+html[data-theme='dark'] :is(.mode-card, .story-item, .list-row):hover {
   border-color: color-mix(in srgb, var(--accent) 36%, transparent);
   background: color-mix(in srgb, var(--accent) 5%, var(--ink-panel));
 }
@@ -1909,11 +1908,6 @@ html[data-theme='dark'] .page-floor {
     order: 3;
     flex-basis: 100%;
     justify-content: flex-start;
-  }
-
-  /* Keep the topbar usable on phones: flame + level stay, raw XP hides */
-  .xp-chip {
-    display: none;
   }
 
   .profile-cluster {

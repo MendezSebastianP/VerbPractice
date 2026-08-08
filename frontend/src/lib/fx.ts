@@ -41,7 +41,7 @@ export function dismissOverlay(id: number): void {
 // One call per graded reward. Level-ups are NOT shown immediately: a mid-game
 // popup steals the Enter keystroke (which then grades a half-typed answer), so
 // the level is buffered here and released as a short toast once the session
-// ends. (The nav-bar XP counter still ticks live via the profile store.)
+// ends. (The nav-bar level chip still updates live via the profile store.)
 let pendingLevel: number | null = null;
 
 export function celebrateReward(reward: RewardState | null | undefined): void {
@@ -52,7 +52,7 @@ export function celebrateReward(reward: RewardState | null | undefined): void {
     pendingLevel = reward.new_level;
   }
   // Badge unlock overlays are suspended for now — they popped mid-game and
-  // distracted play. Badges still unlock silently (nav XP/profile updates);
+  // distracted play. Badges still unlock silently (profile store updates);
   // re-enable by buffering them like pendingLevel above.
 }
 

@@ -42,7 +42,7 @@
   <article class="auth-card glass-panel strong-panel">
     <p class="eyebrow">{mode === 'login' ? 'Sign in' : 'Create account'}</p>
     <h2>{mode === 'login' ? 'Keep your momentum.' : 'Start your first streak.'}</h2>
-    <p class="subcopy">{mode === 'login' ? 'Jump back into the queue with one step.' : 'We will track XP, streaks, and your weak spots from the start.'}</p>
+    <p class="subcopy">{mode === 'login' ? 'Jump back into the queue with one step.' : 'We will track your streaks and weak spots from the start.'}</p>
 
     {#if error}
       <div class="feedback-banner error-banner">{error}</div>

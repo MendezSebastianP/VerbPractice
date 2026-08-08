@@ -14,6 +14,14 @@
   import PlaySaffronRelay from '../components/PlaySaffronRelay.svelte';
   import StageClearRank from '../components/StageClearRank.svelte';
   import StudyPoolBlock from '../components/StudyPoolBlock.svelte';
+  import { completeFeature, onboarding, signalTour } from '../onboardingStore';
+  import CoachTour from '../components/onboarding/CoachTour.svelte';
+  import type { TourStep } from '../components/onboarding/CoachTour.svelte';
+  import {
+    TUTORIAL_SIGNALS,
+    buildTutorialSteps,
+    firstDivergence,
+  } from '../components/onboarding/wordsTutorial';
   import type { LanguageEntry, RewardState, StudyPoolResponse, ThemeName, TranslationState, UserSettings, WordSetSummary } from '../types';
 
   export let mode: 'words' | 'verbs';
@@ -161,13 +169,111 @@
     ...(mode === 'words' ? (state?.question?.synonym_answers ?? []) : []),
   ];
   $: quickShotSpent = state?.question?.item_id != null && quickShotSpentFor === state.question.item_id;
-  $: quickShotReady = Boolean(sessionView && quickShotAnswers.length && !quickShotSpent);
+  $: quickShotReady = Boolean(sessionView && quickShotAnswers.length && !quickShotSpent && !suppressQuickShot);
+
+  // ===== Scripted first round =====
+  // The tutorial teaches Enter first and the quick-shot second, so on the very
+  // first prompt the quick-shot is held back — otherwise a perfect answer would
+  // auto-submit and the "press Enter" lesson would never happen.
+  let tutorialTour: CoachTour;
+  let tutorialSteps: TourStep[] = [];
+  let tutorialLanded = false;
+  let tutorialMiss: { typed: string; expected: string } | null = null;
+  let tutorialPromptIndex = -1;
+
+  // Ask for the scripted round while Words is still unfinished and the learner
+  // has not opted out. The server decides what that actually means.
+  $: wantsTutorialRound =
+    mode === 'words' && !$onboarding.skipped && !$onboarding.completed.includes('words');
+
+  // The guided first round is five words and stays five. The learner still has
+  // to click the tile — that is the lesson — but the other two are dead, so the
+  // choice cannot be undone a moment later.
+  const TUTORIAL_LENGTH = 5;
+  $: tutorialLocksLength = wantsTutorialRound;
+
+  // Verbs get the same five-to-start treatment, but only as a default — by then
+  // the learner knows what the tiles do, so there is no reason to lock them.
+  $: wantsVerbTutorial =
+    mode === 'verbs'
+    && !$onboarding.skipped
+    && !$onboarding.completed.includes('verb-translate');
+  let verbLengthPreset = false;
+  $: if (wantsVerbTutorial && !verbLengthPreset && state?.setup) {
+    verbLengthPreset = true;
+    length = TUTORIAL_LENGTH;
+  }
+  $: tutorialActive = Boolean(state?.session?.tutorial) && mode === 'words';
+  $: promptIndex = Math.max(0, (state?.session?.progress_current ?? 1) - 1);
+  $: suppressQuickShot = tutorialActive && promptIndex === 0;
+  $: expectedAnswer = state?.question?.accepted_answers?.[0] ?? '';
+  $: targetLanguageName =
+    languageByCode(targetCode)?.name || targetCode.toUpperCase();
+
+  function rebuildTutorial(): void {
+    if (!tutorialActive || !sessionView || !state?.question) {
+      tutorialSteps = [];
+      return;
+    }
+    tutorialSteps = buildTutorialSteps({
+      index: promptIndex,
+      prompt: state.question.prompt,
+      answer: expectedAnswer,
+      targetLanguage: targetLanguageName,
+      quickShotSpent,
+      quickShotLanded: tutorialLanded,
+      miss: tutorialMiss,
+      hintText: state.hint ?? '',
+    });
+  }
+
+  // The hint step's second card quotes what the trainer actually revealed, so
+  // rebuild when it arrives. Prompt 5 always yields the same two steps, so the
+  // running card's text updates in place without restarting the tour.
+  $: if (tutorialActive && sessionView && (state?.hint ?? '')) {
+    rebuildTutorial();
+  }
+
+  async function restartTutorialTour(): Promise<void> {
+    // Close first. Swapping `steps` while the tour is still open renders the new
+    // step's text at the old step's position for a frame or two — that is the
+    // flicker you see between prompts.
+    tutorialTour?.close();
+    rebuildTutorial();
+    if (!tutorialSteps.length) return;
+    await tick();
+    // Let the prompt swap finish painting before the spotlight measures it.
+    window.setTimeout(() => tutorialTour?.start(), 300);
+  }
+
+  // New word: rebuild the script for its role and restart the overlay. Keyed on
+  // item_id rather than the progress counter, because a wrong answer keeps the
+  // counter still while the learner takes a second attempt.
+  $: currentItemId = state?.question?.item_id ?? null;
+  $: if (tutorialActive && sessionView && currentItemId !== null && currentItemId !== tutorialPromptIndex) {
+    tutorialPromptIndex = currentItemId;
+    tutorialMiss = null;
+    void restartTutorialTour();
+  }
+
+  $: if (!sessionView && tutorialPromptIndex !== -1) {
+    tutorialPromptIndex = -1;
+    tutorialTour?.close();
+  }
+
+  function tutorialSignal(name: string): boolean {
+    return tutorialActive ? Boolean(tutorialTour?.fireSignal(name)) : false;
+  }
 
   // Mobile viewport re-centering (keep the prompt + input above the keyboard)
   let mobileCenterFrame: number | null = null;
 
   // Correct answers this run (drives the Stage Clear score + dots)
   let okRun = 0;
+  // Outcome per prompt, in the order they were answered. The results bar used
+  // to paint the first `okRun` segments green regardless of which prompts were
+  // actually missed, so skipping the 4th of 5 lit the 5th red.
+  let runOutcomes: boolean[] = [];
 
   // Preserve last question/session for the stage-clear screen
   let prevQuestion: NonNullable<TranslationState['question']> | null = null;
@@ -342,23 +448,49 @@
   }
 
   function processQuickShot(value: string): void {
-    if (quickShotComposing || quickShotAdvanceInFlight || quickShotSpent || loading || launching) {
+    if (quickShotComposing || quickShotAdvanceInFlight || loading || launching) {
       return;
     }
     const accepted = quickShotAnswers.map(normalizeQuickShotAnswer).filter(Boolean);
     if (!accepted.length) return;
     const draft = normalizeQuickShotAnswer(value);
     if (!draft) return;
+
+    // Tutorial prompt 1 teaches Enter, so the shortcut is held back and nothing
+    // is ever marked spent here — a typo followed by a correction must still
+    // release the "type it" gate.
+    if (suppressQuickShot) {
+      if (accepted.includes(draft)) {
+        tutorialSignal(TUTORIAL_SIGNALS.typed);
+      }
+      return;
+    }
+
+    if (quickShotSpent) return;
+
     if (accepted.includes(draft)) {
       quickShotExplanationOpen = false;
       quickShotAdvanceInFlight = true;
       armQuickShotGuard();
       animateQuickShotAccepted();
+      tutorialLanded = true;
+      tutorialSignal(TUTORIAL_SIGNALS.quickShotFired);
       void autoFireQuickShot();
       return;
     }
     if (!accepted.some((entry) => entry.startsWith(draft))) {
       quickShotSpentFor = state?.question?.item_id ?? null;
+      if (tutorialActive) {
+        // Capture the exact letter that killed it, so the script can name it.
+        tutorialMiss = firstDivergence(value.trim(), expectedAnswer);
+        rebuildTutorial();
+        // If the running step was waiting for this, it advances itself. If not
+        // (they lost it while being asked to land one), swap in the branch that
+        // explains what happened.
+        if (!tutorialSignal(TUTORIAL_SIGNALS.quickShotLost)) {
+          void restartTutorialTour();
+        }
+      }
     }
   }
 
@@ -507,6 +639,9 @@
         direction,
         csrf_token: csrfToken,
         ...(setScope ? { set_id: setScope.id } : {}),
+        // First Words round of a fresh account is the scripted one: curated
+        // words in a fixed order so the overlay can say what to type.
+        ...(wantsTutorialRound ? { tutorial: true } : {}),
       };
       return mode === 'words'
         ? await api.startWords(startPayload)
@@ -523,6 +658,7 @@
     showSetupAfterFinish = false;
     wrongAttempts = 0;
     okRun = 0;
+    runOutcomes = [];
     resetQuickShot();
     inlineMsg = '';
     inlineTone = '';
@@ -600,6 +736,10 @@
       }
       pixelFade = true;
       window.setTimeout(() => { pixelOverlay = false; pixelFade = false; }, 600);
+      if (state?.session) {
+        // Releases the onboarding tour's "press Enter to start" gate.
+        signalTour('session-started');
+      }
     } finally {
       launching = false;
       if (!state?.session) {
@@ -643,6 +783,9 @@
       answerInput?.focus({ preventScroll: true });
       return;
     }
+    // Announced before the round advances, so the script's "press Enter" and
+    // "hit skip" gates see the action that caused it.
+    tutorialSignal(reveal ? TUTORIAL_SIGNALS.skipped : TUTORIAL_SIGNALS.submitted);
     loading = true;
     error = '';
     try {
@@ -654,6 +797,7 @@
         inlineMsg = state.feedback ?? '';
         inlineTone = 'info';
         wrongAttempts = 0;
+        runOutcomes = [...runOutcomes, false];
         flashMiss();
         // Reveals earn no XP themselves, but the final one can still carry
         // session-complete rewards (bonus XP, badges)
@@ -673,6 +817,7 @@
           triggerPulse('success');
           wrongAttempts = 0;
           okRun += 1;
+          runOutcomes = [...runOutcomes, true];
           const rewardState = state.result?.gamification;
           applyReward(rewardState);
           celebrateReward(rewardState);
@@ -690,6 +835,7 @@
           inlineTone = 'error';
           triggerPulse('error');
           wrongAttempts = 0;
+          runOutcomes = [...runOutcomes, false];
           flashMiss();
           applyReward(state.result?.gamification);
           celebrateReward(state.result?.gamification);
@@ -705,6 +851,7 @@
           inlineTone = '';
           triggerPulse('success');
           okRun += 1;
+          runOutcomes = [...runOutcomes, true];
           const rewardState = state.result?.gamification;
           applyReward(rewardState);
           celebrateReward(rewardState);
@@ -730,7 +877,12 @@
       answer = '';
       // Session over: any level-up buffered during play shows now, as a toast
       // over the Stage Clear screen instead of interrupting mid-run.
-      if (justFinished) releaseCelebrations();
+      if (justFinished) {
+        releaseCelebrations();
+        // Tell the onboarding store straight away. The server records this too,
+        // but without the local nudge the checklist stays stale until a reload.
+        completeFeature(mode === 'words' ? 'words' : 'verb-translate');
+      }
       // Session just ended: transfer focus to the primer now, while the answer
       // input is still mounted, so the mobile keyboard survives into Stage Clear.
       if (justFinished && usesCompactViewport()) kbdPrimer?.focus({ preventScroll: true });
@@ -743,6 +895,7 @@
   }
 
   async function showHint(): Promise<void> {
+    tutorialSignal(TUTORIAL_SIGNALS.hinted);
     loading = true;
     error = '';
     try {
@@ -872,7 +1025,11 @@
         const lengthIdx = ['1', '2', '3'].indexOf(key);
         if (lengthIdx !== -1) {
           event.preventDefault();
-          length = LENGTH_OPTS[lengthIdx];
+          // The guided first round is pinned to five; the shortcut must not be
+          // a way around the locked tiles.
+          if (!tutorialLocksLength) {
+            length = LENGTH_OPTS[lengthIdx];
+          }
           return;
         }
 
@@ -993,9 +1150,6 @@
               <p class="eyebrow">Reward pulse</p>
               <h2>Momentum from the last answer</h2>
             </div>
-            {#if reward()?.gained_xp}
-              <span class="pill-chip reward-pill">+{reward()?.gained_xp} XP</span>
-            {/if}
           </div>
           <div class="tag-row">
             {#if reward()?.combo}
@@ -1086,10 +1240,21 @@
             </div>
           </div>
 
-          <div class="diff-switch">
+          <div class="diff-switch" data-tour="words-length">
             <div class="diff-indicator" style={`transform: translateX(calc(${diffIdx * 100}% + ${diffIdx * 10}px));`} aria-hidden="true"></div>
             {#each LENGTH_OPTS as option, i}
-              <button class="diff-tile" type="button" on:click={() => (length = option)} aria-pressed={length === option}>
+              <button
+                class="diff-tile"
+                class:tile-locked={tutorialLocksLength && option !== TUTORIAL_LENGTH}
+                type="button"
+                data-tour-tile={option}
+                disabled={tutorialLocksLength && option !== TUTORIAL_LENGTH}
+                title={tutorialLocksLength && option !== TUTORIAL_LENGTH
+                  ? 'The guided first round is five words — longer runs open once it is done'
+                  : undefined}
+                on:click={() => (length = option)}
+                aria-pressed={length === option}
+              >
                 <span class="diff-tile-head">
                   <span class="diff-tile-tier">{LENGTH_TIERS[i]}</span>
                   <span class="kbd-chip">{i + 1}</span>
@@ -1099,12 +1264,14 @@
             {/each}
           </div>
 
-          <DirectionPicker
-            bind:this={directionRef}
-            bind:sourceCode
-            bind:targetCode
-            {languages}
-          />
+          <div data-tour="words-direction">
+            <DirectionPicker
+              bind:this={directionRef}
+              bind:sourceCode
+              bind:targetCode
+              {languages}
+            />
+          </div>
 
           <p class="route-label">{languageByCode(sourceCode)?.name || sourceCode} → {languageByCode(targetCode)?.name || targetCode}</p>
 
@@ -1117,7 +1284,7 @@
             onToggle={toggleStudyPool}
           />
 
-          <div class="play-area">
+          <div class="play-area" data-tour="words-play">
             {#if isArcade}
               <PlayGrid bind:this={playGridRef} disabled={launching || loading} on:fire={() => void firePlay()} />
             {:else if theme === 'light'}
@@ -1219,6 +1386,7 @@
             {#key dq?.item_id}
               <div
                 class="prompt-word"
+                data-tour="drill-prompt"
                 class:clear-vector-jolt={feedbackPulse === 'error' && theme === 'light'}
                 bind:this={promptEl}
               >{dq?.prompt ?? ''}</div>
@@ -1226,11 +1394,12 @@
 
             <form class="answer-line-form" novalidate on:submit|preventDefault={() => submitAnswer(false)}>
               <div class="line-input-wrap">
-                <div class="line-input-field">
+                <div class="line-input-field" data-tour="drill-answerline">
                   <input
                     bind:this={answerInput}
                     bind:value={answer}
                     class="line-input"
+                    data-tour="drill-input"
                     placeholder={isArcade ? '▊ type your answer' : 'type your answer'}
                     autocomplete="off"
                     autocapitalize="off"
@@ -1265,6 +1434,7 @@
                     {/if}
                   {/key}
                 </div>
+                <span data-tour="drill-quickshot">
                 <QuickShotIcon
                   ready={quickShotReady}
                   guarding={quickShotGuarding}
@@ -1273,6 +1443,7 @@
                   controls="translation-quick-shot-note"
                   onToggle={() => (quickShotExplanationOpen = !quickShotExplanationOpen)}
                 />
+                </span>
               </div>
 
               {#if quickShotExplanationOpen}
@@ -1282,7 +1453,7 @@
                 </div>
               {/if}
 
-              <div class="session-msg" class:msg-success={inlineTone === 'success'} class:msg-error={inlineTone === 'error'} class:msg-info={inlineTone === 'info'}>
+              <div class="session-msg" data-tour="drill-message" class:msg-success={inlineTone === 'success'} class:msg-error={inlineTone === 'error'} class:msg-info={inlineTone === 'info'}>
                 {#if inlineMsg}<span>{inlineMsg}</span>{/if}
               </div>
 
@@ -1290,10 +1461,10 @@
                 <button class="kbd-action" type="submit" disabled={loading}>
                   <span class="kbd-chip">Enter</span> submit
                 </button>
-                <button bind:this={hintButton} class="kbd-action" class:hint-armed={ctrlSpaceArmed} type="button" on:click={() => { popEl(hintButton); void showHint(); }} disabled={loading}>
+                <button bind:this={hintButton} data-tour="drill-hint" class="kbd-action" class:hint-armed={ctrlSpaceArmed} type="button" on:click={() => { popEl(hintButton); void showHint(); }} disabled={loading}>
                   <span class="kbd-chip">F2</span> hint
                 </button>
-                <button bind:this={skipButton} class="kbd-action" type="button" on:click={() => { popEl(skipButton); void submitAnswer(true); }} disabled={loading}>
+                <button bind:this={skipButton} data-tour="drill-skip" class="kbd-action" type="button" on:click={() => { popEl(skipButton); void submitAnswer(true); }} disabled={loading}>
                   <span class="kbd-chip">Alt+Enter</span> skip
                 </button>
                 <button
@@ -1320,6 +1491,7 @@
           <StageClearRank
             score={clearScore}
             ok={okRun}
+            outcomes={runOutcomes}
             total={clearTotal}
             bestCombo={prevSession?.best_combo ?? 0}
             unitLabel={itemPlural}
@@ -1346,6 +1518,15 @@
     </div>
   {/if}
 </section>
+
+<!-- Scripted first round. Lives here rather than in the shell because every
+     gate it waits on is trainer state (typed answer, quick-shot, skip, hint). -->
+<CoachTour
+  bind:this={tutorialTour}
+  steps={tutorialSteps}
+  tone="feature"
+  finishLabel="Got it"
+/>
 
 <style>
   .trainer-shell {
@@ -1550,6 +1731,12 @@
     padding: 11px 0 10px;
     text-align: center;
     cursor: pointer;
+  }
+
+  /* The guided first round is five words and stays five. */
+  .diff-tile.tile-locked {
+    opacity: 0.32;
+    cursor: not-allowed;
   }
 
   .diff-tile-head {

@@ -73,11 +73,6 @@
     return Math.min(100, (challenge.progress / challenge.target_value) * 100);
   }
 
-  function humanizeReason(reason: string): string {
-    const cleaned = reason.replace(/_/g, ' ');
-    return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
-  }
-
   function rarityClass(rarity: string): string {
     const normalized = (rarity || 'common').toLowerCase();
     return ['common', 'rare', 'epic', 'legendary'].includes(normalized)
@@ -105,7 +100,6 @@
                 <p class="eyebrow">Weekly challenge</p>
                 <h2>{iconEmoji(data.weekly_challenge.icon)} {data.weekly_challenge.title}</h2>
               </div>
-              <span class="pill-chip reward-pill">+{data.weekly_challenge.reward_xp} XP</span>
             </div>
             <p class="section-copy">{data.weekly_challenge.description}</p>
             <div class="progress-shell">
@@ -139,12 +133,11 @@
                   {#if row.streak_days > 0}
                     <span class="board-streak" title={`${row.streak_days}-day streak`}>🔥{row.streak_days}</span>
                   {/if}
-                  <span class="board-xp">{row.xp.toLocaleString()} XP</span>
                 </li>
               {/each}
             </ol>
           {:else}
-            <p class="empty-copy">No ranked players yet — earn some XP!</p>
+            <p class="empty-copy">No ranked players yet — finish a session to join the board!</p>
           {/if}
         </article>
 
@@ -161,12 +154,11 @@
                 <li class="board-row" class:is-you={row.username === username}>
                   <span class="board-rank">{MEDALS[i] ?? i + 1}</span>
                   <span class="board-name">{row.username}{row.username === username ? ' (you)' : ''}</span>
-                  <span class="board-xp">{row.weekly_xp.toLocaleString()} XP</span>
                 </li>
               {/each}
             </ol>
           {:else}
-            <p class="empty-copy">Nobody has earned XP this week yet. First mover advantage!</p>
+            <p class="empty-copy">Nobody has practised this week yet. First mover advantage!</p>
           {/if}
         </article>
       </div>
@@ -219,12 +211,11 @@
                 <span class="board-rank">{MEDALS[i] ?? i + 1}</span>
                 <span class="board-name">{row.username}{row.username === username ? ' (you)' : ''}</span>
                 <span class="level-chip">Lv.{row.level}</span>
-                <span class="board-xp">{row.xp.toLocaleString()} XP</span>
               </li>
             {/each}
           </ol>
         {:else}
-          <p class="empty-copy">Your circle is just you so far. Add friends to race them on XP.</p>
+          <p class="empty-copy">Your circle is just you so far. Add friends to race them.</p>
         {/if}
       </article>
 
@@ -249,30 +240,6 @@
             </div>
           {:else}
             <p class="empty-copy">No badges yet — complete sessions to start unlocking them.</p>
-          {/if}
-        </article>
-
-        <article class="glass-panel">
-          <div class="section-head">
-            <div>
-              <p class="eyebrow">Ledger</p>
-              <h2>Recent XP</h2>
-            </div>
-          </div>
-          {#if data.recent_xp.length}
-            <div class="list-stack">
-              {#each data.recent_xp as event}
-                <div class="list-row xp-event-row">
-                  <span class="xp-event-amount">+{event.amount} XP</span>
-                  <span class="xp-event-reason">{humanizeReason(event.reason)}</span>
-                  <span class="xp-event-date">
-                    {event.created_at ? new Date(event.created_at).toLocaleString() : ''}
-                  </span>
-                </div>
-              {/each}
-            </div>
-          {:else}
-            <p class="empty-copy">No XP earned yet. Every correct answer lands here.</p>
           {/if}
         </article>
       </div>
@@ -359,14 +326,6 @@
     font-family: var(--mono);
     font-size: 0.8rem;
     flex-shrink: 0;
-  }
-
-  .board-xp {
-    font-family: var(--mono);
-    font-weight: 700;
-    color: var(--xp);
-    flex-shrink: 0;
-    font-size: 0.85rem;
   }
 
   .friend-form {
@@ -471,25 +430,4 @@
     color: var(--xp);
   }
 
-  .xp-event-row {
-    align-items: baseline;
-  }
-
-  .xp-event-amount {
-    font-family: var(--mono);
-    font-weight: 700;
-    color: var(--xp);
-    flex-shrink: 0;
-  }
-
-  .xp-event-reason {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .xp-event-date {
-    font-size: 0.75rem;
-    color: var(--muted);
-    flex-shrink: 0;
-  }
 </style>

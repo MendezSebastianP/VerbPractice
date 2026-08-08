@@ -9,6 +9,12 @@
   export let score = 0; // percent 0..100
   export let ok = 0;
   export let total = 0;
+  /**
+   * Outcome per prompt, in the order they were answered. When supplied the bar
+   * marks the segments that were actually missed; without it the bar falls back
+   * to "first `ok` green", which misreports which prompt went wrong.
+   */
+  export let outcomes: boolean[] = [];
   export let bestCombo = 0;
   export let unitLabel = 'words';
 
@@ -62,7 +68,10 @@
     </div>
     <div class="rank-bar" role="img" aria-label={`${ok} of ${total} ${unitLabel} correct`}>
       {#each Array(total) as _, i}
-        <span class:rank-seg-ok={i < ok} style={`animation-delay: ${0.55 + i * 0.05}s;`}></span>
+        <span
+          class:rank-seg-ok={outcomes.length === total ? outcomes[i] : i < ok}
+          style={`animation-delay: ${0.55 + i * 0.05}s;`}
+        ></span>
       {/each}
     </div>
   {:else}

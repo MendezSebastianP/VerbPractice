@@ -47,7 +47,6 @@
           <tr>
             <th>User</th>
             <th>Level</th>
-            <th>XP</th>
             <th>Streak</th>
             <th>Theme</th>
           </tr>
@@ -57,12 +56,11 @@
             <tr>
               <td>{{ row.username }}</td>
               <td>{{ row.level }}</td>
-              <td>{{ row.xp }}</td>
               <td>{{ row.streak_days }}</td>
               <td>{{ row.theme }}</td>
             </tr>
           {% else %}
-            <tr><td colspan="5">No users</td></tr>
+            <tr><td colspan="4">No users</td></tr>
           {% endfor %}
         </tbody>
       </table>

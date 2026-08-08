@@ -8,6 +8,7 @@
   import QuickShotIcon from '../components/QuickShotIcon.svelte';
   import StageClearRank from '../components/StageClearRank.svelte';
   import StudyPoolBlock from '../components/StudyPoolBlock.svelte';
+  import { completeFeature, signalTour } from '../onboardingStore';
   import type { ConjugationState, ConjugationTenseReview, ConjugationTrainerSetup, LanguageConfig, RewardState, StudyPoolResponse, ThemeName } from '../types';
 
   export let csrfToken = '';
@@ -711,6 +712,8 @@
       answers = {};
       emptyEnterGuardUntil = 0;
       resetQuestionProgress(state);
+      // Releases the onboarding tour's "start a run" gate.
+      signalTour('tables-started');
       void api.patchSettings({
         csrf_token: csrfToken,
         last_practice_mode: 'conjugation',
@@ -787,7 +790,12 @@
       celebrateReward(rewardState);
       // Run over: surface any level-up buffered during play as a toast on the
       // results screen — never mid-run, where it would eat the next Enter.
-      if (justFinished) releaseCelebrations();
+      if (justFinished) {
+        releaseCelebrations();
+        // Mirror the server's record locally so the checklist ticks over now
+        // rather than on the next reload.
+        completeFeature('verb-tables');
+      }
       if (state.result?.accuracy !== undefined && state.result.accuracy < 100) {
         flashMiss();
       }
@@ -1161,9 +1169,6 @@
               <p class="eyebrow">Reward pulse</p>
               <h2>Table rewards from the last round</h2>
             </div>
-            {#if reward()?.gained_xp}
-              <span class="pill-chip reward-pill">+{reward()?.gained_xp} XP</span>
-            {/if}
           </div>
           <div class="tag-row">
             {#if reward()?.combo}
@@ -1278,7 +1283,7 @@
             </div>
           </div>
 
-          <div class="setup-grid-two">
+          <div class="setup-grid-two" data-tour="tables-setup">
             <div class="setup-step compact-step">
               <div class="setup-step-head">
                 <span class="step-number">03</span>
@@ -1320,7 +1325,7 @@
               <span>{activeLanguage?.name || language}</span>
               <strong>{selectedTenses.length} {selectedTenses.length === 1 ? 'tense' : 'tenses'} × {length} verbs</strong>
             </div>
-            <button class="primary-button table-launch-button" type="button" on:click={startSession} disabled={loading || !canStart()}>
+            <button class="primary-button table-launch-button" data-tour="tables-launch" type="button" on:click={startSession} disabled={loading || !canStart()}>
               Start table run <kbd class="setup-keycap setup-keycap-launch">Enter</kbd><span aria-hidden="true">→</span>
             </button>
           </div>
@@ -1433,7 +1438,7 @@
                   </div>
                 {/if}
 
-                <div class="g1-column-rows">
+                <div class="g1-column-rows" data-tour="tables-grid">
                   <span class:g1-column-rail-uniform={uniformFormLayout} class:g1-column-rail-hidden={clusteredFormLayout} class="g1-column-rail" aria-hidden="true"><i style={`height: ${tenseReview ? 100 : ((Math.max(0, currentInputCells.findIndex((cell) => cell.key === currentActiveCell?.key)) + 1) / Math.max(1, currentInputCells.length)) * 100}%`}></i></span>
                   {#each state.question.rows as row, rowIndex (row.pronoun)}
                     {@const cell = row.cells.find((entry) => entry.tense === activeTense)}
